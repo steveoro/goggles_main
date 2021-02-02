@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+  goggles-db:
+    image: mariadb:latest
+    container_name: goggles-db.dev
+    ports:
+      - '33060:3306'
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - type: volume
+        source: db_data
+        target: /var/lib/mysql
+        volume:
+          nocopy: true
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: steveoro/goggles-main:dev-0.1.076
+    depends_on:
+      - goggles-db
+    container_name: goggles-main.dev
+    restart: always
+    ports:
+      - '8080:8080'
+    env_file:
+      - .env
+    volumes:
+      - "~/Projects/goggles_main/db/dump:/app/db/dump"
+      - "~/Projects/goggles_main/config/master.key:/app/config/master.key"
+
+volumes:
+  db_data:
+  gem_cache:
+  node_modules:

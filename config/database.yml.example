@@ -1,0 +1,79 @@
+# MySQL. Versions 5.5.8 and up are supported.
+#
+# Install the MySQL driver
+#   gem install mysql2
+#
+# Ensure the MySQL gem is defined in your Gemfile
+#   gem 'mysql2'
+#
+# And be sure to use new-style password hashing:
+#   https://dev.mysql.com/doc/refman/5.7/en/password-hashing.html
+#
+default: &default
+  adapter: mysql2
+  encoding: utf8mb4
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
+  # Use socket for localhost connections only; otherwise, use 'host' or 'url' parameters:
+  socket: /var/run/mysqld/mysqld.sock
+  # host: <%= ENV.fetch("DATABASE_HOST") { 'localhost' } %>
+  # port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
+
+development:
+  <<: *default
+  database: goggles_development
+  password: MY_AWESOME_PASSWORD!
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+  database: goggles_test
+  password: MY_AWESOME_PASSWORD!
+
+# As with config/credentials.yml, you never want to store sensitive information,
+# like your database password, in your source code. If your source code is
+# ever seen by anyone, they now have access to your database.
+#
+# Instead, provide the password as a unix environment variable when you boot
+# the app. Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
+# for a full rundown on how to provide these environment variables in a
+# production deployment.
+#
+# On Heroku and other platform providers, you may have a full connection URL
+# available as an environment variable. For example:
+#
+#   DATABASE_URL="mysql2://myuser:mypass@localhost/somedatabase"
+#
+# You can use this database configuration with:
+#
+#   production:
+#     url: <%= ENV['DATABASE_URL'] %>
+#
+production:
+  <<: *default
+  database: goggles
+  password: <%= ENV.fetch("MYSQL_ROOT_PASSWORD") { '' } %>
+
+# [Steve A.]
+# Staging will use the production environment together with the database
+# running on the production Docker image of the composed service
+# (DockerHub: steveoro/goggles-api:latest) with the exception of enforcing SSL
+# to allow local testing.
+#
+# To recreate or restore a usable database with testing seeds, assuming:
+#
+# 1. you have a valid 'test.sql.bz2' dump file stored under 'db/dumps';
+# 2. the DB container 'goggles-db' is already running;
+#
+# Execute the dedicated task:
+#
+#   $> RAILS_ENV=staging rails db:rebuild from=test to=staging
+#
+staging:
+  <<: *default
+  database: goggles
+  password: <%= ENV.fetch("MYSQL_ROOT_PASSWORD") { '' } %>
+  host: <%= ENV.fetch("DATABASE_HOST") { 'localhost' } %>
+  port: <%= ENV.fetch("DATABASE_PORT") { 33060 } %>

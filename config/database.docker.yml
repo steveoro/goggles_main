@@ -1,0 +1,40 @@
+# Allow full customization when building a new Docker image:
+default: &default
+  adapter: mysql2
+  encoding: utf8mb4
+  username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
+  password: <%= ENV.fetch("MYSQL_ROOT_PASSWORD") { '' } %>
+  host: <%= ENV.fetch("DATABASE_HOST") { 'localhost' } %>
+  port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: goggles_development
+
+test:
+  <<: *default
+  database: goggles_test
+
+production:
+  <<: *default
+  database: goggles
+
+# [Steve A.]
+# Staging will use the production environment together with the database
+# running on the production Docker image of the composed service
+# (DockerHub: steveoro/goggles-api:latest) with the exception of enforcing SSL
+# to allow local testing.
+#
+# To recreate or restore a usable database with testing seeds, assuming:
+#
+# 1. you have a valid 'test.sql.bz2' dump file stored under 'db/dumps';
+# 2. the DB container 'goggles-db' is already running;
+#
+# Execute the dedicated task:
+#
+#   $> RAILS_ENV=staging rails db:rebuild from=test to=staging
+#
+staging:
+  <<: *default
+  database: goggles

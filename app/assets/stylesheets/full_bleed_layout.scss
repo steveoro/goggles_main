@@ -1,0 +1,33 @@
+/*
+    Main wrapper
+    Set ideal center width in characters (size of '0' char in current font);
+    fallback to 100% if center column width is less;
+    remove from 100% the scrollbar width which may appear on smaller screens;
+    add a column gap in between;
+    also, we need to use a string value forcing Sass to skip parsing incompatible units
+    (CSS doesn't care)
+*/
+
+// $middle-width-including-scrollbar: calc(100% - 64px);
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr 'min(60ch, calc(100% - 64px))' 1fr;
+  grid-column-gap: 32px;
+}
+
+/*
+   Assigned children column: override default to center
+*/
+.wrapper > * {
+  grid-column: 2;
+}
+
+/*
+   Use a single full-bleed column when needed:
+   bleed grid width until last delimiting grid line is reached
+*/
+.full-bleed {
+  width: 100%;
+  grid-column: 1 / -1;
+}

@@ -1,0 +1,39 @@
+# Misc dotfiles & editor files
+.bin
+.bundleignore
+.bundle
+.byebug_history
+.DS_Store
+.git
+.gitignore
+.dockerignore
+.env
+.rspec
+.settings/*
+*.lock
+*.swp
+*.tmp
+
+# Logs
+log
+*.log
+
+# Docs, tmp, test suite & Blueprint files
+blueprint/*
+coverage/*
+doc
+tmp
+test
+*.apib
+
+# Ignore local keys for decrypting credentials and more.
+/config/master.key
+/config/credentials/*.key
+config/database.yml
+/config/deploy.rb
+/config/deploy/*
+send_coverage.sh
+
+# Ignore DB dumps uploaded in development
+/db/dump/*.sql
+/db/dump/*.bz2

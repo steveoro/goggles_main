@@ -1,0 +1,37 @@
+version: v1.0
+name: Docker build
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+fail_fast:
+  stop:
+    when: 'true'
+auto_cancel:
+  running:
+    when: 'true'
+
+global_job_config:
+  # Connect secrets to all jobs in the pipeline:
+  # (actual values can be edited on Semaphore 2.0 org dashboard)
+  secrets:
+    - name: DockerHub-steveoro-login
+    - name: GogglesMain
+
+  # Execute at the start of every job in the pipeline:
+  prologue:
+    commands:
+      - checkout
+      - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+
+blocks:
+  - name: Build Docker images
+    task:
+      jobs:
+        - name: Docker prod
+          commands:
+            # The first pull will build the local cache for all the layers so that the build will act on the diff:
+            - 'docker pull $DOCKERHUB_USERNAME/goggles-main:latest || true'
+            - 'docker build -t $DOCKERHUB_USERNAME/goggles-main:latest --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.prod .'
+            - 'docker push $DOCKERHUB_USERNAME/goggles-main:latest'

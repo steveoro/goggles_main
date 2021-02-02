@@ -1,0 +1,19 @@
+# Semaphore 2.0 uses a password-less access for the ubuntu1804 VM running the MySQL service:
+default: &default
+  adapter: mysql2
+  encoding: utf8mb4
+  database: <%= ENV.fetch("DATABASE_NAME") { 'goggles_test' } %>
+  username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
+  password:
+  socket: /var/run/mysqld/mysqld.sock
+  host: <%= ENV.fetch("DATABASE_HOST") { '127.0.0.1' } %>
+  port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: goggles_development
+
+test:
+  <<: *default
+  database: goggles_test

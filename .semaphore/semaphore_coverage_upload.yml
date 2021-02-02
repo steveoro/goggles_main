@@ -1,0 +1,37 @@
+version: v1.0
+name: Code coverage
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+fail_fast:
+  stop:
+    when: 'true'
+auto_cancel:
+  running:
+    when: 'true'
+
+global_job_config:
+  # Connect secrets to all jobs in the pipeline:
+  # (actual values can be edited on Semaphore 2.0 org dashboard)
+  secrets:
+    - name: GogglesMain
+
+  # Execute at the start of every job in the pipeline:
+  prologue:
+    commands:
+      - checkout
+      - mkdir -pv tmp coverage
+      - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+      - chmod +x ./cc-test-reporter
+      - cache restore cc-view-goggles_api
+      - cache restore cc-controller-goggles_api
+
+blocks:
+  - name: Code coverage upload
+    task:
+      jobs:
+        - name: CodeClimate.com
+          commands:
+            - ./cc-test-reporter sum-coverage --output - coverage/cc-*.json | ./cc-test-reporter upload-coverage --debug --input -

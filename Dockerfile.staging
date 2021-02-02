@@ -1,0 +1,61 @@
+FROM ruby:2.7.2-alpine
+LABEL AUTHOR=steve.alloro@gmail.com version="0.1.076"
+
+ENV BUNDLER_VERSION=2.2.7 \
+    INSTALL_PATH=/app \
+    RAILS_ENV=production \
+    DATABASE_NAME=goggles \
+    DATABASE_HOST=goggles-db \
+    DATABASE_PORT=3306 \
+    DATABASE_USER=root
+
+# Current export defaults:
+# BUNDLE_APP_CONFIG='/usr/local/bundle'
+# BUNDLE_PATH='/usr/local/bundle'
+# GEM_HOME='/usr/local/bundle'
+
+RUN mkdir -p $INSTALL_PATH
+RUN apk add --update --no-cache \
+    binutils-gold \
+    build-base \
+    curl \
+    file \
+    g++ \
+    gcc \
+    git \
+    less \
+    libstdc++ \
+    libffi-dev \
+    libc-dev \
+    linux-headers \
+    libxml2-dev \
+    libxslt-dev \
+    libgcrypt-dev \
+    make \
+    mariadb-dev \
+    netcat-openbsd \
+    nodejs \
+    openssl \
+    pkgconfig \
+    tzdata \
+    yarn
+
+# Run as a specific user: (WIP: yarn requires more privileges)
+# ARG USER_ID
+# ARG GROUP_ID
+# RUN addgroup -g $GROUP_ID -S dev
+# RUN adduser -D -g '' -u $USER_ID -G dev dev
+# RUN chown -R dev:dev $INSTALL_PATH
+# USER $USER_ID
+
+# App image:
+RUN gem install bundler -v $BUNDLER_VERSION
+WORKDIR $INSTALL_PATH
+COPY . ./
+RUN bundle config build.nokogiri --use-system-libraries
+COPY ./config/database.docker.yml ./config/database.yml
+
+RUN bundle check || bundle install --without=development test
+RUN yarn install --check-files
+
+ENTRYPOINT ["./entrypoints/docker.prod.sh"]
