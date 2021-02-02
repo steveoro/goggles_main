@@ -63,6 +63,8 @@ Check out our [Wiki :link:](https://github.com/steveoro/goggles_db/wiki) and the
 ## License
 The application is available as open source under the terms of the [LGPL-3.0 License](https://opensource.org/licenses/LGPL-3.0).
 
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsteveoro%2Fgoggles_main.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fsteveoro%2Fgoggles_main?ref=badge_large)
+
 
 ## Supporting
 
