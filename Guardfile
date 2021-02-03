@@ -134,6 +134,7 @@ end
 # haml_dires: ['app/views']     # Check Directories. default: 'app/views' or '.'
 # cli: '--fail-fast --no-color' # Additional command line options to haml-lint.
 guard :haml_lint do
+  watch('.haml-lint.yml')
   watch(/.+\.html.*\.haml$/)
   watch(%r{(?:.+/)?\.haml-lint\.yml$}) { |m| File.dirname(m[0]) }
 end

@@ -1,0 +1,10 @@
+exclude:
+  - '*.yml'
+
+linters:
+  LineLength:
+    max: 120
+
+  IdNames:
+    exclude:
+      - 'app/views/devise/shared/_error_messages.html.haml'

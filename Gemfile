@@ -31,6 +31,7 @@ gem 'turbolinks'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'devise'
+gem 'devise-i18n'
 gem 'font-awesome-rails'
 gem 'goggles_db', git: 'https://github.com/steveoro/goggles_db'
 gem 'haml-rails'
@@ -52,7 +53,7 @@ group :development do
   gem 'guard-rspec'
   gem 'guard-rubocop'
   gem 'guard-spring'
-  gem 'haml_lint'
+  gem 'haml_lint', require: false
   gem 'inch', require: false # grades source documentation
   gem 'listen', '~> 3.2'
   # [20210128] Rubocop 1.9.0 seems to have several issues currently

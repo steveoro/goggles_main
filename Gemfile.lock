@@ -491,6 +491,7 @@ DEPENDENCIES
   codecov
   coveralls
   devise
+  devise-i18n
   factory_bot_rails
   ffaker
   font-awesome-rails
