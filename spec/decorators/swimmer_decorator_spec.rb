@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'support/shared_decorator_examples'
 
-RSpec.describe SwimmerDecorator do
+RSpec.describe SwimmerDecorator, type: :decorator do
   let(:model_obj) { GogglesDb::Swimmer.limit(50).sample }
   subject { SwimmerDecorator.decorate(model_obj) }
   before(:each) do

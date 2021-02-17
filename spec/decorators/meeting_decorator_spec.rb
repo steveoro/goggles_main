@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'support/shared_decorator_examples'
 
-RSpec.describe MeetingDecorator do
+RSpec.describe MeetingDecorator, type: :decorator do
   let(:model_obj) { GogglesDb::Meeting.limit(50).sample }
   subject { MeetingDecorator.decorate(model_obj) }
 

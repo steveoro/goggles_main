@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'support/shared_decorator_examples'
 
-RSpec.describe TeamDecorator do
+RSpec.describe TeamDecorator, type: :decorator do
   let(:model_obj) { GogglesDb::Team.limit(20).sample }
   subject { TeamDecorator.decorate(model_obj) }
 

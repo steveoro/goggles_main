@@ -2,6 +2,6 @@
 
 require 'rails_helper'
 
-RSpec.describe ToolDecorator do
+RSpec.describe ToolDecorator, type: :decorator do
   # TODO
 end

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SeasonDecorator do
+RSpec.describe SeasonDecorator, type: :decorator do
   describe '#last_season_by_type' do
     [
       GogglesDb::SeasonType::MAS_FIN_ID, GogglesDb::SeasonType::MAS_CSI_ID,
