@@ -1,8 +1,13 @@
-# Goggles main client UI
+# Goggles Main
 
-For version 7 and onward.
-
+[![Build Status](https://steveoro.semaphoreci.com/badges/goggles_main/branches/master.svg?style=shields)](https://steveoro.semaphoreci.com/projects/goggles_main)
+[![Maintainability](https://api.codeclimate.com/v1/badges/5179d7eefd4cd93bfba1/maintainability)](https://codeclimate.com/github/steveoro/goggles_main/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/5179d7eefd4cd93bfba1/test_coverage)](https://codeclimate.com/github/steveoro/goggles_main/test_coverage)
+[![codecov](https://codecov.io/gh/steveoro/goggles_main/branch/main/graph/badge.svg?token=47SXT4CXGP)](https://codecov.io/gh/steveoro/goggles_main)
 ![](https://api.kindspeech.org/v1/badge)
+
+
+Main client UI app for version 7 and onward.
 
 
 ## Wiki & HOW-TOs
@@ -56,8 +61,10 @@ Check out our [Wiki :link:](https://github.com/steveoro/goggles_db/wiki) and the
 
 ## Contributing
 1. Clone the project.
-2. Make a pull request based on the branch most relevant to you; make sure your branch has a local build fully green (:green_heart:) before submitting the PR.
-3. Await the PR's review by the maintainers.
+2. Make a new custom branch for your changes, naming the branch accordingly (i.e. use prefixes like: `feature-`, `fix-`, `upgrade-`, ...).
+3. When you think you're done, make sure you type `guard` (+`Enter`) and wait for the whole spec suite to end.
+4. Make sure your branch is locally green (:green_heart:) before submitting the pull request.
+5. Await the PR's review by the maintainers.
 
 
 ## License
