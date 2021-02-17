@@ -1,6 +1,6 @@
 # language:en
 
-@headless_chrome
+@headless_chrome_iphone8
 Feature: Search anything from the root page: desktop, lg-size
   At the root page of the app
   As an anonymous user
