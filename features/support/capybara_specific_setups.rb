@@ -198,8 +198,3 @@ Capybara.javascript_driver  = :headless_chrome
 Capybara.current_driver     = :headless_chrome
 Capybara.default_max_wait_time = 5
 Capybara.server_port = 3001
-
-# Show the current driver as a debugging helper:
-Before do
-  log("\r\n* Capybara current driver: #{Capybara.current_driver}")
-end

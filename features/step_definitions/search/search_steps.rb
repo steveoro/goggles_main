@@ -9,11 +9,19 @@ When('I search for {string}') do |query_string|
   click_button('btn-search')
 end
 
-Then('the {string} search results are displayed, all matching {string}') do |model_downcase_name, _query_string|
-  node = find("##{model_downcase_name}-results", visible: true)
-  expect(node.text).not_to be_empty
+Then('the {string} search results are displayed, all matching {string}') do |model_downcase_name, query_string|
+  results_node = find("##{model_downcase_name.gsub('_', '-')}-results")
+  expect(results_node.text).not_to be_empty
+  within(results_node) do
+    find('table tbody').all('tr').each do |tr_node|
+      expect(tr_node.find('td a').text).to match(/#{query_string}/i)
+      expect(tr_node.find('td a')[:href]).to match(%r{#{model_downcase_name}/show\?id=}i)
+    end
+  end
+end
 
-  # TODO
+Then('no search results are visible') do
+  expect(page).not_to have_css('.swipe-wrapper')
 end
 
 Then('the pagination controls are visible') do
@@ -26,4 +34,9 @@ end
 Then('the pagination controls are not present') do
   content_node = find('.swipe-wrapper', visible: true)
   expect(content_node).not_to have_css('#paginator-controls')
+end
+
+Then('a flash alert is shown about the empty results') do
+  expect(page).to have_css('#flash-alert-msg')
+  expect(find('#flash-alert-msg .flash-body').text).to eq(I18n.t('search_view.no_results'))
 end

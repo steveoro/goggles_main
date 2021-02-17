@@ -33,14 +33,16 @@ module AutocreateArtifacts
                             end
     screenshot_pathname = "#{timestamped_prefix_path}-screen-#{filename}-#{line_number}.png"
     page_pathname = "#{timestamped_prefix_path}-page-#{filename}-#{line_number}.html"
-    log('Saving artifacts...')
+    # Show the current driver as a debugging helper:
+    log("\r\n=> Capybara driver during failure: #{Capybara.current_driver}")
+    log("\r\nSaving artifacts...")
     begin
-      log("Screenshot:  #{screenshot_pathname}")
+      log("\r\nScreenshot:  #{screenshot_pathname}")
       save_screenshot(screenshot_pathname)
-      log("Page source: #{page_pathname}")
+      log("\r\nPage source: #{page_pathname}")
       save_page(page_pathname)
     rescue StandardError
-      log('Error: unable to store artifacts!')
+      log("\r\nError: unable to store artifacts!")
     end
   end
 end

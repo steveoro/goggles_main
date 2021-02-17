@@ -25,20 +25,14 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
     it 'doesn\'t include the swipe-wrapper' do
       expect(rendered).not_to include('swipe-wrapper')
     end
-    it 'doesn\'t show any swimmer results table' do
-      expect(rendered).not_to include('swimmer-results')
-    end
-    it 'doesn\'t show any team results table' do
-      expect(rendered).not_to include('team-results')
-    end
-    it 'doesn\'t show any meeting results table' do
-      expect(rendered).not_to include('meeting-results')
-    end
-    it 'doesn\'t show any pool results table' do
-      expect(rendered).not_to include('pool-results')
-    end
     it 'doesn\'t show the pagination controls' do
       expect(rendered).not_to include('page-link')
+    end
+
+    %w[swimmer team meeting swimming-pool].each do |dom_id_prefix_for_container|
+      it "doesn't show the #{dom_id_prefix_for_container} results table" do
+        expect(rendered).not_to include("#{dom_id_prefix_for_container}-results")
+      end
     end
   end
 
@@ -87,7 +81,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
   #-- -------------------------------------------------------------------------
   #++
 
-  # Test just the more generic paginated content for the remaining entities (to simplify tests)
+  # Test just the generic paginated content for the remaining entities (to simplify tests)
   context 'when searching for a team name with positive matches enough for pagination,' do
     before(:each) do
       teams = GogglesDb::Team.for_name('nuoto').page(1).per(5)
@@ -145,7 +139,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
 
     it_behaves_like(
       'search result table showing a matching list page',
-      '#pool-results table tbody tr',
+      '#swimming-pool-results table tbody tr',
       'swimming_pool\/show\?',
       'Comunale'
     )
