@@ -29,7 +29,7 @@ global_job_config:
       # Make sure we are using Bundler 2+:
       - gem i bundler
       # Use GogglesDb::VERSION as master reference here, or force a minor version change to rebuild the cache:
-      - cache restore bundle-1.74-$(checksum Gemfile.lock)
+      - cache restore bundle-1.76-$(checksum Gemfile.lock yarn.lock)
 
 blocks:
   - name: Bundle cache store
@@ -44,8 +44,9 @@ blocks:
             - GIT_LFS_SKIP_SMUDGE=1 bundle install
             # Use this to log the actual bundle destination path for Semaphore 2.0 (currently uses Rbenv):
             # - bundle info rake --path
+            - yarn
             # The cache will be updated with the new content just once for all blocks in the pipeline:
-            - cache store bundle-1.74-$(checksum Gemfile.lock) vendor/bundle
+            - cache store bundle-1.76-$(checksum Gemfile.lock yarn.lock) vendor/bundle
 
   - name: Code scanning
     task:
@@ -55,6 +56,7 @@ blocks:
             - sem-version ruby 2.7
             - bundle config set path 'vendor/bundle'
             - GIT_LFS_SKIP_SMUDGE=1 bundle install
+            - yarn
             - bundle exec rubocop
             - bundle exec brakeman -c .brakeman.cfg
 
@@ -66,6 +68,7 @@ blocks:
           - sem-service start mysql
           - bundle config set path 'vendor/bundle'
           - GIT_LFS_SKIP_SMUDGE=1 bundle install
+          - yarn
           - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
           - chmod +x ./cc-test-reporter
           - cp config/database.semaphore_2.yml config/database.yml
@@ -109,6 +112,30 @@ blocks:
         #   commands:
         #     - 'bundle exec rspec -t type:helper'
         # TODO: add Cucumber tests
+
+  - name: Cucumber integration tests
+    task:
+      prologue:
+        commands:
+          - sem-version ruby 2.7
+          - sem-service start mysql
+          - bundle config set path 'vendor/bundle'
+          - GIT_LFS_SKIP_SMUDGE=1 bundle install
+          - yarn
+          - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          - chmod +x ./cc-test-reporter
+          - cp config/database.semaphore_2.yml config/database.yml
+          - 'curl -L -o db/dump/test.sql.bz2 "https://github.com/steveoro/goggles_db/raw/master/spec/dummy/db/dump/test.sql.bz2"'
+          - 'RAILS_ENV=test bin/rails db:rebuild from=test to=test'
+          - 'RAILS_ENV=test bin/rails db:migrate'
+          - ./cc-test-reporter before-build
+      jobs:
+        - name: Cucumber - all
+          commands:
+            - 'bundle exec cucumber --publish-quiet'
+            - cache delete cc-cucumber-goggles_main
+            - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-cucumber.json
+            - cache store cc-cucumber-goggles_main coverage/cc-cucumber.json
 
 promotions:
   - name: Code coverage
