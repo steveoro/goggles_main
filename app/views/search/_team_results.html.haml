@@ -1,0 +1,21 @@
+#team-results
+  %h5
+    = page_entries_info(teams, entry_name: 'group')
+
+  %table.table.table-striped.table-hover.table-condensed.table-sm
+    %thead.bg-success.text-light
+      %tr.text-center
+        %td{ colspan: 2 }
+          %b= I18n.t('teams.team')
+        %td
+          %b= I18n.t('teams.city')
+    %tbody
+      - TeamDecorator.decorate_collection(teams).each do |team|
+        %tr
+          %td{ colspan: 2 }
+            = team.link_to_full_name
+          %td
+            %small
+              = team.city&.name
+  %br/
+  = paginate(teams, remote: true)

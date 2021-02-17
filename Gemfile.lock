@@ -106,6 +106,7 @@ GEM
     bootsnap (1.7.0)
       msgpack (~> 1.0)
     brakeman (5.0.0)
+    browser (5.3.0)
     builder (3.2.4)
     bullet (6.1.3)
       activesupport (>= 3.0.0)
@@ -147,6 +148,43 @@ GEM
       term-ansicolor
       thor
     crass (1.0.6)
+    cucumber (5.3.0)
+      builder (~> 3.2, >= 3.2.4)
+      cucumber-core (~> 8.0, >= 8.0.1)
+      cucumber-create-meta (~> 2.0, >= 2.0.2)
+      cucumber-cucumber-expressions (~> 10.3, >= 10.3.0)
+      cucumber-gherkin (~> 15.0, >= 15.0.2)
+      cucumber-html-formatter (~> 9.0, >= 9.0.0)
+      cucumber-messages (~> 13.1, >= 13.1.0)
+      cucumber-wire (~> 4.0, >= 4.0.1)
+      diff-lcs (~> 1.4, >= 1.4.4)
+      multi_test (~> 0.1, >= 0.1.2)
+      sys-uname (~> 1.2, >= 1.2.1)
+    cucumber-core (8.0.1)
+      cucumber-gherkin (~> 15.0, >= 15.0.2)
+      cucumber-messages (~> 13.0, >= 13.0.1)
+      cucumber-tag-expressions (~> 2.0, >= 2.0.4)
+    cucumber-create-meta (2.0.4)
+      cucumber-messages (~> 13.1, >= 13.1.0)
+      sys-uname (~> 1.2, >= 1.2.1)
+    cucumber-cucumber-expressions (10.3.0)
+    cucumber-gherkin (15.0.2)
+      cucumber-messages (~> 13.0, >= 13.0.1)
+    cucumber-html-formatter (9.0.0)
+      cucumber-messages (~> 13.0, >= 13.0.1)
+    cucumber-messages (13.2.1)
+      protobuf-cucumber (~> 3.10, >= 3.10.8)
+    cucumber-rails (2.2.0)
+      capybara (>= 2.18, < 4)
+      cucumber (>= 3.0.2, < 6)
+      mime-types (~> 3.2)
+      nokogiri (~> 1.8)
+      rails (>= 5.0, < 7)
+    cucumber-tag-expressions (2.0.4)
+    cucumber-wire (4.0.1)
+      cucumber-core (~> 8.0, >= 8.0.1)
+      cucumber-cucumber-expressions (~> 10.3, >= 10.3.0)
+      cucumber-messages (~> 13.0, >= 13.0.1)
     debug_inspector (1.0.0)
     devise (4.7.3)
       bcrypt (~> 3.0)
@@ -200,6 +238,9 @@ GEM
       guard (~> 2.2)
       guard-compat (~> 1.1)
     guard-compat (1.2.1)
+    guard-cucumber (3.0.0)
+      cucumber (>= 3.1)
+      nenv (>= 0.1)
     guard-haml_lint (1.1.0)
       guard (~> 2.2)
       guard-compat (~> 1.2)
@@ -254,6 +295,18 @@ GEM
       yard (~> 0.9.12)
     json (2.5.1)
     jwt (2.2.2)
+    kaminari (1.2.1)
+      activesupport (>= 4.1.0)
+      kaminari-actionview (= 1.2.1)
+      kaminari-activerecord (= 1.2.1)
+      kaminari-core (= 1.2.1)
+    kaminari-actionview (1.2.1)
+      actionview
+      kaminari-core (= 1.2.1)
+    kaminari-activerecord (1.2.1)
+      activerecord
+      kaminari-core (= 1.2.1)
+    kaminari-core (1.2.1)
     launchy (2.5.0)
       addressable (~> 2.7)
     letter_opener (1.7.0)
@@ -270,6 +323,7 @@ GEM
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     method_source (1.0.0)
+    middleware (0.1.0)
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2020.1104)
@@ -279,6 +333,7 @@ GEM
     minitest (5.14.3)
     msgpack (1.4.2)
     multi_json (1.15.0)
+    multi_test (0.1.2)
     mysql2 (0.5.3)
     n_plus_one_control (0.6.0)
     nenv (0.3.0)
@@ -293,6 +348,11 @@ GEM
     parallel (1.20.1)
     parser (3.0.0.0)
       ast (~> 2.4.1)
+    protobuf-cucumber (3.10.8)
+      activesupport (>= 3.2)
+      middleware
+      thor
+      thread_safe
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -434,6 +494,8 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     sync (0.5.0)
+    sys-uname (1.2.2)
+      ffi (~> 1.1)
     sysexits (1.2.0)
     temple (0.8.2)
     term-ansicolor (1.7.1)
@@ -443,9 +505,8 @@ GEM
     tilt (2.0.10)
     tins (1.28.0)
       sync
-    turbolinks (5.2.1)
-      turbolinks-source (~> 5.2)
-    turbolinks-source (5.2.0)
+    turbo-rails (0.5.9)
+      rails (>= 6.0.0)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
     unf (0.1.4)
@@ -486,10 +547,12 @@ DEPENDENCIES
   binding_of_caller
   bootsnap (>= 1.4.2)
   brakeman
+  browser
   bullet
   capybara (>= 2.15)
   codecov
   coveralls
+  cucumber-rails
   devise
   devise-i18n
   factory_bot_rails
@@ -499,6 +562,7 @@ DEPENDENCIES
   guard
   guard-brakeman
   guard-bundler
+  guard-cucumber
   guard-haml_lint
   guard-inch
   guard-rspec
@@ -507,10 +571,12 @@ DEPENDENCIES
   haml-rails
   haml_lint
   inch
+  kaminari
   letter_opener
   listen (~> 3.2)
   mysql2 (>= 0.4.4)
   n_plus_one_control
+  nokogiri
   pry
   puma (~> 4.1)
   rails (= 6.0.3.4)
@@ -527,7 +593,7 @@ DEPENDENCIES
   spring-commands-rspec
   spring-commands-rubocop
   spring-watcher-listen
-  turbolinks
+  turbo-rails
   web-console (>= 3.3.0)
   webdrivers
   webpacker (~> 4.0)

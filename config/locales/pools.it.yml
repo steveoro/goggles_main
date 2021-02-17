@@ -1,0 +1,6 @@
+it:
+  pools:
+    pool: "Piscina"
+    pools: "Piscine"
+    city: "Città"
+    go_to_dashboard: "Vai alla pagina dettagli per questa piscina"

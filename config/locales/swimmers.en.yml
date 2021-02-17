@@ -1,0 +1,11 @@
+en:
+  swimmers:
+    swimmer: "Swimmer"
+    swimmers: "Swimmers"
+    affiliated_with: "Teams"
+    year_of_birth: "Year of birth"
+    swimmer_and_teams: "Athlete/Affiliations"
+    age_class_and_category: "Age class/Cat."
+    current_category: "Current category"
+    search_result_item: 'item'
+    go_to_dashboard: "Go to the dashboard page for this athlete ('Radiography')"

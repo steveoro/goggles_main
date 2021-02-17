@@ -1,0 +1,26 @@
+$('#loading-indicator').addClass('d-none');
+
+document.querySelector('#flash-messages').innerHTML = "<%=
+  escape_javascript(
+    render(partial: 'goggles/flash_messages')
+  )
+%>";
+
+// Show & auto-hide all flash alerts after a while:
+$(".alert").alert().fadeTo(500, 1).delay(3000).slideUp(200, function () {
+  $(".alert").alert('close');
+});
+
+document.querySelector('#search-results').innerHTML = "<%=
+  escape_javascript(
+    render(
+      partial: 'search_results',
+      locals: {
+        swimmers: @swimmers,
+        teams: @teams,
+        meetings: @meetings,
+        pools: @pools
+      }
+    )
+  )
+%>";

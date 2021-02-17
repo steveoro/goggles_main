@@ -1,0 +1,11 @@
+it:
+  swimmers:
+    swimmer: "Nuotatore"
+    swimmers: "Nuotatori"
+    affiliated_with: "Squadre"
+    year_of_birth: "Anno di nascita"
+    swimmer_and_teams: "Atleta/Affiliazioni"
+    age_class_and_category: "Classe/Cat."
+    current_category: "Categoria attuale"
+    search_result_item: 'item'
+    go_to_dashboard: "Vai alla pagina dettagli per questo atleta ('Radiografia')"

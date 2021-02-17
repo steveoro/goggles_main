@@ -1,0 +1,20 @@
+en:
+  search_view:
+    btn_title: "Search"
+    placeholder: "Search..."
+    query_suggestion: "Swimmer, team, meeting or swimming-pool name"
+    please_wait: "Searching..."
+    tot_results: "Results found:"
+    toggle_collapse_expand_tooltip: "Click to collapse or expand this block of results"
+    team_results_explain: "(In which the team name or any team member's name is similar to the query term)"
+    meeting_results_explain: "(In which the description or the swimming pool name is similar to the query term)"
+    no_results_found_warning: "Nothing matches the search terms you've specified! Try again with something shorter or more generic."
+    why_not_login: "Hey, the CAPTCHA is annoying you? Why not log-in to make it disappear?"
+    captcha_fail: "...Are you sure you're not a robot?"
+    give_me_more: "Gimme all you got!"
+    give_me_more_tooltip: "Cerca tutti i risultati di ricerca disponibili per questo tipo"
+    no_results: "Can't find anything alike!"
+    found_total_matches: "<b>%{count}</b> total matches found"
+    swipe_left_or_right: "<hr/><i>You can also <= swipe => to browse</i>"
+    errors:
+      invalid_request: "Invalid request!"

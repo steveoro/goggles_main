@@ -1,0 +1,12 @@
+#login-or-signup
+  = link_to(new_user_session_path, type: 'button',
+            data: { disable_with: t('home.please_wait'), class: 'disabled' },
+            class: 'btn btn-primary') do
+    = t('home.sign_up')
+  &nbsp;
+  = t('home.or')
+  &nbsp;
+  = link_to(new_user_registration_path, type: 'button',
+            data: { disable_with: t('home.please_wait'), class: 'disabled' },
+            class: 'btn btn-success') do
+    = t('home.log_in')

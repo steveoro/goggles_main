@@ -1,0 +1,15 @@
+// NOTE: [Steve, 20210202] Styles written here will be included
+//       inside the application pack compiled by Webpacker.
+//       (See app/javascript/packs/application.js)
+@import "~bootstrap/scss/bootstrap";
+
+.swipe-wrapper {
+  // user-select: none; // Disable text selection
+
+  /*
+    Options for 'touch-action':
+    - none => pass all touches to javascript
+    - pan-y pinch-zoom => allow vertical usage
+   */
+  touch-action: pan-y pinch-zoom;
+}

@@ -18,6 +18,7 @@
 # and, you'll have to watch "config/Guardfile" instead of "Guardfile"
 
 # == Bundler ==
+
 guard :bundler do
   require 'guard/bundler'
   require 'guard/bundler/verify'
@@ -29,8 +30,11 @@ guard :bundler do
   # Assume files are symlinked from somewhere
   files.each { |file| watch(helper.real_path(file)) }
 end
+#-- ---------------------------------------------------------------------------
+#++
 
 # == Rubocop ==
+
 rubocop_options = {
   cmd: 'bin/rubocop',
   cli: '-f fu'
@@ -40,8 +44,11 @@ guard :rubocop, rubocop_options do
   watch(/.+\.rake$/)
   watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
 end
+#-- ---------------------------------------------------------------------------
+#++
 
 # == Brakeman ==
+
 brakeman_options = {
   cmd: 'bundle exec brakeman',
   cli: '-A',
@@ -55,6 +62,8 @@ guard :brakeman, brakeman_options do
   watch(%r{^lib/.+\.rb$})
   watch('Gemfile')
 end
+#-- ---------------------------------------------------------------------------
+#++
 
 # == RSpec ==
 
@@ -66,7 +75,6 @@ end
 #                          installed the spring binstubs per the docs)
 #  * zeus: 'zeus rspec' (requires the server to be started separately)
 #  * 'just' rspec: 'rspec'
-
 rspec_options = {
   cmd: 'bin/rspec',
   # Exclude performance tests; to make it fail-fast, add option "--fail-fast":
@@ -110,6 +118,8 @@ guard :rspec, rspec_options do
   watch(rails.view_dirs)     { |m| rspec.spec.call("features/#{m[1]}") }
   watch(rails.layouts)       { |m| rspec.spec.call("features/#{m[1]}") }
 end
+#-- ---------------------------------------------------------------------------
+#++
 
 # == Spring ==
 
@@ -119,6 +129,8 @@ guard 'spring', bundler: true do
   watch(%r{^spec/(support|factories)/})
   watch(%r{^spec/factory.rb})
 end
+#-- ---------------------------------------------------------------------------
+#++
 
 # == Inch - documentation grader ==
 
@@ -126,6 +138,8 @@ end
 guard :inch, pedantic: false, private: false, all_on_start: true, all_type: :suggest do
   watch(/.+\.rb/)
 end
+#-- ---------------------------------------------------------------------------
+#++
 
 # == HAMLLint ==
 
@@ -137,4 +151,33 @@ guard :haml_lint do
   watch('.haml-lint.yml')
   watch(/.+\.html.*\.haml$/)
   watch(%r{(?:.+/)?\.haml-lint\.yml$}) { |m| File.dirname(m[0]) }
+end
+#-- ---------------------------------------------------------------------------
+#++
+
+# == Cucumber ==
+
+cucumber_options = {
+  cmd: 'AUTO_ARTIFACTS=1 cucumber',
+  cmd_additional_args: '--profile guard',
+  notification: false, all_after_pass: false, all_on_start: false
+}
+
+# Watch everything Cucumber-related and run it:
+guard :cucumber, cucumber_options do
+  # Watch for feature updates:
+  watch(%r{^features/(.+/)?(.+)\.feature$}) do |m|
+    puts "'#{m[0]}' modified..."
+    m[0]
+  end
+  # Watch for support file updates (will trigger a re-run of all features):
+  watch(%r{^features/support/.+$}) do |m|
+    puts "'#{m[0]}' support file modified..."
+    Dir[File.join("features\/\*\*\/*.feature")]
+  end
+  # Watch for step definition updates (will trigger a re-run of a whole feature):
+  watch(%r{^features/step_definitions/(.+/)?(.+)_steps\.rb$}) do |m|
+    puts "'#{m[1]}' steps file modified..."
+    Dir[File.join("features\/\*\*\/*#{m[1]}*.feature")]
+  end
 end

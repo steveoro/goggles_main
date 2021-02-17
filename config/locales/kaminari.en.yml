@@ -1,0 +1,17 @@
+en:
+  views:
+    pagination:
+      first: "&laquo; First"
+      last: "Last &raquo;"
+      previous: "&lsaquo; Prev"
+      next: "Next &rsaquo;"
+      truncate: "&hellip;"
+  helpers:
+    page_entries_info:
+      one_page:
+        display_entries:
+          zero: "<i class=\"fa fa-2x fa-%{entry_name}\"></i> 0"
+          one: "<i class=\"fa fa-2x fa-%{entry_name}\"></i> <b>1</b>"
+          other: "<i class=\"fa fa-2x fa-%{entry_name}\"></i> <b>%{count}</b>"
+      more_pages:
+        display_entries: "<i class=\"fa fa-2x fa-%{entry_name}\"></i>&nbsp;<b>%{total}</b>&nbsp;<small>(%{first}&nbsp;..&nbsp;%{last})</small>"

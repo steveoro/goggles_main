@@ -1,0 +1,47 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe 'Searches', type: :request do
+  describe 'GET XHR /smart' do
+    context 'without a query parameter' do
+      it 'is a redirect to root_path' do
+        get(search_smart_path)
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'with a query parameter matching no results' do
+      before(:each) { get(search_smart_path, xhr: true, params: { q: 'NOMATCH!' }) }
+
+      it 'returns http success' do
+        expect(response).to have_http_status(:success)
+      end
+      it 'sets a flash alert about the empty results' do
+        expect(flash[:alert]).to eq(I18n.t('search_view.no_results'))
+      end
+    end
+
+    context 'with a query parameter matching some results' do
+      before(:each) { get(search_smart_path, xhr: true, params: { q: 'Steve' }) }
+
+      it 'returns http success' do
+        expect(response).to have_http_status(:success)
+      end
+      it 'sets a flash info message' do
+        expect(flash[:info]).to be_present
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  describe 'GET /smart' do
+    it 'is a redirect to root_path' do
+      get(search_smart_path)
+      expect(response).to redirect_to(root_path)
+    end
+  end
+
+  # TODO: test support for 'raw' param
+end

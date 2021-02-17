@@ -16,8 +16,12 @@ gem 'puma', '~> 4.1'
 gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
 gem 'webpacker', '~> 4.0'
+
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks'
+# gem 'turbolinks'
+# Use Turbo, the successor to TurboLinks: (read more: https://turbo.hotwire.dev/handbook/introduction)
+gem 'turbo-rails'
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
@@ -30,17 +34,19 @@ gem 'turbolinks'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
+gem 'browser' # detect request.variant type depending on request.user_agent
 gem 'devise'
 gem 'devise-i18n'
-gem 'font-awesome-rails'
-gem 'goggles_db', git: 'https://github.com/steveoro/goggles_db'
-gem 'haml-rails'
-gem 'rest-client'
-
 # Inherited data factories from DB engine, published also on production/staging
 # to allow fixture creation for testing purposes when using production structure dumps:
 gem 'factory_bot_rails'
 gem 'ffaker'
+gem 'font-awesome-rails'
+gem 'goggles_db', git: 'https://github.com/steveoro/goggles_db'
+gem 'haml-rails'
+gem 'kaminari'
+gem 'nokogiri' # (used explicitly for view specs)
+gem 'rest-client'
 
 group :development do
   gem 'better_errors'
@@ -48,6 +54,7 @@ group :development do
   gem 'guard'
   gem 'guard-brakeman'
   gem 'guard-bundler', require: false
+  gem 'guard-cucumber'
   gem 'guard-haml_lint'
   gem 'guard-inch'
   gem 'guard-rspec'
@@ -85,6 +92,7 @@ group :test do
   # For CodeClimate: use the stand-alone 'cc-test-reporter' from the command line.
   gem 'codecov', require: false
   gem 'coveralls', require: false
+  gem 'cucumber-rails', require: false
   gem 'n_plus_one_control'
   # n_plus_one_control adds a DSL to check for "N+1 queries" directly in test environment.
   # (Bullet works best just on development). Do not use memoized values for testing.

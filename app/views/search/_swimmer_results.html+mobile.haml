@@ -1,0 +1,25 @@
+#swimmer-results
+  %h5
+    = page_entries_info(swimmers, entry_name: 'user')
+
+  %table.table.table-striped.table-hover.table-condensed.table-sm
+    %thead.bg-primary.text-light
+      %tr.text-center
+        %td{ colspan: 2 }
+          = t('swimmers.swimmer_and_teams')
+        %td
+          = t('swimmers.age_class_and_category')
+    %tbody
+      - SwimmerDecorator.decorate_collection(swimmers).each do |swimmer|
+        %tr
+          %td{ colspan: 2 }
+            %b= swimmer.link_to_full_name
+            %br/
+            %small= swimmer.link_to_teams(30)
+          %td
+            %small
+              #{swimmer.year_of_birth} (#{swimmer.swimmer_age})
+              %br/
+              #{swimmer.last_category_code} (#{swimmer.current_fin_category_code})
+  %br/
+  = paginate(swimmers, remote: true)

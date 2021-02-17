@@ -1,0 +1,16 @@
+en:
+  home:
+    log_in: "Log in"
+    or: 'or'
+    sign_up: "Sign up"
+    log_out: "Log out"
+    please_wait: 'Wait...'
+    copyright_notice: "(c) 2013-2021, FASAR Software, S. Alloro, M. Ligabue"
+    about_us: "About us"
+    about_this: "What's Goggles?"
+    main_contact_email: "fasar.software@email.it"
+    privacy_policy:
+      title: 'Legal terms & Privacy policy'
+    terms_of_service: "This software is released 'as is', under the terms of the LGPL-3.0 license"
+    main_repo: "https://github.com/steveoro/goggles_main"
+    license_link: "https://github.com/steveoro/goggles_main/blob/main/LICENSE"

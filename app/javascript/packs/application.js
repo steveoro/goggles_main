@@ -3,10 +3,43 @@
 // a relevant structure within app/javascript and only use these pack files to reference
 // that code so it'll be compiled.
 
+import JQuery from 'jquery'
+window.$ = window.JQuery = JQuery
+import 'popper.js'
+import 'bootstrap'
+
 require("@rails/ujs").start()
 require("turbolinks").start()
 require("@rails/activestorage").start()
-require("channels")
+require('channels')
+
+import '../controllers/stimulus_setup'
+
+// Styles:
+import '../stylesheets/application'
+
+// Before each page load:
+document.addEventListener('turbolinks:load', () => {
+  // DEBUG
+  // console.log('turbolinks:load')
+
+  $('[data-toggle="tooltip"]').tooltip()
+  // Auto-hide tooltips after they've being shown:
+  $('[data-toggle="tooltip"]').on('shown.bs.tooltip', function () {
+    $('[data-toggle="tooltip"]').delay(2000).queue(function (next) {
+      $(this).tooltip('hide');
+      next();
+    });
+  })
+
+  $('[data-toggle="popover"]').popover()
+  $('[data-toggle="modal"]').modal()
+
+  // Show & auto-hide all flash alerts after a while:
+  $(".alert").alert().fadeTo(500, 1).delay(3000).slideUp(200, function () {
+    $(".alert").alert('close')
+  })
+})
 
 
 // Uncomment to copy all static images under ../images to the output folder and reference

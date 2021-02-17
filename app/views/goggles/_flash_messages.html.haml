@@ -1,0 +1,37 @@
+- if notice || flash[:info]
+  %turbo-frame.fixed-bottom.m-2.alert.alert-success.alert-dismissible.fade.show#flash-info-msg{ role: 'alert' }
+    %h5.alert-heading#notice-label
+      %i.fa.fa-info-circle{ 'aria-hidden' => 'true' }
+      &nbsp;
+    %button.close{ 'aria-label' => 'Close', 'data-dismiss' => 'alert', type: 'button' }
+      %span{ 'aria-hidden' => 'true' } ×
+    .flash-body= notice || flash[:info]
+
+- if flash[:warning]
+  %turbo-frame.fixed-bottom.m-2.alert.alert-warning.alert-dismissible.fade.show#flash-warning-msg{ role: 'alert' }
+    %h5.alert-heading#warning-label
+      %i.fa.fa-exclamation-circle{ 'aria-hidden' => 'true' }
+      &nbsp;
+    %button.close{ 'aria-label' => 'Close', 'data-dismiss' => 'alert', type: 'button' }
+      %span{ 'aria-hidden' => 'true' } ×
+    .flash-body= flash[:warning]
+
+- if alert || flash[:alert]
+  %turbo-frame.fixed-bottom.m-2.alert.alert-secondary.alert-dismissible.fade.show#flash-alert-msg{ role: 'alert' }
+    %h5.alert-heading#alert-label
+      %i.fa.fa-info-circle{ 'aria-hidden' => 'true' }
+      &nbsp;
+    %button.close{ 'aria-label' => 'Close', 'data-dismiss' => 'alert', type: 'button' }
+      %span{ 'aria-hidden' => 'true' } ×
+    .flash-body= alert || flash[:alert]
+
+- if flash[:error]
+  %turbo-frame.fixed-bottom.m-2.alert.alert-danger#flash-error-msg{ role: 'alert' }
+    %h5.alert-heading#error-label
+      %i.fa.fa-exclamation-triangle{ 'aria-hidden' => 'true' }
+      &nbsp;
+    %button.close{ 'aria-label' => 'Close', 'data-dismiss' => 'alert', type: 'button' }
+      %span{ 'aria-hidden' => 'true' } ×
+    %strong Oh no!
+    &nbsp;
+    .flash-body= flash[:error]

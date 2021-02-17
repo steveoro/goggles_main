@@ -1,0 +1,10 @@
+= form_tag(:search_smart, remote: true, method: :get, class: 'form-group row-fluid',
+           data: { 'turbo-frame' => '_top' },
+           onsubmit: "document.querySelector('#loading-indicator').classList.add('d-none');") do
+  .row-fluid.my-2
+    .input-group.flex-fill
+      = text_field_tag(:q, nil, { class: 'form-control', 'aria-label' => I18n.t('search_view.btn_title'),
+                      placeholder: I18n.t('search_view.placeholder'), type: 'search',
+                      data: { toggle: 'tooltip', title: I18n.t('search_view.query_suggestion') } })
+      %button.btn.btn-outline-primary{ id: 'btn-search', type: 'submit' }
+        %i.fa.fa-search

@@ -1,2 +1,17 @@
-%h1 Home#index
-%p Find me in app/views/home/index.html.erb
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    .row-fluid.m-5
+      %turbo-frame.mr-1#search-box
+        = render('goggles/search_box')
+
+    .row-fluid
+      .container#search-results
+
+    .row-fluid
+      %p &nbsp;
+    .row-fluid
+      %p &nbsp;
+
+  .spacer-right

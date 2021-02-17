@@ -2,13 +2,27 @@
 %html
   %head
     %meta{ content: 'text/html; charset=UTF-8', 'http-equiv' => 'Content-Type' }/
+    %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' }/
     %title GogglesMain
     = csrf_meta_tags
     = csp_meta_tag
-    = stylesheet_link_tag('application', media: 'all', 'data-turbolinks-track': 'reload')
-    = javascript_pack_tag('application', 'data-turbolinks-track': 'reload')
+    = stylesheet_link_tag('application', media: 'all', 'data-turbo-track': 'reload')
+    = stylesheet_pack_tag('application', media: 'all', 'data-turbo-track': 'reload')
+    = javascript_pack_tag('application', 'data-turbo-track': 'reload')
   %body
-    .wrapper
-      %p.notice= notice
-      %p.alert= alert
+    %section#header
+      = render('goggles/main_navbar')
+
+    %section#notify
+      .wrapper-body
+        .spacer-left
+        .main-content
+          %turbo-frame#flash-messages
+            = render(partial: 'goggles/flash_messages')
+        .spacer-right
+
+    %section#content
       = yield
+
+    %section#footer
+      = render('goggles/main_footer')

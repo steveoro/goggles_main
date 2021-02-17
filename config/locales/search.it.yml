@@ -1,0 +1,20 @@
+it:
+  search_view:
+    btn_title: "Cerca"
+    placeholder: "Cerca..."
+    query_suggestion: "Nome atleta, squadra, meeting, o piscina."
+    please_wait: "Sto cercando..."
+    tot_results: "Risultati trovati:"
+    toggle_collapse_expand_tooltip: "Clicca per nascondere o espandere questo blocco di risultati"
+    team_results_explain: "(In cui il nome squadra o quello degli iscritti ricorda il termine di ricerca)"
+    meeting_results_explain: "(In cui la descrizione o il nome della piscina ricorda il termine di ricerca)"
+    no_results_found_warning: "Non ho trovato nessun riscontro per i termini di ricerca che hai specificato! Riprova con qualcosa di più corto o generico."
+    why_not_login: "Hey, il CAPTCHA ti da' fastidio? Perché non accedi così scompare?"
+    captcha_fail: "...Siamo proprio sicuri di non essere robot?"
+    give_me_more: "Sforzati di più!"
+    give_me_more_tooltip: "Cerca tutti i risultati di ricerca disponibili per questo tipo"
+    no_results: "Non trovo niente di simile!"
+    found_total_matches: "<b>%{count}</b> riscontri totali"
+    swipe_left_or_right: "<hr/><i>Puoi anche fare <= swipe => per navigare</i>"
+    errors:
+      invalid_request: "Richiesta non valida!"

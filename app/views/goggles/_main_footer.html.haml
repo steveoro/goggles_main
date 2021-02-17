@@ -1,0 +1,16 @@
+%footer.text-muted.text-center
+  .row-fluid
+    = link_to(I18n.t('contact_us.title'), home_contact_us_path)
+    &nbsp;|&nbsp;
+    = link_to(I18n.t('home.privacy_policy.title'), home_privacy_policy_path)
+    &nbsp;|&nbsp;
+    = link_to(I18n.t('home.about_us'), home_about_us_path)
+    &nbsp;|&nbsp;
+    = link_to(I18n.t('home.about_this'), home_about_this_path)
+    &nbsp;|&nbsp;
+    = render(partial: 'goggles/social_links')
+  .row-fluid
+    %small
+      = I18n.t('home.copyright_notice')
+      %br/
+      Goggles v. #{Version::FULL}
