@@ -15,7 +15,7 @@ RSpec.describe MeetingDecorator, type: :decorator do
       expect(result).to be_a(String).and be_present
     end
     it 'includes the description' do
-      expect(result).to include(model_obj.description)
+      expect(result).to include(ERB::Util.html_escape(model_obj.description))
     end
     it 'includes the path to the detail page' do
       expect(result).to include(h.meeting_show_path(id: model_obj.id))

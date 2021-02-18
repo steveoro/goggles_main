@@ -15,7 +15,7 @@ RSpec.describe TeamDecorator, type: :decorator do
       expect(result).to be_a(String).and be_present
     end
     it 'includes the editable_name' do
-      expect(result).to include(model_obj.editable_name)
+      expect(result).to include(ERB::Util.html_escape(model_obj.editable_name))
     end
     it 'includes the path to the detail page' do
       expect(result).to include(h.team_show_path(id: model_obj.id))

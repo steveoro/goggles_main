@@ -27,7 +27,7 @@ class SearchDecorator < Draper::Decorator
         { partial: 'meeting_results', locals: { meetings: results_collection } }
 
       when GogglesDb::SwimmingPool
-        { partial: 'swimming_pool_results', locals: { pools: results_collection } }
+        { partial: 'swimming_pool_results', locals: { swimming_pools: results_collection } }
       end
     # Don't render anything otherwise
     else

@@ -33,11 +33,11 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
 
     it 'shows the log-in link' do
       expect(rendered).to include(new_user_session_path)
-      expect(rendered).to include(I18n.t('home.log_in'))
+      expect(rendered).to include(ERB::Util.html_escape(I18n.t('home.log_in')))
     end
     it 'shows the sign-up link' do
       expect(rendered).to include(new_user_registration_path)
-      expect(rendered).to include(I18n.t('home.sign_up'))
+      expect(rendered).to include(ERB::Util.html_escape(I18n.t('home.sign_up')))
     end
   end
   #-- -------------------------------------------------------------------------
@@ -54,7 +54,7 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
 
     it 'shows the log-out link' do
       expect(rendered).to include(destroy_user_session_path)
-      expect(rendered).to include(I18n.t('home.log_out'))
+      expect(rendered).to include(ERB::Util.html_escape(I18n.t('home.log_out')))
     end
   end
 end

@@ -15,7 +15,7 @@ RSpec.describe SwimmingPoolDecorator, type: :decorator do
       expect(result).to be_a(String).and be_present
     end
     it 'includes the name' do
-      expect(result).to include(model_obj.name)
+      expect(result).to include(ERB::Util.html_escape(model_obj.name))
     end
     it 'includes the path to the detail page' do
       expect(result).to include(h.swimming_pool_show_path(id: model_obj.id))

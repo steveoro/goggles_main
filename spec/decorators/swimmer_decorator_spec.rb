@@ -33,7 +33,7 @@ RSpec.describe SwimmerDecorator, type: :decorator do
       expect(result).to be_a(String).and be_present
     end
     it 'includes the complete name' do
-      expect(result).to include(model_obj.complete_name)
+      expect(result).to include(ERB::Util.html_escape(model_obj.complete_name))
     end
     it 'includes the path to the swimmer dashboard' do
       expect(result).to include(h.swimmer_show_path(id: model_obj.id))
@@ -99,7 +99,7 @@ RSpec.describe SwimmerDecorator, type: :decorator do
         team_names = GogglesDb::Team.where(id: team_ids)
                                     .map { |team| h.truncate(team.editable_name, length: 20, separator: ' ') }
         team_names.each do |shortened_team_name|
-          expect(result).to include(shortened_team_name)
+          expect(result).to include(ERB::Util.html_escape(shortened_team_name))
         end
       end
     end

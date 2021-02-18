@@ -14,8 +14,8 @@ RSpec.describe 'goggles/_flash_messages.html.haml', type: :view do
       expect(alert_node.classes).to include('alert')
     end
     it 'shows the flash message text in its body' do
-      expect(rendered).to include(test_message)
-      expect(alert_node.at_css('.flash-body').text).to eq(test_message)
+      expect(rendered).to include(ERB::Util.html_escape(test_message))
+      expect(alert_node.at_css('.flash-body').text).to eq(ERB::Util.html_escape(test_message))
     end
   end
   #-- -------------------------------------------------------------------------

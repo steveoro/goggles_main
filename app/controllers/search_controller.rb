@@ -14,7 +14,7 @@ class SearchController < ApplicationController
   # - +raw+: set this to 1 to enable "raw mode" response (renders just the 'refreshed_content' partial, without layout)
   # - +page+: current results page; default = 1;
   #           works only if any group of results has actually more then 1 page;
-  #           default per page: 5 (for each group: swimmers, teams, meetings & pools)
+  #           default per page: 5 (for each group: swimmers, teams, meetings & swimming_pools)
   #
   # == Current view structure
   # GET [XHR] --> smart.js
@@ -48,7 +48,7 @@ class SearchController < ApplicationController
     prepare_flash_info
 
     respond_to do |format|
-      format.html { render(partial: 'refreshed_content', locals: { swimmers: @swimmers, teams: @teams, meetings: @meetings, pools: @pools }) }
+      format.html { render(partial: 'refreshed_content', locals: { swimmers: @swimmers, teams: @teams, meetings: @meetings, swimming_pools: @swimming_pools }) }
       format.js
     end
   end
@@ -76,11 +76,11 @@ class SearchController < ApplicationController
                                   .page(params['page']).per(5)
   end
 
-  # Sets the @pools member
+  # Sets the @swimming_pools member
   def prepare_pool_search_results
-    @pools = GogglesDb::SwimmingPool.includes([:city])
-                                    .for_name(params['q']).by_name
-                                    .page(params['page']).per(5)
+    @swimming_pools = GogglesDb::SwimmingPool.includes([:city])
+                                             .for_name(params['q']).by_name
+                                             .page(params['page']).per(5)
   end
 
   # Sets the flash :info with the overall result count
@@ -98,11 +98,11 @@ class SearchController < ApplicationController
 
   # Returns the overall search matches count
   def total_search_matches_count
-    @swimmers.total_count + @teams.total_count + @meetings.total_count + @pools.total_count
+    @swimmers.total_count + @teams.total_count + @meetings.total_count + @swimming_pools.total_count
   end
 
   # Returns +true+ if pagination will be enabled for any of the result groups; +false+ otherwise
   def pagination_required?
-    @swimmers.total_pages > 1 || @teams.total_pages > 1 || @meetings.total_pages > 1 || @pools.total_pages > 1
+    @swimmers.total_pages > 1 || @teams.total_pages > 1 || @meetings.total_pages > 1 || @swimming_pools.total_pages > 1
   end
 end

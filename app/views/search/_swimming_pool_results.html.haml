@@ -1,16 +1,16 @@
 #swimming-pool-results
   %h5
-    = page_entries_info(pools, entry_name: 'map-marker')
+    = page_entries_info(swimming_pools, entry_name: 'map-marker')
 
   %table.table.table-striped.table-hover.table-condensed.table-sm
     %thead.bg-info.text-light
       %tr.text-center
         %td{ colspan: 2 }
-          %b= I18n.t('pools.pool')
+          %b= I18n.t('swimming_pools.pool')
         %td
-          %b= I18n.t('pools.city')
+          %b= I18n.t('swimming_pools.city')
     %tbody
-      - SwimmingPoolDecorator.decorate_collection(pools).each do |pool|
+      - SwimmingPoolDecorator.decorate_collection(swimming_pools).each do |pool|
         %tr
           %td{ colspan: 2 }
             = pool.link_to_full_name
@@ -18,4 +18,4 @@
             %small
               = pool&.city&.name
   %br/
-  = paginate(pools, remote: true)
+  = paginate(swimming_pools, remote: true)

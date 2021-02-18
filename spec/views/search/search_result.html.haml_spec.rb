@@ -9,7 +9,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
       result_table = Nokogiri::HTML.fragment(rendered).at_css(result_table_css)
       result_table.map do |result_table_row|
         expect(result_table_row.css('td b a').first.attributes['href'].value).to match(base_link_path)
-        expect(result_table_row.css('td b a').first.text).to match(matching_name)
+        expect(result_table_row.css('td b a').first.text).to match(/#{matching_name}/i)
       end
     end
   end
@@ -19,7 +19,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
   # Test empty content (no results):
   context 'when searching for anything without a positive match,' do
     before(:each) do
-      render(partial: 'search_results', locals: { swimmers: nil, teams: nil, meetings: nil, pools: nil })
+      render(partial: 'search_results', locals: { swimmers: nil, teams: nil, meetings: nil, swimming_pools: nil })
     end
 
     it 'doesn\'t include the swipe-wrapper' do
@@ -41,7 +41,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
     before(:each) do
       swimmers = GogglesDb::Swimmer.for_name('John').page(1).per(5)
       expect(swimmers.total_count).to be <= 5
-      render(partial: 'search_results', locals: { swimmers: swimmers, teams: nil, meetings: nil, pools: nil })
+      render(partial: 'search_results', locals: { swimmers: swimmers, teams: nil, meetings: nil, swimming_pools: nil })
     end
 
     it_behaves_like(
@@ -65,7 +65,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
         .and_return(
           link_to(swimmers.first.complete_name, swimmer_show_path(id: swimmers.first.id), class: 'page-link')
         )
-      render(partial: 'search_results', locals: { swimmers: swimmers, teams: nil, meetings: nil, pools: nil })
+      render(partial: 'search_results', locals: { swimmers: swimmers, teams: nil, meetings: nil, swimming_pools: nil })
     end
 
     it_behaves_like(
@@ -90,7 +90,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
         .and_return(
           link_to(teams.first.editable_name, team_show_path(id: teams.first.id), class: 'page-link')
         )
-      render(partial: 'search_results', locals: { swimmers: nil, teams: teams, meetings: nil, pools: nil })
+      render(partial: 'search_results', locals: { swimmers: nil, teams: teams, meetings: nil, swimming_pools: nil })
     end
 
     it_behaves_like(
@@ -112,7 +112,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
         .and_return(
           link_to(meetings.first.description, meeting_show_path(id: meetings.first.id), class: 'page-link')
         )
-      render(partial: 'search_results', locals: { swimmers: nil, teams: nil, meetings: meetings, pools: nil })
+      render(partial: 'search_results', locals: { swimmers: nil, teams: nil, meetings: meetings, swimming_pools: nil })
     end
 
     it_behaves_like(
@@ -128,13 +128,13 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
 
   context 'when searching for a swimming-pool name with positive matches enough for pagination,' do
     before(:each) do
-      pools = GogglesDb::SwimmingPool.for_name('Comunale').page(1).per(5)
-      expect(pools.total_count).to be > 5
+      swimming_pools = GogglesDb::SwimmingPool.for_name('Comunale').page(1).per(5)
+      expect(swimming_pools.total_count).to be > 5
       allow(view).to receive(:paginate)
         .and_return(
-          link_to(pools.first.name, swimming_pool_show_path(id: pools.first.id), class: 'page-link')
+          link_to(swimming_pools.first.name, swimming_pool_show_path(id: swimming_pools.first.id), class: 'page-link')
         )
-      render(partial: 'search_results', locals: { swimmers: nil, teams: nil, meetings: nil, pools: pools })
+      render(partial: 'search_results', locals: { swimmers: nil, teams: nil, meetings: nil, swimming_pools: swimming_pools })
     end
 
     it_behaves_like(

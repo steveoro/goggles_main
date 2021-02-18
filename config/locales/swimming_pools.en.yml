@@ -1,6 +1,6 @@
 en:
-  pools:
+  swimming_pools:
     pool: "Swimming pool"
-    pools: "Swimming pools"
+    swimming_pools: "Swimming swimming_pools"
     city: "City"
     go_to_dashboard: "Go to the details page for this Swimming pool"
