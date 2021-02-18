@@ -16,11 +16,25 @@ services:
         volume:
           nocopy: true
 
+  api:
+    image: steveoro/goggles-api:dev-0.1.76
+    depends_on:
+      - goggles-db
+    container_name: goggles-api.dev
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - '8088:8088'
+    volumes:
+      - "~/Projects/goggles_api/db/dump:/app/db/dump"
+      - "~/Projects/goggles_api/config/master.key:/app/config/master.key"
+
   app:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    image: steveoro/goggles-main:dev-0.1.076
+    image: steveoro/goggles-main:dev-0.1.76
     depends_on:
       - goggles-db
     container_name: goggles-main.dev

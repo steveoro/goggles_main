@@ -1,6 +1,6 @@
 # Goggles Main
 
-[![Build Status](https://steveoro.semaphoreci.com/badges/goggles_main/branches/master.svg?style=shields)](https://steveoro.semaphoreci.com/projects/goggles_main)
+[![Build Status](https://steveoro.semaphoreci.com/badges/goggles_main/branches/master.svg)](https://steveoro.semaphoreci.com/projects/goggles_main)
 [![Maintainability](https://api.codeclimate.com/v1/badges/5179d7eefd4cd93bfba1/maintainability)](https://codeclimate.com/github/steveoro/goggles_main/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/5179d7eefd4cd93bfba1/test_coverage)](https://codeclimate.com/github/steveoro/goggles_main/test_coverage)
 [![codecov](https://codecov.io/gh/steveoro/goggles_main/branch/main/graph/badge.svg?token=47SXT4CXGP)](https://codecov.io/gh/steveoro/goggles_main)
@@ -35,7 +35,60 @@ You can use each project in the framework:
 - in any other mixed way, be it the application running on `localhost` while accessing the DB inside a container or vice-versa.
 
 
-## Further information
+## Quick-start as a running container
+
+### Framework repositories already cloned on `localhost`
+
+To use & bind together all 3 services (`db`, `api` & `app`) you can use one of the available docker-compose files after you've cloned the Main repo.
+
+Cloning also `goggles_api` repo is not needed since you can just recreate the required folder structure to map to a local `master.key` for the credentials, as outlined in the next paragraph ("Nothing installed on `localhost` (except `docker`)").
+
+Make sure you have a recovery DB dump somewhere (a test dump can be obtained by cloning `goggles_db` repo).
+
+Copy the recovery DB dump (for instance, `test.sql.bz2`) to the shared dump folder: `goggles_main/db/dump`.
+
+If your goal is to use, for example, the `development` configuration, go with:
+
+```bash
+$> docker-compose -f docker-compose.dev.yml up
+```
+
+Leave the container up running and type in another console:
+
+```bash
+$> docker exec -it goggles-main.dev sh -c 'bundle exec rails db:rebuild from=test to=development'
+```
+
+Then point your browser to `http://127.0.0.1:8080/`.
+
+Done! :+1:
+
+
+### Nothing installed on `localhost` (except `docker`)
+
+First thing first, you'll need to recreate this shared folder structure:
+
+```
+ ---+--- goggles_main --- config (<=| Main master.key)
+    |         |
+    |         +---------- db --- dump (<=| test.sql.bz2)
+    |
+    +--- goggles_api ---- config (<=| API master.key)
+```
+
+These are published as volumes inside the service containers for serializing and accessing local data.
+
+A mirror `db/dump` subfolder for `goggles_api` is not needed unless you'd like to run DB management tasks from the `api` service rails console (instead of just using the main `app` service's console).
+
+The `master.key` usually can be regenerated if missing, provided that the credentials are kept consistent among each app container by using `rails credentials:edit` & by running the rails task to update the settings.
+Check out our [credentials Wiki page](https://github.com/steveoro/goggles_db/wiki/HOWTO-dev-Goggles_credentials) or [GogglesDb README on database setup](https://github.com/steveoro/goggles_db#database-setup) for more details.
+
+Then, you'll need to run and connect all 3 services: `db`, `api` & `app`.
+Refer to the dedicated [Wiki page](https://github.com/steveoro/goggles_db/wiki/HOWTO-dev-docker_usage_for_GogglesApi#how-to-docker-usage-with-gogglesapi-as-example) for details.
+
+
+
+## More information
 
 Check out our [Wiki :link:](https://github.com/steveoro/goggles_db/wiki) and the README files from each subproject for more information. In particular:
 

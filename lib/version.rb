@@ -1,12 +1,19 @@
 # frozen_string_literal: true
 
 #
-# = Version module
+# == Versioning codes
 #
-#   - version:  7.073
+#   - version:  7.76
 #   - author:   Steve A.
 #
-#   Semantic Versioning implementation.
+# Framework version number usually differs from core engine versioning number.
+# Actual Semantic versioning code is stored into 'goggles_db'.
+#
+# To get the correct Semantic versioning number, use:
+#
+# > require 'goggles_db/version'
+# > GogglesDb::VERSION
+#
 module Version
   # Framework Core internal name.
   CORE    = 'C7'
@@ -15,7 +22,7 @@ module Version
   MAJOR   = '7'
 
   # Minor version.
-  MINOR   = '076'
+  MINOR   = '76'
 
   # Current build version.
   BUILD   = '20210218'

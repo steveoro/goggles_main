@@ -136,8 +136,7 @@ promotions:
     pipeline_file: semaphore_coverage_upload.yml
     auto_promote:
       when: branch = 'master' AND result = 'passed'
-  # TODO:
-  # - name: Docker images
-  #   pipeline_file: semaphore_docker_build.yml
-  #   auto_promote:
-  #     when: branch = 'master' AND result = 'passed'
+  - name: Docker images
+    pipeline_file: semaphore_docker_build.yml
+    auto_promote:
+      when: branch = 'master' AND result = 'passed'
