@@ -6,7 +6,7 @@
     %meta{ name: 'description', content: 'Master-Goggles maintenance page' }/
     %meta{ name: 'author', content: 'FASAR Software, Steve Alloro, 2012-2021' }/
     %meta{ name: 'keywords', content: 'Master swimming results' }/
-    %title Goggles
+    %title Goggles / Maintenance
     = csrf_meta_tags
     = csp_meta_tag
     = stylesheet_link_tag('application', media: 'all', 'data-turbo-track': 'reload')
@@ -14,19 +14,13 @@
     = javascript_pack_tag('application', 'data-turbo-track': 'reload')
 
   %body
-    %section#header
-      = render('goggles/main_navbar')
+    = video_tag('underwater.m4v', id: 'bgvid', poster: 'underwater.png', class: 'full-screen',
+                autoplay: 'true', width: '100%', height: '100%', loop: 'true', muted: 'true',
+                playsinline: '')
 
-    %section#notify
+    %section#content
       .wrapper-body
         .spacer-left
         .main-content
-          %turbo-frame#flash-messages
-            = render(partial: 'goggles/flash_messages')
+          .maintenance= yield
         .spacer-right
-
-    %section#content
-      = yield
-
-    %section#footer
-      = render('goggles/main_footer')

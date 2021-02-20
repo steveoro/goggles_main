@@ -25,9 +25,13 @@ class ApplicationController < ActionController::Base
     # request.variant = :desktop if @browser.device.ipad?
   end
 
-  # Checks if maintenance mode is on redirecting to the maintenance page.
+  # Checks if maintenance mode is enbled, redirecting to the maintenance page.
   def check_maintenance_mode
-    # Allow only legit requests & avoid infinite redirect loop:
-    redirect_to maintenance_path if GogglesDb::AppParameter.maintenance? && (params[:controller] != 'maintenance')
+    # Allow only legit requests while avoiding infinite redirect loop:
+    if GogglesDb::AppParameter.maintenance? && (params[:controller] != 'maintenance')
+      redirect_to maintenance_path
+    elsif !GogglesDb::AppParameter.maintenance? && (params[:controller] == 'maintenance')
+      redirect_to root_path
+    end
   end
 end

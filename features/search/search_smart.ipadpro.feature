@@ -33,7 +33,7 @@ Feature: Search anything from the root page: desktop, lg-size
       | team          | 'Abbottton'  |         5 |
       | swimming_pool | 'ferretti'   |         5 |
 
-  Scenario Outline: Unsuccessful search
+  Scenario: Unsuccessful search
     Given there are no swimmers matching my query 'zzz'
     And there are no teams matching my query 'zzz'
     And there are no meetings matching my query 'zzz'

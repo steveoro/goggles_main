@@ -12,9 +12,6 @@ require 'goggles_db/version'
 class MaintenanceController < ApplicationController
   # Landing page for any request during maintenance mode.
   def index
-    # Ignore requests to self:
-    # redirect_to root_path unless GogglesDb::AppParameter.maintenance?
-
-    render layout: false
+    # (no-op)
   end
 end
