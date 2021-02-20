@@ -1,0 +1,6 @@
+it:
+  maintenance:
+    title: "Server in Manutenzione!"
+    working_on_new_version_back_soon: "Stiamo lavorando ad una nuova versione e torneremo online molto presto."
+    working_on_new_version_back_during_year: "Stiamo lavorando ad una nuova versione e torneremo online nel corso di quest'anno!"
+    see_u_soon: "A presto!"

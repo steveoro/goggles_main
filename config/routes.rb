@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   get 'home/contact_us'
   get 'home/privacy_policy'
 
+  get 'maintenance', to: 'maintenance#index'
   get 'search/smart'
 
   get 'meeting/show'

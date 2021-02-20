@@ -6,7 +6,7 @@ require 'version'
 #
 # Common parent controller
 class ApplicationController < ActionController::Base
-  before_action :detect_device_variant
+  before_action :detect_device_variant, :check_maintenance_mode
 
   private
 
@@ -23,5 +23,11 @@ class ApplicationController < ActionController::Base
     # Add here more variants when needed:
     # request.variant = :tablet if @browser.device.tablet?
     # request.variant = :desktop if @browser.device.ipad?
+  end
+
+  # Checks if maintenance mode is on redirecting to the maintenance page.
+  def check_maintenance_mode
+    # Allow only legit requests & avoid infinite redirect loop:
+    redirect_to maintenance_path if GogglesDb::AppParameter.maintenance? && (params[:controller] != 'maintenance')
   end
 end
