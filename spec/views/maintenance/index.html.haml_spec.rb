@@ -20,4 +20,7 @@ RSpec.describe 'maintenance/index.html.haml', type: :view do
   it 'shows the maintenance greeting' do
     expect(rendered).to include(ERB::Util.html_escape(I18n.t('maintenance.see_u_soon')))
   end
+  it 'shows the copyright notice' do
+    expect(rendered).to include(ERB::Util.html_escape(I18n.t('home.copyright_notice')))
+  end
 end
