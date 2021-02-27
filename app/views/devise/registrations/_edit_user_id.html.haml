@@ -1,0 +1,33 @@
+%h5.mt-2= t('users.swimmer_binding.title')
+%small
+  %i.form-text.text-muted.mb-1#swimmer-binding-help
+    = t('users.help_labels.swimmer_binding')
+.bg-light-blue.p-1.shadow-box
+  .form-row
+    .form-group
+      .field.col-auto
+        = f.label(:first_name, t('activerecord.attributes.goggles_db/user.first_name'))
+        %br/
+        = f.text_field(:first_name, required: true, autofocus: true, autocomplete: 'first-name',
+                        class: 'form-control', placeholder: t('users.placeholders.first_name'))
+    .form-group
+      .field.col-auto
+        = f.label(:last_name, t('activerecord.attributes.goggles_db/user.last_name'))
+        %br/
+        = f.text_field(:last_name, required: true, autofocus: true, autocomplete: 'family-name',
+                        class: 'form-control', placeholder: t('users.placeholders.last_name'))
+    .form-group
+      = f.hidden_field(:description)
+      .field.col-auto
+        = f.label(:year_of_birth)
+        %br/
+        = f.number_field(:year_of_birth, required: true, autocomplete: 'year-of-birth',
+                          min: 1920, max: Date.today.year - 5, class: 'form-control')
+
+  - swimmer = GogglesDb::Swimmer.find_by(associated_user_id: current_user.id)
+  - if swimmer # current_user.swimmer
+    .form-row
+      .form-group
+        .field.col-auto
+          = f.label(:first_name, t('users.help_labels.associated_to_swimmer'))
+          = swimmer.complete_name

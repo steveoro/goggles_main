@@ -12,21 +12,23 @@
     %span.navbar-toggler-icon
   .collapse.navbar-collapse#navbar-content
     %ul.navbar-nav.mr-auto
-      %li.nav-item.active
-        %a.nav-link{ href: '#' }
-          Home
-          %span.sr-only (current)
+      - if user_signed_in?
+        %li.nav-item.active
+          %a.nav-link{ href: edit_user_registration_path }
+            %span
+              = t('home.account')
+              %i.fa.fa.fa-cog
       %li.nav-item.dropdown
         %a.nav-link.dropdown-toggle#navbar-dropdown{ 'aria-expanded' => 'false',
                                                      'aria-haspopup' => 'true',
                                                      'data-toggle' => 'dropdown',
                                                      href: '#', role: 'button' }
-          Dropdown
+          = t('home.commands')
         .dropdown-menu{ 'aria-labelledby' => 'navbar-dropdown' }
-          %a.dropdown-item{ href: '#' } TODO: compute FIN score
+          %a.dropdown-item{ href: '#' }= t('home.compute_fin_score')
           .dropdown-divider
-          %a.dropdown-item{ href: '#' } TODO: my Meetings
-          %a.dropdown-item{ href: '#' } TODO: my Dashboard
+          %a.dropdown-item{ href: '#' }= t('home.my_meetings')
+          %a.dropdown-item{ href: '#' }= t('home.my_dashboard')
       %li.nav-item
         %a.nav-link.disabled{ 'aria-disabled' => 'true', href: '#', tabindex: '-1' } &nbsp;
       .dropdown-divider

@@ -4,6 +4,7 @@ it:
     or: 'oppure'
     sign_up: 'Registrati'
     log_out: "Esci"
+    account: 'Account'
     please_wait: 'Attendi...'
     copyright_notice: "(c) 2013-2021, FASAR Software, S. Alloro, M. Ligabue"
     about_us: "Chi siamo"
@@ -14,3 +15,9 @@ it:
     terms_of_service: "This software is released 'as is', under the terms of the LGPL-3.0 license"
     main_repo: "https://github.com/steveoro/goggles_main"
     license_link: "https://github.com/steveoro/goggles_main/blob/main/LICENSE"
+    title: 'Principale'
+    current: '(attuale)'
+    commands: 'comandi'
+    compute_fin_score: 'calcola punteggio FIN'
+    my_meetings: 'i miei Meeting'
+    my_dashboard: 'la mia Dashboard'

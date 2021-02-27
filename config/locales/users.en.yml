@@ -1,0 +1,19 @@
+en:
+  users:
+    placeholders:
+      email: e-mail
+      password: password
+      old_password: existing password
+      new_password: new password
+      confirm_password: confirm password
+      name: user name
+      first_name: first name
+      last_name: family/last name
+      year_of_birth: year of birth
+    swimmer_binding:
+      title: "ID yourself as a Swimmer"
+    help_labels:
+      unhappy?: "Unhappy?"
+      name: "Any unique name will do"
+      swimmer_binding: "We'll search through the published results available to us for a swimmer matching your data"
+      associated_to_swimmer: "Associated to swimmer"

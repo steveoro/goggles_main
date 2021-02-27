@@ -51,17 +51,34 @@
     color: #666;
     box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
   }
+
+  video {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    transform: translateX(-50%) translateY(-50%);
+    transition: 1s opacity;
+  }
   </style>
 </head>
 
 <body class="rails-default-error-page">
   <!-- This file lives in public/404.html -->
+  <video id="bgvid" autoplay="true" loop="true" muted="true" playsinline="" width="100%" height="100%"
+    poster="nuke.gif">
+    <source src="nuke.gif" type="image/gif" />
+  </video>
   <div class="dialog">
     <div>
-      <h1>The page you were looking for doesn't exist.</h1>
-      <p>You may have mistyped the address or the page may have moved.</p>
+      <h1>404. Oops...</h1>
+      <p>Are you sure you tapped the right buttons?.</p>
     </div>
-    <p>If you are the application owner check the logs for more information.</p>
+    <p>Now, go back where you came from...</p>
   </div>
 </body>
 </html>

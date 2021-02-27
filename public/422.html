@@ -51,14 +51,30 @@
     color: #666;
     box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
   }
+
+  video {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    transform: translateX(-50%) translateY(-50%);
+    transition: 1s opacity;
+  }
   </style>
 </head>
 
 <body class="rails-default-error-page">
   <!-- This file lives in public/422.html -->
+  <video id="bgvid" autoplay="true" loop="true" muted="true" playsinline="" width="100%" height="100%" poster="nuke.gif">
+    <source src="nuke.gif" type="image/gif" />
+  </video>
   <div class="dialog">
     <div>
-      <h1>The change you wanted was rejected.</h1>
+      <h1>422. The change you wanted was rejected.</h1>
       <p>Maybe you tried to change something you didn't have access to.</p>
     </div>
     <p>If you are the application owner check the logs for more information.</p>

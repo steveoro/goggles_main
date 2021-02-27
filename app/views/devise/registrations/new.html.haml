@@ -1,20 +1,73 @@
-%h2= t('.sign_up')
-= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
-  = render('devise/shared/error_messages', resource: resource)
-  .field
-    = f.label(:email)
-    %br/
-    = f.email_field(:email, autofocus: true, autocomplete: 'email')
-  .field
-    = f.label(:password)
-    - if @minimum_password_length
-      %em= t('devise.shared.minimum_password_length', count: @minimum_password_length)
-    %br/
-    = f.password_field(:password, autocomplete: 'new-password')
-  .field
-    = f.label(:password_confirmation)
-    %br/
-    = f.password_field(:password_confirmation, autocomplete: 'new-password')
-  .actions
-    = f.submit(t('.sign_up'))
-= render('devise/shared/links')
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    .row-fluid.m-4
+      %turbo-frame#signup-box
+        %h2= t('.sign_up')
+        = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
+          = render('devise/shared/error_messages', resource: resource)
+          .bg-light-green.p-1.shadow-box
+            .form-row
+              .form-group
+                .field.col-auto
+                  = f.label(:email, t('activerecord.attributes.user.email'))
+                  %br/
+                  = f.email_field(:email, required: true, autofocus: true, autocomplete: 'email',
+                                  class: 'form-control', 'aria-describedby' => 'email-help',
+                                  placeholder: t('users.placeholders.email'))
+                  %small
+                    %i.form-text.text-muted#email-help
+                      = t('devise.customizations.we_wont_share_emails_with_noone')
+              .form-group
+                .field.col-auto
+                  = f.label(:name, t('activerecord.attributes.user.name'))
+                  %br/
+                  = f.text_field(:name, required: true, autofocus: true, autocomplete: 'name',
+                                 class: 'form-control', 'aria-describedby' => 'name-help',
+                                 placeholder: t('users.placeholders.name'))
+                  %small
+                    %i.form-text.text-muted#name-help
+                      = t('users.help_labels.name')
+            .form-row
+              .form-group
+                .field.col-auto
+                  = f.label(:password, t('activerecord.attributes.user.password'))
+                  - if @minimum_password_length
+                    %em= t('devise.shared.minimum_password_length', count: @minimum_password_length)
+                  %br/
+                  = f.password_field(:password, required: true, autocomplete: 'new-password',
+                                     class: 'form-control', placeholder: t('users.placeholders.new_password'))
+              .form-group
+                .field.col-auto
+                  = f.label(:password_confirmation, t('activerecord.attributes.user.password_confirmation'))
+                  %br/
+                  = f.password_field(:password_confirmation, required: true, autocomplete: 'confirm-password',
+                                     class: 'form-control', placeholder: t('users.placeholders.confirm_password'))
+          = render('edit_user_id', f: f)
+
+          .form-group.mt-2.col-auto
+            .actions
+              = f.submit(t('.sign_up'), class: 'btn btn-primary')
+
+    .row-fluid.mx-4
+      = render('devise/shared/links')
+
+  .spacer-right
+
+%script
+  function updateUserNameOnChange() {
+  var splitEMail = $('#user_email').val().split('@')[0];
+  $('#user_name').val(splitEMail);
+  var splitNames = splitEMail.split(/[_\.-]/);
+  $('#user_first_name').val(splitNames[0]);
+  $('#user_last_name').val(splitNames[1]);
+  };
+  $('#user_email').change( function(){ updateUserNameOnChange(); } );
+  function updateUserDescriptionOnChange() {
+  var firstName = $('#user_first_name').val();
+  var lastName = $('#user_last_name').val();
+  $('#user_description').val(`${firstName} ${lastName}`);
+  };
+  $('#user_first_name').change( function(){ updateUserDescriptionOnChange(); } );
+  $('#user_last_name').change( function(){ updateUserDescriptionOnChange(); } );

@@ -1,0 +1,42 @@
+it:
+  activerecord:
+    models:
+      goggles_db/user: Utente
+    attributes:
+      goggles_db/user:
+        created_on: Creato il
+        updated_on: Ultima modifica
+        email: E-mail
+        name: Nome utente
+        hashed_pwd: Password codificata
+        password: Password
+        current_password: Password corrente
+        password_confirmation: Conferma password
+        description: "Descrizione / nome completo"
+        first_name: "Nome"
+        last_name: "Cognome"
+        year_of_birth: "Anno di nascita"
+    errors:
+      messages:
+        record_invalid: "Il record non ha superato i controlli di validazione."
+      models:
+        goggles_db/user:
+          attributes:
+            email:
+              blank: "non puo' essere vuota"
+              taken: "è già stata scelta"
+              too_short: "è troppo corta"
+            name:
+              blank: "non puo' essere vuoto"
+              taken: "è già stato scelto"
+              too_short: "è troppo corto"
+            password:
+              blank: "non puo' essere vuota"
+              too_short: "è troppo corta"
+            password_confirmation:
+              confirmation: "deve essere uguale alla password scelta"
+              blank: "non puo' essere vuota"
+              too_short: "è troppo corta"
+            current_password:
+              blank: "non puo' essere vuota"
+              too_short: "è troppo corta"

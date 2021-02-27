@@ -1,0 +1,42 @@
+en:
+  activerecord:
+    models:
+      goggles_db/user: User
+    attributes:
+      goggles_db/user:
+        created_on: Created on
+        updated_on: Updated on
+        email: "e-mail"
+        name: "User name"
+        hashed_pwd: Hashed password
+        password: Password
+        current_password: Current Password
+        password_confirmation: Confirm Password
+        description: "Description/Full name"
+        first_name: "First name"
+        last_name: "Last name"
+        year_of_birth: "Year of birth"
+    errors:
+      messages:
+        record_invalid: "The record has failed the validation process."
+      models:
+        goggles_db/user:
+          attributes:
+            email:
+              blank: "can't be blank"
+              taken: "is already taken"
+              too_short: "is too short"
+            name:
+              blank: "can't be blank"
+              taken: "is already taken"
+              too_short: "is too short"
+            password:
+              blank: "can't be blank"
+              too_short: "is too short"
+            password_confirmation:
+              confirmation: "needs to be equal to the password"
+              blank: "can't be blank"
+              too_short: "is too short"
+            current_password:
+              blank: "can't be blank"
+              too_short: "is too short"

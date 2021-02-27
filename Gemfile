@@ -35,7 +35,8 @@ gem 'turbo-rails'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'browser' # detect request.variant type depending on request.user_agent
-gem 'devise'
+# [Steve A.] Force a specific version of Devise, supporting OAuth2:
+gem 'devise', github: 'heartcombo/devise', branch: 'ca-omniauth-2'
 gem 'devise-i18n'
 # Inherited data factories from DB engine, published also on production/staging
 # to allow fixture creation for testing purposes when using production structure dumps:
@@ -46,6 +47,9 @@ gem 'goggles_db', git: 'https://github.com/steveoro/goggles_db'
 gem 'haml-rails'
 gem 'kaminari'
 gem 'nokogiri' # (used explicitly for view specs)
+gem 'omniauth-facebook'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-rails_csrf_protection'
 gem 'rest-client'
 
 group :development do

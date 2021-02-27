@@ -1,39 +1,81 @@
-%h2= t('.title', resource: resource.model_name.human)
-= form_for(resource, as: resource_name,
-           url: registration_path(resource_name),
-           html: { method: :put }) do |f|
-  = render('devise/shared/error_messages', resource: resource)
-  .field
-    = f.label(:email)
-    %br/
-    = f.email_field(:email, autofocus: true, autocomplete: 'email')
-  - if devise_mapping.confirmable? && resource.pending_reconfirmation?
-    %div= t('.currently_waiting_confirmation_for_email', email: resource.unconfirmed_email)
-  .field
-    = f.label(:password)
-    %i
-      (#{t('.leave_blank_if_you_don_t_want_to_change_it')})
-    %br/
-    = f.password_field(:password, autocomplete: 'new-password')
-    - if @minimum_password_length
-      %br/
-      %em= t('devise.shared.minimum_password_length', count: @minimum_password_length)
-  .field
-    = f.label(:password_confirmation)
-    %br/
-    = f.password_field(:password_confirmation, autocomplete: 'new-password')
-  .field
-    = f.label(:current_password)
-    %i
-      (#{t('.we_need_your_current_password_to_confirm_your_changes')})
-    %br/
-    = f.password_field(:current_password, autocomplete: 'current-password')
-  .actions
-    = f.submit(t('.update'))
-%h3= t('.cancel_my_account')
-%p
-  = t('.unhappy')
-  = button_to(t('.cancel_my_account'),
-              registration_path(resource_name),
-              data: { confirm: t('.are_you_sure') }, method: :delete)
-= link_to t('devise.shared.links.back'), :back
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    .row-fluid.m-4
+      %turbo-frame#user-edit-box
+        %h2= t('.title', resource: resource.model_name.human)
+        = form_for(resource, as: resource_name,
+                   url: registration_path(resource_name),
+                   html: { method: :put }) do |f|
+          = render('devise/shared/error_messages', resource: resource)
+          .bg-light-green.p-1.shadow-box
+            .form-row
+              .form-group
+                .field.col-auto
+                  = f.label(:email, t('activerecord.attributes.goggles_db/user.email'))
+                  %br/
+                  = f.email_field(:email, autofocus: true, autocomplete: 'email',
+                                  class: 'form-control', 'aria-describedby' => 'email-help',
+                                  placeholder: t('users.placeholders.email'))
+                  - if devise_mapping.confirmable? && resource.pending_reconfirmation?
+                    %small
+                      .bg-warning.px-1.mt-1= t('.currently_waiting_confirmation_for_email',
+                      email: resource.unconfirmed_email)
+              .form-group
+                .field.col-auto
+                  = f.label(:name, t('activerecord.attributes.goggles_db/user.name'))
+                  %br/
+                  = f.text_field(:name, autofocus: true, autocomplete: 'name',
+                                 class: 'form-control', 'aria-describedby' => 'name-help',
+                                 placeholder: t('users.placeholders.name'))
+                  %small
+                    %i.form-text.text-muted#name-help
+                      = t('users.help_labels.name')
+
+            .form-row
+              .form-group
+                .field.col-auto
+                  = f.label(:password, t('users.help_labels.change_password'))
+                  = f.password_field(:password, autocomplete: 'new-password',
+                                     class: 'form-control', placeholder: t('users.placeholders.new_password'))
+                  %small
+                    %i.form-text.text-muted#new-password-help
+                      = t('.leave_blank_if_you_don_t_want_to_change_it')
+                    - if @minimum_password_length
+                      = t('devise.shared.minimum_password_length', count: @minimum_password_length)
+              .form-group
+                .field.col-auto
+                  = f.label(:password_confirmation, t('activerecord.attributes.goggles_db/user.password_confirmation'))
+                  %br/
+                  = f.password_field(:password_confirmation, autocomplete: 'confirm-password',
+                                     class: 'form-control', placeholder: t('users.placeholders.confirm_password'))
+              .form-group
+                .field.col-auto
+                  = f.label(:current_password, t('activerecord.attributes.goggles_db/user.current_password'))
+                  %br/
+                  = f.password_field(:current_password, autocomplete: 'current-password',
+                                     class: 'form-control', placeholder: t('users.placeholders.old_password'))
+                  %small
+                    %i.form-text.text-muted#current-password-help
+                      = t('.we_need_your_current_password_to_confirm_your_changes')
+
+          = render('edit_user_id', f: f)
+
+          .form-group.mt-2.col-auto
+            .actions
+              = f.submit(t('.update'), class: 'btn btn-primary')
+              &nbsp;
+              = link_to t('devise.shared.links.back'), :back
+
+        .mt-4.mb-4.border-1.border-bottom.border-info
+
+        .row-fluid.mx-4
+          %h3= t('.cancel_my_account')
+          %p
+            = t('users.help_labels.unhappy?')
+            = button_to(t('.cancel_my_account'),
+                        registration_path(resource_name), class: 'btn btn-danger',
+                        data: { confirm: t('.are_you_sure') }, method: :delete)
+
+  .spacer-right

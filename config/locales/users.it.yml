@@ -1,0 +1,20 @@
+it:
+  users:
+    placeholders:
+      email: e-mail
+      password: Password
+      old_password: password esistente
+      new_password: nuova password
+      confirm_password: conferma password
+      name: nome utente
+      first_name: nome
+      last_name: cognome
+      year_of_birth: anno di nascita
+    swimmer_binding:
+      title: "Identificati come Nuotatore"
+    help_labels:
+      change_password: "Cambia password"
+      unhappy?: "Scontento?"
+      name: "Qualsiasi nome purché univoco"
+      swimmer_binding: "Cercheremo nei risultati pubblici a noi disponibili un nuotatore che corrisponda ai tuoi dati"
+      associated_to_swimmer: "Associato al nuotatore"

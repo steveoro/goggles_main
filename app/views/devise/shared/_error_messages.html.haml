@@ -1,6 +1,6 @@
 - if resource.errors.any?
-  #error_explanation
-    %h2
+  .bg-warning.p-2.m-1#error_explanation
+    %h5
       = I18n.t('errors.messages.not_saved', count: resource.errors.count,
                 resource: resource.class.model_name.human.downcase)
     %ul

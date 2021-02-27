@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :users, class_name: 'GogglesDb::User'
-  # To customize any Devise default controller add the :controllers option
-  # to the line above.
-  # E.g.: "controllers: { registrations: 'my_custom_named_registrations' }"
+  devise_for :users, class_name: 'GogglesDb::User',
+                     controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 
   # Mounting and usage of the Engine:
   mount GogglesDb::Engine => '/'
