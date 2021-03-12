@@ -2,3 +2,8 @@ it:
   devise:
     customizations:
       we_wont_share_emails_with_noone: "Non condivideremo con nessuno il tuo indirizzo email"
+      send_request_button: 'Invia'
+      confirmations:
+        title: 'Richiedi conferma account'
+      unlocks:
+        title: 'Richiedi sblocco account'

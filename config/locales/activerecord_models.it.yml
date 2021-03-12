@@ -26,10 +26,12 @@ it:
               blank: "non puo' essere vuota"
               taken: "è già stata scelta"
               too_short: "è troppo corta"
+              already_exists: "esiste già"
             name:
               blank: "non puo' essere vuoto"
               taken: "è già stato scelto"
               too_short: "è troppo corto"
+              already_exists: "esiste già"
             password:
               blank: "non puo' essere vuota"
               too_short: "è troppo corta"
@@ -40,3 +42,4 @@ it:
             current_password:
               blank: "non puo' essere vuota"
               too_short: "è troppo corta"
+              invalid: "non è valida"

@@ -26,10 +26,12 @@ en:
               blank: "can't be blank"
               taken: "is already taken"
               too_short: "is too short"
+              already_exists: "already exists"
             name:
               blank: "can't be blank"
               taken: "is already taken"
               too_short: "is too short"
+              already_exists: "already exists"
             password:
               blank: "can't be blank"
               too_short: "is too short"
@@ -40,3 +42,4 @@ en:
             current_password:
               blank: "can't be blank"
               too_short: "is too short"
+              invalid: "is not valid"

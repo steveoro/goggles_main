@@ -1,18 +1,33 @@
-%h2= t('.change_your_password')
-= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
-  = render 'devise/shared/error_messages', resource: resource
-  = f.hidden_field :reset_password_token
-  .field
-    = f.label :password, t('.new_password')
-    %br/
-    - if @minimum_password_length
-      %em= t('devise.shared.minimum_password_length', count: @minimum_password_length)
-      %br/
-    = f.password_field :password, autofocus: true, autocomplete: 'new-password'
-  .field
-    = f.label :password_confirmation, t('.confirm_new_password')
-    %br/
-    = f.password_field :password_confirmation, autocomplete: 'new-password'
-  .actions
-    = f.submit t('.change_my_password')
-= render 'devise/shared/links'
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    .row-fluid.m-4
+      %turbo-frame#change-pwd-box
+        %h2= t('.change_your_password')
+        = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
+          = render('devise/shared/error_messages', resource: resource)
+          = f.hidden_field :reset_password_token
+          .bg-light-blue.p-1.pt-3.shadow-box
+            .form-group
+              .field.field.col-md-7.col-sm-12
+                = f.label(:password, t('.new_password'))
+                = f.password_field(:password, autocomplete: 'new-password',
+                                    class: 'form-control', placeholder: t('users.placeholders.new_password'))
+                - if @minimum_password_length
+                  %small
+                    %i.form-text.text-muted#new-password-help
+                      = t('devise.shared.minimum_password_length', count: @minimum_password_length)
+            .form-group
+              .field.field.col-md-7.col-sm-12
+                = f.label(:password_confirmation, t('activerecord.attributes.goggles_db/user.password_confirmation'))
+                %br/
+                = f.password_field(:password_confirmation, autocomplete: 'new-password',
+                                    class: 'form-control', placeholder: t('users.placeholders.confirm_password'))
+            .form-group.actions.col-md-7.col-sm-12
+              = f.submit(t('.change_my_password'), class: 'btn btn-primary')
+
+    .row-fluid.mx-4
+      = render('devise/shared/links')
+
+  .spacer-right

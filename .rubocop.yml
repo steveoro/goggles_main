@@ -32,6 +32,8 @@ Metrics/AbcSize:
   Exclude:
     - 'bin/bundle'
     - 'db/migrate/*'
+    - 'app/controllers/users/omniauth_callbacks_controller.rb'
+    - 'app/decorators/swimming_pool_decorator.rb'
 
 Metrics/BlockLength:
   Max: 40

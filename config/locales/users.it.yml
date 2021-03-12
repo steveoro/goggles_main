@@ -15,6 +15,8 @@ it:
     help_labels:
       change_password: "Cambia password"
       unhappy?: "Scontento?"
+      unhappy_erase_explanation: "Puoi cancellare facilmente il tuo account su Master-Goggles cliccando sul pulsante qui sotto."
+      erase_explanation_about_results: "(Questo non impatterà sui risultati gara pubblicati dalle singole Federazioni.)"
       name: "Qualsiasi nome purché univoco"
       swimmer_binding: "Cercheremo nei risultati pubblici a noi disponibili un nuotatore che corrisponda ai tuoi dati"
       associated_to_swimmer: "Associato al nuotatore"

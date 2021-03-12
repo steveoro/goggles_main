@@ -3,10 +3,12 @@
 // a relevant structure within app/javascript and only use these pack files to reference
 // that code so it'll be compiled.
 
-import JQuery from 'jquery'
-window.$ = window.JQuery = JQuery
+import jQuery from 'jquery'
+window.$ = window.jQuery = jQuery
 import 'popper.js'
 import 'bootstrap'
+import 'select2'
+import 'select2/dist/css/select2.css'
 
 require("@rails/ujs").start()
 require("turbolinks").start()
@@ -33,11 +35,9 @@ document.addEventListener('turbolinks:load', () => {
   })
 
   $('[data-toggle="popover"]').popover()
-  $('[data-toggle="modal"]').modal()
-
-  // Show & auto-hide all flash alerts after a while:
-  $(".alert").alert().fadeTo(500, 1).delay(3000).slideUp(200, function () {
-    $(".alert").alert('close')
+  // Show & auto-hide all modal flash alerts after a while:
+  $('[data-toggle="modal"]').modal().fadeTo(500, 1).delay(2000).slideUp(200, function () {
+    $('[data-toggle="modal"]').modal('hide')
   })
 })
 

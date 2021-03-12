@@ -7,7 +7,7 @@ ruby '2.7.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # [20210128] ActiveRecord 6.1 introduces too many changes for the current version
-gem 'rails', '= 6.0.3.4'
+gem 'rails', '= 6.0.3.5'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.4.4'
 # Use Puma as the app server
@@ -50,7 +50,10 @@ gem 'nokogiri' # (used explicitly for view specs)
 gem 'omniauth-facebook'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-rails_csrf_protection'
+# Twitter disabled for the time being (supports only OAuth 1a)
+# gem 'omniauth-twitter'
 gem 'rest-client'
+gem 'view_component', require: 'view_component/engine'
 
 group :development do
   gem 'better_errors'

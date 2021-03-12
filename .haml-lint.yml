@@ -4,6 +4,8 @@ exclude:
 linters:
   LineLength:
     max: 120
+    exclude:
+      - 'app/views/devise/registrations/edit.html.haml'
 
   IdNames:
     exclude:

@@ -5,19 +5,19 @@
     .row-fluid.m-4
       %turbo-frame#login-box
         %h2= t('.sign_in')
-        .bg-light-blue.p-1.shadow-box
-          = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+        = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+          .bg-light-blue.p-1.pt-3.shadow-box
             .form-group.field.col-md-7.col-sm-12
-              = f.label(:email)
+              = f.label(:email, t('activerecord.attributes.goggles_db/user.email'))
               %br/
               = f.email_field(:email, autofocus: true, autocomplete: 'email',
                               class: 'form-control', 'aria-describedby' => 'email-help',
-                              placeholder: 'e-mail')
+                              placeholder: t('users.placeholders.email'))
               %small
                 %i.form-text.text-muted#email-help
                   = t('devise.customizations.we_wont_share_emails_with_noone')
             .form-group.field.col-md-7.col-sm-12
-              = f.label(:password)
+              = f.label(:password, t('activerecord.attributes.user.password'))
               %br/
               = f.password_field(:password, autocomplete: 'current-password',
                                 class: 'form-control', placeholder: 'password')
@@ -26,9 +26,8 @@
                 .form-check.field
                   = f.check_box(:remember_me, class: 'form-check-input')
                   = f.label(t('activerecord.attributes.user.remember_me'), class: 'form-check-label')
-            .form-group.col-md-7.col-sm-12
-              .actions
-                = f.submit(t('.sign_in'), class: 'btn btn-primary')
+            .form-group.actions.col-md-7.col-sm-12
+              = f.submit(t('.sign_in'), class: 'btn btn-primary')
 
     .row-fluid.mx-4
       = render('devise/shared/links')

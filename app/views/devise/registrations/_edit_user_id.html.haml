@@ -2,32 +2,57 @@
 %small
   %i.form-text.text-muted.mb-1#swimmer-binding-help
     = t('users.help_labels.swimmer_binding')
-.bg-light-blue.p-1.shadow-box
-  .form-row
+.bg-light-blue.p-1.pt-3.shadow-box
+  :ruby
+    collection = if user_signed_in?
+                   SwimmerDecorator.decorate_collection(current_user.matching_swimmers)
+                 else
+                   GogglesDb::Swimmer.none
+                 end
+    select_options = options_for_select(collection.map { |swimmer| [swimmer.text_label, swimmer.id] },
+                                        current_user&.swimmer_id)
+    shared_change_callbacks = 'change->user-name#updateDescription ' \
+                              'change->unsaved-changes#formIsChanged ' \
+                              'change->remote-partial#update'
+
+  .form-row{ data: { controller: 'remote-partial', 'remote-partial-url' => lookup_matching_swimmers_path } }
     .form-group
       .field.col-auto
         = f.label(:first_name, t('activerecord.attributes.goggles_db/user.first_name'))
         %br/
         = f.text_field(:first_name, required: true, autofocus: true, autocomplete: 'first-name',
-                        class: 'form-control', placeholder: t('users.placeholders.first_name'))
+                       class: 'form-control', placeholder: t('users.placeholders.first_name'),
+                       data: { 'user-name-target' => 'first',
+                       action: shared_change_callbacks,
+                       'remote-partial-payload' => true })
     .form-group
       .field.col-auto
         = f.label(:last_name, t('activerecord.attributes.goggles_db/user.last_name'))
         %br/
         = f.text_field(:last_name, required: true, autofocus: true, autocomplete: 'family-name',
-                        class: 'form-control', placeholder: t('users.placeholders.last_name'))
+                       class: 'form-control', placeholder: t('users.placeholders.last_name'),
+                       data: { 'user-name-target' => 'last',
+                       action: shared_change_callbacks,
+                       'remote-partial-payload' => true })
     .form-group
       = f.hidden_field(:description)
       .field.col-auto
         = f.label(:year_of_birth)
         %br/
         = f.number_field(:year_of_birth, required: true, autocomplete: 'year-of-birth',
-                          min: 1920, max: Date.today.year - 5, class: 'form-control')
+                         min: 1920, max: Date.today.year - 5, class: 'form-control',
+                         data: { action: 'change->unsaved-changes#formIsChanged change->remote-partial#update',
+                                 'remote-partial-payload' => true })
 
-  - swimmer = GogglesDb::Swimmer.find_by(associated_user_id: current_user.id)
-  - if swimmer # current_user.swimmer
-    .form-row
+    - if user_signed_in? && current_user.swimmer
       .form-group
         .field.col-auto
-          = f.label(:first_name, t('users.help_labels.associated_to_swimmer'))
-          = swimmer.complete_name
+          = f.label(:swimmer_name, t('users.help_labels.associated_to_swimmer'))
+          %br/
+          = f.select(:swimmer_id, select_options, { include_blank: true },
+                      { class: 'custom-select col-sm-10 col-md-9 col-lg-8 mb-1', disabled: true,
+                      data: { action: 'change->unsaved-changes#formIsChanged',
+                              'remote-partial-target' => 'text' } })
+          %a.btn.btn-primary.btn-sm.align-baseline{ role: 'button',
+            onclick: "$('#user_swimmer_id').attr('disabled', $('#user_swimmer_id').attr('disabled') == undefined)" }
+            %i.fa.fa.fa-pencil

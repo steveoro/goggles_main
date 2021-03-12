@@ -17,6 +17,11 @@ class SwimmerDecorator < Draper::Decorator
     date.year - year_of_birth
   end
 
+  # Returns the a text label describing this swimmer by name and age.
+  def text_label
+    "#{complete_name} (#{year_of_birth})"
+  end
+
   # Returns the link to /swimmer/show using the complete name as link label.
   #
   def link_to_full_name
@@ -83,4 +88,6 @@ class SwimmerDecorator < Draper::Decorator
                            .first
                            &.code
   end
+  #-- -------------------------------------------------------------------------
+  #++
 end

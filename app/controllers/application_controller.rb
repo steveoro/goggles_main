@@ -7,6 +7,7 @@ require 'version'
 # Common parent controller
 class ApplicationController < ActionController::Base
   before_action :detect_device_variant, :check_maintenance_mode
+  before_action :configure_devise_permitted_parameters, if: :devise_controller?
 
   private
 
@@ -33,5 +34,11 @@ class ApplicationController < ActionController::Base
     elsif !GogglesDb::AppParameter.maintenance? && (params[:controller] == 'maintenance')
       redirect_to root_path
     end
+  end
+
+  # Adds all the bespoke field keys that can be updated during certain Devise controller actions
+  def configure_devise_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: %i[name first_name last_name description year_of_birth swimmer_id])
+    devise_parameter_sanitizer.permit(:account_update, keys: %i[name first_name last_name description year_of_birth swimmer_id])
   end
 end

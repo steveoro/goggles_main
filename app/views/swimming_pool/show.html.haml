@@ -1,2 +1,25 @@
-%h1 SwimmingPool#show
-%p Find me in app/views/swimming_pool/show.html.haml
+- deco_pool = SwimmingPoolDecorator.decorate(@swimming_pool)
+
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    .row-fluid.m-4
+      %turbo-frame#swimming-pool-show
+        %h2 SwimmingPool#show
+        %p
+          = deco_pool.name
+          = deco_pool.link_to_google_maps
+        %p
+          = deco_pool.to_json
+        %ul
+          %li
+            Prova 1 ✅
+          %li
+            Prova 2 ❌
+          %li
+            Prova 3 📌
+          %li= check_mark_icon_for(true)
+          %li= check_mark_icon_for(false)
+
+  .spacer-right

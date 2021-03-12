@@ -23,11 +23,7 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
   #++
 
   context 'for an anonymous user,' do
-    # Stub Devise user helper method before rendering:
-    before(:each) do
-      allow(view).to receive(:user_signed_in?).and_return(false)
-      render
-    end
+    before(:each) { render }
 
     it_behaves_like('main_navbar generic features')
 
@@ -44,8 +40,12 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
   #++
 
   context 'for a logged-in user,' do
-    # Stub Devise user helper method before rendering:
+    # [Steve A.] Stub Devise controller helper method before rendering because this being a
+    # view spec it won't have the @controller variable set; but also sign-in the user using the
+    # included integration test helpers:
     before(:each) do
+      user = GogglesDb::User.first(50).sample
+      sign_in(user)
       allow(view).to receive(:user_signed_in?).and_return(true)
       render
     end

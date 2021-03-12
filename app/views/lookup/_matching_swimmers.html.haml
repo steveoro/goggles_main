@@ -1,0 +1,2 @@
+- deco_list = SwimmerDecorator.decorate_collection(matches)
+= options_for_select(deco_list.map { |swimmer| [swimmer.text_label, swimmer.id] }, matches.first&.id)

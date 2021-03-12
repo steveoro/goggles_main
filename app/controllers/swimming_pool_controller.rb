@@ -7,6 +7,6 @@ class SwimmingPoolController < ApplicationController
   # == Params
   # - :id, required
   def show
-    @team = GogglesDb::SwimmingPool.find_by(id: params.permit(:id)[:id])
+    @swimming_pool = GogglesDb::SwimmingPool.find_by(id: params.permit(:id)[:id])
   end
 end

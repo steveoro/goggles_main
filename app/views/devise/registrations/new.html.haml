@@ -5,27 +5,31 @@
     .row-fluid.m-4
       %turbo-frame#signup-box
         %h2= t('.sign_up')
-        = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
+        = form_for(resource, as: resource_name, url: registration_path(resource_name),
+                   html: { data: { controller: 'user-name' } }) do |f|
           = render('devise/shared/error_messages', resource: resource)
-          .bg-light-green.p-1.shadow-box
+          .bg-light-green.p-1.pt-3.shadow-box
             .form-row
               .form-group
                 .field.col-auto
-                  = f.label(:email, t('activerecord.attributes.user.email'))
+                  = f.label(:email, t('activerecord.attributes.goggles_db/user.email'))
                   %br/
                   = f.email_field(:email, required: true, autofocus: true, autocomplete: 'email',
                                   class: 'form-control', 'aria-describedby' => 'email-help',
-                                  placeholder: t('users.placeholders.email'))
+                                  placeholder: t('users.placeholders.email'),
+                                  data: { 'user-name-target' => 'email',
+                                  action: 'change->user-name#updateNames' })
                   %small
                     %i.form-text.text-muted#email-help
                       = t('devise.customizations.we_wont_share_emails_with_noone')
               .form-group
                 .field.col-auto
-                  = f.label(:name, t('activerecord.attributes.user.name'))
+                  = f.label(:name, t('activerecord.attributes.goggles_db/user.name'))
                   %br/
                   = f.text_field(:name, required: true, autofocus: true, autocomplete: 'name',
                                  class: 'form-control', 'aria-describedby' => 'name-help',
-                                 placeholder: t('users.placeholders.name'))
+                                 placeholder: t('users.placeholders.name'),
+                                 data: { 'user-name-target' => 'name' })
                   %small
                     %i.form-text.text-muted#name-help
                       = t('users.help_labels.name')
@@ -54,20 +58,3 @@
       = render('devise/shared/links')
 
   .spacer-right
-
-%script
-  function updateUserNameOnChange() {
-  var splitEMail = $('#user_email').val().split('@')[0];
-  $('#user_name').val(splitEMail);
-  var splitNames = splitEMail.split(/[_\.-]/);
-  $('#user_first_name').val(splitNames[0]);
-  $('#user_last_name').val(splitNames[1]);
-  };
-  $('#user_email').change( function(){ updateUserNameOnChange(); } );
-  function updateUserDescriptionOnChange() {
-  var firstName = $('#user_first_name').val();
-  var lastName = $('#user_last_name').val();
-  $('#user_description').val(`${firstName} ${lastName}`);
-  };
-  $('#user_first_name').change( function(){ updateUserDescriptionOnChange(); } );
-  $('#user_last_name').change( function(){ updateUserDescriptionOnChange(); } );

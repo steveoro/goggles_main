@@ -27,6 +27,19 @@ RSpec.describe SwimmerDecorator, type: :decorator do
     end
   end
 
+  describe '#text_label' do
+    let(:result) { subject.text_label }
+    it 'is a non-empty String' do
+      expect(result).to be_a(String).and be_present
+    end
+    it 'includes the complete name' do
+      expect(result).to include(ERB::Util.html_escape(model_obj.complete_name))
+    end
+    it 'includes the year_of_birth in between parenthesys' do
+      expect(result).to include("(#{model_obj.year_of_birth})")
+    end
+  end
+
   describe '#link_to_full_name' do
     let(:result) { subject.link_to_full_name }
     it 'is a non-empty String' do

@@ -2,7 +2,7 @@ import { Controller } from 'stimulus'
 import SwipeElement from '../src/swipe_element'
 
 /**
- * = StimulusJS Search controller =
+ * = StimulusJS Search-browse/swipe controller =
  *
  * Uses the SwipeElement class to handle swipe gestures for a target node.
  * Swipe on target left or right to toggle pagination requests in "raw" mode.
@@ -11,17 +11,20 @@ import SwipeElement from '../src/swipe_element'
  * @see /app/javascript/src/swipe_element.js
  *
  * == Targets ==
- * @param 'data-search-target': 'swiper'  => wrapper DOM node that receives swipe gestures & displays results
+ * @param {String} 'data-search-target': 'swiper'
+ *                 wrapper DOM node that receives swipe gestures & displays results
  *
  * == Values ==
- * @param 'data-search-current-value' => current results data page
- * @param 'data-search-max-value'     => max results data pages available
- * @param 'data-search-url-value'     => current request.url
+ * @param {String} 'data-search-current-value' => current results data page
+ * @param {String} 'data-search-max-value'     => max results data pages available
+ * @param {String} 'data-search-url-value'     => current request.url
  *
  * == Assumptions:
  * @assert only 1 "swiper" element per page (set with the 'data-search-target'=>'swiper')
  * @assert uses '#loading-indicator' node as common loading indicator
  * @assert uses '.d-none' CSS class as common visibility switch
+ *
+ * @author Steve A.
  */
 export default class extends Controller {
   static targets = ["swiper"]

@@ -1,11 +1,26 @@
-%h2= t('.resend_unlock_instructions')
-= form_for(resource, as: resource_name,
-           url: unlock_path(resource_name), html: { method: :post }) do |f|
-  = render 'devise/shared/error_messages', resource: resource
-  .field
-    = f.label(:email)
-    %br/
-    = f.email_field(:email, autofocus: true, autocomplete: 'email')
-  .actions
-    = f.submit(t('.resend_unlock_instructions'))
-= render('devise/shared/links')
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    .row-fluid.m-4
+      %turbo-frame#unlock-account-box
+        %h2= t('devise.customizations.unlocks.title')
+        = form_for(resource, as: resource_name,
+                    url: unlock_path(resource_name), html: { method: :post }) do |f|
+          = render('devise/shared/error_messages', resource: resource)
+          .bg-light-blue.p-1.pt-3.shadow-box
+            .form-group.col-auto
+              %i= t('.resend_unlock_instructions')
+            .form-group.field.col-md-7.col-sm-12
+              = f.label(:email, t('activerecord.attributes.goggles_db/user.email'))
+              %br/
+              = f.email_field(:email, autofocus: true, autocomplete: 'email',
+                              class: 'form-control', 'aria-describedby' => 'email-help',
+                              placeholder: t('users.placeholders.email'))
+            .form-group.actions.col-md-7.col-sm-12
+              = f.submit(t('devise.customizations.send_request_button'), class: 'btn btn-primary')
+
+    .row-fluid.mx-4
+      = render('devise/shared/links')
+
+  .spacer-right

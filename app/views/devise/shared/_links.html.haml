@@ -1,4 +1,4 @@
-.form-group
+.form-group.pt-4
   - if controller_name != 'sessions'
     = link_to(t('.sign_in'), new_session_path(resource_name))
     %br/
@@ -7,9 +7,21 @@
     %br/
   - if devise_mapping.omniauthable?
     - resource_class.omniauth_providers.each do |provider|
-      = link_to(t('.sign_in_with_provider',
-                  provider: OmniAuth::Utils.camelize(provider)),
-                  omniauth_authorize_path(resource_name, provider))
+      = link_to(omniauth_authorize_path(resource_name, provider),
+                type: 'button', method: :post, class: 'btn btn-primary my-1',
+                data: { disable_with: t('home.please_wait'), class: 'disabled' }) do
+        = t('.sign_in_with_provider', provider: provider.to_s.split('_').first.titleize)
+        %span.px-1
+          :ruby
+            case provider
+            when :google_oauth2
+              icon = 'google'
+            when :facebook
+              icon = 'facebook-square'
+            when :twitter
+              icon = 'twitter-square'
+            end
+          %i.fa.fa{ class: "fa-#{icon}" }
       %br/
   %small
     - if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'

@@ -1,7 +1,7 @@
 = form_tag(:search_smart, remote: true, method: :get, class: 'form-group row-fluid',
            data: { 'turbo-frame' => '_top' },
            onsubmit: "document.querySelector('#loading-indicator').classList.add('d-none');") do
-  .row-fluid.my-2
+  .row-fluid.my-2.col-md-8.col-lg-6.offset-md-2.offset-lg-3
     .input-group.flex-fill
       = text_field_tag(:q, nil, { class: 'form-control', 'aria-label' => I18n.t('search_view.btn_title'),
                       placeholder: I18n.t('search_view.placeholder'), type: 'search',
