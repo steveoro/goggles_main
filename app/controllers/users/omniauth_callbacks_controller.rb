@@ -19,7 +19,7 @@ module Users
   # Gem references:
   # - https://github.com/zquestz/omniauth-google-oauth2
   # - https://github.com/simi/omniauth-facebook
-  # - https://github.com/arunagw/omniauth-twitter (as of this writing, supports only OAuth 1.1a)
+  # - https://github.com/arunagw/omniauth-twitter (as of this writing, this gem supports only OAuth 1.1a)
   #
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # Handles callbacks returning from Google OAuth2
@@ -38,7 +38,7 @@ module Users
     # Assumes provider name = :twitter
     #
     # ==> Twitter sign-in disabled for the time being: <==
-    # - supports only OAuth 1a
+    # - gem supports only OAuth 1a
     # - doesn't work properly with current gem stack
     #
     # TODO: make a fork of the gem & add OAuth 2.0 support when possible if no-one writes another gem in the meantime
