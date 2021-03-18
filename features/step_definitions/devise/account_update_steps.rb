@@ -3,8 +3,8 @@
 When('I update the {string} field with a new valid value') do |updated_field|
   new_user_values = FactoryBot.build(:user)
   if updated_field == 'password'
-    fill_in("user_password", with: 'Password1234!')
-    fill_in("user_password_confirmation", with: 'Password1234!')
+    fill_in('user_password', with: 'Password1234!')
+    fill_in('user_password_confirmation', with: 'Password1234!')
   else
     fill_in("user_#{updated_field}", with: new_user_values.send(updated_field))
   end
