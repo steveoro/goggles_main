@@ -1,7 +1,6 @@
 # language:en
 
-@headless_chrome
-Feature: Search anything from the root page: desktop, lg-size
+Feature: Search anything from the root page
   At the root page of the app
   As an anonymous user
   I want to be able to perform a search with a single query

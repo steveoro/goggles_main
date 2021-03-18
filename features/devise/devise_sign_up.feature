@@ -1,7 +1,6 @@
 # language:en
 
-@headless_chrome
-Feature: New user sign-up: desktop, lg-size
+Feature: New user sign-up
   As an anonymous user
   I want to be able to sign-up into the application
   Using direct account creation or a 3-rd party OAuth plugin

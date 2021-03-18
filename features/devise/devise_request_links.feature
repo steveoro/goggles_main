@@ -1,7 +1,6 @@
 # language:en
 
-@headless_chrome
-Feature: User can request new management links: desktop, lg-size
+Feature: User can request new management links
   As an anonymous user with an existing account
   I want to be able to request a new links via email address
   In order to confirm my account, reset my password or unlock my account

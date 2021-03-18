@@ -1,7 +1,6 @@
 # language:en
 
-@headless_chrome
-Feature: Existing user can edit account: desktop, lg-size
+Feature: Existing user can edit account
   As logged-in user
   I want to be able to edit my account
 

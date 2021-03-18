@@ -1,7 +1,6 @@
 # language:en
 
-@headless_chrome
-Feature: Existing user sign-in: desktop, lg-size
+Feature: Existing user sign-in
   As an anonymous user
   I want to be able to sign-in to the application
   Using direct log-in or a 3-rd party OAuth plugin

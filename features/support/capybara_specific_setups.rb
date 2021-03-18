@@ -197,9 +197,16 @@ end
 #-- ---------------------------------------------------------------------------
 #++
 
-# Select the default driver:
-Capybara.default_driver     = :headless_chrome
-Capybara.javascript_driver  = :headless_chrome
-Capybara.current_driver     = :headless_chrome
+# Select the default driver or force it from the command prompt:
+if ENV['CAPYBARA_DRV'].present?
+  Capybara.default_driver     = ENV['CAPYBARA_DRV'].to_sym
+  Capybara.javascript_driver  = ENV['CAPYBARA_DRV'].to_sym
+  Capybara.current_driver     = ENV['CAPYBARA_DRV'].to_sym
+else
+  Capybara.default_driver     = :headless_chrome
+  Capybara.javascript_driver  = :headless_chrome
+  Capybara.current_driver     = :headless_chrome
+end
+Kernel.puts "\r\n*** Setting Capybara current driver as...: #{Capybara.current_driver} ***"
 Capybara.default_max_wait_time = 5
 Capybara.server_port = 3001

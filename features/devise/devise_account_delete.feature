@@ -1,7 +1,6 @@
 # language:en
 
-@headless_chrome
-Feature: Existing user can delete account: desktop, lg-size
+Feature: Existing user can delete account
   As logged-in user
   I want to be able to delete my account
 

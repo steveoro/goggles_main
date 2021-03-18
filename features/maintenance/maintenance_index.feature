@@ -1,6 +1,5 @@
 # language:en
 
-@headless_chrome
 Feature: Maintenance switch
   At any moment, by setting the "maintenance mode" on
   Any request should be redirected to a static maintenance page
