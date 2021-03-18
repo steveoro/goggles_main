@@ -46,12 +46,11 @@ RSpec.describe 'Lookups', type: :request do
           expect(response).to be_successful
         end
         it 'returns the matching swimmers as select options' do
-          puts "\r\n#{response.body}"
           matches = GogglesDb::User.new(last_name: 'Smith').matching_swimmers
-          expect(matches).to be_positive
+          expect(matches.count).to be_positive
           matches.each do |swimmer|
             expect(response.body).to include(ERB::Util.html_escape(swimmer.complete_name))
-            expect(response.body).to include(swimmer.year_of_birth)
+            expect(response.body).to include(swimmer.year_of_birth.to_s)
           end
         end
       end

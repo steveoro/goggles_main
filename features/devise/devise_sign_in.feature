@@ -1,44 +1,51 @@
 # language:en
 
 @headless_chrome
-Feature: Search anything from the root page: desktop, lg-size
-  At the root page of the app
+Feature: Existing user sign-in: desktop, lg-size
   As an anonymous user
-  I want to be able to perform a search with a single query
-  For any swimmer, team, meeting or swimming pool
+  I want to be able to sign-in to the application
+  Using direct log-in or a 3-rd party OAuth plugin
 
-  Scenario Outline: Successful search with matches & pagination
-    Given there are more than <min_count> <model_name>s matching my query <query_string>
-    When I browse to the root page
-    And I search for <query_string>
-    Then the '<model_name>' search results are displayed, all matching <query_string>
-    And the pagination controls are visible
+  Scenario: Successful direct sign-in
+    Given I am not signed in
+    And I have a confirmed account
+    When I browse to '/users/sign_in'
+    And I fill the log-in form as the confirmed user
+    Then the user row is signed-in
+    And I get redirected to '/'
+    And a flash 'devise.sessions.signed_in' message is present
+
+  @omniauth
+  Scenario Outline: Successful OAuth sign-in
+    Given I am not signed in
+    And I have an existing account with an email valid for '<provider_sym>' sign-in
+    When I browse to '/users/sign_in'
+    And I click on '#<provider_sym>-login-btn'
+    Then the user row is signed-in
+    And I get redirected to '/'
+    And a successful Omniauth flash message for '<provider_name>' is present
     Examples:
-      | model_name    | query_string | min_count |
-      | swimmer       | 'Anna'       | 5         |
-      | team          | 'Swimming'   | 5         |
-      | meeting       | 'prova'      | 5         |
-      | swimming_pool | 'comunale'   | 5         |
+      | provider_sym  | provider_name |
+      | google_oauth2 | Google        |
+      | facebook      | Facebook      |
 
-  Scenario Outline: Successful search with matches but no pagination
-    Given there are no more than <max_count> <model_name>s matching my query <query_string>
-    When I browse to the root page
-    And I search for <query_string>
-    Then the '<model_name>' search results are displayed, all matching <query_string>
-    And the pagination controls are not present
-    # (No meetings in examples on purpose: it's difficult to have <= 5 search matches)
+  Scenario: Failing direct sign-in
+    Given I am not signed in
+    And I am a new user
+    When I browse to '/users/sign_in'
+    And I fill the log-in form as a new user
+    Then I am still at the '/users/sign_in' path
+    And an unsuccessful login flash message is present
+
+  @omniauth
+  Scenario: Failing OAuth sign-in
+    Given I am not signed in
+    And I have an existing account but I don't have credentials for '<provider_sym>' sign-in
+    When I browse to '/users/sign_in'
+    And I click on '#<provider_sym>-login-btn'
+    And I get redirected to '/users/sign_up'
+    And a flash 'devise.customizations.invalid_credentials' message is present
     Examples:
-      | model_name    | query_string | max_count |
-      | swimmer       | 'Steve'      | 5         |
-      | team          | 'Abbottton'  | 5         |
-      | swimming_pool | 'ferretti'   | 5         |
-
-  Scenario: Unsuccessful search
-    Given there are no swimmers matching my query 'zzz'
-    And there are no teams matching my query 'zzz'
-    And there are no meetings matching my query 'zzz'
-    And there are no swimming_pools matching my query 'zzz'
-    When I browse to the root page
-    And I search for 'zzz'
-    Then no search results are visible
-    And a flash alert is shown about the empty results
+      | provider_sym  |
+      | google_oauth2 |
+      | facebook      |

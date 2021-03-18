@@ -3,6 +3,7 @@ it:
     customizations:
       we_wont_share_emails_with_noone: "Non condivideremo con nessuno il tuo indirizzo email"
       send_request_button: 'Invia'
+      invalid_credentials: 'Credenziali non valide!'
       confirmations:
         title: 'Richiedi conferma account'
       unlocks:

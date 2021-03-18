@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-# = APISessionController
+# = APISessionsController
 #
 # Allows to request a new JWT session valid for API connection.
 #
-class APISessionController < ApplicationController
+class APISessionsController < ApplicationController
   before_action :authenticate_user!
 
   # POST /api_session/jwt

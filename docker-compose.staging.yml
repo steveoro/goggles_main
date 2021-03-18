@@ -17,7 +17,7 @@ services:
           nocopy: true
 
   api:
-    image: steveoro/goggles-api:staging-0.1.87
+    image: steveoro/goggles-api:staging-0.1.89
     depends_on:
       - goggles-db
     container_name: goggles-api.staging
@@ -34,7 +34,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.staging
-    image: steveoro/goggles-main:staging-0.1.87
+    image: steveoro/goggles-main:staging-0.1.89
     depends_on:
       - goggles-db
     container_name: goggles-main.staging

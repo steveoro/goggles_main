@@ -27,7 +27,7 @@
                   = f.check_box(:remember_me, class: 'form-check-input')
                   = f.label(t('activerecord.attributes.user.remember_me'), class: 'form-check-label')
             .form-group.actions.col-md-7.col-sm-12
-              = f.submit(t('.sign_in'), class: 'btn btn-primary')
+              = f.submit(t('.sign_in'), id: 'login-btn', class: 'btn btn-primary')
 
     .row-fluid.mx-4
       = render('devise/shared/links')

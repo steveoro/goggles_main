@@ -9,7 +9,7 @@ Feature: Search anything from the root page: desktop, lg-size
 
   Scenario Outline: Successful search with matches & pagination
     Given there are more than <min_count> <model_name>s matching my query <query_string>
-    When I browse to the root page
+    When I browse to '/'
     And I search for <query_string>
     Then the '<model_name>' search results are displayed, all matching <query_string>
     And the pagination controls are visible
@@ -22,7 +22,7 @@ Feature: Search anything from the root page: desktop, lg-size
 
   Scenario Outline: Successful search with matches but no pagination
     Given there are no more than <max_count> <model_name>s matching my query <query_string>
-    When I browse to the root page
+    When I browse to '/'
     And I search for <query_string>
     Then the '<model_name>' search results are displayed, all matching <query_string>
     And the pagination controls are not present
@@ -38,7 +38,7 @@ Feature: Search anything from the root page: desktop, lg-size
     And there are no teams matching my query 'zzz'
     And there are no meetings matching my query 'zzz'
     And there are no swimming_pools matching my query 'zzz'
-    When I browse to the root page
+    When I browse to '/'
     And I search for 'zzz'
     Then no search results are visible
     And a flash alert is shown about the empty results

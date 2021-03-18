@@ -9,8 +9,16 @@ RSpec.describe 'Users::OmniauthCallbacks', type: :request do
   let(:existing_user) { GogglesDb::User.first(50).sample }
   let(:new_user) { FactoryBot.build(:user) }
 
-  # Helper for defining a valid OAuth token given user credentials
-  # Returns an OmniAuth::AuthHash
+  # Prepares the resulting authorization Hash given the parameters.
+  #
+  # == Params
+  # - provider: any provider name
+  # - uid: a unique ID string
+  # - user: the user instance requesting authorization
+  #
+  # == Params
+  # an OmniAuth::AuthHash that wraps the user_instance data
+  #
   def valid_auth(provider, uid, user)
     OmniAuth::AuthHash.new(
       {
@@ -48,56 +56,85 @@ RSpec.describe 'Users::OmniauthCallbacks', type: :request do
     # Use :default key to prepare default AuthHash response (individual provider keys can still
     # be defined as overrides):
     # (@see https://github.com/omniauth/omniauth/wiki/Integration-Testing)
-    OmniAuth.config.mock_auth[:default] = valid_auth('twitter', '123545', existing_user)
-    OmniAuth.config.mock_auth[:facebook] = valid_auth('facebook', '1235456', new_user)
+    # OmniAuth.config.mock_auth[:default] = valid_auth('facebook', '1235456', existing_user)
+    # OmniAuth.config.mock_auth[:google_oauth2] = valid_auth('google_oauth2', '1235456', existing_user)
+    # OmniAuth.config.mock_auth[:facebook] = valid_auth('facebook', '1235456', new_user)
 
     # With test_mode on, a request to /auth/provider will redirect immediately
     # to /auth/provider/callback returning the AuthHash for that provider:
     OmniAuth.config.test_mode = true
 
     # Use add_mock to quickly add new AuthHash to be merged with the :default, like this:
-    # OmniAuth.config.add_mock(:twitter, {:uid => '12345'})
+    # OmniAuth.config.add_mock(:google_oauth2, {:uid => '12345'})
 
     # Setting a provider's mock to a symbol instead of a hash, it will fail with that message:
-    # OmniAuth.config.mock_auth[:twitter] = :invalid_credentials
+    # OmniAuth.config.mock_auth[:google_oauth2] = :invalid_credentials
 
     # Clean-up mocks in-between tests by setting them to nil:
-    # OmniAuth.config.mock_auth[:twitter] = nil
+    # OmniAuth.config.mock_auth[:google_oauth2] = nil
 
     # Setup controller mappings & auth before tests (old RSpec @request.env[] settings):
-    # Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
-    # Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:twitter]
+    Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
+    # Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:google_oauth2]
   end
 
   describe 'POST /auth/:provider' do
-    context 'returning valid credentials for an existing, activated user,' do
+    context 'returning valid credentials for an existing, validated user,' do
       before(:each) do
-        Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:twitter]
-        post(user_twitter_omniauth_authorize_path)
+        OmniAuth.config.mock_auth[:google_oauth2] = valid_auth(
+          'google_oauth2',
+          (GogglesDb::User.last.id + 1).to_s,
+          existing_user
+        )
+        Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:google_oauth2]
+
+        post(user_google_oauth2_omniauth_callback_path)
       end
-      it 'redirects to :provider/auth/callback' do
-        expect(response).to redirect_to(user_twitter_omniauth_callback_path)
+      it 'redirects to default (for event: authentication)' do
+        expect(response).to redirect_to(root_path)
+      end
+      it 'sets the flash to the notice msg for a successful authentication' do
+        expect(flash[:notice]).to eq(I18n.t('devise.omniauth_callbacks.success', kind: 'Google'))
       end
     end
 
-    context 'returning valid credentials for a new existing user,' do
-      before(:each) do
-        Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:facebook]
-        post(user_facebook_omniauth_authorize_path)
-      end
-      it 'redirects to :provider/auth/callback' do
-        expect(response).to redirect_to(user_facebook_omniauth_callback_path)
+    %i[facebook google_oauth2].each do |provider|
+      context "returning valid credentials for a new user (#{provider})," do
+        before(:each) do
+          OmniAuth.config.mock_auth[provider] = valid_auth(
+            provider.to_s,
+            (GogglesDb::User.last.id + 1).to_s,
+            new_user
+          )
+          Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[provider]
+          if provider == :facebook
+            post(user_facebook_omniauth_authorize_path)
+          else
+            post(user_google_oauth2_omniauth_callback_path)
+          end
+          user_google_oauth2_omniauth_callback_path
+        end
+        it "redirects to #{provider}/auth/callback" do
+          if provider == :facebook
+            # [Steve A.] FB config currently "stops gracefully" in the middle of the callback chain due to
+            # an error in setup ('has more restrictive checks; 'needs an additional key handshake to get the avatar image)
+            expect(response).to redirect_to(user_facebook_omniauth_callback_path)
+          else
+            expect(response).to redirect_to(root_path)
+          end
+        end
       end
     end
 
     context 'returning with an OAuth failure,' do
       before(:each) do
-        OmniAuth.config.mock_auth[:twitter] = :invalid_credentials
+        OmniAuth.config.mock_auth[:google_oauth2] = nil
+        OmniAuth.config.mock_auth[:facebook] = nil
         Rails.application.env_config['omniauth.auth'] = :invalid_credentials
-        post(user_twitter_omniauth_authorize_path)
+        post(user_google_oauth2_omniauth_callback_path) # (any provider path will suffice)
       end
-      it 'redirects to :provider/auth/callback anyway' do
-        expect(response).to redirect_to(user_twitter_omniauth_callback_path)
+      it 'redirects to the sign-up path' do
+        expect(response).to redirect_to(new_user_registration_url)
       end
     end
   end

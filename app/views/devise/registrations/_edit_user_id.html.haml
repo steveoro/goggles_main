@@ -9,7 +9,8 @@
                  else
                    GogglesDb::Swimmer.none
                  end
-    select_options = options_for_select(collection.map { |swimmer| [swimmer.text_label, swimmer.id] },
+    select_options = options_for_select(collection.map { |swimmer| [swimmer.text_label, swimmer.id] } +
+                                        [['- - -', nil]],
                                         current_user&.swimmer_id)
     shared_change_callbacks = 'change->user-name#updateDescription ' \
                               'change->unsaved-changes#formIsChanged ' \
@@ -44,15 +45,15 @@
                          data: { action: 'change->unsaved-changes#formIsChanged change->remote-partial#update',
                                  'remote-partial-payload' => true })
 
-    - if user_signed_in? && current_user.swimmer
+    - if user_signed_in?
       .form-group
         .field.col-auto
           = f.label(:swimmer_name, t('users.help_labels.associated_to_swimmer'))
           %br/
-          = f.select(:swimmer_id, select_options, { include_blank: true },
+          = f.select(:swimmer_id, select_options, {},
                       { class: 'custom-select col-sm-10 col-md-9 col-lg-8 mb-1', disabled: true,
                       data: { action: 'change->unsaved-changes#formIsChanged',
                               'remote-partial-target' => 'text' } })
-          %a.btn.btn-primary.btn-sm.align-baseline{ role: 'button',
+          %a.btn.btn-primary.btn-sm.align-baseline{ role: 'button', id: 'toggle-swimmer-edit-btn',
             onclick: "$('#user_swimmer_id').attr('disabled', $('#user_swimmer_id').attr('disabled') == undefined)" }
             %i.fa.fa.fa-pencil

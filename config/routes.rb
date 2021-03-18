@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   # Mounting and usage of the Engine:
   mount GogglesDb::Engine => '/'
 
-  post 'api_session/jwt'
+  post 'api_sessions/jwt'
 
   get 'home/index'
   get 'home/about_us'
@@ -21,10 +21,10 @@ Rails.application.routes.draw do
   get 'maintenance', to: 'maintenance#index'
   get 'search/smart'
 
-  get 'meeting/show'
-  get 'swimming_pool/show'
-  get 'swimmer/show'
-  get 'team/show'
+  get 'meetings/show/:id',        to: 'meetings#show',        as: 'meeting_show'
+  get 'swimming_pools/show/:id',  to: 'swimming_pools#show',  as: 'swimming_pool_show'
+  get 'swimmers/show/:id',        to: 'swimmers#show',        as: 'swimmer_show'
+  get 'teams/show/:id',           to: 'teams#show',           as: 'team_show'
 
   get 'tools/fin_score'
   # TODO: move the following to a dedicated API endpoint:

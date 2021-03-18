@@ -6,14 +6,14 @@ RSpec.describe 'APISessions', type: :request do
   describe 'POST /jwt' do
     context 'for an unlogged user requesting JSON format' do
       it 'is a redirect to the login path' do
-        post(api_session_jwt_path(format: :json))
+        post(api_sessions_jwt_path(format: :json))
         expect(response).to be_unauthorized
       end
     end
 
     context 'for an unlogged user making a non-JSON request' do
       it 'is a redirect to the login path' do
-        post(api_session_jwt_path)
+        post(api_sessions_jwt_path)
         expect(response).to redirect_to(new_user_session_path)
       end
     end
@@ -25,7 +25,7 @@ RSpec.describe 'APISessions', type: :request do
       end
 
       context 'requesting plain HTML,' do
-        before(:each) { post(api_session_jwt_path) }
+        before(:each) { post(api_sessions_jwt_path) }
         it 'is a redirect to root_path' do
           expect(response).to redirect_to(root_path)
         end
@@ -35,7 +35,7 @@ RSpec.describe 'APISessions', type: :request do
       end
 
       context 'requesting JSON format,' do
-        before(:each) { post(api_session_jwt_path(format: :json)) }
+        before(:each) { post(api_sessions_jwt_path(format: :json)) }
         it 'is successful' do
           expect(response).to be_successful
         end

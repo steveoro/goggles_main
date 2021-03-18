@@ -18,21 +18,12 @@ module WaitForAjax
   def wait_for_ajax(timeout_sec_override = Capybara.default_max_wait_time)
     Timeout.timeout(timeout_sec_override) do
       loop do
+        # Output a progress char to signal that we are in wait-state if the format 'pretty'
+        # has been added to the parameters:
         Kernel.putc 'w' if ARGV&.include?('pretty')
-        active = page.execute_script('jQuery.active')
-        sleep(0.5)
-        break if active&.zero?
+        break if finished_all_ajax_requests?
       end
     end
-
-    # Timeout.timeout(timeout_sec_override) do
-    #   loop do
-    #     # Output a progress char to signal that we are in wait-state if the format 'pretty'
-    #     # has been added to the parameters:
-    #     Kernel.putc 'w' if ARGV&.include?('pretty')
-    #     break if finished_all_ajax_requests?
-    #   end
-    # end
   end
 
   # Will check if jQuery is defined within current webdriver context

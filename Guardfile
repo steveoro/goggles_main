@@ -104,7 +104,7 @@ guard :rspec, rspec_options do
   watch(rails.controllers) do |m|
     [
       rspec.spec.call("routing/#{m[1]}_routing"),
-      rspec.spec.call("controllers/#{m[1]}_controller"),
+      rspec.spec.call("requests/#{m[1]}_request"),
       rspec.spec.call("acceptance/#{m[1]}")
     ]
   end
@@ -112,7 +112,7 @@ guard :rspec, rspec_options do
   # Rails config changes
   watch(rails.spec_helper)     { rspec.spec_dir }
   watch(rails.routes)          { "#{rspec.spec_dir}/routing" }
-  watch(rails.app_controller)  { "#{rspec.spec_dir}/controllers" }
+  watch(rails.app_controller)  { "#{rspec.spec_dir}/requests" }
 
   # Capybara features specs
   watch(rails.view_dirs)     { |m| rspec.spec.call("features/#{m[1]}") }

@@ -19,7 +19,8 @@
                               class: 'form-control', 'aria-describedby' => 'email-help',
                               placeholder: t('users.placeholders.email'))
             .form-group.actions.col-md-7.col-sm-12
-              = f.submit(t('devise.customizations.send_request_button'), class: 'btn btn-primary')
+              = f.submit(t('devise.customizations.send_request_button'), id: 'send-request-btn',
+                         class: 'btn btn-primary')
 
     .row-fluid.mx-4
       = render('devise/shared/links')

@@ -7,6 +7,11 @@ require 'webdrivers'
 
 require_relative 'download_helpers'
 
+# Add factories directly from core engine:
+require 'factory_bot_rails'
+FactoryBot.definition_file_paths << "#{GogglesDb::Engine.root}/spec/factories"
+FactoryBot.reload
+
 Capybara.configure do |config|
   config.match = :prefer_exact
   config.ignore_hidden_elements = false

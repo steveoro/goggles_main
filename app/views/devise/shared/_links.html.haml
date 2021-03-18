@@ -8,7 +8,7 @@
   - if devise_mapping.omniauthable?
     - resource_class.omniauth_providers.each do |provider|
       = link_to(omniauth_authorize_path(resource_name, provider),
-                type: 'button', method: :post, class: 'btn btn-primary my-1',
+                type: 'button', method: :post, class: 'btn btn-primary my-1', id: "#{provider}-login-btn",
                 data: { disable_with: t('home.please_wait'), class: 'disabled' }) do
         = t('.sign_in_with_provider', provider: provider.to_s.split('_').first.titleize)
         %span.px-1
@@ -25,11 +25,12 @@
       %br/
   %small
     - if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
-      = link_to(t('.forgot_your_password'), new_password_path(resource_name))
+      = link_to(t('.forgot_your_password'), new_password_path(resource_name), id: 'forgot-pwd-link')
       %br/
     - if devise_mapping.confirmable? && controller_name != 'confirmations'
-      = link_to(t('.didn_t_receive_confirmation_instructions'), new_confirmation_path(resource_name))
+      = link_to(t('.didn_t_receive_confirmation_instructions'), new_confirmation_path(resource_name),
+                id: 'new-confirmation-link')
       %br/
     - if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks'
-      = link_to(t('.didn_t_receive_unlock_instructions'), new_unlock_path(resource_name))
+      = link_to(t('.didn_t_receive_unlock_instructions'), new_unlock_path(resource_name), id: 'unlock-link')
       %br/

@@ -9,7 +9,7 @@
         %h2 SwimmingPool#show
         %p
           = deco_pool.name
-          = deco_pool.link_to_google_maps
+          = deco_pool.link_to_maps_or_name
         %p
           = deco_pool.to_json
         %ul
@@ -17,8 +17,6 @@
             Prova 1 ✅
           %li
             Prova 2 ❌
-          %li
-            Prova 3 📌
           %li= check_mark_icon_for(true)
           %li= check_mark_icon_for(false)
 

@@ -11,7 +11,7 @@ shared_examples_for 'a paginated model decorated with' do |decorator_class|
 
   it_behaves_like(
     'responding to a list of methods',
-    %i[current_page total_pages limit_value entry_name total_count
+    %i[current_page total_pages limit_value total_count
        offset_value last_page?]
   )
 end

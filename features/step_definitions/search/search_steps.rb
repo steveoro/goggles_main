@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-When('I browse to the root page') do
-  visit(root_path)
-end
-
 When('I search for {string}') do |query_string|
   fill_in('q', with: query_string)
   click_button('btn-search')
@@ -15,7 +11,7 @@ Then('the {string} search results are displayed, all matching {string}') do |mod
   within(results_node) do
     find('table tbody').all('tr').each do |tr_node|
       expect(tr_node.find('td a').text).to match(/#{query_string}/i)
-      expect(tr_node.find('td a')[:href]).to match(%r{#{model_downcase_name}/show\?id=}i)
+      expect(tr_node.find('td a')[:href]).to match(%r{#{model_downcase_name}s/show/\d+}i)
     end
   end
 end
@@ -37,6 +33,6 @@ Then('the pagination controls are not present') do
 end
 
 Then('a flash alert is shown about the empty results') do
-  expect(page).to have_css('#flash-alert-msg')
-  expect(find('#flash-alert-msg .flash-body').text).to eq(I18n.t('search_view.no_results'))
+  flash_content = find('#flash-content-body .flash-body')
+  expect(flash_content.text).to eq(I18n.t('search_view.no_results'))
 end

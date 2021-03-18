@@ -6,7 +6,7 @@ class SwimmerDecorator < Draper::Decorator
   delegate_all
 
   # Add explicit delegation for methods needed by Kaminari (if the object is an AR::Relation):
-  delegate :current_page, :total_pages, :limit_value, :entry_name, :total_count, :offset_value, :last_page?
+  delegate :current_page, :total_pages, :limit_value, :total_count, :offset_value, :last_page?
 
   # Returns the swimmer age (as a numeric value) for a given +date+.
   #

@@ -103,7 +103,7 @@ it:
         we_need_your_current_password_to_confirm_your_changes: abbiamo bisogno della tua password attuale per confermare i cambiamenti
       new:
         sign_up: Registrati
-      signed_up: Iscrizione eseguita correttamente. Se abilitata, una conferma è stata inviata al tuo indirizzo email.
+      signed_up: Iscrizione eseguita correttamente. Una mail di conferma è stata inviata al tuo indirizzo email.
       signed_up_but_inactive: Iscrizione eseguita correttamente. Però non puoi accedere in quanto il tuo account non è ancora attivo.
       signed_up_but_locked: Iscrizione eseguita correttamente. Però non puoi accedere in quanto il tuo account è bloccato.
       signed_up_but_unconfirmed: Ti è stato inviato un messaggio con un link di conferma. Ti invitiamo a visitare il link per attivare il tuo account.

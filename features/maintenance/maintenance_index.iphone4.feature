@@ -20,7 +20,7 @@ Feature: Maintenance switch
       | '/home/about_this'     |
       | '/home/contact_us'     |
       | '/home/privacy_policy' |
-      | '/swimmer/show'        |
+      | '/swimmers/show/142'   |
       | '/tools/fin_score'     |
 
   Scenario: Maintenance mode on, browsing to the maintenance page itself

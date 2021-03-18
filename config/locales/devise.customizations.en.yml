@@ -3,6 +3,7 @@ en:
     customizations:
       we_wont_share_emails_with_noone: "We'll never share your email with anyone else"
       send_request_button: 'Send'
+      invalid_credentials: 'Invalid credentials!'
       confirmations:
         title: 'Account confirmation request'
       unlocks:

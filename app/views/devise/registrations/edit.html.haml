@@ -75,7 +75,7 @@
 
           .form-group.mt-2.col-auto
             .actions
-              = f.submit(t('.update'), class: 'btn btn-primary',
+              = f.submit(t('.update'), id: 'update-account-btn', class: 'btn btn-primary',
                          data: { action: 'unsaved-changes#allowFormSubmission' })
               &nbsp;
               = link_to(t('devise.shared.links.back'), :back, data: { action: 'unsaved-changes#allowFormSubmission' })
@@ -91,8 +91,8 @@
             %small
               %i= t('users.help_labels.erase_explanation_about_results')
             = button_to(t('.cancel_my_account'),
-                        registration_path(resource_name), class: 'btn btn-danger',
-                        data: { confirm: t('.are_you_sure'), action: 'unsaved-changes#allowFormSubmission' },
-                        method: :delete)
+                        registration_path(resource_name), id: 'delete-account-btn',
+                        class: 'btn btn-danger', data: { confirm: t('.are_you_sure'),
+                        action: 'unsaved-changes#allowFormSubmission' }, method: :delete)
 
   .spacer-right
