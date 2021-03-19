@@ -2,7 +2,34 @@ it:
   activerecord:
     models:
       goggles_db/user: Utente
+      goggles_db/swimmer: Nuotatore
     attributes:
+      goggles_db/swimmer:
+        last_name: "Cognome"
+        first_name: "Nome"
+        complete_name: "Nome completo"
+        year_of_birth: "Anno di nascita"
+        nickname: "Nickname"
+        gender_type: "Sesso"
+        associated_user_id: "Utente associato"
+      goggles_db/swimming_pool:
+        nick_name: "Nome in codice"
+        pool_type: Tipo
+        lanes_number: "N. corsie"
+        address: Indirizzo
+        phone_number: "Tel."
+        fax_number: "Fax"
+        e_mail: "e-mail"
+        contact_name: "Nome contatto"
+        multiple_pools: "Più vasche?"
+        garden: "Giardino/distesa?"
+        bar: "Bar?"
+        restaurant: "Ristorante?"
+        gym: "Palestra?"
+        child_area: "Area bimbi?"
+        locker_cabinet_type: Tipo armadietto
+        shower_type: Tipo docce
+        hair_dryer_type: Tipo asciugacapelli
       goggles_db/user:
         created_on: Creato il
         updated_on: Ultima modifica

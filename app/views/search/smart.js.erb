@@ -8,9 +8,14 @@ document.querySelector('#flash-messages').innerHTML = "<%=
 %>";
 
 // Show & auto-hide all flash alerts after a while:
-$(".alert").alert().fadeTo(500, 1).delay(3000).slideUp(200, function () {
-  $(".alert").alert('close');
-});
+$('[data-toggle="modal"]').modal().fadeTo(500, 1).delay(2000).slideUp(200, function () {
+  $('[data-toggle="modal"]')
+    .modal('hide')
+    .on('hidden.bs.modal', function (e) {
+      // Remove content after show: (no need for the time being)
+      // document.querySelectorAll('[data-toggle="modal"]').forEach(element => element.remove())
+    })
+})
 
 document.querySelector('#search-results').innerHTML = "<%=
   escape_javascript(

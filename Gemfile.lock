@@ -555,8 +555,6 @@ GEM
     tilt (2.0.10)
     tins (1.28.0)
       sync
-    turbo-rails (0.5.9)
-      rails (>= 6.0.0)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
     unf (0.1.4)
@@ -648,7 +646,6 @@ DEPENDENCIES
   spring-commands-rspec
   spring-commands-rubocop
   spring-watcher-listen
-  turbo-rails
   view_component
   web-console (>= 3.3.0)
   webdrivers

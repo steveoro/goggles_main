@@ -86,12 +86,15 @@ class SearchController < ApplicationController
   # Sets the flash :info with the overall result count
   def prepare_flash_info
     total_count = total_search_matches_count
-    flash[:alert] = flash[:info] = nil
+    # [Steve A.] Note: *always* use flash.now instead of just flash when preparing messages
+    # for a simple render without any redirection, otherwise the flash messages will
+    # persist for 2 requests instead of just one.
+    flash.now[:alert] = flash.now[:info] = nil
 
     if total_count.zero?
-      flash[:alert] = I18n.t('search_view.no_results')
+      flash.now[:alert] = I18n.t('search_view.no_results')
     else
-      flash[:info] = "#{I18n.t('search_view.found_total_matches', count: total_count)} \
+      flash.now[:info] = "#{I18n.t('search_view.found_total_matches', count: total_count)} \
                       #{pagination_required? ? I18n.t('search_view.swipe_left_or_right') : ''}".html_safe
     end
   end

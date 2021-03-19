@@ -1,23 +1,93 @@
-- deco_pool = SwimmingPoolDecorator.decorate(@swimming_pool)
-
+- pool = SwimmingPoolDecorator.decorate(@swimming_pool)
 .wrapper-body
   .spacer-left
 
+
   .main-content
-    .row-fluid.m-4
-      %turbo-frame#swimming-pool-show
-        %h2 SwimmingPool#show
-        %p
-          = deco_pool.name
-          = deco_pool.link_to_maps_or_name
-        %p
-          = deco_pool.to_json
-        %ul
-          %li
-            Prova 1 ✅
-          %li
-            Prova 2 ❌
-          %li= check_mark_icon_for(true)
-          %li= check_mark_icon_for(false)
+    #swimming-pool-show-title
+      %h4.text-center.pb-3
+        %i.fa.fa-map-marker
+        = t('swimming_pools.dashboard.title')
+        &nbsp;
+        %small
+          %i.text-muted= t('swimming_pools.dashboard.subtitle')
+    #swimming-pool-show-details
+      %table.table.table-striped.table-sm
+        %thead
+          %tr
+            %td{ scope: 'row', class: 'bg-info text-light' }
+              = t('activerecord.attributes.goggles_db/swimming_pool.name')
+            %td{ id: 'full-name' }
+              %b= pool.link_to_maps_or_name
+        %tbody
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.address')
+            %td{ id: 'address' }
+              = [pool.address, pool.city&.name].compact.join(', ')
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.nick_name')
+            %td{ id: 'nick-name' }
+              = pool.nick_name
+          %tr
+            %th{ scope: 'row' }
+              = t('activerecord.attributes.goggles_db/swimming_pool.lanes_number')
+              \/
+              = t('activerecord.attributes.goggles_db/swimming_pool.pool_type')
+            %td{ id: 'pool-type' }
+              #{pool.lanes_number}x #{pool.pool_type.label}
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.phone_number')
+            %td{ id: 'phone-number' }
+              = pool.phone_number
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.fax_number')
+            %td{ id: 'fax-number' }
+              = pool.fax_number
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.e_mail')
+            %td{ id: 'e-mail' }
+              = pool.e_mail
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.contact_name')
+            %td{ id: 'contact-name' }
+              = pool.contact_name
+
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.multiple_pools')
+            %td{ id: 'multiple-pools' }
+              = check_mark_icon_for(pool.multiple_pools?)
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.garden')
+            %td{ id: 'garden-presence' }
+              = check_mark_icon_for(pool.garden?)
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.bar')
+            %td{ id: 'bar-presence' }
+              = check_mark_icon_for(pool.bar?)
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.restaurant')
+            %td{ id: 'restaurant-presence' }
+              = check_mark_icon_for(pool.restaurant?)
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.gym')
+            %td{ id: 'gym-presence' }
+              = check_mark_icon_for(pool.gym?)
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.child_area')
+            %td{ id: 'children-area-presence' }
+              = check_mark_icon_for(pool.child_area?)
+
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.locker_cabinet_type')
+            %td{ id: 'locker-cabinet-type' }
+              = pool&.locker_cabinet_type&.label
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.shower_type')
+            %td{ id: 'shower-type' }
+              = pool&.shower_type&.label
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.hair_dryer_type')
+            %td{ id: 'hair-dryer-type' }
+              = pool&.hair_dryer_type&.label
 
   .spacer-right

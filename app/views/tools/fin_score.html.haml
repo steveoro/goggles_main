@@ -6,7 +6,7 @@
 
   .main-content
     .row-fluid.m-4
-      %turbo-frame#tools-fin-score
+      #tools-fin-score
         %h2 Tools > Compute FIN score
         = form_for(:fin_params, url: tools_compute_fin_score_path, html: { method: :post }) do |f|
           -# 'lookup-field-id-value' => 'swimmer_id'

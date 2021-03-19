@@ -3,7 +3,7 @@
 
   .main-content
     .row-fluid.m-4
-      %turbo-frame#login-box
+      #login-box
         %h2= t('.sign_in')
         = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
           .bg-light-blue.p-1.pt-3.shadow-box

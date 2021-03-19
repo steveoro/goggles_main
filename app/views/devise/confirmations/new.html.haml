@@ -3,7 +3,7 @@
 
   .main-content
     .row-fluid.m-4
-      %turbo-frame#send-confirmation-box
+      #send-confirmation-box
         %h2= t('devise.customizations.confirmations.title')
         = form_for(resource, as: resource_name,
                   url: confirmation_path(resource_name),

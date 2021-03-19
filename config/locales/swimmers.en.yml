@@ -5,7 +5,31 @@ en:
     affiliated_with: "Teams"
     year_of_birth: "Year of birth"
     swimmer_and_teams: "Athlete/Affiliations"
+    name: Name
+    birth_year_and_age: Birth / Age
     age_class_and_category: "Age class/Cat."
     current_category: "Current category"
     search_result_item: 'item'
     go_to_dashboard: "Go to the dashboard page for this athlete ('Radiography')"
+    radiography:
+      title: Swimmer
+      subtitle: Radiography
+      last_registered_category: Last registered category
+      meeting_presence: Meeting presence
+      first_attended_meeting: First attended Meeting
+      last_attended_meeting: Last attended Meeting
+      individual_events_done: Individual events done
+      events_attended: Registered events
+      total_metres_swam: Total metres swam
+      total_time_swam: Total time swam
+      total_disqualifications: Total Disqualifications
+      no_disqualifications: "None !!"
+      best_score_ever: Best Score ever
+      worst_score_ever: Worst Score ever (not null)
+      total_fin_points: Overall FIN score
+      ironmaster: Completed Ironmasters
+      relay_events_done: Relay events done
+      relays_attended: Relay events attended
+      relay_metres_swam: Total relay meters swam
+      relay_time_swam: Total time in relay events
+      relay_disqualifications: Relay disqualifications

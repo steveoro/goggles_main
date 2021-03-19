@@ -17,11 +17,6 @@ gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
 gem 'webpacker', '~> 4.0'
 
-# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-# gem 'turbolinks'
-# Use Turbo, the successor to TurboLinks: (read more: https://turbo.hotwire.dev/handbook/introduction)
-gem 'turbo-rails'
-
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
@@ -52,6 +47,9 @@ gem 'omniauth-google-oauth2'
 gem 'omniauth-rails_csrf_protection'
 # Twitter disabled for the time being (supports only OAuth 1a)
 # gem 'omniauth-twitter'
+# [Steve A.] CORS support shouldn't be needed here for the moment, so keep this commented out:
+# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
+# gem 'rack-cors'
 gem 'rest-client'
 gem 'view_component', require: 'view_component/engine'
 

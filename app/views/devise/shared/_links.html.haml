@@ -9,7 +9,7 @@
     - resource_class.omniauth_providers.each do |provider|
       = link_to(omniauth_authorize_path(resource_name, provider),
                 type: 'button', method: :post, class: 'btn btn-primary my-1', id: "#{provider}-login-btn",
-                data: { disable_with: t('home.please_wait'), class: 'disabled' }) do
+                data: { turbo: false, turbolinks: false, disable_with: t('home.please_wait'), class: 'disabled' }) do
         = t('.sign_in_with_provider', provider: provider.to_s.split('_').first.titleize)
         %span.px-1
           :ruby

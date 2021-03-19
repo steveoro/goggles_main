@@ -1,13 +1,13 @@
 :ruby
   page_listeners = 'beforeunload@window->unsaved-changes#leavingPage ' \
-                   'turbolinks:before-visit@window->unsaved-changes#leavingPage'
+                   'turbo:before-visit@window->unsaved-changes#leavingPage'
 
 .wrapper-body
   .spacer-left
 
   .main-content
     .row-fluid.m-4
-      %turbo-frame#user-edit-box
+      #user-edit-box
         %h2= t('.title', resource: resource.model_name.human)
         = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put,
                    data: { controller: 'user-name unsaved-changes', action: page_listeners,

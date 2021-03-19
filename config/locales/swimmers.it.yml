@@ -1,11 +1,36 @@
 it:
   swimmers:
-    swimmer: "Nuotatore"
-    swimmers: "Nuotatori"
-    affiliated_with: "Squadre"
-    year_of_birth: "Anno di nascita"
+    swimmer: Nuotatore
+    swimmers: Nuotatori
+    affiliated_with: Squadre
+    year_of_birth: Anno di nascita
     swimmer_and_teams: "Atleta/Affiliazioni"
+    name: Nome
+    birth_year_and_age: Classe / Età
     age_class_and_category: "Classe/Cat."
-    current_category: "Categoria attuale"
-    search_result_item: 'item'
+    age_class_and_category: "Classe/Cat."
+    current_category: Categoria attuale
+    search_result_item: item
     go_to_dashboard: "Vai alla pagina dettagli per questo atleta ('Radiografia')"
+    radiography:
+      title: Nuotatore
+      subtitle: Radiografia
+      last_registered_category: "Ultima cat. registrata"
+      meeting_presence: Presenza Meeting
+      first_attended_meeting: Prima gara disputata
+      last_attended_meeting: Ultima gara disputata
+      individual_events_done: Eventi individuali fatti
+      events_attended: Gare registrate
+      total_metres_swam: Metri di gara percorsi
+      total_time_swam: Tempo totale di gara
+      total_disqualifications: Squalifiche subite
+      no_disqualifications: "Nessuna !!"
+      best_score_ever: Miglior punteggio
+      worst_score_ever: Peggior punteggio (non nullo)
+      total_fin_points: Punteggio FIN score
+      ironmaster: Ironmaster completati
+      relay_events_done: Staffette fatte
+      relays_attended: Staffette registrate
+      relay_metres_swam: Metri totali in staffette
+      relay_time_swam: Tempo totale in staffette
+      relay_disqualifications: Squalifiche in staffette

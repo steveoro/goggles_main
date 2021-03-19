@@ -1,4 +1,95 @@
-%h1 Swimmer#show
-%p Find me in app/views/swimmer/show.html.haml
+- swimmer = SwimmerDecorator.decorate(@swimmer)
+.wrapper-body
+  .spacer-left
 
-%p= @swimmer.to_json
+  .main-content
+    #swimmer-show-title
+      %h4.text-center.pb-3
+        %i.fa.fa-user
+        = t('swimmers.radiography.title')
+        &nbsp;
+        %small
+          %i.text-muted= t('swimmers.radiography.subtitle')
+    #swimmer-show-details
+      %table.table.table-striped.table-sm
+        %thead
+          %tr
+            %th{ scope: 'row', class: 'bg-primary text-light' }
+              = t('swimmers.name')
+            %td{ id: 'full-name' }
+              %b= swimmer.complete_name
+        %tbody
+          %tr
+            %th{ scope: 'row' }= t('swimmers.birth_year_and_age')
+            %td{ id: 'year-of-birth' }
+              #{swimmer.year_of_birth} (~#{swimmer.swimmer_age})
+          %tr
+            %th{ scope: 'row' }= t('swimmers.current_category')
+            %td{ id: 'curr-cat-code' }
+              #{swimmer.current_fin_category_code} - #{swimmer.gender_type.label}
+          %tr
+            %th{ scope: 'row' }= t('swimmers.radiography.last_registered_category')
+            %td{ id: 'last-cat-code' }
+              = swimmer.last_category_code
+          %tr
+            %th{ scope: 'row' }= t('swimmers.affiliated_with')
+            %td{ id: 'team-links' }
+              = swimmer.link_to_teams(100) # limit names to 100 chars
+
+          -# STATS: *** WIP ***
+          -# %tr
+          -#   %th{ scope: 'row' }= t('radiography.meeting_presence')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('radiography.first_attended_meeting')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('radiography.last_attended_meeting')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('swimmers.all_teams')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('swimmers.individual_events_done')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('swimmers.events_attended')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('radiography.total_metres_swam')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('radiography.total_time_swam')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('radiography.total_disqualifications')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('radiography.best_score_ever')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('radiography.worst_score_ever')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('radiography.total_fin_points')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('swimmers.ironmaster')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('swimmers.relay_events_done')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('swimmers.relays_attended')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('swimmers.relay_metres_swam')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('swimmers.relay_time_swam')
+          -#   %td= swimmer.
+          -# %tr
+          -#   %th{ scope: 'row' }= t('swimmers.relay_disqualifications')
+          -#   %td= swimmer.
+
+  .spacer-right
