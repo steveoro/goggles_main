@@ -1,4 +1,54 @@
-%h1 Team#show
-%p Find me in app/views/team/show.html.haml
+- team = TeamDecorator.decorate(@team)
+.wrapper-body
+  .spacer-left
 
-%p= @team.to_json
+  .main-content
+    #team-show-title
+      %h4.text-center.pb-3
+        %i.fa.fa-map-marker
+        = t('teams.dashboard.title')
+        &nbsp;
+        %small
+          %i.text-muted= t('teams.dashboard.subtitle')
+    #team-show-details
+      %table.table.table-striped.table-sm
+        %thead
+          %tr
+            %td{ scope: 'row', class: 'bg-info text-light' }
+              = t('activerecord.attributes.goggles_db/team.name')
+            %td{ id: 'full-name' }
+              %b= team.editable_name || team.name
+        %tbody
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.address')
+            %td{ id: 'address' }
+              = [team.address, team.city&.name].compact.join(', ')
+          %tr
+            %th{ scope: 'row' }
+              = t('activerecord.attributes.goggles_db/team.home_page_url')
+            %td{ id: 'homepage' }
+              = team.home_page_url
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.contact_name')
+            %td{ id: 'contact-name' }
+              = team.contact_name
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.phone_mobile')
+            %td{ id: 'phone-mobile' }
+              = team.phone_mobile
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.phone_number')
+            %td{ id: 'phone-number' }
+              = team.phone_number
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.fax_number')
+            %td{ id: 'fax-number' }
+              = team.fax_number
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.e_mail')
+            %td{ id: 'e-mail' }
+              = team.e_mail
+
+          -# STATS: *** WIP ***
+
+  .spacer-right

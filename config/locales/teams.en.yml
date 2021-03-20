@@ -1,6 +1,9 @@
 en:
   teams:
-    team: "Team"
-    teams: "Teams"
-    city: "City"
+    team: Team
+    teams: Teams
+    city: City
     go_to_dashboard: "Go to the details page for this team ('Radiography')"
+    dashboard:
+      title: Team
+      subtitle: Radiography

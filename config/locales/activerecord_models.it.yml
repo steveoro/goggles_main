@@ -1,9 +1,41 @@
 it:
   activerecord:
     models:
-      goggles_db/user: Utente
+      goggles_db/meeting: Meeting
+      goggles_db/swimming_pool: Piscina
       goggles_db/swimmer: Nuotatore
+      goggles_db/team: Squadra
+      goggles_db/user: Utente
     attributes:
+      goggles_db/meeting:
+        description: Nome
+        entry_deadline: Termine iscrizioni
+        warm_up_pool: Vasca riscaldamento
+        allows_under25: Ammessi under-25
+        reference_phone: Tel. riferimento
+        reference_e_mail: e-mail riferimento
+        reference_name: Nome referente
+        manifest: Locandina/invito
+        startlist: Start-list
+        results_acquired: Risultati acquisiti
+        max_individual_events: Max gare/atleta
+        configuration_file: File di config.
+        code: Codice
+        edition: Edizione
+        header_date: Data manifestazione
+        header_year: Anno manifestazione
+        max_individual_events_per_session: "Max gare/atleta x sess."
+        off_season: Fuori stagione
+        confirmed: Confermato
+        cancelled: Annullato
+        tweeted: Tweet fatto
+        posted: Postato su social-media
+        autofilled: Auto-filled
+        pb_acquired: Pers.Best acquisiti
+        read_only: Sola lettura
+        meeting_fee: Costo inscrizione base
+        event_fee: Costo singolo evento
+        relay_fee: Costo singola staffetta
       goggles_db/swimmer:
         last_name: "Cognome"
         first_name: "Nome"
@@ -30,6 +62,15 @@ it:
         locker_cabinet_type: Tipo armadietto
         shower_type: Tipo docce
         hair_dryer_type: Tipo asciugacapelli
+      goggles_db/team:
+        name: Nome
+        address: Indirizzo
+        phone_mobile: Cellulare
+        phone_number: Telefono
+        e_mail: "e-mail"
+        fax_number: FAX
+        contact_name: Contatto
+        home_page_url: Home page
       goggles_db/user:
         created_on: Creato il
         updated_on: Ultima modifica

@@ -1,35 +1,76 @@
 en:
   activerecord:
     models:
-      goggles_db/user: User
+      goggles_db/meeting: Meeting
+      goggles_db/swimming_pool: Swimming pool
       goggles_db/swimmer: Swimmer
+      goggles_db/team: Team
+      goggles_db/user: User
     attributes:
+      goggles_db/meeting:
+        description: Name
+        entry_deadline: Entry deadline
+        warm_up_pool: Warm-up pool
+        allows_under25: Allows Under-25
+        reference_phone: "Reference phone #"
+        reference_e_mail: Reference e-mail
+        reference_name: Reference contact
+        manifest: Manifest
+        startlist: Start-list
+        results_acquired: Results acquired
+        max_individual_events: Max individ. events
+        configuration_file: Config. file
+        code: Code
+        edition: Edition
+        header_date: Header date
+        header_year: Header year
+        max_individual_events_per_session: "Max events/athlete x session"
+        off_season: Out of Season
+        confirmed: Confirmed
+        cancelled: Cancelled
+        tweeted: Tweeted
+        posted: Posted on social-media
+        autofilled: Auto-filled
+        pb_acquired: Pers.Best acquired
+        read_only: Read-only
+        meeting_fee: Meeting fee
+        event_fee: Event fee
+        relay_fee: Relay fee
       goggles_db/swimmer:
-        last_name: "Last name"
-        first_name: "First name"
-        complete_name: "Complete name"
-        year_of_birth: "Birth year"
-        nickname: "Nickname"
-        gender_type: "Gender"
-        associated_user_id: "Associated user"
+        last_name: Last name
+        first_name: First name
+        complete_name: Complete name
+        year_of_birth: Birth year
+        nickname: Nickname
+        gender_type: Gender
+        associated_user_id: Associated user
       goggles_db/swimming_pool:
-        nick_name: "Codename"
+        nick_name: Codename
         pool_type: Type
         lanes_number: "Lanes #"
         address: Address
         phone_number: "Phone #"
         fax_number: "FAX #"
         e_mail: "e-mail"
-        contact_name: "Contact name"
-        multiple_pools: "Multiple pools?"
-        garden: "Garden/open area?"
-        bar: "Bar?"
-        restaurant: "Restaurant?"
-        gym: "Gym?"
-        child_area: "Child area?"
+        contact_name: Contact name
+        multiple_pools: Multiple pools
+        garden: Garden/open area
+        bar: Bar
+        restaurant: Restaurant
+        gym: Gym
+        child_area: Child area
         locker_cabinet_type: Locker cabinet type
         shower_type: Shower type
         hair_dryer_type: Hair dryer type
+      goggles_db/team:
+        name: Name
+        address: Address
+        phone_mobile: "Mobile #"
+        phone_number: "Phone #"
+        e_mail: e-mail
+        fax_number: "FAX #"
+        contact_name: Contact name
+        home_page_url: Home page
       goggles_db/user:
         created_on: Created on
         updated_on: Updated on
@@ -40,9 +81,9 @@ en:
         current_password: Current Password
         password_confirmation: Confirm Password
         description: "Description/Full name"
-        first_name: "First name"
-        last_name: "Last name"
-        year_of_birth: "Year of birth"
+        first_name: First name
+        last_name: Last name
+        year_of_birth: Year of birth
     errors:
       messages:
         record_invalid: "The record has failed the validation process."

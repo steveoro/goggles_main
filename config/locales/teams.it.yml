@@ -1,6 +1,9 @@
 it:
   teams:
-    team: "Squadra"
-    teams: "Squadre"
+    team: Squadra
+    teams: Squadre
     city: "Città"
     go_to_dashboard: "Vai alla pagina dettagli per questa squadra ('Radiografia')"
+    dashboard:
+      title: Squadra
+      subtitle: Radiografia

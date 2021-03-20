@@ -1,2 +1,80 @@
-%h1 Meeting#show
-%p Find me in app/views/meeting/show.html.haml
+:ruby
+  meeting = MeetingDecorator.decorate(@meeting)
+  ms = meeting.meeting_sessions.by_order.first
+  meeting_date = ms ? ms.scheduled_date : meeting.header_date
+  swimming_pool = ms ? SwimmingPoolDecorator.decorate(ms.swimming_pool) : nil
+
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    #meeting-show-title
+      %h4.text-center.pb-3
+        %i.fa.fa-map-marker
+        = t('meetings.dashboard.title')
+        &nbsp;
+        %small
+          %i.text-muted= t('meetings.dashboard.subtitle')
+        - if meeting.cancelled?
+          .cancelled= t('activerecord.attributes.goggles_db/meeting.cancelled')
+    #meeting-show-details
+      %table.table.table-striped.table-sm
+        %thead
+          %tr
+            %td{ scope: 'row', class: 'bg-info text-light' }
+              = t('activerecord.attributes.goggles_db/meeting.name')
+            %td{ id: 'full-name' }
+              %b
+                - if meeting.edition_type.seasonal? || meeting.edition_type.yearly?
+                  #{meeting.description} #{meeting.edition_label}
+                - else
+                  #{meeting.edition_label} #{meeting.description}
+        %tbody
+          - if swimming_pool
+            %tr
+              %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/meeting.address')
+              %td{ id: 'address' }
+                = [swimming_pool.address, swimming_pool.city&.name].compact.join(', ')
+                &nbsp;
+                = swimming_pool.link_to_maps_or_name
+
+          %tr
+            %th{ scope: 'row' }
+              = t('activerecord.attributes.goggles_db/meeting.entry_deadline')
+            %td{ id: 'entry-deadline' }
+              = meeting.entry_deadline
+          %tr
+            %th{ scope: 'row' }
+              = t('activerecord.attributes.goggles_db/meeting.header_date')
+            %td{ id: 'header-date' }
+              = meeting_date
+
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/meeting.warm_up_pool')
+            %td{ id: 'warm-up-pool' }
+              = check_mark_icon_for(meeting.warm_up_pool?)
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/meeting.allows_under25')
+            %td{ id: 'allows-under25' }
+              = check_mark_icon_for(meeting.allows_under25?)
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/meeting.confirmed')
+            %td{ id: 'confirmed' }
+              = check_mark_icon_for(meeting.confirmed?)
+
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/meeting.reference_phone')
+            %td{ id: 'phone-number' }
+              = meeting.reference_phone
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/meeting.reference_e_mail')
+            %td{ id: 'e-mail' }
+              = meeting.reference_e_mail
+          %tr
+            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/meeting.reference_name')
+            %td{ id: 'contact-name' }
+              = meeting.reference_name
+
+          -# STATS: *** WIP ***
+
+  .spacer-right

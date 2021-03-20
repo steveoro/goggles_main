@@ -1,6 +1,9 @@
 it:
   meetings:
-    meeting: "Meeting"
-    meetings: "Meetings"
-    header_date: "Data"
+    meeting: Meeting
+    meetings: Meetings
+    header_date: Data
     go_to_dashboard: "Vai alla pagina dettagli & risultati per questo meeting"
+    dashboard:
+      title: Meeting
+      subtitle: Dettagli

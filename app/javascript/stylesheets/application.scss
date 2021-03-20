@@ -3,6 +3,7 @@
 //       (See app/javascript/packs/application.js)
 @import "~bootstrap/scss/bootstrap";
 
+// Custom styles:
 .swipe-wrapper {
   // user-select: none; // Disable text selection
 
@@ -12,4 +13,29 @@
     - pan-y pinch-zoom => allow vertical usage
    */
   touch-action: pan-y pinch-zoom;
+}
+
+@font-face {
+    font-family: 'Saira Stencil One';
+    src: url('fonts/SairaStencilOne-Regular.eot');
+    src: url('fonts/SairaStencilOne-Regular.eot?#iefix') format('embedded-opentype'),
+        url('fonts/SairaStencilOne-Regular.woff2') format('woff2'),
+        url('fonts/SairaStencilOne-Regular.woff') format('woff'),
+        url('fonts/SairaStencilOne-Regular.ttf') format('truetype'),
+        url('fonts/SairaStencilOne-Regular.svg#SairaStencilOne-Regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: fallback;
+}
+
+.cancelled {
+  float: right;
+  transform: rotate(350deg) translate(-50%, 10%);
+  transform-origin: center;
+  text-align: center;
+  opacity: 0.85;
+  font-size: 1.25em;
+  color: #F00;
+  text-transform: uppercase;
+  font-family: 'Saira Stencil One';
 }
