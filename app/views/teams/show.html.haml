@@ -22,7 +22,7 @@
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.address')
             %td{ id: 'address' }
-              = [team.address, team.city&.name].compact.join(', ')
+              = [team.address.to_s, team&.city&.name.to_s].compact.join(', ')
           %tr
             %th{ scope: 'row' }
               = t('activerecord.attributes.goggles_db/team.home_page_url')

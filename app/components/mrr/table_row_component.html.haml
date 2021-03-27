@@ -1,0 +1,17 @@
+%tbody
+  %tr
+    %td.text-right
+      = render(RankingPosComponent.new(rank: @mrr.rank))
+    %td.text-right
+      = @mrr.to_timing.to_s
+      - if laps?
+        %br/
+        = render(Switch::RotatingComponent.new(target_id: "laps#{@mrr.id}"))
+    %td
+      = relay_name
+    %td
+      .text-muted
+        = result_score
+
+- if laps?
+  = render(RelayLaps::TableComponent.new(relay_swimmers: @mrr.meeting_relay_swimmers))

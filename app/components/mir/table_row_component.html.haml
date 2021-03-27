@@ -1,0 +1,24 @@
+%tbody
+  %tr
+    %td.text-right
+      = render(RankingPosComponent.new(rank: @mir.rank))
+    %td.text-right
+      = @mir.to_timing.to_s
+      - if laps? || @mir.reaction_time > 0.0
+        %br/
+      - if @mir.reaction_time > 0.0
+        %small.text-muted
+          R: #{@mir.reaction_time}
+      = render(Switch::RotatingComponent.new(target_id: "laps#{@mir.id}")) if laps?
+    %td
+      = @mir.swimmer&.complete_name
+      %br/
+      %small.text-muted
+        #{@mir.swimmer&.year_of_birth} -
+        %i= @mir.team&.editable_name
+    %td
+      .text-muted
+        = result_score
+
+- if laps?
+  = render(Laps::TableComponent.new(laps: @mir.laps))

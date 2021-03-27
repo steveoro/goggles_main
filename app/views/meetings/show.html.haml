@@ -1,80 +1,33 @@
-:ruby
-  meeting = MeetingDecorator.decorate(@meeting)
-  ms = meeting.meeting_sessions.by_order.first
-  meeting_date = ms ? ms.scheduled_date : meeting.header_date
-  swimming_pool = ms ? SwimmingPoolDecorator.decorate(ms.swimming_pool) : nil
-
 .wrapper-body
   .spacer-left
 
-  .main-content
+  .main-content#top-of-page
     #meeting-show-title
-      %h4.text-center.pb-3
-        %i.fa.fa-map-marker
-        = t('meetings.dashboard.title')
-        &nbsp;
-        %small
-          %i.text-muted= t('meetings.dashboard.subtitle')
-        - if meeting.cancelled?
-          .cancelled= t('activerecord.attributes.goggles_db/meeting.cancelled')
+      = render(Meeting::TitleComponent.new(meeting: @meeting))
     #meeting-show-details
       %table.table.table-striped.table-sm
-        %thead
-          %tr
-            %td{ scope: 'row', class: 'bg-info text-light' }
-              = t('activerecord.attributes.goggles_db/meeting.name')
-            %td{ id: 'full-name' }
-              %b
-                - if meeting.edition_type.seasonal? || meeting.edition_type.yearly?
-                  #{meeting.description} #{meeting.edition_label}
-                - else
-                  #{meeting.edition_label} #{meeting.description}
         %tbody
-          - if swimming_pool
-            %tr
-              %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/meeting.address')
-              %td{ id: 'address' }
-                = [swimming_pool.address, swimming_pool.city&.name].compact.join(', ')
-                &nbsp;
-                = swimming_pool.link_to_maps_or_name
+          = render(Meeting::HeaderBodyComponent.new(meeting: @meeting))
+          = render(Meeting::MoreBodyComponent.new(meeting: @meeting))
 
-          %tr
-            %th{ scope: 'row' }
-              = t('activerecord.attributes.goggles_db/meeting.entry_deadline')
-            %td{ id: 'entry-deadline' }
-              = meeting.entry_deadline
-          %tr
-            %th{ scope: 'row' }
-              = t('activerecord.attributes.goggles_db/meeting.header_date')
-            %td{ id: 'header-date' }
-              = meeting_date
-
-          %tr
-            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/meeting.warm_up_pool')
-            %td{ id: 'warm-up-pool' }
-              = check_mark_icon_for(meeting.warm_up_pool?)
-          %tr
-            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/meeting.allows_under25')
-            %td{ id: 'allows-under25' }
-              = check_mark_icon_for(meeting.allows_under25?)
-          %tr
-            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/meeting.confirmed')
-            %td{ id: 'confirmed' }
-              = check_mark_icon_for(meeting.confirmed?)
-
-          %tr
-            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/meeting.reference_phone')
-            %td{ id: 'phone-number' }
-              = meeting.reference_phone
-          %tr
-            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/meeting.reference_e_mail')
-            %td{ id: 'e-mail' }
-              = meeting.reference_e_mail
-          %tr
-            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/meeting.reference_name')
-            %td{ id: 'contact-name' }
-              = meeting.reference_name
-
-          -# STATS: *** WIP ***
+    #meeting-show-results
+      %table.table.table-striped.table-sm
+        - @meeting_events&.by_order&.each_with_index do |meeting_event, index|
+          - prgs_for_event = GogglesDb::MeetingProgram.where(meeting_event_id: meeting_event.id).joins(:meeting_event,
+              :event_type, :category_type, :gender_type).includes(:meeting_event, :event_type, :category_type,
+              :gender_type).order('category_types.age_begin, gender_types.id DESC')
+          %thead
+            = render(Mevent::RowSeparatorComponent.new) if index.positive? # skip first separator
+            = render(Mevent::RowTitleComponent.new(meeting_event: meeting_event))
+          = render(Mevent::RowLinksComponent.new(meeting_events: @meeting_events))
+          - prgs_for_event.each do |mprg|
+            = render(Mprg::RowSeparatorComponent.new)
+            = render(Mprg::RowLinksComponent.new(meeting_programs: prgs_for_event))
+            %thead
+              = render(Mprg::RowTitleComponent.new(meeting_program: mprg))
+              - if mprg.relay?
+                = render(MRR::TableComponent.new(mrrs: mprg.meeting_relay_results.includes(:team)))
+              - else
+                = render(MIR::TableComponent.new(mirs: mprg.meeting_individual_results.includes(:swimmer, :team)))
 
   .spacer-right

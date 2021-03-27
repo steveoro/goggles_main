@@ -7,3 +7,5 @@ it:
     dashboard:
       title: Meeting
       subtitle: Dettagli
+      reference: Riferimento
+      swimming_pool: Piscina

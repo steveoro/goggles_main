@@ -1,0 +1,18 @@
+%tbody
+  - if @swimming_pool
+    %tr{ scope: 'row', colspan: 4 }
+      %th{ colspan: 2 }
+        = t('meetings.dashboard.swimming_pool')
+      %td{ id: 'swimming-pool', colspan: 2 }
+        = @swimming_pool.link_to_full_name
+  %tr{ scope: 'row', colspan: 4 }
+    %th{ colspan: 2 }
+      = t('activerecord.attributes.goggles_db/meeting.entry_deadline')
+    %td{ id: 'entry-deadline', colspan: 2 }
+      = @meeting.entry_deadline
+  %tr{ scope: 'row', colspan: 4 }
+    %th{ colspan: 2 }
+      = t('activerecord.attributes.goggles_db/meeting.header_date')
+    %td{ id: 'header-date', colspan: 2 }
+      = @meeting_date
+      = render(Switch::RotatingComponent.new(target_id: @subpage_target_id))

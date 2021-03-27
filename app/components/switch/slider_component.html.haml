@@ -1,0 +1,5 @@
+%label.switch
+  %input{ type: 'checkbox' }
+  %span.slider.collapsed{ id: "toggle-#{@target_id}", 'data-toggle' => 'collapse',
+    href: "##{@target_id}", role: 'button', class: @option_classes,
+    'aria-expanded' => 'false', 'aria-controls' => "switch for #{@target_id}" }/

@@ -1,0 +1,19 @@
+%tr.collapse{ id: dom_id }
+  %td.text-muted.text-right{ colspan: 2 }
+    %small
+      = @relay_swimmer.stroke_type&.label
+      - if @relay_swimmer.reaction_time > 0.0
+        %br/
+        .text-muted
+        R: #{@relay_swimmer.reaction_time}
+
+  %td.text-left{ colspan: 2 }
+    %small
+      = @relay_swimmer.to_timing&.to_s
+      &nbsp;
+      %i.fa.fa-long-arrow-right
+      &nbsp;
+      #{timing_from_start} ⏱
+      %br/
+      %i.text-muted
+        = swimmer_text_label_with_age

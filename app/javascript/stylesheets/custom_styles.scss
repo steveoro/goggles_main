@@ -1,0 +1,73 @@
+/**
+      === Big red oblique stamp ("Cancelled"/"Void") ===
+ */
+.cancelled {
+  float: right;
+  transform: rotate(350deg) translate(-50%, 25%);
+  transform-origin: center;
+  text-align: center;
+  opacity: 0.85;
+  font-size: 1.25em;
+  color: #F00;
+  text-transform: uppercase;
+  font-family: 'Saira Stencil One';
+}
+// ----------------------------------------------------------------------------
+
+/**
+      === Dashboard ("Show full"): Sticky table headers: ===
+ */
+table.table thead tr th.sticky-header,
+table.table.table-responsive-sm thead tr th.sticky-header {
+  background: white;
+  position: sticky;
+  top: 0; /* Required for the stickiness */
+  border-collapse: collapse;
+  border: 0px;
+  padding: 0.5em;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+}
+
+/**
+      === Dashboard ("Show full"): in-table separators: ===
+ */
+.table thead th.mevent-separator {
+  border: 0;
+  padding-top: 4rem;
+  text-align: center;
+}
+.table thead th.mevent-links {
+  font-size: 85%;
+  font-weight: 600;
+  vertical-align: middle;
+  text-align: center;
+  border: 0;
+}
+
+.table thead th.mprg-links {
+  font-size: 75%;
+  font-weight: 500;
+  vertical-align: middle;
+  text-align: left;
+  border: 0;
+  padding: 0.1rem;
+}
+// ----------------------------------------------------------------------------
+
+/**
+      === Simple collapse link with flip up/down unicode ===
+ */
+a.expand-button:after,
+a.expand-button:visited:after
+{
+  content: '🔼';
+  text-decoration: none;
+}
+
+a.expand-button.collapsed:after,
+a.expand-button.collapsed:visited:after
+{
+  content: '🔽';
+  text-decoration: none;
+}

@@ -1,0 +1,17 @@
+/**
+      === Swipe-Element widget wrapper: ===
+
+  Wrapper container for the simple swipe-element widget.
+  - See app/javascript/src/swipe_element.js
+
+ */
+.swipe-wrapper {
+  // user-select: none; // Uncomment to disable text selection
+
+  /*
+    Options for 'touch-action':
+    - none => pass all touches to javascript
+    - pan-y pinch-zoom => allow vertical usage
+   */
+  touch-action: pan-y pinch-zoom;
+}

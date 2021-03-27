@@ -1,0 +1,57 @@
+/**
+      === Rotating switch ===
+
+  - Structure for '.rotating-toggle' switch:
+
+      %label.switch-sm.pr-3
+        %input{ type: 'checkbox' }
+          %span.rotating-toggle.collapsed{ id: <id>, 'data-toggle' => 'collapse', ... }/
+
+*/
+
+
+/* 'switch-sm': wrapper for .rotating-toggle */
+.switch-sm {
+  position: relative;
+  display: inline-block;
+  width: 1.5em;
+  height: 1em;
+}
+
+/* Hide the default checkbox: */
+.switch-sm input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/**
+      === Rotating toggle-switch: ===
+ */
+.rotating-toggle {
+  position: absolute;
+  cursor: pointer;
+  -webkit-transition: 0.25s;
+  transition: 0.25s;
+}
+.rotating-toggle:before {
+	position: absolute;
+  margin-top: 2px;
+  width: 1rem;
+  text-transform: uppercase;
+  font-family: monospace;
+  font-size: 0.8rem;
+  border: solid 1px;
+  border-radius: 30%;
+  box-shadow: 0px 0px 2px #2370ad;
+  content: "+";
+  text-align: center;
+  vertical-align: baseline;
+  -webkit-transition: 0.25s;
+  transition: 0.25s;
+}
+
+input:checked + .rotating-toggle:before {
+  content: "-";
+  transform: rotate(180deg);
+}

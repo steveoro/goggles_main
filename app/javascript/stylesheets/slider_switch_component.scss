@@ -1,0 +1,85 @@
+/**
+      === Slider switch ===
+
+  - Structure for '.slider' switch:
+
+      %label.switch
+        %input{ type: 'checkbox' }
+          %span.slider.round.collapsed{ id: <id>, 'data-toggle' => 'collapse', ... }/
+
+  Slider supports:
+  - rounded borders: use '.round'; default: squared
+  - red background: use '.red'; default: green
+*/
+
+/* 'switch': wrapper for .slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 2em;
+  height: 1em;
+}
+
+/* Hide the default checkbox: */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/**
+      === Slider switch: ===
+ */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  padding: 0.5rem;
+  top: 2px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.25s;
+  transition: 0.25s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 0.70em;
+  width: 0.70em;
+  left: 0.25em;
+  bottom: 0.15em;
+  background-color: white;
+  -webkit-transition: 0.25s;
+  transition: 0.25s;
+}
+
+/* Default background color: */
+input:checked + .slider {
+  background-color: #28a745;
+}
+input:focus + .slider {
+  box-shadow: 0 0 1px #28a745;
+}
+
+/* Alternative background color: */
+input:checked + .slider.red {
+  background-color: #dc3545;
+}
+input:focus + .slider.red {
+  box-shadow: 0 0 1px #dc3545;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(0.85em);
+  -ms-transform: translateX(0.85em);
+  transform: translateX(0.85em);
+}
+
+/* Rounded sliders (default is squared) */
+.slider.round {
+  border-radius: 1em;
+}
+.slider.round:before {
+  border-radius: 50%;
+}

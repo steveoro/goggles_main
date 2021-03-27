@@ -16,6 +16,7 @@ require("@rails/activestorage").start()
 require('channels')
 
 import '../controllers/stimulus_setup'
+import './components'
 
 // Styles:
 import '../stylesheets/application'

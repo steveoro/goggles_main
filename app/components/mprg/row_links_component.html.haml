@@ -1,0 +1,10 @@
+%thead
+  - [GogglesDb::GenderType.female, GogglesDb::GenderType.male].each do |gender_type|
+    %tr
+      %th.mprg-links
+        &nbsp;#{gender_type.label}:
+      %th.mprg-links{ colspan: 3 }
+        - @meeting_programs.where(gender_type_id: gender_type.id).each do |mprg|
+          = link_to(mprg.category_type&.short_name,
+            "#mprg-#{mprg.id}-#{mprg.category_type_id}-#{mprg.gender_type_id}",
+            { 'data-turbolinks' => 'false' })

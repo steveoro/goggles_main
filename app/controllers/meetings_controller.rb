@@ -7,10 +7,23 @@ class MeetingsController < ApplicationController
   # == Params
   # - :id, required
   def show
-    @meeting = GogglesDb::Meeting.find_by(id: params.permit(:id)[:id])
-    return unless @meeting.nil?
+    @meeting = GogglesDb::Meeting.where(id: meeting_params[:id]).first
+    if @meeting.nil?
+      flash[:warning] = I18n.t('search_view.errors.invalid_request')
+      redirect_to(root_path) && return
+    end
 
-    flash[:warning] = I18n.t('search_view.errors.invalid_request')
-    redirect_to(root_path)
+    @meeting_events = @meeting.meeting_events
+                              .joins(:meeting_session, :event_type, :stroke_type)
+                              .includes(:meeting_session, :event_type, :stroke_type)
+                              .unscope(:order)
+                              .order('meeting_sessions.session_order, meeting_events.event_order')
+  end
+
+  protected
+
+  # Strong parameters checking
+  def meeting_params
+    params.permit(:id)
   end
 end

@@ -1,0 +1,3 @@
+%tbody
+  - @laps.includes(:meeting_individual_result).by_distance.each do |lap|
+    = render(Laps::TableRowComponent.new(lap: lap))

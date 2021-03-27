@@ -1,0 +1,5 @@
+%label.switch-sm.pr-3
+  %input{ type: 'checkbox' }
+  %span.rotating-toggle.collapsed{ id: "toggle-#{@target_id}", 'data-toggle' => 'collapse',
+    href: "##{@target_id}", role: 'button', class: @color,
+    'aria-expanded' => 'false', 'aria-controls' => "switch for #{@target_id}" }/
