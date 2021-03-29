@@ -1,5 +1,5 @@
 FROM ruby:2.7.2-alpine
-LABEL AUTHOR=steve.alloro@gmail.com version="0.1.89"
+LABEL AUTHOR=steve.alloro@gmail.com version="0.1.90"
 
 ENV BUNDLER_VERSION=2.2.7 \
     INSTALL_PATH=/app \
