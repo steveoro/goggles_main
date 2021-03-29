@@ -39,30 +39,5 @@ module Laps
     def dom_id
       "laps#{@lap.meeting_individual_result_id}"
     end
-
-    # Memoized correlated Laps
-    def related_laps
-      @related_laps ||= @lap.meeting_individual_result.laps
-    end
-
-    # WIP: move this into core DB
-    def timing_from_start
-      # TEST THIS: / then include in lap model
-      # if lap.seconds_from_start.present?
-      #   Timing.new(
-      #     hundredths: lap.hundredths_from_start,
-      #     seconds: lap.seconds_from_start,
-      #     minutes: lap.minutes_from_start
-      #   )
-      # else
-      precending_laps = related_laps.by_distance
-                                    .where('length_in_meters <= ?', @lap.length_in_meters)
-      Timing.new(
-        hundredths: precending_laps.sum(:hundredths),
-        seconds: precending_laps.sum(:seconds),
-        minutes: precending_laps.sum(:minutes)
-      )
-      # end
-    end
   end
 end

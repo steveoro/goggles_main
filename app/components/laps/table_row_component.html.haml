@@ -4,8 +4,8 @@
       %i= @lap.length_in_meters
   %td.text-left{ colspan: 2 }
     %small
-      = @lap.to_timing&.to_s
+      = @lap.to_timing.to_s
       &nbsp;
       %i.fa.fa-long-arrow-right
       &nbsp;
-      #{timing_from_start} ⏱
+      #{@lap.timing_from_start} ⏱
