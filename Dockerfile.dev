@@ -38,6 +38,7 @@ RUN apk add --update --no-cache \
     nodejs \
     openssl \
     pkgconfig \
+    shared-mime-info \
     tzdata \
     yarn
 
