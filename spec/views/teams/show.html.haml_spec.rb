@@ -20,8 +20,8 @@ RSpec.describe 'teams/show.html.haml', type: :view do
     it 'shows the address' do
       node = Nokogiri::HTML.fragment(rendered).at_css('td#address')
       expect(node).to be_present
-      expect(node.text).to include(fixture_row.address)
-      expect(node.text).to include(fixture_row.city&.name)
+      expect(node.text).to include(fixture_row.address.to_s)
+      expect(node.text).to include(fixture_row.city&.name) if fixture_row.city
     end
     it 'shows the home_page_url' do
       node = Nokogiri::HTML.fragment(rendered).at_css('td#homepage')
