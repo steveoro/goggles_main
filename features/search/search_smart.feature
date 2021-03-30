@@ -11,7 +11,7 @@ Feature: Search anything from the root page
     When I browse to '/'
     And I search for <query_string>
     Then the '<model_name>' search results are displayed, all matching <query_string>
-    And the pagination controls are visible
+    And the pagination controls are present
     Examples:
       | model_name    | query_string | min_count |
       | swimmer       | 'Anna'       |         5 |

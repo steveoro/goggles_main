@@ -20,11 +20,11 @@ Then('no search results are visible') do
   expect(page).not_to have_css('.swipe-wrapper')
 end
 
-Then('the pagination controls are visible') do
+Then('the pagination controls are present') do
   content_node = find('.swipe-wrapper', visible: true)
   expect(content_node).to have_css('#paginator-controls')
   paginator_node = find('#paginator-controls')
-  expect(paginator_node).to be_visible
+  expect(paginator_node).to be_present
 end
 
 Then('the pagination controls are not present') do
