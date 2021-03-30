@@ -18,10 +18,10 @@ class APISessionsController < ApplicationController
       return
     end
 
-    token = GogglesDb::JwtManager.encode(
+    token = GogglesDb::JWTManager.encode(
       { user_id: current_user.id },
       Rails.application.credentials.api_static_key
-      # use defalt session length (@see GogglesDb::JwtManager::TOKEN_LIFE)
+      # use defalt session length (@see GogglesDb::JWTManager::TOKEN_LIFE)
     )
     render(json: { jwt: token })
   end
