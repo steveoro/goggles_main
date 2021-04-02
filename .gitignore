@@ -72,3 +72,5 @@ yarn-debug.log*
 
 # Ignore editors settings
 .vscode/*
+
+/config/credentials/production.key

@@ -6,48 +6,44 @@ services:
     container_name: goggles-db.dev
     ports:
       - '33060:3306'
-    env_file:
-      - .env
     restart: always
     volumes:
-      - type: volume
-        source: db_data
-        target: /var/lib/mysql
-        volume:
-          nocopy: true
+      - "~/Projects/goggles_deploy/db.prod:/var/lib/mysql"
 
   api:
-    image: steveoro/goggles-api:dev-0.1.90
+    image: "steveoro/goggles-api:dev-${TAG}"
     depends_on:
       - goggles-db
     container_name: goggles-api.dev
-    env_file:
-      - .env
-    restart: always
     ports:
-      - '8088:8088'
+      - '8081:8081'
+    restart: always
     volumes:
-      - "~/Projects/goggles_api/db/dump:/app/db/dump"
-      - "~/Projects/goggles_api/config/master.key:/app/config/master.key"
+      - "~/Projects/goggles_deploy/db.prod:/var/lib/mysql"
+      - "~/Projects/goggles_deploy/backups:/app/db/dump"
+      - "~/Projects/goggles_deploy/master-api.key:/app/config/master.key"
 
-  app:
+  main:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    image: steveoro/goggles-main:dev-0.1.90
+    image: "steveoro/goggles-main:dev-${TAG}"
     depends_on:
       - goggles-db
+      - api
     container_name: goggles-main.dev
-    restart: always
     ports:
       - '8080:8080'
-    env_file:
-      - .env
+    restart: always
     volumes:
-      - "~/Projects/goggles_main/db/dump:/app/db/dump"
-      - "~/Projects/goggles_main/config/master.key:/app/config/master.key"
+      - "~/Projects/goggles_deploy/db.prod:/var/lib/mysql"
+      - "~/Projects/goggles_deploy/backups:/app/db/dump"
+      - "~/Projects/goggles_deploy/master-main.key:/app/config/master.key"
+
+networks:
+  default:
+    name: dev
 
 volumes:
-  db_data:
   gem_cache:
   node_modules:

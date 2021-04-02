@@ -23,8 +23,10 @@ Rails.application.configure do
 
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.
-  config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
-  config.serve_static_assets = false
+  # [Steve A.] In case we run directly from Puma (i.e., inside a Docker container
+  # reached from a reverse proxy) the public file server must remain enabled:
+  config.public_file_server.enabled = true # ENV['RAILS_SERVE_STATIC_FILES'].present?
+  config.serve_static_assets = true
   # false = Disable Rails's static (precompiled) asset server
   # (must be false when running under Apache or Nginx)
 

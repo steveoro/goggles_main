@@ -1,18 +1,7 @@
-FROM ruby:2.7.2-alpine
-LABEL AUTHOR=steve.alloro@gmail.com version="0.1.90"
-
+# --- Common stuff:
+FROM ruby:2.7.2-alpine AS common_builder
 ENV BUNDLER_VERSION=2.2.7 \
-    INSTALL_PATH=/app \
-    RAILS_ENV=development \
-    DATABASE_NAME=goggles_development \
-    DATABASE_HOST=goggles-db \
-    DATABASE_PORT=3306 \
-    DATABASE_USER=root
-
-# Current export defaults:
-# BUNDLE_APP_CONFIG='/usr/local/bundle'
-# BUNDLE_PATH='/usr/local/bundle'
-# GEM_HOME='/usr/local/bundle'
+    INSTALL_PATH=/app
 
 RUN mkdir -p $INSTALL_PATH
 RUN apk add --update --no-cache \
@@ -52,6 +41,21 @@ RUN apk add --update --no-cache \
 
 # App image:
 RUN gem install bundler -v $BUNDLER_VERSION
+
+# --- Image-specific stuff:
+FROM common_builder
+ENV RAILS_ENV=development \
+    DATABASE_NAME=goggles_development \
+    DATABASE_HOST=goggles-db \
+    DATABASE_PORT=3306 \
+    DATABASE_USER=root \
+    DISABLE_SPRING=true
+
+# Current export defaults:
+# BUNDLE_APP_CONFIG='/usr/local/bundle'
+# BUNDLE_PATH='/usr/local/bundle'
+# GEM_HOME='/usr/local/bundle'
+
 WORKDIR $INSTALL_PATH
 COPY . ./
 RUN bundle config build.nokogiri --use-system-libraries
@@ -59,5 +63,11 @@ COPY ./config/database.docker.yml ./config/database.yml
 
 RUN bundle check || bundle install
 RUN yarn install --check-files
+
+# Keep the version argument at the end to avoid early cache miss during builds:
+ARG TAG
+ENV TAG=${TAG:-latest}
+RUN echo 'Version: $TAG'
+LABEL AUTHOR=steve.alloro@gmail.com VERSION=$TAG
 
 ENTRYPOINT ["./entrypoints/docker.dev.sh"]
