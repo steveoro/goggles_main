@@ -23,17 +23,17 @@ global_job_config:
   # the credentials master key and it will be then required locally for each run on the result image.
   prologue:
     commands:
-        - checkout
-        - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
-        - echo $RAILS_MASTER_KEY > config/master.key
-        - mkdir -pv tmp
-        # Make sure we are using Bundler 2+:
-        - gem i bundler
-        # Use GogglesDb::VERSION as master reference here, or force a minor version change to rebuild the cache:
-        - cache restore bundle-1.93-$(checksum Gemfile.lock yarn.lock)
-        - sem-version ruby 2.7
-        - bundle config set path 'vendor/bundle'
-        - GIT_LFS_SKIP_SMUDGE=1 bundle install
+      - checkout
+      - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+      - echo $RAILS_MASTER_KEY > config/master.key
+      - mkdir -pv tmp
+      # Make sure we are using Bundler 2+:
+      - gem i bundler
+      # Use GogglesDb::VERSION as master reference here, or force a minor version change to rebuild the cache:
+      - cache restore bundle-1.93-$(checksum Gemfile.lock yarn.lock)
+      - sem-version ruby 2.7
+      - bundle config set path 'vendor/bundle'
+      - GIT_LFS_SKIP_SMUDGE=1 bundle install
 
 blocks:
   # Skip if there's a tag
