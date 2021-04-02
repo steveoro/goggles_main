@@ -32,6 +32,10 @@ global_job_config:
       - sem-version ruby 2.7
       - bundle config set path 'vendor/bundle'
       - GIT_LFS_SKIP_SMUDGE=1 bundle install
+      - cp config/database.semaphore_2.yml config/database.yml
+      - RAILS_ENV=production bundle exec rails assets:precompile
+      # The first pull will build the local cache for all the layers so that the build will act on the diff:
+      - 'docker pull $DOCKERHUB_USERNAME/goggles-main:latest || true'
 
 blocks:
   # Skip if there's a tag
@@ -39,11 +43,6 @@ blocks:
     skip:
       when: "tag =~ '.*'"
     task:
-      prologue:
-        commands:
-          # The first pull will build the local cache for all the layers so that the build will act on the diff:
-          - 'docker pull $DOCKERHUB_USERNAME/goggles-main:latest || true'
-          - RAILS_ENV=production bundle exec rails assets:precompile
       jobs:
         - name: Docker latest
           commands:
@@ -58,9 +57,6 @@ blocks:
       prologue:
         commands:
           - echo 'Current TAG $SEMAPHORE_GIT_TAG_NAME'
-          # The first pull will build the local cache for all the layers so that the build will act on the diff:
-          - 'docker pull $DOCKERHUB_USERNAME/goggles-main:latest || true'
-          - RAILS_ENV=production bundle exec rails assets:precompile
       jobs:
         - name: Docker dev
           commands:
