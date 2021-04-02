@@ -4,6 +4,8 @@ services:
   goggles-db:
     image: mariadb:latest
     container_name: goggles-db.dev
+    env_file:
+      - .env
     ports:
       - '33060:3306'
     restart: always
@@ -15,6 +17,8 @@ services:
     depends_on:
       - goggles-db
     container_name: goggles-api.dev
+    env_file:
+      - .env
     ports:
       - '8081:8081'
     restart: always
@@ -32,6 +36,8 @@ services:
       - goggles-db
       - api
     container_name: goggles-main.dev
+    env_file:
+      - .env
     ports:
       - '8080:8080'
     restart: always
