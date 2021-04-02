@@ -17,3 +17,11 @@ development:
 test:
   <<: *default
   database: goggles_test
+
+production:
+  <<: *default
+  database: goggles
+
+staging:
+  <<: *default
+  database: goggles
