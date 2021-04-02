@@ -166,4 +166,4 @@ promotions:
   - name: Docker images
     pipeline_file: semaphore_docker_build.yml
     auto_promote:
-      when: branch = 'main' AND result = 'passed'
+      when: result = 'passed'
