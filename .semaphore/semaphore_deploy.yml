@@ -1,0 +1,61 @@
+version: v1.0
+name: Docker build
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+fail_fast:
+  stop:
+    when: 'true'
+auto_cancel:
+  running:
+    when: 'true'
+
+global_job_config:
+  # Connect secrets to all jobs in the pipeline:
+  # (actual values can be edited on Semaphore 2.0 org dashboard)
+  secrets:
+    - name: DockerHub-steveoro-login
+    - name: GogglesMain
+    - name: RemoteServer
+
+  prologue:
+    commands:
+      - mkdir .ssh && touch .ssh/id_rsa.pub
+      - echo $SSH_RSA_KEY > .ssh/id_rsa.pub
+      - ssh deploy@$SSH_SERVER
+      - cd Projects/goggles_deploy
+      - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+
+blocks:
+  # Skip if there's a tag
+  - name: Deploy latest image (staging)
+    skip:
+      when: "tag =~ '.*'"
+    task:
+      jobs:
+        - name: Staging
+          commands:
+            - 'docker pull $DOCKERHUB_USERNAME/goggles-main:latest || true'
+            - 'docker-compose -f docker-compose.deploy_staging.yml down'
+            - 'docker-compose -f docker-compose.deploy_staging.yml up -d'
+            - exit
+
+  # Run only if there's a tag
+  - name: Deploy tagged image (production)
+    run:
+      when: "tag =~ '.*'"
+    task:
+      prologue:
+        commands:
+          - echo 'Current TAG $SEMAPHORE_GIT_TAG_NAME'
+      jobs:
+        - name: Production
+          commands:
+            - 'docker pull $DOCKERHUB_USERNAME/goggles-main:prod-$SEMAPHORE_GIT_TAG_NAME || true'
+            - 'export TAG=$SEMAPHORE_GIT_TAG_NAME'
+            - echo 'Set TAG $TAG'
+            - 'docker-compose -f docker-compose.deploy_prod.yml down'
+            - 'docker-compose -f docker-compose.deploy_prod.yml up -d'
+            - exit

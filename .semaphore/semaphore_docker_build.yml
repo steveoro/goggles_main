@@ -38,7 +38,7 @@ global_job_config:
 
 blocks:
   # Skip if there's a tag
-  - name: Build latest image
+  - name: Build latest image (staging)
     skip:
       when: "tag =~ '.*'"
     task:
@@ -46,7 +46,7 @@ blocks:
         - name: Docker latest
           commands:
             - RAILS_ENV=production bundle exec rails assets:precompile
-            - 'docker build -t $DOCKERHUB_USERNAME/goggles-main:latest --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.prod .'
+            - 'docker build -t $DOCKERHUB_USERNAME/goggles-main:latest --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.staging .'
             - 'docker push $DOCKERHUB_USERNAME/goggles-main:latest'
 
   # Run only if there's a tag
@@ -74,3 +74,9 @@ blocks:
             - RAILS_ENV=production bundle exec rails assets:precompile
             - 'docker build -t $DOCKERHUB_USERNAME/goggles-main:prod-$SEMAPHORE_GIT_TAG_NAME --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.prod .'
             - 'docker push $DOCKERHUB_USERNAME/goggles-main:prod-$SEMAPHORE_GIT_TAG_NAME'
+
+promotions:
+  - name: Deploy
+    pipeline_file: semaphore_deploy.yml
+    auto_promote:
+      when: result = 'passed'
