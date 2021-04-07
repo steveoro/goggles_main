@@ -23,12 +23,10 @@ global_job_config:
   prologue:
     commands:
       - mkdir -p .ssh
-      - echo $SSH_RSA_PRIV > .ssh/id_rsa_deploy
-      - echo $SSH_RSA_KEY > .ssh/id_rsa_deploy.pub
       - ssh-keyscan -H $SSH_SERVER >> ~/.ssh/known_hosts
-      - echo 'Host $SSH_SERVER' >> .ssh/config
+      - echo Host $SSH_SERVER >> .ssh/config
       - echo 'IdentityFile ~/.ssh/id_rsa_deploy' >> .ssh/config
-      - ssh deploy@$SSH_SERVER
+      - ssh -v deploy@$SSH_SERVER
       - cd Projects/goggles_deploy
       - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
 
