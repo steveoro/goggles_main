@@ -26,6 +26,8 @@ global_job_config:
       - ssh-keyscan -H $SSH_SERVER >> ~/.ssh/known_hosts
       - echo Host $SSH_SERVER >> .ssh/config
       - echo 'IdentityFile ~/.ssh/id_rsa_deploy' >> .ssh/config
+      - chmod 600 ~/.ssh/id_rsa_deploy
+      - chmod 644 ~/.ssh/id_rsa_deploy.pub
       - ssh -v deploy@$SSH_SERVER
       - cd Projects/goggles_deploy
       - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
