@@ -24,6 +24,7 @@ global_job_config:
     commands:
       - mkdir -p .ssh && touch .ssh/id_rsa_deploy.pub
       - echo $SSH_RSA_KEY > .ssh/id_rsa_deploy.pub
+      - ssh-keyscan -H $SSH_SERVER >> ~/.ssh/known_hosts
       - ssh deploy@$SSH_SERVER
       - cd Projects/goggles_deploy
       - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
