@@ -3,7 +3,7 @@
 #
 # == Versioning codes
 #
-#   - version:  7.93
+#   - version:  7.94
 #   - author:   Steve A.
 #
 # Framework version number usually differs from core engine versioning number.
@@ -22,10 +22,10 @@ module Version
   MAJOR   = '7'
 
   # Minor version.
-  MINOR   = '93'
+  MINOR   = '94'
 
   # Current build version.
-  BUILD   = '20210402'
+  BUILD   = '20210408'
 
   # Full versioning for the current release.
   FULL    = "#{MAJOR}.#{MINOR}.#{BUILD} (#{CORE})"

@@ -28,38 +28,24 @@ global_job_config:
       - echo 'IdentityFile ~/.ssh/id_rsa_deploy' >> .ssh/config
       - chmod 600 ~/.ssh/id_rsa_deploy
       - chmod 644 ~/.ssh/id_rsa_deploy.pub
-      - ssh deploy@$SSH_SERVER
-      - cd Projects/goggles_deploy
-      - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
 
 blocks:
   # Skip if there's a tag
-  - name: Deploy latest image (staging)
+  - name: Latest image (staging)
     skip:
       when: "tag =~ '.*'"
     task:
       jobs:
         - name: Staging
           commands:
-            - 'docker pull $DOCKERHUB_USERNAME/goggles-main:latest || true'
-            - 'docker-compose -f docker-compose.deploy_staging.yml down'
-            - 'docker-compose -f docker-compose.deploy_staging.yml up -d'
-            - exit
+            - ssh deploy@$SSH_SERVER "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_staging.sh"
 
   # Run only if there's a tag
-  - name: Deploy tagged image (production)
+  - name: Tagged image (production)
     run:
       when: "tag =~ '.*'"
     task:
-      prologue:
-        commands:
-          - echo 'Current TAG $SEMAPHORE_GIT_TAG_NAME'
       jobs:
         - name: Production
           commands:
-            - 'docker pull $DOCKERHUB_USERNAME/goggles-main:prod-$SEMAPHORE_GIT_TAG_NAME || true'
-            - 'export TAG=$SEMAPHORE_GIT_TAG_NAME'
-            - echo 'Set TAG $TAG'
-            - 'docker-compose -f docker-compose.deploy_prod.yml down'
-            - 'docker-compose -f docker-compose.deploy_prod.yml up -d'
-            - exit
+            - ssh deploy@$SSH_SERVER "TAG=$SEMAPHORE_GIT_TAG_NAME DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_prod.sh"
