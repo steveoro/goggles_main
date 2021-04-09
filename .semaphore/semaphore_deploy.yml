@@ -1,0 +1,51 @@
+version: v1.0
+name: Deploy Main
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+fail_fast:
+  stop:
+    when: 'true'
+auto_cancel:
+  running:
+    when: 'true'
+
+global_job_config:
+  # Connect secrets to all jobs in the pipeline:
+  # (actual values can be edited on Semaphore 2.0 org dashboard)
+  secrets:
+    - name: DockerHub-steveoro-login
+    - name: GogglesMain
+    - name: RemoteServer
+
+  prologue:
+    commands:
+      - mkdir -p .ssh
+      - ssh-keyscan -H $SSH_SERVER >> ~/.ssh/known_hosts
+      - echo Host $SSH_SERVER >> .ssh/config
+      - echo 'IdentityFile ~/.ssh/id_rsa_deploy' >> .ssh/config
+      - chmod 600 ~/.ssh/id_rsa_deploy
+      - chmod 644 ~/.ssh/id_rsa_deploy.pub
+
+blocks:
+  # Skip if there's a tag
+  - name: Latest image (staging)
+    skip:
+      when: "tag =~ '.*'"
+    task:
+      jobs:
+        - name: Staging
+          commands:
+            - ssh deploy@$SSH_SERVER "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_staging.sh"
+
+  # Run only if there's a tag
+  - name: Tagged image (production)
+    run:
+      when: "tag =~ '.*'"
+    task:
+      jobs:
+        - name: Production
+          commands:
+            - ssh deploy@$SSH_SERVER "TAG=$SEMAPHORE_GIT_TAG_NAME DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_prod.sh"
