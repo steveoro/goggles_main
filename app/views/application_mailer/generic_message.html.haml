@@ -1,0 +1,7 @@
+.shadow-box
+  = render('goggles/shared_mailer_title')
+  %p.centered
+    = t('devise.mailer.email_changed.greeting', recipient: @user.name.titleize)
+    &nbsp;٩( ▀ ͜͞ʖ▀)۶
+  %br/
+  = @content_body.html_safe
