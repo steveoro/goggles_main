@@ -4,7 +4,8 @@
 
     🏊 🏊 🏊
 
-<%= t('devise.mailer.email_changed.greeting', recipient: @user.name.titleize) %>
-    ٩( ▀ ͜͞ʖ▀)۶
+<% if @user_name.present? %>
+<%= t('devise.mailer.email_changed.greeting', recipient: @user_name.titleize) %>  ٩( ▀ ͜͞ʖ▀)۶
+<% end %>
 
 <%= @content_body.html_safe %>

@@ -28,6 +28,7 @@ RUN apk add --update --no-cache \
     openssl \
     pkgconfig \
     shared-mime-info \
+    ssmtp \
     tzdata \
     yarn
 
@@ -45,6 +46,7 @@ RUN gem install bundler -v $BUNDLER_VERSION
 # --- Image-specific stuff:
 FROM common_builder
 ENV RAILS_ENV=production \
+    NODE_ENV=production \
     DATABASE_NAME=goggles \
     DATABASE_HOST=goggles-db \
     DATABASE_PORT=3306 \
@@ -67,7 +69,7 @@ RUN yarn install --check-files
 # Keep the version argument at the end to avoid early cache miss during builds:
 ARG TAG
 ENV TAG=${TAG:-latest}
-RUN echo 'Version: $TAG'
+RUN echo "Version: $TAG"
 LABEL AUTHOR=steve.alloro@gmail.com VERSION=$TAG
 
 ENTRYPOINT ["./entrypoints/docker.prod.sh"]

@@ -12,20 +12,22 @@ class ApplicationMailer < ActionMailer::Base
   layout 'mailer'
 
   # Generates a generic application e-mail with a custom subject and body,
-  # to a specific User instance.
+  # to a specific User email.
   #
   # == Params:
-  # - +user+: the chosen User instance;
+  # - +user_email+: e-mail address for the message;
+  # - +user_name+: user name used for the greetings (can be +nil+ to disable the greetings line);
   # - +subject_text+: text for the Subject field;
-  # - +content_body+: the actual contents of the mail body, rendered as html_safe.
+  # - +content_body+: the actual contents of the mail body, rendered as html_safe inside a styled box.
   #
-  def generic_message(user, subject_text, content_body)
-    @user  = user
-    @host  = HOSTNAME
+  def generic_message(user_email, user_name, subject_text, content_body)
+    @user_email = user_email
+    @user_name = user_name
+    @host = HOSTNAME
     @content_body = content_body
     mail(
       subject: "[Goggles@#{@host}] #{subject_text}",
-      to: @user.email,
+      to: @user_email,
       date: Time.now
     )
   end

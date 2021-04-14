@@ -13,7 +13,7 @@ services:
       - "~/Projects/goggles_deploy/db.staging:/var/lib/mysql"
 
   api.staging:
-    image: "steveoro/goggles-api:staging-${TAG}"
+    image: "steveoro/goggles-api:latest"
     depends_on:
       - goggles-db.staging
     container_name: goggles-api.staging
@@ -25,13 +25,14 @@ services:
     volumes:
       - "~/Projects/goggles_deploy/db.staging:/var/lib/mysql"
       - "~/Projects/goggles_deploy/backups:/app/db/dump"
+      - "~/Projects/goggles_deploy/log.staging/api:/app/log"
       - "~/Projects/goggles_deploy/master-api.key:/app/config/master.key"
 
   main.staging:
     build:
       context: .
       dockerfile: Dockerfile.staging
-    image: "steveoro/goggles-main:staging-${TAG}"
+    image: "steveoro/goggles-main:latest"
     depends_on:
       - goggles-db.staging
       - api.staging
@@ -44,6 +45,7 @@ services:
     volumes:
       - "~/Projects/goggles_deploy/db.staging:/var/lib/mysql"
       - "~/Projects/goggles_deploy/backups:/app/db/dump"
+      - "~/Projects/goggles_deploy/log.staging:/app/log"
       - "~/Projects/goggles_deploy/master-main.key:/app/config/master.key"
 
 networks:
