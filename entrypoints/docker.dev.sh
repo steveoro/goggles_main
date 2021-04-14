@@ -12,7 +12,7 @@ GATEWAY_IP=${GATEWAY_IP% dev*}
 # $GATEWAY_IP shall hold the actual Gateway IP; substitue default value (localhost) with
 # the Gateway, so that we can relay messages outside the container, provided there's a
 # submission service listening to the bridge network (typically, Postfix).
-sed -i 's/mailhub=.\+/mailhub=$GATEWAY_IP/' /etc/ssmtp/ssmtp.conf
+sed -i "s/mailhub=.\+/mailhub=$GATEWAY_IP/" /etc/ssmtp/ssmtp.conf
 
 # Don't block server start in case a previous PID file is left:
 if [ -f tmp/pids/server.pid ]; then
