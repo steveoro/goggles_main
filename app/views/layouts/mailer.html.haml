@@ -5,6 +5,7 @@
     %meta{ name: 'description', content: 'Master-Goggles mailer' }/
     %meta{ name: 'author', content: 'FASAR Software, Steve Alloro, 2012-2021' }/
     %title Master-Goggles.org
-    = render('goggles/inline_mailer_styles')
   %body
+    / (GMail doesn't support styles in the Head section - this needs to stay in the body)
+    = render('goggles/inline_mailer_styles')
     = yield
