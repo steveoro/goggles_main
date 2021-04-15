@@ -33,4 +33,27 @@ class ApplicationMailer < ActionMailer::Base
   end
   #-- -------------------------------------------------------------------------
   #++
+
+  # Generates a system application text-only e-mail to custom addresses.
+  #
+  # == Params:
+  # - +user+: a User instance displayed in detail inside the body; can be +nil+ to skip displaying it
+  # - +to_address+: destination e-mail
+  # - +cc_address+: array of addtional destination e-mail addresses (as strings); set this to +nil+ or empty to skip
+  # - +subject_text+: text for the Subject field
+  # - +content_body+: the actual contents of the mail body, rendered as text with no styles.
+  #
+  def system_message(user, to_address, cc_address, subject_text, content_body)
+    @user = user
+    @host = HOSTNAME
+    @content_body = content_body
+    mail(
+      subject: "[Goggles@#{@host}] [SYS] #{subject_text}",
+      to: to_address,
+      cc: cc_address,
+      date: Time.now
+    )
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 end

@@ -1,0 +1,21 @@
+<% if @user.present? %>
+*** Involved User: ***
+- id: <%= @user.id %>
+- name: <%= @user.name %>
+- first_name: <%= @user.first_name %>
+- last_name: <%= @user.last_name %>
+- year_of_birth: <%= @user.year_of_birth %>
+- description: <%= @user.description %>
+- swimmer_id: <%= @user.swimmer_id %>
+<% if @user.swimmer.present? %>
+
+=> associated Swimmer:
+- first_name: <%= @user.swimmer.first_name %>
+- last_name: <%= @user.swimmer.last_name %>
+- year_of_birth: <%= @user.swimmer.year_of_birth %>
+<% end %>
+<% end %>
+
+---- o ----
+
+<%= @content_body.to_s %>
