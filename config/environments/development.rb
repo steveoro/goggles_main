@@ -26,7 +26,6 @@ Rails.application.configure do
     }
   else
     config.action_controller.perform_caching = false
-
     config.cache_store = :null_store
   end
 
@@ -60,8 +59,21 @@ Rails.application.configure do
   # Suppress logger output for asset requests.
   config.assets.quiet = true
 
-  # [Steve A.] Discriminate between local assets:precompile runs for production/staging:
+  # Discriminate between local assets:precompile runs for production/staging:
   config.assets.prefix = '/dev-assets'
+  # ** Note: **
+  # The path above will end up in /public after each dynamic recompilation.
+  #
+  # If precompiled assets are available, they will be served - even if they no longer
+  # match the original (uncompiled) assets, and even on the development server.
+  #
+  # Ensure that the development server always compiles assets on-the-fly by configuring the
+  # development environment to keep precompiled assets in a different location than production.
+  # (Otherwise, any assets precompiled for use in production will clobber requests for them in development.)
+  #
+  # Note also that:
+  # - The asset precompile task in your deployment tool (e.g., Capistrano) should be disabled.
+  # - Any necessary compressors or minifiers must be available on your development system.
 
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true

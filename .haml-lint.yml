@@ -10,3 +10,7 @@ linters:
   IdNames:
     exclude:
       - 'app/views/devise/shared/_error_messages.html.haml'
+
+  ViewLength:
+    exclude:
+      - 'app/views/goggles/_inline_mailer_styles.html.haml'

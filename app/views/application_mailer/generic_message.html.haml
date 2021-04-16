@@ -1,8 +1,8 @@
-.shadow-box
-  = render('goggles/shared_mailer_title')
-  - if @user_name.present?
-    %p.centered
-      = t('devise.mailer.email_changed.greeting', recipient: @user_name.titleize)
-      &nbsp;٩( ▀ ͜͞ʖ▀)۶
-  %br/
-  = @content_body.html_safe
+- if @user_name.present?
+  - content_for(:template_subtitle) do
+    - require 'goggles_db/version'
+    = t('devise.mailer.email_changed.greeting', recipient: @user_name.titleize)
+    &nbsp;
+    = GogglesDb::Version::EMOJI_HELLO
+
+= @content_body.html_safe

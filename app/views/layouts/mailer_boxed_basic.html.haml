@@ -1,0 +1,50 @@
+!!!
+%html{ xmlns: 'http://www.w3.org/1999/xhtml' }
+  %head
+    %meta{ content: 'text/html; charset=UTF-8', 'http-equiv' => 'Content-Type' }/
+    %meta{ name: 'description', content: 'Master-Goggles mailer' }/
+    %meta{ name: 'author', content: 'FASAR Software, Steve Alloro, 2012-2021' }/
+    %title Master-Goggles.org
+    = render('goggles/inline_mailer_styles')
+
+  %body{ leftmargin: '0', marginheight: '0', marginwidth: '0', offset: '0', topmargin: '0' }
+    %center
+      %table#body-table{ align: 'center', border: '0', cellpadding: '0', cellspacing: '0',
+        height: '100%', width: '100%' }
+        %tr
+          %td#body-cell{ align: 'center', valign: 'top' }
+            / BEGIN TEMPLATE //
+            %table#template-container{ border: '0', cellpadding: '0', cellspacing: '0' }
+              %tr
+                %td{ align: 'center', valign: 'top' }
+                  / BEGIN HEADER //
+                  %table#template-header{ border: '0', cellpadding: '0', cellspacing: '0', width: '100%' }
+                    %tr
+                      %td.headerContent{ valign: 'top' }
+                        = render('goggles/shared_mailer_title')
+                  / // END HEADER
+              %tr
+                %td{ align: 'center', valign: 'top' }
+                  / BEGIN BODY //
+                  %table#template-body{ border: '0', cellpadding: '0', cellspacing: '0', width: '100%' }
+                    %tr
+                      %td.bodyContent{ valign: 'top' }
+                        %h3= yield(:template_subtitle)
+                        %br/
+                        = yield
+              %tr
+                %td{ align: 'center', valign: 'top' }
+                  / BEGIN FOOTER //
+                  %table#template-footer{ border: '0', cellpadding: '0', cellspacing: '0', width: '100%' }
+                    %tr
+                      %td.footer-content{ align: 'center', valign: 'top' }
+                        %a{ href: 'https://master-goggles.org' }> Goggles
+                        &nbsp;v. #{Version::FULL},&nbsp;
+                        %em © 2012-2021 FASAR Software, IT
+                        &nbsp;|&nbsp;Links:&nbsp;
+                        %a{ href: 'https://twitter.com/master_goggles' }> Twitter
+                        &nbsp;-&nbsp;
+                        %a{ href: 'https://www.facebook.com/MasterGoggles' }> Facebook
+                        %br/
+                  / // END FOOTER
+            / // END TEMPLATE

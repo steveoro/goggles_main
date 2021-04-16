@@ -3,36 +3,43 @@
 #
 # == Versioning codes
 #
-#   - version:  7.99
+#   - version:  7-0.2.01
 #   - author:   Steve A.
 #
 # Framework version number usually differs from core engine versioning number.
 # Actual Semantic versioning code is stored into 'goggles_db'.
-#
-# To get the correct Semantic versioning number, use:
+# To be sure getting the correct Semantic versioning number, either use:
 #
 # > require 'goggles_db/version'
 # > GogglesDb::VERSION
 #
+# Or:
+#
+# > require 'version'
+# > Version::SEMANTIC
+#
 module Version
   # Framework Core internal name.
-  CORE    = 'C7'
+  CORE = 'C7'
 
   # Major version.
-  MAJOR   = '7'
+  MAJOR = '0'
 
   # Minor version.
-  MINOR   = '99'
+  MINOR = '2'
+
+  # Patch version.
+  PATCH = '01'
 
   # Current build version.
-  BUILD   = '20210415'
+  BUILD = '20210416'
 
   # Full versioning for the current release.
-  FULL    = "#{MAJOR}.#{MINOR}.#{BUILD} (#{CORE})"
+  FULL = "#{MAJOR}.#{MINOR}.#{PATCH} (#{CORE}-#{BUILD})"
 
-  # Compact versioning label for the current release.
-  COMPACT = "#{MAJOR.gsub('.', '')}#{MINOR}"
+  # Compact semantic versioning label for the current framework release.
+  SEMANTIC = "#{MAJOR}.#{MINOR}.#{PATCH}"
 
   # Current internal DB version (independent from migrations and framework release)
-  DB      = '1.88.0'
+  DB = '1.88.0'
 end

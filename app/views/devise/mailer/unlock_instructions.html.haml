@@ -1,10 +1,7 @@
-= render('goggles/inline_mailer_styles')
-.shadow-box
-  = render('goggles/shared_mailer_title')
-  %p.centered
-    = t('.greeting', recipient: @resource.email)
-    &nbsp;٩( ▀ ͜͞ʖ▀)۶
-  %p= t('.message')
-  %p= t('.instruction')
-  %p.centered
-    = link_to t('.action'), unlock_url(@resource, unlock_token: @token)
+- content_for(:template_subtitle) do
+  = t('.greeting', recipient: @resource.email)
+  &nbsp;٩( ▀ ͜͞ʖ▀)۶
+%p= t('.message')
+%p= t('.instruction')
+%p.centered
+  = link_to t('.action'), unlock_url(@resource, unlock_token: @token)

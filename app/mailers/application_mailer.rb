@@ -8,8 +8,8 @@ class ApplicationMailer < ActionMailer::Base
   HOSTNAME = Rails.application.config.action_mailer.default_url_options[:host]
 
   # Internal Mailer address for the "From" field :
-  default from: "Goggles Mailer <no-reply@#{HOSTNAME}>"
-  layout 'mailer'
+  default from: "'Goggles Mailer' <no-reply@#{HOSTNAME}>"
+  layout 'mailer_boxed_basic'
 
   # Generates a generic application e-mail with a custom subject and body,
   # to a specific User email.
