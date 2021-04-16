@@ -15,6 +15,9 @@ export GATEWAY_IP=${GATEWAY_IP% dev*}
 sed -i "s/mailhub=.\+/mailhub=$GATEWAY_IP/" /etc/ssmtp/ssmtp.conf
 sed -i "s/#rewriteDomain=.\+/rewriteDomain=master-goggles.org/" /etc/ssmtp/ssmtp.conf
 sed -i "s/#hostname=.\+/hostname=master-goggles.org/" /etc/ssmtp/ssmtp.conf
+# Rewrite the reverse aliases for ssmtp:
+echo "# sSMTP aliases" > /etc/ssmtp/revaliases
+echo "root:no-reply@master-goggles.org" >> /etc/ssmtp/revaliases
 
 # Don't block server start in case a previous PID file is left:
 if [ -f tmp/pids/server.pid ]; then

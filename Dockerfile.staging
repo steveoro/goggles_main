@@ -27,6 +27,7 @@ RUN apk add --update --no-cache \
     nodejs \
     openssl \
     pkgconfig \
+    shadow \
     shared-mime-info \
     ssmtp \
     tzdata \
@@ -39,6 +40,9 @@ RUN apk add --update --no-cache \
 # RUN adduser -D -g '' -u $USER_ID -G dev dev
 # RUN chown -R dev:dev $INSTALL_PATH
 # USER $USER_ID
+
+# Rename the default container user which will result as sending out all e-mails:
+RUN usermod -c 'Goggles Staging Mailer' root
 
 # App image:
 RUN gem install bundler -v $BUNDLER_VERSION
