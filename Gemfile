@@ -30,6 +30,7 @@ gem 'webpacker'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'browser' # detect request.variant type depending on request.user_agent
+gem 'daemons'
 gem 'delayed_job_active_record'
 # [Steve A.] Force a specific version of Devise, supporting OAuth2:
 gem 'devise', github: 'heartcombo/devise', branch: 'ca-omniauth-2'

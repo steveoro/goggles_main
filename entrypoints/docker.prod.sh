@@ -24,5 +24,8 @@ if [ -f tmp/pids/server.pid ]; then
   rm tmp/pids/server.pid
 fi
 
-# Start our server and don't use Spring in production:
+# Start DelayedJob back-end for ActiveJob (smaller memory footprint than Resque)
+bin/delayed_job start
+
+# Start our server and don't use Spring in production/staging:
 DISABLE_SPRING=true bundle exec rails s -b 0.0.0.0 -p 8080
