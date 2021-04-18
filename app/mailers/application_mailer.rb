@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'goggles_db/version'
+
 # = ApplicationMailer
 #
 # Common parent mailer

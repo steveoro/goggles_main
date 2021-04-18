@@ -106,7 +106,7 @@ Check out our [Wiki :link:](https://github.com/steveoro/goggles_db/wiki) and the
 
 ## Deployment instructions
 
-:construction: TODO :construction:
+The build pipeline will yield an auto-deploy
 
 
 * * *

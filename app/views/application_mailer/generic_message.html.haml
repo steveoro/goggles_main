@@ -1,6 +1,5 @@
 - if @user_name.present?
   - content_for(:template_subtitle) do
-    - require 'goggles_db/version'
     = t('devise.mailer.email_changed.greeting', recipient: @user_name.titleize)
     &nbsp;
     = GogglesDb::Version::EMOJI_HELLO
