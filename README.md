@@ -104,9 +104,13 @@ Check out our [Wiki :link:](https://github.com/steveoro/goggles_db/wiki) and the
 * * *
 
 
-## Deployment instructions
+## Deployment
 
-The build pipeline will yield an auto-deploy
+The build pipeline is configure for auto-deploy on each successful build.
+
+Untagged changes will yield a `staging` deployment, while any tagged release (made from GitHub) will yield a `production` deployment.
+
+See the [Wiki page about the build pipeline](https://github.com/steveoro/goggles_db/wiki/HOWTO-devops-build_pipeline_setup) for more details.
 
 
 * * *
