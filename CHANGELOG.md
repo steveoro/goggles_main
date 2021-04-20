@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.2.05** [Steve A.] fixed Semaphore configuration for production deploys
 - **0.2.01** [Steve A.] improved build pipeline, mailer template styles and localhost configuration
 - **0.1.93** [Steve A.] revised Docker builds & continuous deployment procedure
 - **0.1.80** [Steve A.] custom Devise views & improved layouts; added OAuth2 support for Google & Facebook direct login

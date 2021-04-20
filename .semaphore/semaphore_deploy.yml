@@ -22,6 +22,7 @@ global_job_config:
 
   prologue:
     commands:
+      # Prepare login to deploy server:
       - mkdir -p .ssh
       - ssh-keyscan -H $SSH_SERVER >> ~/.ssh/known_hosts
       - echo Host $SSH_SERVER >> .ssh/config
@@ -48,4 +49,5 @@ blocks:
       jobs:
         - name: Production
           commands:
-            - ssh deploy@$SSH_SERVER "TAG=$SEMAPHORE_GIT_TAG_NAME DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_prod.sh"
+            # The deploy script for production will need all parameters so that it can update the .env file:
+            - ssh deploy@$SSH_SERVER "TAG=$SEMAPHORE_GIT_TAG_NAME MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_prod.sh"
