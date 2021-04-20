@@ -1,0 +1,55 @@
+version: '3.7'
+
+services:
+  goggles-db.staging:
+    image: mariadb:latest
+    container_name: goggles-db.staging
+    env_file:
+      - .env
+    ports:
+      - '33070:3306'
+    restart: always
+    volumes:
+      - "~/Projects/goggles_deploy/db.staging:/var/lib/mysql"
+
+  api.staging:
+    image: "steveoro/goggles-api:latest"
+    depends_on:
+      - goggles-db.staging
+    container_name: goggles-api.staging
+    env_file:
+      - .env
+    ports:
+      - '9081:8081'
+    restart: always
+    volumes:
+      - "~/Projects/goggles_deploy/db.staging:/var/lib/mysql"
+      - "~/Projects/goggles_deploy/backups:/app/db/dump"
+      - "~/Projects/goggles_deploy/log.staging/api:/app/log"
+      - "~/Projects/goggles_deploy/master-api.key:/app/config/master.key"
+
+  main.staging:
+    image: "steveoro/goggles-main:latest"
+    depends_on:
+      - goggles-db.staging
+      - api.staging
+    container_name: goggles-main.staging
+    env_file:
+      - .env
+    ports:
+      - '9080:8080'
+    restart: always
+    volumes:
+      - "~/Projects/goggles_deploy/staging.rb:/app/config/environments/staging.rb"
+      - "~/Projects/goggles_deploy/db.staging:/var/lib/mysql"
+      - "~/Projects/goggles_deploy/backups:/app/db/dump"
+      - "~/Projects/goggles_deploy/log.staging:/app/log"
+      - "~/Projects/goggles_deploy/master-main.key:/app/config/master.key"
+
+networks:
+  default:
+    name: staging
+
+volumes:
+  gem_cache:
+  node_modules:
