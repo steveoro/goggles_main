@@ -38,7 +38,7 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   Max: 40
   CountAsOne: ['array', 'heredoc']
-  IgnoredMethods: ['describe', 'context', 'define']
+  IgnoredMethods: ['describe', 'context', 'define', 'namespace']
 
 Metrics/ClassLength:
   Max: 120
@@ -67,3 +67,7 @@ Style/Documentation:
     - 'app/helpers/application_helper.rb'
     - 'app/mailers/application_mailer.rb'
     - 'app/models/application_record.rb'
+
+Style/FormatStringToken:
+  Exclude:
+    - 'lib/capistrano/tasks/*'

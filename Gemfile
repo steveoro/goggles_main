@@ -58,6 +58,7 @@ gem 'view_component', require: 'view_component/engine'
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'capistrano', require: false
   gem 'guard'
   gem 'guard-brakeman'
   gem 'guard-bundler', require: false
