@@ -8,21 +8,27 @@ namespace :log do
 
     The current deploy stage name defines which kind of log files you can tail ('production' or 'staging').
 
+
+    ** Parameter: **
+
+    - kind: '[api]', '[api_audit]' or nil
+
+
     ** Usage: **
 
-      > cap <STAGE> logs:tail
+      > cap <STAGE> log:tail
       To tail the Rails app log
 
     Or:
-      > cap <STAGE> logs:tail[api]
+      > cap <STAGE> log:tail[api]
       To tail the Rails API log file
 
     Or:
-      > cap <STAGE> logs:tail[api_audit]
+      > cap <STAGE> log:tail[api_audit]
       To tail the api_audit.log file
 
     Remember that if you use zsh you'll need to format it with single quotes as:
-      > cap <STAGE> 'logs:tail[logfile]'
+      > cap <STAGE> 'log:tail[logfile]'
 
   DESC
   task :tail, :kind do |_t, args|
