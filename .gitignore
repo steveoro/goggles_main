@@ -28,8 +28,7 @@ pickle-email-*.html
 # Ignore uploaded files in development.
 /storage/*
 !/storage/.keep
-/db/dump/*.sql
-/db/dump/*.bz2
+/db/dump/*
 !/db/dump/.keep
 /coverage/*
 # if using bower-rails ignore default bower_components path bower.json files
