@@ -99,8 +99,8 @@ namespace :db do
     Loops on all the '.sql' files found in a specified directory, uploads and executes them in
     alphabetical order on the remote host, one by one, using the corresponding <STAGE> database.
 
-    When successfully done, each uploaded '.sql' file is consumed (deleted); errors and warnings
-    are intecepted and presented on the console. In case of errors, the loop is halted.
+    When successfully run, each uploaded '.sql' file is consumed (deleted); errors and warnings
+    are intercepted and presented on the console. In case of errors, the loop is halted.
 
     The source folder files are always left untouched (not moved nor consumed in any case).
 
