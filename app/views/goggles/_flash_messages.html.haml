@@ -1,21 +1,4 @@
-- if notice || flash[:info] || flash[:warning] || alert || flash[:alert] || flash[:error]
-  #flash-dialog
-    .modal.fade{ 'aria-hidden' => 'true', 'aria-labelledby' => 'Info flash message',
-                 role: 'dialog', tabindex: '-1', 'data-toggle' => 'modal' }
-      .modal-dialog.modal-dialog-centered{ role: 'document' }
-        .modal-content
-          .modal-header
-            %h5.modal-title
-              - if flash[:error]
-                %i.fa.fa-2x.fa-exclamation-triangle.text-danger{ 'aria-hidden' => 'true' }
-              - elsif flash[:warning]
-                %i.fa.fa-2x.fa-info-circle.text-warning{ 'aria-hidden' => 'true' }
-              - elsif alert || flash[:alert]
-                %i.fa.fa-2x.fa-exclamation-circle.text-secondary{ 'aria-hidden' => 'true' }
-              - elsif notice || flash[:info]
-                %i.fa.fa-2x.fa-info-circle.text-success{ 'aria-hidden' => 'true' }
-              &nbsp;
-            %button.close{ 'aria-label' => 'Close', 'data-dismiss' => 'modal', type: 'button' }
-              %span{ 'aria-hidden' => 'true' } ×
-          .modal-body#flash-content-body
-            .flash-body= flash[:error] || alert || flash[:alert] || flash[:warning] || notice || flash[:info]
+#flash-messages
+  - FlashAlertComponent::SUPPORTED_SYMS.each do |symbol|
+    - if flash[symbol]
+      = render(FlashAlertComponent.new(symbol: symbol, body: flash[symbol]))

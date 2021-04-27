@@ -1,5 +1,5 @@
 !!!
-%html
+%html{ lang: I18n.locale }
   %head
     %meta{ content: 'text/html; charset=UTF-8', 'http-equiv' => 'Content-Type' }/
     %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' }/
@@ -21,7 +21,7 @@
       .wrapper-body
         .spacer-left
         .main-content
-          #flash-messages
+          #flash-messages-container
             = render(partial: 'goggles/flash_messages')
         .spacer-right
 

@@ -1,8 +1,6 @@
 %nav.navbar.navbar-expand-lg.navbar-light.bg-light
   %a.navbar-brand{ href: root_path }
     Goggles
-    .float-right.ml-2.d-none#loading-indicator
-      .spinner-border.text-primary{ role: 'status', 'aria-hidden' => 'true' }
 
   %button.navbar-toggler{ 'aria-controls' => 'navbar-content',
                           'aria-expanded' => 'false',
@@ -43,3 +41,6 @@
                               class: 'nav-link text-primary')
         %li.nav-item= link_to(t('home.sign_up'), new_user_registration_path,
                               class: 'nav-link text-success')
+
+.fixed-top.text-center.mt-2.d-none#loading-indicator
+  .spinner-border.text-primary{ role: 'status', 'aria-hidden' => 'true' }
