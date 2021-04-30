@@ -3,7 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe 'home/index.html.haml', type: :view do
-  before(:each) { render }
+  before(:each) do
+    assign(:app_settings_row, GogglesDb::AppParameter.versioning_row)
+    render
+  end
 
   context 'before searching anything,' do
     it 'shows the query search box' do
@@ -12,6 +15,7 @@ RSpec.describe 'home/index.html.haml', type: :view do
       expect(rendered).to match(/id=['"]q['"]/)
       expect(rendered).to match(/id=['"]btn-search['"]/)
     end
+
     it 'has an empty query as default' do
       # Verify node content with Nokogiri:
       node = Nokogiri::HTML.fragment(rendered).at_css('#q')

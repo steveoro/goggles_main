@@ -60,6 +60,7 @@ Style/ClassAndModuleChildren:
 
 Style/Documentation:
   Exclude:
+    - 'db/migrate/**/*'
     - 'spec/**/*'
     - 'test/**/*'
     - 'config/application.rb'

@@ -24,6 +24,9 @@ if [ -f tmp/pids/server.pid ]; then
   rm tmp/pids/server.pid
 fi
 
+# Apply pending migrations just for Main UI
+bundle exec rails db:migrate
+
 # Start DelayedJob back-end for ActiveJob (smaller memory footprint than Resque)
 bin/delayed_job start
 

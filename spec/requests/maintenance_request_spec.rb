@@ -24,7 +24,7 @@ RSpec.describe 'Maintenances', type: :request do
       context 'any other request' do
         it 'redirects to maintenance_path' do
           # Just a few sample paths:
-          get([root_path, home_contact_us_path, home_about_us_path, search_smart_path].sample)
+          get([root_path, home_contact_us_path, home_about_path, search_smart_path].sample)
           expect(response).to redirect_to(maintenance_path)
         end
       end

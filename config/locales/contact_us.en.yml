@@ -1,8 +1,0 @@
-en:
-  contact_us:
-    title: "Contact us"
-    message_placeholder: "I'd like to know if..."
-    email_label: "E-Mail"
-    email_placeholder: "E-Mail"
-    send_button: "Send"
-    ask_confirmation: "Ready to send the message?"

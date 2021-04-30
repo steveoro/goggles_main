@@ -4,7 +4,7 @@
   .main-content
     .row-fluid.m-5
       .mr-1#search-box
-        = render('goggles/search_box')
+        = render(partial: 'goggles/search_box')
 
     .row-fluid
       .container#search-results
@@ -15,6 +15,6 @@
       %p &nbsp;
 
     %section.fixed-bottom#footer
-      = render('goggles/main_footer')
+      = render(Footer::MainComponent.new)
 
   .spacer-right

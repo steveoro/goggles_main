@@ -77,8 +77,8 @@ RSpec.configure do |config|
 
   # Add helpers to get Devise working with RSpec:
   config.include(Devise::TestHelpers, type: :features)
-  config.include(Devise::Test::ControllerHelpers, type: :view)
-  config.include(Devise::Test::IntegrationHelpers, type: :view)
+  config.include(Devise::Test::ControllerHelpers, type: :view) # (<-- these helpers include the Devise.mappings)
+  config.include(Devise::Test::IntegrationHelpers, type: :view) # (<-- whereas, these do not)
   config.include(Devise::Test::IntegrationHelpers, type: :request)
   config.include(Devise::Test::IntegrationHelpers, type: :controller)
 

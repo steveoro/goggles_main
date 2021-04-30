@@ -1,0 +1,12 @@
+%h4.text-center= t('privacy_policy.title')
+%ul
+  %li.my-1.mr-3= t('privacy_policy.point_1').html_safe
+  %li.my-1.mr-3= t('privacy_policy.point_2').html_safe
+  %li.my-1.mr-3= t('privacy_policy.point_3').html_safe
+  %li.my-1.mr-3= t('privacy_policy.point_4').html_safe
+  %li.my-1.mr-3= t('privacy_policy.point_5').html_safe
+  %li.my-1.mr-3= t('privacy_policy.point_6').html_safe
+  %ul
+    %li
+      = link_to(t('devise.registrations.edit.cancel_my_account'),
+        edit_user_registration_path(anchor: 'cancel-my-account'))

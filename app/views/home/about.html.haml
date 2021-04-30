@@ -1,0 +1,64 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    .row-fluid#about
+      %h4.text-center
+        = t('about.title')
+        = image_tag('goggles_blue_128', width: '64px')
+      %ul
+        %li.my-1.mr-3= t('about.point_1').html_safe
+        %li.my-1.mr-3= t('about.point_2').html_safe
+        %li.my-1.mr-3= t('about.point_3').html_safe
+        %li.my-1.mr-3= t('about.point_4').html_safe
+        %li.my-1.mr-3= t('about.point_5').html_safe
+
+    .row-fluid
+      %p &nbsp;
+    .row-fluid#how-does-it-work
+      = render(partial: 'how_does_it_work')
+
+    .row-fluid
+      %p &nbsp;
+    .row-fluid#who-we-are
+      %h5.mx-2.text-left= t('who_we_are.title')
+      %p.mx-2= t('who_we_are.point_1').html_safe
+
+    .row-fluid
+      %p &nbsp;
+    .row-fluid#contributing
+      = render(partial: 'contributing')
+
+    .row-fluid
+      %p &nbsp;
+      %hr.bg-info
+      %p &nbsp;
+
+    .row-fluid#faq
+      = render(partial: 'faq')
+
+    .row-fluid
+      %p &nbsp;
+      %hr.bg-info
+      %p &nbsp;
+
+    .row-fluid#privacy-policy
+      = render(partial: 'privacy_policy')
+
+    .row-fluid
+      %p &nbsp;
+    .row-fluid#legal-terms
+      = render(partial: 'legal_terms')
+
+    .row-fluid
+      %p &nbsp;
+      .text-center
+        %small
+          %i Made with ❤ in Reggio Emilia, Italy
+      %hr.bg-info
+      %p &nbsp;
+
+    .row-fluid
+      %p= link_to(t('about.go_back'), root_path)
+
+  .spacer-right

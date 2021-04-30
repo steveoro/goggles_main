@@ -13,11 +13,65 @@ it:
     privacy_policy:
       title: 'Termini legali & Privacy policy'
     terms_of_service: "This software is released 'as is', under the terms of the LGPL-3.0 license"
-    main_repo: "https://github.com/steveoro/goggles_main"
-    license_link: "https://github.com/steveoro/goggles_main/blob/main/LICENSE"
     title: 'Principale'
     current: '(attuale)'
     commands: 'comandi'
     compute_fin_score: 'calcola punteggio FIN'
     my_meetings: 'i miei Meeting'
     my_dashboard: 'la mia Dashboard'
+
+  about:
+    go_back: "< Torna alla pagina principale"
+    title: 'Goggles!'
+    point_1: "\"Master-Goggles\" (o, più informalmente, \"Goggles\") nasce tra il 2012 ed il 2013 dalla passione di un paio di pazzi programmatori che coincidentalmente sono anche nuotatori (o forse, vice-versa)."
+    point_2: "E' sostanzialmente una raccolta di risultati di gare Nuoto Master da circuiti nazionali e non, raccolte da più fonti (ufficiali e non), anche con l'aiuto dei suoi utenti."
+    point_3: "Non ha assolutamente scopi di lucro: volevamo solo un posto più comodo dove consultare i nostri risultati gara. ...E diciamocelo: i siti \"ufficiali\" spesso non sono mai come li vogliamo."
+    point_4: "E' totalmente auto-finanziato e gratuito per i suoi utenti. (Ma puoi contribuire, se vuoi.)"
+    point_5: "E' Open-Source, con licenza LGPL (v. più sotto)."
+
+  how_does_it_work:
+    title: 'Come funziona?'
+    point_1: "Gli utenti di Goggles sono una cosa separata dai nuotatori presenti nei risultati gara perché vengono da fonti di dati diverse: le anagrafiche dei risultati gara provengono dai dati pubblicati dalle singole Federazioni o dalle stesse squadre; gli utenti registrati tramite e-mail inseriscono solo nominativo e anno di nascita."
+    point_2: "Goggles cerca quindi di stabilire una corrispondenza tra il nome utente e data di nascita coi dati disponibili dei risultati delle gare di nuoto Master (non sempre ci riesce, ma si può comunque cambiare)."
+    point_3: "Avere un'associazione tra il proprio utente registrato ed un nuotatore nei risultati non è necessario ed è solo una scorciatoia per visualizzare le proprie statistiche e gli eventi a cui si è partecipato, ma avere un utente registrato ti permetterà anche di vedere le statistiche di tutti i nuotatori e le squadre."
+    point_4: "Goggles attualmente è molto \"concentrato\" sulla scena Nuoto Master Italiana - ma nulla impedisce di espanderlo in futuro ad altre realtà. Dal 2013 al 2019, Goggles ha indicizzato risultati di gare di nuoto soprattutto dal Circuito Nazionale FIN Master, dal CSI Master Regionale dell'Emilia Romagna ma, purtroppo, molto poco dei Circuiti UISP Master, LEN Master e FINA Master."
+    point_5: "Anche se i tuoi risultati gara non ci sono, puoi comunque accodarli per la registrazione direttamente tu o il tuo Coach di squadra tramite l'applicazione \"Chrono\" integrata."
+
+  who_we_are:
+    title: 'Chi siamo:'
+    point_1: "Stefano <i>(Steve)</i> Alloro & Marco <i>(Leega)</i> Ligabue, nuotatori \"diversamente giovani\" del C.S.I. Ober Ferrari di Reggio Emilia."
+
+  contributing:
+    title: 'Come posso contribuire?'
+    point_1: "Puoi inviarci i tuoi risultati o i singoli passaggi gara per accordarli in registrazione usando l'applicazione 'Chrono' integrata."
+    point_2: "Puoi contribuire con lo sviluppo del codice sorgente (tramite Pull-Request). Puoi cominciare da qui, proseguendo con la WiKi per maggiori informazioni:"
+    point_3: "Puoi fare piccole donazioni di Sponsorship per alleviare i costi di hosting del progetto:"
+
+  faq:
+    title: 'F.A.Q.'
+    q_1: "Hey! Dove diamine è finita <i>[inserisci qui la tua feature preferita delle versioni precedenti]</i>? Perchè non riesco a trovarla più?"
+    a_1: "Goggles v7+ è stato riscritto quasi completamente e molte delle feature ormai consolidate delle versioni precedenti devono ancora essere sviluppate. Puntiamo a rentrodurre tutto (o quasi), piano piano, prima o poi."
+
+  privacy_policy:
+    title: "Privacy Policy"
+    point_1: "<strong>Non condividiamo con nessuno i dati degli utenti</strong> (e-mail, nome e anno di nascita)."
+    point_2: "Il nome completo e l'anno di nascita di un utente registrato servono solo internamente per riconoscere in automatico i nuotatori fra le anagrafiche pubbliche dei risultati gara. (Più semplice: <i>\"se non sappiamo chi sei, non riusciamo a dirti che gare hai fatto fra i risultati che abbiamo\"</i>.)"
+    point_3: "<strong>Non utilizziamo cookie analitici</strong> di nessun tipo."
+    point_4: "Usiamo solamente i cookies di sessione per salvare certe impostazioni dell'utente corrente."
+    point_5: "<strong>Non tracciamo i nostri utenti</strong>. Alcune funzioni di Master-Goggles, come la <i>\"cartina dei Meeting più vicini\"</i> a te, potrebbero richiedere di attivare la Geo-Localizzazione, ma questo non è strettamente necessario se non si vuole."
+    point_6: "In qualsiasi momento, se hai un utente registrato e vuoi eliminare i dati del tuo utente, basta accedere alle proprie impostazioni e cliccare su <i>'Rimuovi il mio account'</i>. Scorciatoia alle impostazioni:"
+
+  legal_terms:
+    title: 'Termini Legali di utilizzo:'
+    point_1: "Questo Servizio Software viene fornito <i>\"come è\"</i>, con permessi, concessioni e restrizioni ereditate dalla Licenza LGPL-3.0."
+    point_2: 'Codice sorgente (principale)'
+    point_3: 'Licenza completa'
+
+  contact_us:
+    title: 'Contattaci'
+    tooltip: '(Nome utente ed e-mail saranno inclusi automaticamente.)'
+    message: "Messaggio da '%{user_name}'"
+    message_placeholder: "Vorrei sapere se..."
+    send_button: "Invia"
+    ask_confirmation: "Invio il messaggio?"
+    message_sent: "Il messaggio è stato inviato. Ti risponderemo il più presto possibile."

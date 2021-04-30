@@ -1,0 +1,9 @@
+%h5.mx-2.text-left= t('legal_terms.title')
+%p.mx-2= t('legal_terms.point_1').html_safe
+%ul
+  %li
+    %i.fa.fa-github
+    = link_to(t('legal_terms.point_2'), 'https://github.com/steveoro/goggles_main#readme')
+  %li
+    %i.fa.fa-file-text-o
+    = link_to(t('legal_terms.point_3'), 'https://raw.githubusercontent.com/steveoro/goggles_main/main/LICENSE')

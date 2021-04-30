@@ -2,11 +2,25 @@
   .spacer-left
 
   .main-content
-    .row-fluid
-      TO-DO
-
-    .row-fluid
-      %p &nbsp;
+    .row-fluid.m-4
+      #contact-us-box
+        %h2= t('contact_us.title')
+        = form_tag(home_contact_us_path, id: 'frm-contact-us', method: :post) do
+          .bg-light-yellow.p-1.pt-3.shadow-box
+            .form-row
+              .form-group.col.mx-3
+                = label_tag(:body, t('contact_us.message', user_name: current_user&.name))
+                %br/
+                = text_area_tag(:body, nil, rows: 5, autofocus: true, class: 'form-control',
+                                'aria-describedby' => 'message',
+                                placeholder: t('contact_us.message_placeholder'))
+                %small
+                  %i.form-text.text-muted
+                    = t('contact_us.tooltip')
+          .form-group.mt-2.col-auto
+            .actions
+              = submit_tag(t('contact_us.send_button'), id: 'contact-us-send-btn', class: 'btn btn-primary',
+                           data: { confirm: t('contact_us.ask_confirmation') })
     .row-fluid
       %p &nbsp;
 

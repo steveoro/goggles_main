@@ -11,10 +11,9 @@ Rails.application.routes.draw do
   post 'api_sessions/jwt'
 
   get 'home/index'
-  get 'home/about_us'
-  get 'home/about_this'
+  get 'home/about'
   get 'home/contact_us'
-  get 'home/privacy_policy'
+  post 'home/contact_us'
 
   put 'lookup/matching_swimmers'
 

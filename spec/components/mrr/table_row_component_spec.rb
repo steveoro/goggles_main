@@ -42,8 +42,7 @@ RSpec.describe MRR::TableRowComponent, type: :component do
         node = Nokogiri::HTML.fragment(subject).at_css('.rotating-toggle')
         expect(node).to be_present
       end
-      # TODO
-      xit 'renders all the available laps as individual collapsible rows' do
+      it 'renders all the available laps as individual collapsible rows' do
         node = Nokogiri::HTML.fragment(subject).css('tr.collapse')
         expect(node.count).to eq(fixture_mrr.meeting_relay_swimmers.count)
       end

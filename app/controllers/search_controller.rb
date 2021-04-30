@@ -57,6 +57,7 @@ class SearchController < ApplicationController
 
   # Sets the @swimmers member
   def prepare_swimmer_search_results
+    # (NOTE: fulltext search filters like #for_name do not need strong checking)
     @swimmers = GogglesDb::Swimmer.for_name(params['q'])
                                   .order(:complete_name, :year_of_birth)
                                   .page(params['page']).per(5)

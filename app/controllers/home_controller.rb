@@ -1,32 +1,45 @@
 # frozen_string_literal: true
 
+require 'version'
+
 # = HomeController
 #
 # Main landing actions.
 #
 class HomeController < ApplicationController
-  # Main landing page default action; includes "smart" search box
+  before_action :authenticate_user!, only: %i[contact_us]
+
+  # [GET] Main landing page default action.
+  # Includes the "smart" search box.
   def index
     # (no-op)
   end
 
-  # Show 'about us' information
-  def about_us
+  # [GET] Multi-section '#about' page.
+  # Includes privacy_policy plus much more.
+  def about
     # (no-op)
   end
 
-  # Show 'about this' information
-  def about_this
-    # (no-op)
-  end
-
-  # Show 'contact_us' form
+  # [GET/POST] Show the '#contact_us' form, only for registered users.
   def contact_us
-    # (no-op)
+    return unless request.post? && params['body'].present?
+
+    enqueue_contact_message
+    flash[:info] = I18n.t('contact_us.message_sent')
+    redirect_to root_path and return
   end
 
-  # Show 'privacy_policy' information
-  def privacy_policy
-    # (no-op)
+  private
+
+  # Prepares and enqueues the "contact us" email message
+  def enqueue_contact_message
+    ApplicationMailer.system_message(
+      current_user,
+      app_settings_row.settings(:framework_emails)&.contact, # to:
+      app_settings_row.settings(:framework_emails)&.admin, # cc:
+      "Msg from '#{current_user.name}'",
+      params['body']
+    ).deliver_later
   end
 end

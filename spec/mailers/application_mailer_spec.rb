@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe ApplicationMailer, type: :mailer do
+  include ActiveJob::TestHelper
+
   let(:user) { GogglesDb::User.first(50).sample }
   let(:email_subject) { FFaker::Lorem.sentence }
   # EMail bodies are enconded: any text longer than 73 chanraters will be split in multiple lines
@@ -11,6 +13,9 @@ RSpec.describe ApplicationMailer, type: :mailer do
 
   describe 'self.generic_message' do
     shared_examples_for 'ApplicationMailer.generic_message email common fields' do
+      it 'enqueues a mailers job when delivered later' do
+        expect { mail.deliver_later }.to have_enqueued_job.on_queue('mailers')
+      end
       it 'renders the specified headers' do
         expect(mail.subject).to include(email_subject)
         expect(mail.to).to include(user.email)
@@ -53,6 +58,9 @@ RSpec.describe ApplicationMailer, type: :mailer do
     let(:cc_address) { FFaker::Internet.email }
 
     shared_examples_for 'ApplicationMailer.system_message email common fields' do
+      it 'enqueues a mailers job when delivered later' do
+        expect { mail.deliver_later }.to have_enqueued_job.on_queue('mailers')
+      end
       it 'renders the specified headers' do
         expect(mail.subject).to include(email_subject).and include('[SYS]')
         expect(mail.to).to include(to_address)

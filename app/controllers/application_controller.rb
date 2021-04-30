@@ -6,8 +6,17 @@ require 'version'
 #
 # Common parent controller
 class ApplicationController < ActionController::Base
-  before_action :set_locale, :detect_device_variant, :check_maintenance_mode
+  before_action :app_settings_row, :set_locale, :detect_device_variant, :check_maintenance_mode
   before_action :configure_devise_permitted_parameters, if: :devise_controller?
+
+  protected
+
+  # Memoize base app settings
+  def app_settings_row
+    @app_settings_row ||= GogglesDb::AppParameter.versioning_row
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 
   private
 

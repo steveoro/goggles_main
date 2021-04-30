@@ -1,8 +1,0 @@
-it:
-  contact_us:
-    title: "Contattaci"
-    message_placeholder: "Vorrei sapere se..."
-    email_label: "E-Mail"
-    email_placeholder: "E-Mail"
-    send_button: "Invia"
-    ask_confirmation: "Invio il messaggio?"
