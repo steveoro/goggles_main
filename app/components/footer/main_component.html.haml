@@ -1,5 +1,8 @@
 %footer.bg-light.text-muted.text-center
   .row-fluid
+    = link_to(unicode_locale_flag(other_locale_code), home_index_path(locale: other_locale_code),
+              id: 'href-locale-switch')
+    &nbsp;|&nbsp;
     = link_to(t('contact_us.title'), home_contact_us_path, id: 'href-contact-us')
     &nbsp;|&nbsp;
     = link_to(t('home.privacy_policy.title'), home_about_path(anchor: 'privacy-policy'), id: 'href-privacy-policy')

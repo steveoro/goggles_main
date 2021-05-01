@@ -12,6 +12,12 @@ RSpec.describe Footer::MainComponent, type: :component do
     expect(rendered_footer).to be_present
   end
 
+  it 'includes the locale toggle switch link' do
+    node = rendered_footer.at_css('a#href-locale-switch')
+    expect(node).to be_present
+    expect(node['href']).to include(home_index_path.to_s)
+  end
+
   it 'includes the "contact us" link' do
     expect(rendered_footer.text).to include(I18n.t('contact_us.title'))
     expect(rendered_footer.at_css('a#href-contact-us')['href']).to include(home_contact_us_path.to_s)

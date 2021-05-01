@@ -2,7 +2,10 @@
 
 Rails.application.routes.draw do
   devise_for :users, class_name: 'GogglesDb::User',
-                     controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
+                     controllers: {
+                       omniauth_callbacks: 'users/omniauth_callbacks',
+                       registrations: 'users/registrations'
+                     }
   root to: 'home#index'
 
   # Mounting and usage of the Engine:

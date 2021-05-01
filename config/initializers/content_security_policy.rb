@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Be sure to restart your server when you modify this file.
 
 # Define an application-wide content security policy
@@ -10,10 +11,12 @@
 #   policy.font_src    :self, :https, :data
 #   policy.img_src     :self, :https, :data
 #   policy.object_src  :none
-#   policy.script_src  :self, :https
-#   policy.style_src   :self, :https
+#   policy.script_src  :self, :https, 'https://hcaptcha.com', 'https://*.hcaptcha.com'
+#   policy.style_src   :self, :https, 'https://hcaptcha.com', 'https://*.hcaptcha.com'
+#   policy.frame_src   'https://hcaptcha.com', 'https://*.hcaptcha.com'
+#   policy.connect_src :self, :https, 'https://hcaptcha.com', 'https://*.hcaptcha.com'
 #   # If you are using webpack-dev-server then specify webpack-dev-server host
-#   policy.connect_src :self, :https, "http://localhost:3035", "ws://localhost:3035" if Rails.env.development?
+#   # policy.connect_src :self, :https, "http://localhost:3035", "ws://localhost:3035" if Rails.env.development?
 
 #   # Specify URI for violation reports
 #   # policy.report_uri "/csp-violation-report-endpoint"

@@ -5,7 +5,7 @@ require 'version'
 #
 # = Footer components module
 #
-#   - version:  7.02
+#   - version:  7.08
 #   - author:   Steve A.
 #
 module Footer
@@ -16,6 +16,19 @@ module Footer
   # Includes the current version number.
   #
   class MainComponent < ViewComponent::Base
-    # (no-ops)
+    protected
+
+    # Returns the first locale available besides the current one.
+    #
+    # (Not an actual "locale switch" generic enough to sat aside as a
+    # stand-alone component, but given that we won't probably never have
+    # more than 2 locales, it's enough for now.)
+    def other_locale_code
+      I18n.available_locales.reject { |sym| sym == I18n.locale }.first
+    end
+
+    def unicode_locale_flag(locale_sym)
+      locale_sym == :it ? 'Versione 🇮🇹' : '🇬🇧 Version'
+    end
   end
 end

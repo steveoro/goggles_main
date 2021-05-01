@@ -59,7 +59,8 @@ it:
     point_3: "<strong>Non utilizziamo cookie analitici</strong> di nessun tipo."
     point_4: "Usiamo solamente i cookies di sessione per salvare certe impostazioni dell'utente corrente."
     point_5: "<strong>Non tracciamo i nostri utenti</strong>. Alcune funzioni di Master-Goggles, come la <i>\"cartina dei Meeting più vicini\"</i> a te, potrebbero richiedere di attivare la Geo-Localizzazione, ma questo non è strettamente necessario se non si vuole."
-    point_6: "In qualsiasi momento, se hai un utente registrato e vuoi eliminare i dati del tuo utente, basta accedere alle proprie impostazioni e cliccare su <i>'Rimuovi il mio account'</i>. Scorciatoia alle impostazioni:"
+    point_6: "Alcune parti di questo sito sono protette contro i bot tramite hCaptcha e la loro <a href=\"https://hcaptcha.com/privacy\">Privacy Policy</a> e <a href=\"https://hcaptcha.com/terms\">Termini di servizio</a> vanno applicati."
+    point_7: "In qualsiasi momento, se hai un utente registrato e vuoi eliminare i dati del tuo utente, basta accedere alle proprie impostazioni e cliccare su <i>'Rimuovi il mio account'</i>. Scorciatoia alle impostazioni:"
 
   legal_terms:
     title: 'Termini Legali di utilizzo:'
@@ -75,3 +76,6 @@ it:
     send_button: "Invia"
     ask_confirmation: "Invio il messaggio?"
     message_sent: "Il messaggio è stato inviato. Ti risponderemo il più presto possibile."
+
+  captcha:
+    error: "il test captcha non è stato verificato"

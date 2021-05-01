@@ -59,7 +59,8 @@ en:
     point_3: "<strong>We don't use any kind of analytical cookies</strong>."
     point_4: "We use session cookies just to store some user preferences during a login session."
     point_5: "<strong>We do not track our users.</strong> Some features of Master-Goggles, like the <i>\"Map of the Meetings near by\"</i> may require you to turn on geo-localization, but that's just if you want to use those features."
-    point_6: "In any given moment, if you have a registered user account and you want to delete your user data, you just need to log-in, go to your user preferences and click on <i>'Cancel my account'</i>. Shortcut to the preferences:"
+    point_6: "Some parts of this site are protected against bots by hCaptcha and its <a href=\"https://hcaptcha.com/privacy\">Privacy Policy</a> and <a href=\"https://hcaptcha.com/terms\">Terms of Service</a> apply."
+    point_7: "In any given moment, if you have a registered user account and you want to delete your user data, you just need to log-in, go to your user preferences and click on <i>'Cancel my account'</i>. Shortcut to the preferences:"
 
   legal_terms:
     title: 'Legal terms of use:'
@@ -75,3 +76,6 @@ en:
     send_button: "Send"
     ask_confirmation: "Ready to send the message?"
     message_sent: "The message has been sent. We'll get back to you as soon as possible."
+
+  captcha:
+    error: "the captcha test is invalid"

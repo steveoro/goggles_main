@@ -50,8 +50,12 @@
                                      class: 'form-control', placeholder: t('users.placeholders.confirm_password'))
           = render('edit_user_id', f: f)
 
-          .form-group.mt-2.col-auto
-            .actions
+          .form-group.mt-4
+            - unless Rails.env.test?
+              .col.actions.mb-2
+                .h-captcha{ data: { sitekey: Rails.application.credentials.hcaptcha_sitekey, size: 'compact' } }
+                %script{ src: 'https://hcaptcha.com/1/api.js', async: true, defer: true }
+            .col.actions
               = f.submit(t('.sign_up'), id: 'signup-btn', class: 'btn btn-primary')
 
     .row-fluid.mx-4
