@@ -54,27 +54,27 @@
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.multiple_pools')
             %td{ id: 'multiple-pools' }
-              = check_mark_icon_for(pool.multiple_pools?)
+              = Icon::CheckMarkComponent.new(pool.multiple_pools?)
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.garden')
             %td{ id: 'garden-presence' }
-              = check_mark_icon_for(pool.garden?)
+              = Icon::CheckMarkComponent.new(pool.garden?)
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.bar')
             %td{ id: 'bar-presence' }
-              = check_mark_icon_for(pool.bar?)
+              = Icon::CheckMarkComponent.new(pool.bar?)
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.restaurant')
             %td{ id: 'restaurant-presence' }
-              = check_mark_icon_for(pool.restaurant?)
+              = Icon::CheckMarkComponent.new(pool.restaurant?)
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.gym')
             %td{ id: 'gym-presence' }
-              = check_mark_icon_for(pool.gym?)
+              = Icon::CheckMarkComponent.new(pool.gym?)
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.child_area')
             %td{ id: 'children-area-presence' }
-              = check_mark_icon_for(pool.child_area?)
+              = Icon::CheckMarkComponent.new(pool.child_area?)
 
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.locker_cabinet_type')
