@@ -3,7 +3,7 @@
 #
 # == Versioning codes
 #
-#   - version:  7-0.2.11
+#   - version:  7-0.2.12
 #   - author:   Steve A.
 #
 # Framework version number usually differs from core engine versioning number.
@@ -29,7 +29,7 @@ module Version
   MINOR = '2'
 
   # Patch version.
-  PATCH = '11'
+  PATCH = '12'
 
   # Current build version.
   BUILD = '20210503'

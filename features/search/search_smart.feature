@@ -28,7 +28,7 @@ Feature: Search anything from the root page
     # (No meetings in examples on purpose: it's difficult to have <= 5 search matches)
     Examples:
       | model_name    | query_string | max_count |
-      | swimmer       | 'Steve'      |         5 |
+      | swimmer       | 'Roberta'    |         5 |
       | team          | 'Abbottton'  |         5 |
       | swimming_pool | 'ferretti'   |         5 |
 
