@@ -29,7 +29,14 @@ RSpec.describe ApplicationMailer, type: :mailer do
     #++
 
     context 'when using all parameters,' do
-      let(:mail) { ApplicationMailer.generic_message(user.email, user.name, email_subject, email_content) }
+      let(:mail) do
+        ApplicationMailer.generic_message(
+          user_email: user.email,
+          user_name: user.name,
+          subject_text: email_subject,
+          content_body: email_content
+        )
+      end
       it_behaves_like('ApplicationMailer.generic_message email common fields')
 
       it 'shows a greetings for the user name' do
@@ -40,7 +47,13 @@ RSpec.describe ApplicationMailer, type: :mailer do
     end
 
     context 'when giving a nil user_name,' do
-      let(:mail) { ApplicationMailer.generic_message(user.email, nil, email_subject, email_content) }
+      let(:mail) do
+        ApplicationMailer.generic_message(
+          user_email: user.email,
+          subject_text: email_subject,
+          content_body: email_content
+        )
+      end
       it_behaves_like('ApplicationMailer.generic_message email common fields')
 
       it 'does not show the greetings section' do
@@ -73,7 +86,15 @@ RSpec.describe ApplicationMailer, type: :mailer do
     end
 
     context 'when using all parameters,' do
-      let(:mail) { ApplicationMailer.system_message(user, to_address, cc_address, email_subject, email_content) }
+      let(:mail) do
+        ApplicationMailer.system_message(
+          user: user,
+          to_address: to_address,
+          cc_address: cc_address,
+          subject_text: email_subject,
+          content_body: email_content
+        )
+      end
       it_behaves_like('ApplicationMailer.system_message email common fields')
 
       it 'shows the details of the specified user instance' do
@@ -88,7 +109,15 @@ RSpec.describe ApplicationMailer, type: :mailer do
     end
 
     context 'when giving a nil user_name,' do
-      let(:mail) { ApplicationMailer.system_message(nil, to_address, cc_address, email_subject, email_content) }
+      let(:mail) do
+        ApplicationMailer.system_message(
+          user: nil,
+          to_address: to_address,
+          cc_address: cc_address,
+          subject_text: email_subject,
+          content_body: email_content
+        )
+      end
       it_behaves_like('ApplicationMailer.system_message email common fields')
 
       it 'does not show the user detail section' do

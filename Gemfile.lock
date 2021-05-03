@@ -1,20 +1,8 @@
 GIT
-  remote: https://github.com/heartcombo/devise.git
-  revision: e16d60d0fedc5f5e6f541b2b9e901a2d53f8ceda
-  branch: ca-omniauth-2
-  specs:
-    devise (4.7.3)
-      bcrypt (~> 3.0)
-      orm_adapter (~> 0.1)
-      railties (>= 4.1.0)
-      responders
-      warden (~> 1.2.3)
-
-GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: f6084135135b6b53a8e1c1126eafbea71018f88a
+  revision: 16982386a28e7f356211ac886af30bebaa4baa72
   specs:
-    goggles_db (0.2.10)
+    goggles_db (0.2.11)
       acts-as-taggable-on
       acts_as_votable
       carrierwave
@@ -217,6 +205,12 @@ GEM
     delayed_job_active_record (4.1.6)
       activerecord (>= 3.0, < 6.2)
       delayed_job (>= 3.0, < 5)
+    devise (4.8.0)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 4.1.0)
+      responders
+      warden (~> 1.2.3)
     devise-i18n (1.9.3)
       devise (>= 4.7.1)
     diff-lcs (1.4.4)
@@ -631,7 +625,7 @@ DEPENDENCIES
   cucumber-rails
   daemons
   delayed_job_active_record
-  devise!
+  devise
   devise-i18n
   factory_bot_rails
   ffaker

@@ -28,7 +28,7 @@ global_job_config:
       - echo $RAILS_MASTER_KEY > config/master.key
       - mkdir -pv tmp
       - gem i bundler
-      - cache restore bundle-1.93-$(checksum Gemfile.lock yarn.lock)
+      - cache restore bundle-2.10-$(checksum Gemfile.lock yarn.lock)
       - sem-version ruby 2.7
       - bundle config set path 'vendor/bundle'
       - GIT_LFS_SKIP_SMUDGE=1 bundle install

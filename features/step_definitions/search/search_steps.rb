@@ -33,6 +33,6 @@ Then('the pagination controls are not present') do
 end
 
 Then('a flash alert is shown about the empty results') do
-  flash_content = find('#flash-content-body .flash-body')
+  flash_content = find('.flash-body')
   expect(flash_content.text).to eq(I18n.t('search_view.no_results'))
 end

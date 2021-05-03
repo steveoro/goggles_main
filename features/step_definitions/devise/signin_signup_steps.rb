@@ -35,14 +35,14 @@ end
 Then('an unsuccessful login flash message is present') do
   # [Steve A.] Due to flash modals to disappear automatically after a delay,
   # we won't test visibility but just the content:
-  flash_content = find('#flash-content-body .flash-body')
+  flash_content = find('.flash-body')
   authentication_key = I18n.t('activerecord.attributes.goggles_db/user.email')
   msg_content = I18n.t('devise.failure.invalid', authentication_keys: authentication_key)
   expect(flash_content.text).to eq(msg_content)
 end
 
 Then('a successful Omniauth flash message for {string} is present') do |provider_name|
-  flash_content = find('#flash-content-body .flash-body')
+  flash_content = find('.flash-body')
   msg_content = I18n.t('devise.omniauth_callbacks.success', kind: provider_name)
   expect(flash_content.text).to eq(msg_content)
 end

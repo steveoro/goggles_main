@@ -12,15 +12,13 @@ Feature: Maintenance switch
     Then I get redirected to '/maintenance'
     And I can see the maintenance page
     Examples:
-      | destination_path       |
-      | '/'                    |
-      | '/search/smart'        |
-      | '/home/about_us'       |
-      | '/home/about_this'     |
-      | '/home/contact_us'     |
-      | '/home/privacy_policy' |
-      | '/swimmers/show/142'   |
-      | '/tools/fin_score'     |
+      | destination_path             |
+      | '/'                          |
+      | '/search/smart'              |
+      | '/home/about'                |
+      | '/home/contact_us'           |
+      | '/swimmers/show/142'         |
+      | '/tools/fin_score'           |
 
   Scenario: Maintenance mode on, browsing to the maintenance page itself
     Given maintenance mode is 'on'

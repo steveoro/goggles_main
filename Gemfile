@@ -33,7 +33,8 @@ gem 'browser' # detect request.variant type depending on request.user_agent
 gem 'daemons'
 gem 'delayed_job_active_record'
 # [Steve A.] Force a specific version of Devise, supporting OAuth2:
-gem 'devise', github: 'heartcombo/devise', branch: 'ca-omniauth-2'
+# gem 'devise', github: 'heartcombo/devise', branch: 'ca-omniauth-2'
+gem 'devise'
 gem 'devise-i18n'
 # Inherited data factories from DB engine, published also on production/staging
 # to allow fixture creation for testing purposes when using production structure dumps:

@@ -17,7 +17,7 @@ end
 
 Then('an ok flash message is present customized for the kind of update') do
   # This will depend from whether the email has been updated or not:
-  flash_content = find('#flash-content-body .flash-body')
+  flash_content = find('.flash-body')
   expect(flash_content.text).to eq(
     I18n.t('devise.registrations.updated')
   ).or eq(

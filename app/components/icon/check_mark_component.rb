@@ -3,7 +3,7 @@
 #
 # = Icon components module
 #
-#   - version:  7.01
+#   - version:  7.02.10
 #   - author:   Steve A.
 #
 module Icon
@@ -17,7 +17,7 @@ module Icon
     # Creates a new ViewComponent
     #
     # == Params
-    # - value: a Boolean +true+/+false+ for the check mark
+    # - value: a Boolean +true+/+false+ for the check mark (default: +false+)
     def initialize(value:)
       super
       @value = value

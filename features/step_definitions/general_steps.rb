@@ -28,7 +28,7 @@ end
 Then('a flash {string} message is present') do |i18n_key|
   # [Steve A.] Due to flash modals to disappear automatically after a delay,
   # we won't test visibility but just that the content has been actually rendered
-  flash_content = find('#flash-content-body .flash-body')
+  flash_content = find('.flash-body')
   expect(flash_content.text).to eq(I18n.t(i18n_key))
 end
 

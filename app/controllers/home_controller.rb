@@ -35,11 +35,11 @@ class HomeController < ApplicationController
   # Prepares and enqueues the "contact us" email message
   def enqueue_contact_message
     ApplicationMailer.system_message(
-      current_user,
-      app_settings_row.settings(:framework_emails)&.contact, # to:
-      app_settings_row.settings(:framework_emails)&.admin, # cc:
-      "Msg from '#{current_user.name}'",
-      params['body']
+      user: current_user,
+      to_address: app_settings_row.settings(:framework_emails)&.contact, # to:
+      cc_address: app_settings_row.settings(:framework_emails)&.admin, # cc:
+      subject_text: "Msg from '#{current_user.name}'",
+      content_body: params['body']
     ).deliver_later
   end
 end

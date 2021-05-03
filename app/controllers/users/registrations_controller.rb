@@ -25,7 +25,9 @@ module Users
     # POST /resource
     # Adds captcha checking before creating the resource
     def create
-      unless verify_hcaptcha && !Rails.env.test? # Avoid hCaptcha check in test environment
+      # Avoid hCaptcha check in test environment - Don't even start
+      # checking hcaptcha if under test environment:
+      unless Rails.env.test? || verify_hcaptcha
         redirect_to(new_user_registration_url, alert: I18n.t('captcha.error'))
         return
       end
