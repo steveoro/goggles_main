@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-desc 'Check the overall remote server status'
-task status: ['status:mailq', 'status:monit', 'status:mem', 'status:docker'] do
+desc 'Check the overall remote server status and stats'
+task status: ['status:mailq', 'status:monit', 'status:mem', 'status:docker', 'status:weekly_stats'] do
   # no-op
 end
 
@@ -61,6 +61,17 @@ namespace :status do
            capture(:docker, 'images').split("\n") +
            [''.rjust(80, '-')] +
            capture(:docker, 'ps -a').split("\n")
+    end
+  end
+
+  desc 'Outputs the latest 7-day usage stats for all non-API request'
+  task :weekly_stats do
+    on roles(:app) do
+      info('***********************')
+      info('**  📈 Weekly stats  **')
+      info('***********************')
+      puts [''.rjust(80, '-')] +
+           capture(:docker, "exec #{fetch(:app_service)} sh -c 'bundle exec rails stats:daily days=7'").split("\n")
     end
   end
 end

@@ -6,7 +6,7 @@ require 'version'
 #
 # Common parent controller
 class ApplicationController < ActionController::Base
-  before_action :app_settings_row, :set_locale, :detect_device_variant, :check_maintenance_mode
+  before_action :app_settings_row, :set_locale, :detect_device_variant, :check_maintenance_mode, :update_stats
   before_action :configure_devise_permitted_parameters, if: :devise_controller?
 
   protected
@@ -85,6 +85,29 @@ class ApplicationController < ActionController::Base
     elsif !GogglesDb::AppParameter.maintenance? && (params[:controller] == 'maintenance')
       redirect_to root_path
     end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  # Updates the internal statistical counters for daily request load.
+  #
+  # === NOTE:
+  # This 'api_daily_uses' table should be cleaned up from older entries at least once
+  # a week to prevent the DB from bloating excessively in size.
+  #
+  # Not being interested at all in tracking the behaviour of each user, we just count the
+  # overall individual requests in order to scale the server host accordingly when the
+  # need arises. There is currently no implemented way for knowing the *individual page views*
+  # except for the basic request load.
+  #
+  # This "quick'n'ugly" solution currently works just because we don't get over the limit
+  # of a few hundreds users a day. We'll move to a stand-alone, self-hosted dockerized
+  # solution like Plausible Analytics should this ever be needed.
+  #
+  def update_stats
+    # This custom stats key allows to compute quickly the average request load per user, as well
+    # as the total users per day:
+    GogglesDb::APIDailyUse.increase_for!("REQ-#{request.ip}")
   end
   #-- -------------------------------------------------------------------------
   #++
