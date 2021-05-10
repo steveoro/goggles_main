@@ -3,4 +3,5 @@
 # = SearchHelper
 #
 module SearchHelper
+  # (unused for the moment)
 end

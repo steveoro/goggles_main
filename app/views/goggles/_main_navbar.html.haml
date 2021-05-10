@@ -33,6 +33,7 @@
       %li.nav-item
         %a.nav-link.disabled{ 'aria-disabled' => 'true', href: '#', tabindex: '-1' } &nbsp;
       .dropdown-divider
+      %li.nav-item= link_to(t('chrono.title'), chrono_index_path, class: 'nav-link')
       - if user_signed_in?
         %li.nav-item= link_to(t('home.log_out'), destroy_user_session_path,
                               method: :delete, class: 'nav-link')

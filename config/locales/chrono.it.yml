@@ -1,0 +1,11 @@
+it:
+  chrono:
+    title: 'Chrono'
+    buttons:
+      save: 'Salva & Invia'
+    messages:
+      confirm_delete: 'Vuoi davvero cancellare questa riga di passaggi?'
+      confirm_reset: 'Azzero e ripulisco il Chrono?'
+      confirm_post: 'Mando questi tempi a Master-Goggles? Niente da modificare? Tutto a posto?'
+      post_done: 'Dati inviati ed accodati per la registrazione.'
+      post_error: "Mi spiace: un errore ha impedito ai dati inviati di venire accodati per la registrazione."

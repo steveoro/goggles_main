@@ -7,7 +7,9 @@
  * of the layout of the container element -- see below for the only limit on CSS styles.
  *
  *
- * == Basic behavior ==
+ * == Basic behavior & ussage ==
+ * Use a Stimulus controller to import & connect this widget to the page.
+ *
  * The container node is animated and moved toward the swipe direction until it disappears from
  * the side border.
  *
@@ -32,7 +34,6 @@
  * == Options ==
  * @param {Number}    index         current index/data page displayed; default: 1
  * @param {Number}    total         total available index/pages count; default: 1
- * @param {boolean}   continuous    swiping will wrap against range limits (1..total); default: false
  * @param {boolean}   continuous    swiping will wrap against range limits (1..total); default: false
  * @param {boolean}   debug         toggle debug output to the console; default: false
  * @param {function}  onswipeleft   *callback*: swipe-left gesture performed

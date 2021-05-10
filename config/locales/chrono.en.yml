@@ -1,0 +1,11 @@
+en:
+  chrono:
+    title: 'Chrono'
+    buttons:
+      save: 'Save & Post'
+    messages:
+      confirm_delete: 'Are you sure you want to delete this lap row?'
+      confirm_reset: "Reset & clear Chrono's log?"
+      confirm_post: "Post these lap timings to Master-Goggles.org? Editing finished? Ready to send?"
+      post_done: "Data sent & queued for registration."
+      post_error: "Sorry: an error during data registration prevented this data from being queued."

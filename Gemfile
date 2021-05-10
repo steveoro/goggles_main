@@ -32,8 +32,6 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'browser' # detect request.variant type depending on request.user_agent
 gem 'daemons'
 gem 'delayed_job_active_record'
-# [Steve A.] Force a specific version of Devise, supporting OAuth2:
-# gem 'devise', github: 'heartcombo/devise', branch: 'ca-omniauth-2'
 gem 'devise'
 gem 'devise-i18n'
 # Inherited data factories from DB engine, published also on production/staging
@@ -72,7 +70,7 @@ group :development do
   gem 'haml_lint', require: false
   gem 'inch', require: false # grades source documentation
   gem 'listen', '~> 3.2'
-  # [20210128] Rubocop 1.9.0 seems to have several issues currently
+  # [20210128] Rubocop 1.9.0 seems to have several issues with the current stack
   gem 'rubocop', '= 1.8.1', require: false
   gem 'rubocop-rails'
   gem 'rubocop-rspec'

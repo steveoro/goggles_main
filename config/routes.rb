@@ -18,6 +18,11 @@ Rails.application.routes.draw do
   get 'home/contact_us'
   post 'home/contact_us'
 
+  get 'chrono', to: 'chrono#index'
+  get 'chrono/index'
+  get 'chrono/new'
+  post 'chrono/rec'
+
   put 'lookup/matching_swimmers'
 
   get 'maintenance', to: 'maintenance#index'

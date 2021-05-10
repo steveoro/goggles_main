@@ -3,4 +3,5 @@
 # = ToolsHelper
 #
 module ToolsHelper
+  # (unused for the moment)
 end

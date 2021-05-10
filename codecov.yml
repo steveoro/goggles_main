@@ -1,6 +1,6 @@
 codecov:
   ci:
-    - "semaphoreci.com"
+    - "steveoro.semaphoreci.com"
   require_ci_to_pass: yes
 
 coverage:
@@ -15,6 +15,28 @@ parsers:
       loop: yes
       method: no
       macro: no
+
+flags:
+  component:
+    paths:
+      - app/components/*
+    carryforward: true
+  decorator:
+    paths:
+      - app/decorators/*
+    carryforward: true
+  mailer:
+    paths:
+      - app/mailers/*
+    carryforward: true
+  request:
+    paths:
+      - app/requests/*
+    carryforward: true
+  view:
+    paths:
+      - app/views/*
+    carryforward: true
 
 comment:
   layout: "reach,diff,flags,files,footer"

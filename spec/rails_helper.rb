@@ -52,7 +52,7 @@ FactoryBot.reload
 # of increasing the boot-up time by auto-requiring all files in the support
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
-#
+
 # Add support files directly from Core engine and then from current app:
 # Dir[GogglesDb::Engine.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
 Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }

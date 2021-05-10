@@ -29,7 +29,7 @@ global_job_config:
       # Make sure we are using Bundler 2+:
       - gem i bundler
       # Use GogglesDb::VERSION as master reference here, or force a minor version change to rebuild the cache:
-      - cache restore bundle-2.10-$(checksum Gemfile.lock yarn.lock)
+      - cache restore bundle-2.12-$(checksum Gemfile.lock yarn.lock)
 
 blocks:
   - name: Bundle cache store
@@ -46,7 +46,7 @@ blocks:
             # - bundle info rake --path
             - yarn
             # The cache will be updated with the new content just once for all blocks in the pipeline:
-            - cache store bundle-2.10-$(checksum Gemfile.lock yarn.lock) vendor/bundle
+            - cache store bundle-2.12-$(checksum Gemfile.lock yarn.lock) vendor/bundle
 
   - name: Code scanning
     task:
@@ -77,6 +77,13 @@ blocks:
           - 'RAILS_ENV=test bin/rails db:migrate'
           - ./cc-test-reporter before-build
       jobs:
+        - name: RSpec - components
+          commands:
+            - 'bundle exec rspec -t type:component'
+            - cache delete cc-component-goggles_main
+            - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-component.json
+            - cache store cc-component-goggles_main coverage/cc-component.json
+
         - name: RSpec - decorators
           commands:
             - 'bundle exec rspec -t type:decorator'
@@ -84,12 +91,12 @@ blocks:
             - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-decorator.json
             - cache store cc-decorator-goggles_main coverage/cc-decorator.json
 
-        - name: RSpec - views
+        - name: RSpec - mailers
           commands:
-            - 'bundle exec rspec -t type:view'
-            - cache delete cc-view-goggles_main
-            - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-view.json
-            - cache store cc-view-goggles_main coverage/cc-view.json
+            - 'bundle exec rspec -t type:mailer'
+            - cache delete cc-mailer-goggles_main
+            - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-mailer.json
+            - cache store cc-mailer-goggles_main coverage/cc-mailer.json
 
         - name: RSpec - requests
           commands:
@@ -98,20 +105,18 @@ blocks:
             - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-request.json
             - cache store cc-request-goggles_main coverage/cc-request.json
 
+        - name: RSpec - views
+          commands:
+            - 'bundle exec rspec -t type:view'
+            - cache delete cc-view-goggles_main
+            - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-view.json
+            - cache store cc-view-goggles_main coverage/cc-view.json
+
         # Not currently used:
-        # - name: RSpec - mailers
-        #   commands:
-        #     - 'bundle exec rspec -t type:mailer'
+        # - name: RSpec - commands
         # - name: RSpec - strategies
-        #   commands:
-        #     - 'bundle exec rspec -t type:strategy'
         # - name: RSpec - jobs
-        #   commands:
-        #     - 'bundle exec rspec -t type:job'
         # - name: RSpec - helpers
-        #   commands:
-        #     - 'bundle exec rspec -t type:helper'
-        # TODO: add Cucumber tests
 
   - name: Cucumber integration tests
     task:

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# = TeamHelper
+# = ChronoHelper
 #
-module TeamHelper
+module ChronoHelper
   # (unused for the moment)
 end

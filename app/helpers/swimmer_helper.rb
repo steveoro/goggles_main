@@ -3,4 +3,5 @@
 # = SwimmerHelper
 #
 module SwimmerHelper
+  # (unused for the moment)
 end

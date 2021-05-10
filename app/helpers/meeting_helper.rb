@@ -3,4 +3,5 @@
 # = MeetingHelper
 #
 module MeetingHelper
+  # (unused for the moment)
 end
