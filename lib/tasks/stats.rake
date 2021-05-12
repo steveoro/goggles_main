@@ -61,10 +61,10 @@ namespace :stats do
     puts format(
       "\r\n|%12<date>s|%12<users>s|%12<reqs>s|%15<avg>s|",
       date: 'Date'.center(12), users: 'Users'.center(12),
-      reqs: 'REQ'.center(12), avg: ' Avg. REQ/user '
+      reqs: 'Page views'.center(12), avg: ' Avg. REQ/user '
     )
     puts ''.ljust(56, '-')
-    csv_txt = ['Date,users,requests,req./user']
+    csv_txt = ['Date,users,pages,req./user']
 
     # Output daily status:
     (date - days_up_to.days..Date.today).each do |curr_date|
