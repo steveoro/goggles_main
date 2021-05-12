@@ -8,6 +8,7 @@ end
 namespace :status do
   desc 'Checks the status of the remote mail queue'
   task :mailq do
+    puts("\r\n")
     on roles(:app) do
       info('***********************')
       info('**   📫 Mail queue   **')
@@ -26,6 +27,7 @@ namespace :status do
 
   desc 'Checks the remote monit report'
   task :monit do
+    puts("\r\n")
     on roles(:app) do
       info('*********************')
       info('**    📺 Monit     **')
@@ -35,11 +37,13 @@ namespace :status do
            [''.rjust(80, '-')]
       info('Production Server response status code: ')
       execute(:curl, '--write-out \'%{http_code}\' --silent --head --output /dev/null https://master-goggles.org')
+      puts capture(:monit, :summary).split("\n")
     end
   end
 
   desc 'Checks the remote memory & disk status'
   task :mem do
+    puts("\r\n")
     on roles(:app) do
       info('************************')
       info('**  💽 Memory & Disk  **')
@@ -53,6 +57,7 @@ namespace :status do
 
   desc 'Checks the remote Docker status'
   task :docker do
+    puts("\r\n")
     on roles(:app) do
       info('*********************')
       info('**    📦 Docker    **')
@@ -66,11 +71,12 @@ namespace :status do
 
   desc 'Outputs the latest 7-day usage stats for all non-API request'
   task :weekly_stats do
+    puts("\r\n")
     on roles(:app) do
       info('***********************')
       info('**  📈 Weekly stats  **')
       info('***********************')
-      puts [''.rjust(80, '-')] +
+      puts ["\r\n"] +
            capture(:docker, "exec #{fetch(:app_service)} sh -c 'bundle exec rails stats:daily days=7'").split("\n")
     end
   end
