@@ -1,9 +1,27 @@
 it:
   chrono:
     title: 'Chrono'
+    index:
+      title: 'Chrono - registrazioni'
+      queue_notice: "Qui puoi vedere l'elenco dei tempi accodati sul server per l'acquisizione come risultati. Quando questi saranno registrati con successo, spariranno automaticamente dalla coda."
+      registration_notice: "I tempi registrati con successo li puoi trovare come risultati nei dettagli del Meeting o del Collegiale che hai scelto come contenitore per l'evento a cui i tempi si riferiscono."
+      no_data_notice: '(La coda delle tue registrazioni è vuota)'
+    new:
+      title: 'Nuovo Chrono'
+    rec:
+      title: 'Chrono - Rec'
+    selector:
+      meeting: 'Meeting'
+      workshop: 'Collegiale'
+      event_date: 'Data evento'
     buttons:
+      new_recording: 'Nuova registrazione'
+      start_recording: 'Vai al Chrono'
       save: 'Salva & Invia'
     messages:
+      error:
+        missing_meeting_or_workshop_name: "Devi scegliere o creare un nome di Meeting o di Collegiale per poter fare una registrazione di tempi."
+        commit_missing_parameters: "La richiesta di registrazione dati contiene dati o parametri non validi."
       confirm_delete: 'Vuoi davvero cancellare questa riga di passaggi?'
       confirm_reset: 'Azzero e ripulisco il Chrono?'
       confirm_post: 'Mando questi tempi a Master-Goggles? Niente da modificare? Tutto a posto?'

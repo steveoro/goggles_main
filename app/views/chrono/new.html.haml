@@ -1,49 +1,57 @@
 .wrapper-body
   .spacer-left
 
-  .main-content{ data: { controller: 'chrono', 'chrono-delete-message' => t('chrono.messages.confirm_delete'),
-                 'chrono-reset-message' => t('chrono.messages.confirm_reset'),
-                 'chrono-post-message' => t('chrono.messages.confirm_post') } }
+  .main-content{ data: { controller: 'chrono switch' } }
     .row-fluid#chrono-index-title
       %h4.text-center.pb-3
         %i.fa.fa-clock-o
-        Chrono
+        = t('chrono.new.title')
 
-    .row-fluid
-      #timer-container
-        .timer-leds.led-dark#timer-digits{ data: { 'chrono-target' => 'timer' } }
-          00:00.00
+    = form_tag(chrono_rec_path, hidden_id: 'frm-chrono-index', method: :post) do
+      .container.mb-2
+        = render(Switch::XorComponent.new(t('chrono.selector.meeting'), 'meeting',
+                 t('chrono.selector.workshop'), 'workshop', hidden_id: 'rec_type', class: 'round'))
 
-    .row-fluid.py-2.text-center
-      %button{ id: 'timer-btn-reset', class: 'btn btn-outline-danger', 'aria-label' => 'Reset',
-               type: 'button', data: { action: 'click->chrono#reset' } }
-        %span
-          %i.fa.fa-trash-o
-          RESET
-      &nbsp;
-      %button{ id: 'timer-btn-switch', class: 'btn btn-outline-success', 'aria-label' => 'Start/Stop',
-               type: 'button', data: { 'chrono-target' => 'btnSwitch', action: 'click->chrono#startStop' } }
-        %span
-          %i.fa.fa-play
-          START
-      &nbsp;
-      %button{ id: 'timer-btn-lap', class: 'btn btn-outline-info', 'aria-label' => 'Lap', disabled: true,
-               type: 'button', data: { 'chrono-target' => 'btnLap', action: 'click->chrono#lap' } }
-        %span
-          %i.fa.fa-clock-o
-          LAP
+      .container.bg-light-green.pt-3.shadow-box#meeting{ data: { 'switch-target' => 'area1' } }
+        .row
+          = render(ComboBox::DbLookupComponent.new('/meetings', t('chrono.selector.meeting'), 'meeting',
+                                                   free_text: true))
+      .container.bg-light-blue.pt-3.shadow-box.d-none#workshop{ data: { 'switch-target' => 'area2' } }
+        .row
+          = render(ComboBox::DbLookupComponent.new('/user_workshops', t('chrono.selector.workshop'), 'workshop',
+                                                   free_text: true))
 
-    .row-fluid
-      .backgrid-container#laps-grid{ data: { 'chrono-target' => 'lapsGrid' } }
+      .container.mt-2
+        .row
+          = render(ComboBox::DbLookupComponent.new('/swimming_pools', t('meetings.dashboard.swimming_pool'),
+                                                   'swimming_pool', free_text: true))
+          - pool_type_options = options_from_collection_for_select(@pool_types, 'id', 'long_label')
+          = render(ComboBox::DbLookupComponent.new(nil, t('meetings.dashboard.pool_type'), 'pool_type',
+                                                   required: true, values: pool_type_options))
+          .col-auto
+            .form-group
+              .field
+                = label_tag(:event_date, t('chrono.selector.event_date'))
+                = date_field_tag(:event_date, Date.today, required: true, autofocus: true, class: 'form-control')
 
-    .row-fluid
-      %hr/
+          - event_type_options = options_from_collection_for_select(@event_types, 'id', 'long_label')
+          = render(ComboBox::DbLookupComponent.new(nil, t('meetings.event'), 'event_type',
+                                                   required: true, values: event_type_options))
 
-    .row-fluid.text-center
-      = form_tag(chrono_rec_path, id: 'frm-chrono-rec', method: :post) do
-        = hidden_field_tag(:payload, nil)
-        = submit_tag(t('chrono.buttons.save'), id: 'timer-btn-save', class: 'btn btn-primary',
-                       'aria-label' => 'Save', disabled: true, type: 'button',
-                       data: { 'chrono-target' => 'btnSave', action: 'click->chrono#save' })
+          - default_swimmer = SwimmerDecorator.decorate(current_user.swimmer) if current_user.swimmer
+          - preselect_options = options_for_select([[default_swimmer.text_label, default_swimmer.id], ['- - -', nil]],
+                                                   default_swimmer.id) if default_swimmer
+          = render(ComboBox::DbLookupComponent.new('/swimmers', t('swimmers.swimmer'), 'swimmer',
+                                                   free_text: true, values: preselect_options))
+
+          - category_type_options = options_from_collection_for_select(@category_types, 'id', 'short_name')
+          = render(ComboBox::DbLookupComponent.new(nil, t('meetings.category'), 'category_type',
+                                                   required: true, values: category_type_options))
+
+      .container.mt-2
+        .row
+          .col-auto
+            = submit_tag(t('chrono.buttons.start_recording'), id: 'btn-rec-chrono', class: 'btn btn-primary',
+                         'aria-label' => 'Save', type: 'submit')
 
   .spacer-right

@@ -42,6 +42,10 @@
   -webkit-transition: 0.25s;
   transition: 0.25s;
 }
+.slider.xor {
+  background-color: #80bdff;
+}
+
 .slider:before {
   position: absolute;
   content: "";
@@ -68,6 +72,14 @@ input:checked + .slider.red {
 }
 input:focus + .slider.red {
   box-shadow: 0 0 1px #dc3545;
+}
+
+/* "Xor" background color: */
+input:checked + .slider.xor {
+  background-color: #80bdff;
+}
+input:focus + .slider.xor {
+  box-shadow: 0 0 1px #80bdff;
 }
 
 input:checked + .slider:before {

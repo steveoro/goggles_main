@@ -1,3 +1,9 @@
+<% unless Rails.env.production? %>
+  <%= '+'.ljust(31, '-') << '+' %>
+  <%= '|' << "  #{Rails.env.upcase} Server  ".center(30) << '|' %>
+  <%= '+'.ljust(31, '-') << '+' %>
+
+<% end %>
 <% if @user.present? %>
 *** Involved User: ***
 - id: <%= @user.id %>

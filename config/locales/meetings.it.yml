@@ -1,5 +1,7 @@
 it:
   meetings:
+    category: Categoria
+    event: Evento
     meeting: Meeting
     meetings: Meetings
     header_date: Data
@@ -9,3 +11,4 @@ it:
       subtitle: Dettagli
       reference: Riferimento
       swimming_pool: Piscina
+      pool_type: Tipo vasca

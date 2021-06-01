@@ -41,7 +41,9 @@ RSpec.describe SwimmingPoolDecorator, type: :decorator do
       expect(result).to include('https://')
     end
     it 'includes the swimming pool name' do
-      expect(result).to include(ERB::Util.html_escape(model_obj.name))
+      expect(result).to include(
+        ERB::Util.html_escape(model_obj.name)
+      ).or include(model_obj.name)
     end
   end
 

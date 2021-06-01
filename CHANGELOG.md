@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.2.18** [Steve A.] upgraded gem set due to security fixes; added support for UserWorkshop, UserResult & UserLap
 - **0.2.11** [Steve A.] captcha protection for user registrations
 - **0.2.05** [Steve A.] fixed Semaphore configuration for production deploys
 - **0.2.01** [Steve A.] improved build pipeline, mailer template styles and localhost configuration

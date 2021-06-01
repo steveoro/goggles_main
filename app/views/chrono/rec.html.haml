@@ -1,2 +1,60 @@
-%h1 Chrono#rec
-%p Find me in app/views/chrono/rec.html.haml
+.wrapper-body
+  .spacer-left
+
+  .main-content{ data: { controller: 'chrono', 'chrono-delete-message' => t('chrono.messages.confirm_delete'),
+                 'chrono-reset-message' => t('chrono.messages.confirm_reset'),
+                 'chrono-post-message' => t('chrono.messages.confirm_post') } }
+    .row-fluid#chrono-index-title
+      %h4.text-center.pb-3
+        %i.fa.fa-clock-o
+        = t('chrono.rec.title')
+
+    %dl.row#rec-header
+      %dt.col-auto
+        %b= label_tag(:swimmer, "#{@swimmer_label} - #{@category_type_label}")
+      %dt.col-auto
+        %small= label_tag(:event, "#{@event_date} - #{@event_type_label}")
+      %dt.col-auto
+        %small= label_tag(:title, @meeting_label.present? ? @meeting_label : @workshop_label)
+      %dd.col-auto
+        %small= label_tag(:pool, @swimming_pool_label)
+
+    .row-fluid
+      #timer-container
+        .timer-leds.led-dark#timer-digits{ data: { 'chrono-target' => 'timer' } }
+          00:00.00
+
+    .row-fluid.py-2.text-center
+      %button{ id: 'timer-btn-reset', class: 'btn btn-outline-danger', 'aria-label' => 'Reset',
+               type: 'button', data: { action: 'click->chrono#reset' } }
+        %span
+          %i.fa.fa-trash-o
+          RESET
+      &nbsp;
+      %button{ id: 'timer-btn-switch', class: 'btn btn-outline-success', 'aria-label' => 'Start/Stop',
+               type: 'button', data: { 'chrono-target' => 'btnSwitch', action: 'click->chrono#startStop' } }
+        %span
+          %i.fa.fa-play
+          START
+      &nbsp;
+      %button{ id: 'timer-btn-lap', class: 'btn btn-outline-info', 'aria-label' => 'Lap', disabled: true,
+               type: 'button', data: { 'chrono-target' => 'btnLap', action: 'click->chrono#lap' } }
+        %span
+          %i.fa.fa-clock-o
+          LAP
+
+    .row-fluid
+      .backgrid-container#laps-grid{ data: { 'chrono-target' => 'lapsGrid' } }
+
+    .row-fluid
+      %hr/
+
+    .row-fluid.text-center
+      = form_tag(chrono_commit_path, id: 'frm-chrono-rec', method: :post) do
+        = hidden_field_tag(:header, @header_payload)
+        = hidden_field_tag(:payload, nil)
+        = submit_tag(t('chrono.buttons.save'), id: 'timer-btn-save', class: 'btn btn-primary',
+                     'aria-label' => 'Save', disabled: true, type: 'submit',
+                     data: { 'chrono-target' => 'btnSave', action: 'click->chrono#save' })
+
+  .spacer-right

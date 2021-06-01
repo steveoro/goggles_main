@@ -1,0 +1,13 @@
+- if @hidden_id.present?
+  = hidden_field_tag(@hidden_id, 1, data: { 'switch-target' => 'selector' })
+%span.align-middle.text-success
+  %span{ id: "#{@target1}-span-label" }
+    = @label1
+    &nbsp;
+  %label.switch
+    %input{ type: 'checkbox' }
+    %span.slider.xor{ id: "xor-#{@target1}-#{@target2}", role: 'button', class: @css_classes,
+                      data: { action: 'click->switch#toggleTargets' } }
+  %span.text-muted{ id: "#{@target2}-span-label" }
+    &nbsp;
+    = @label2

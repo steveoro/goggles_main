@@ -24,12 +24,18 @@ require('select2');
  *
  * == Values ==
  * (Put values directly on controller elements)
- * @param {String} 'data-lookup-placeholder-value'
- *                 localized help text for "Choose an option"
-
  * @param {String} 'data-lookup-api-url-value'
  *                 base API URL for data request (w/o params);
  *                 when not set, AJAX setup will be skipped and html options will be used
+ *
+ * @param {String} 'data-lookup-placeholder-value'
+ *                 localized help text for "Choose an option"
+ *
+ * @param {String} 'data-lookup-query-column-value'
+ *                 query field name used in the API lookup call; defaults to 'name'
+ *
+ * @param {String} 'data-lookup-free-text-value'
+ *                 query field name used in the API lookup call; defaults to 'name'
  *
  * @param {String} 'data-lookup-field-id-value'
  *                 DOM ID for form field id/value (actual selection value storage; usually an hidden field)
@@ -49,6 +55,8 @@ export default class extends Controller {
   static values = {
     placeholder: String,
     apiUrl: String,
+    queryColumn: String,
+    freeText: Boolean,
     fieldId: String,
     fieldText: String
   }
@@ -93,7 +101,7 @@ export default class extends Controller {
   fetchJWT() {
     // DEBUG
     // console.log('Fetching JWT...')
-    return fetch('/api_session/jwt.json', {
+    return fetch('/api_sessions/jwt.json', {
       method: 'POST',
       headers: {
         'X-CSRF-Token': $('meta[name=csrf-token]').attr('content'),
@@ -113,16 +121,37 @@ export default class extends Controller {
    */
   chooseSelect2AjaxOptions(jwt) {
     var ajaxOptions = null
+    var queryParams = { select2_format: true }
     if (this.hasApiUrlValue) {
       // DEBUG
       // console.log('Preparing for AJAX...')
+      // console.log(this.apiUrlValue)
+
       ajaxOptions = {
-        url: (params) => { return `${this.apiUrlValue}${params.term}` },
+        url: this.apiUrlValue,
         dataType: 'json',
+        method: 'GET',
         delay: 250,
+        // Compose payload:
         data: (params) => {
-          // ('page': support for infinite scrolling)
-          return { name: params.term, page: params.page };
+          // - 'page': support for infinite scrolling
+          // - 'select2_format': ignored by the API if the endpoint doesn't implement it
+          if (this.hasQueryColumnValue) {
+            queryParams[this.queryColumnValue] = params.term
+            queryParams['page'] = params.page
+            // DEBUG
+            // console.log('queryParams:')
+            // console.log(queryParams)
+            return queryParams
+          }
+          else {
+            queryParams['name'] = params.term
+            queryParams['page'] = params.page
+            // DEBUG
+            // console.log('queryParams:')
+            // console.log(queryParams)
+            return queryParams
+          }
         },
         // Set authorization header:
         beforeSend: (xhr) => {
@@ -149,22 +178,58 @@ export default class extends Controller {
         processResults: (data, params) => {
           params.page = params.page || 1; // ('page': support for infinite scrolling)
           // DEBUG
-          console.log(data)
-          return {
-            // TODO: GENERALIZE THIS:
-            // [Steve A.] Ideally, use a custom API endpoint that returns data that doesn't
-            // need to be processed to be accepted by Select2 (FUTUREDEV)
-            results: data.map((row) => {
-              return { id: row.id, text: `${row.complete_name} (${row.year_of_birth})` }
-            }),
-            pagination: {
-              more: (params.page * 30) < data.total_count
+          // console.debug("results from API call:")
+          // console.debug(data)
+
+          if (data.results) { // Already formatted in select2 format?
+            return data
+          }
+          else {              // Prepare results in select2 format:
+            return {
+              // TODO: GENERALIZE THIS:
+              // [Steve A.] Ideally, use a custom API endpoint that returns data that doesn't
+              // need to be processed to be accepted by Select2 (FUTUREDEV)
+              results: data.map((row) => {
+                var text_label = null
+                if (row.long_label) {
+                  text_label = row.long_label
+                }
+                else if (row.label) {
+                  text_label = row.label
+                }
+                else if (row.complete_name) {
+                  text_label = `${row.complete_name} (${row.year_of_birth})`
+                }
+                return { id: row.id, text: text_label }
+              }),
+              pagination: {
+                more: (params.page * 30) < data.total_count
+              }
             }
-          };
+          }
         }
       }
     }
+    // DEBUG
+    // console.log(ajaxOptions)
     return ajaxOptions
+  }
+
+
+  /**
+   * Setter for the hidden fields (id & label).
+   *
+   * @param {Number} id     the id value to be stored
+   * @param {String} label  the text label value to be stored
+   */
+  setHiddenFieldsValue(id, label) {
+    if (this.hasFieldIdValue) {
+      // Clear the ID field if it's equal to the label (it means it's a free text tag)
+      document.querySelector(`#${this.fieldIdValue}`).value = (id == label ? 0 : id)
+    }
+    if (this.hasFieldTextValue) {
+      document.querySelector(`#${this.fieldTextValue}`).value = label
+    }
   }
 
 
@@ -184,26 +249,18 @@ export default class extends Controller {
         minimumInputLength: 3,
         width: 'style',
         theme: "bootstrap4",
+        tags: this.freeTextValue, // (the 'tags' option will enable free-text input)
         ajax: this.chooseSelect2AjaxOptions(jwt),
         cache: true
       })
 
+      // Preset hidden fields if there's a pre-selection already:
+      if ($(target).find(':selected').val()) {
+        this.setHiddenFieldsValue($(target).find(':selected').val(), $(target).find(':selected').text())
+      }
+      // Update target hidden fields when the selection occurs:
       $(target).on('select2:select', (event) => {
-        // DEBUG
-        // console.log('select2:select')
-        // console.log(event.params.data)
-
-        // Update target hidden field from selected value:
-        if (this.hasFieldIdValue) {
-          // DEBUG
-          // console.log(`updating field ID (${this.fieldIdValue})`)
-          document.querySelector(`#${this.fieldIdValue}`).value = event.params.data.id
-        }
-        if (this.hasFieldTextValue) {
-          // DEBUG
-          // console.log(`updating field text (${this.fieldTextValue})`)
-          document.querySelector(`#${this.fieldTextValue}`).value = event.params.data.text
-        }
+        this.setHiddenFieldsValue(event.params.data.id, event.params.data.text)
       })
     })
   }

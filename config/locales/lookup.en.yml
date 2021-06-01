@@ -1,3 +1,4 @@
 en:
   lookup:
     placeholder: 'Choose an option'
+    placeholder_free: "Choose or add an option"

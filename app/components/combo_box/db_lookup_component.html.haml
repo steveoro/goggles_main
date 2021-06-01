@@ -1,0 +1,16 @@
+%div{ class: @wrapper_class, data: { controller: 'lookup', 'lookup-placeholder-value' => placeholder_text,
+      'lookup-api-url-value' => @api_url,
+      'lookup-field-id-value' => "#{@base_name}_id",
+      'lookup-field-text-value' => "#{@base_name}_label",
+      'lookup-free-text-value' => @free_text,
+      'lookup-query-column-value' => @query_column } }
+  .form-group
+    .field
+      = hidden_field_tag("#{@base_name}_id", nil)
+      = hidden_field_tag("#{@base_name}_label", nil)
+      = label_tag(@base_name, @label)
+      %select.select2{ id: "#{@base_name}_select", name: @select_name, autofocus: true,
+                       required: @required, selected: @selected_text,
+                       data: { 'lookup-target' => 'field' } }
+        - if @values.present?
+          = @values

@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   # Mounting and usage of the Engine:
   mount GogglesDb::Engine => '/'
 
-  post 'api_sessions/jwt'
+  post 'api_sessions/jwt', format: :json
 
   get 'home/index'
   get 'home/about'
@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   get 'chrono/index'
   get 'chrono/new'
   post 'chrono/rec'
+  post 'chrono/commit'
 
   put 'lookup/matching_swimmers'
 

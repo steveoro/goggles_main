@@ -1,5 +1,7 @@
 en:
   meetings:
+    category: Category
+    event: Event
     meeting: Meeting
     meetings: Meetings
     header_date: Date
@@ -9,3 +11,4 @@ en:
       subtitle: Details
       reference: Reference
       swimming_pool: Swimming pool
+      pool_type: Pool type

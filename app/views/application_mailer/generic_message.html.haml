@@ -1,3 +1,7 @@
+- unless Rails.env.production?
+  %h3
+    *** #{Rails.env.upcase} Server ***
+
 - if @user_name.present?
   - content_for(:template_subtitle) do
     = t('devise.mailer.email_changed.greeting', recipient: @user_name.titleize)

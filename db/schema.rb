@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_29_155847) do
+ActiveRecord::Schema.define(version: 2021_05_15_172357) do
 
   create_table "achievement_rows", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "lock_version", default: 0
@@ -1054,10 +1054,12 @@ ActiveRecord::Schema.define(version: 2021_04_29_155847) do
     t.boolean "done", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "uid"
     t.index ["done"], name: "index_import_queues_on_done"
     t.index ["processed_depth"], name: "index_import_queues_on_processed_depth"
     t.index ["requested_depth"], name: "index_import_queues_on_requested_depth"
     t.index ["solvable_depth"], name: "index_import_queues_on_solvable_depth"
+    t.index ["user_id", "uid"], name: "index_import_queues_on_user_id_and_uid"
     t.index ["user_id"], name: "index_import_queues_on_user_id"
   end
 
@@ -1963,6 +1965,24 @@ ActiveRecord::Schema.define(version: 2021_04_29_155847) do
     t.index ["user_id", "achievement_id"], name: "index_user_achievements_on_user_id_and_achievement_id", unique: true
   end
 
+  create_table "user_laps", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.integer "user_result_id", null: false
+    t.integer "swimmer_id", null: false
+    t.decimal "reaction_time", precision: 5, scale: 2
+    t.integer "minutes", limit: 3
+    t.integer "seconds", limit: 2
+    t.integer "hundredths", limit: 2
+    t.integer "length_in_meters"
+    t.integer "position", limit: 3
+    t.integer "minutes_from_start", limit: 3
+    t.integer "seconds_from_start", limit: 2
+    t.integer "hundredths_from_start", limit: 2
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["swimmer_id"], name: "index_user_laps_on_swimmer_id"
+    t.index ["user_result_id"], name: "index_user_laps_on_user_result_id"
+  end
+
   create_table "user_results", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "lock_version", default: 0
     t.decimal "standard_points", precision: 10, scale: 2, default: "0.0"
@@ -1975,7 +1995,6 @@ ActiveRecord::Schema.define(version: 2021_04_29_155847) do
     t.integer "swimmer_id"
     t.integer "category_type_id"
     t.integer "pool_type_id"
-    t.integer "meeting_individual_result_id"
     t.integer "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1984,13 +2003,16 @@ ActiveRecord::Schema.define(version: 2021_04_29_155847) do
     t.date "event_date"
     t.decimal "reaction_time", precision: 10, scale: 2, default: "0.0"
     t.integer "event_type_id"
+    t.bigint "user_workshop_id", null: false
+    t.bigint "swimming_pool_id"
     t.index ["category_type_id"], name: "fk_user_results_category_types"
     t.index ["disqualification_code_type_id"], name: "idx_user_results_disqualification_code_type"
     t.index ["event_type_id"], name: "fk_user_results_event_types"
-    t.index ["meeting_individual_result_id", "rank"], name: "meeting_id_rank"
     t.index ["pool_type_id"], name: "fk_user_results_pool_types"
     t.index ["swimmer_id"], name: "fk_user_results_swimmers"
-    t.index ["user_id"], name: "idx_user_results_user"
+    t.index ["swimming_pool_id"], name: "index_user_results_on_swimming_pool_id"
+    t.index ["user_id"], name: "fk_rails_e406f4db18"
+    t.index ["user_workshop_id"], name: "index_user_results_on_user_workshop_id"
   end
 
   create_table "user_swimmer_confirmations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -2058,6 +2080,40 @@ ActiveRecord::Schema.define(version: 2021_04_29_155847) do
     t.string "description", limit: 250, default: ""
     t.integer "user_id"
     t.index ["user_id", "description"], name: "index_user_trainings_on_user_id_and_description"
+  end
+
+  create_table "user_workshops", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.integer "lock_version", default: 0
+    t.date "header_date"
+    t.string "header_year", limit: 10
+    t.string "code", limit: 80
+    t.string "description", limit: 100
+    t.integer "edition"
+    t.text "notes"
+    t.integer "user_id", null: false
+    t.integer "team_id", null: false
+    t.integer "season_id", null: false
+    t.integer "edition_type_id", default: 3, null: false
+    t.integer "timing_type_id", default: 1, null: false
+    t.integer "swimming_pool_id"
+    t.boolean "autofilled"
+    t.boolean "off_season"
+    t.boolean "confirmed"
+    t.boolean "cancelled"
+    t.boolean "pb_acquired"
+    t.boolean "read_only"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["code"], name: "index_user_workshops_on_code"
+    t.index ["description", "code"], name: "workshop_name", type: :fulltext
+    t.index ["edition_type_id"], name: "index_user_workshops_on_edition_type_id"
+    t.index ["header_date"], name: "index_user_workshops_on_header_date"
+    t.index ["header_year"], name: "index_user_workshops_on_header_year"
+    t.index ["season_id"], name: "index_user_workshops_on_season_id"
+    t.index ["swimming_pool_id"], name: "index_user_workshops_on_swimming_pool_id"
+    t.index ["team_id"], name: "index_user_workshops_on_team_id"
+    t.index ["timing_type_id"], name: "index_user_workshops_on_timing_type_id"
+    t.index ["user_id"], name: "index_user_workshops_on_user_id"
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -2141,4 +2197,13 @@ ActiveRecord::Schema.define(version: 2021_04_29_155847) do
   add_foreign_key "swimmer_season_scores", "badges"
   add_foreign_key "swimmer_season_scores", "event_types"
   add_foreign_key "swimmer_season_scores", "meeting_individual_results"
+  add_foreign_key "user_laps", "swimmers"
+  add_foreign_key "user_laps", "user_results"
+  add_foreign_key "user_results", "user_workshops"
+  add_foreign_key "user_results", "users"
+  add_foreign_key "user_workshops", "edition_types"
+  add_foreign_key "user_workshops", "seasons"
+  add_foreign_key "user_workshops", "teams"
+  add_foreign_key "user_workshops", "timing_types"
+  add_foreign_key "user_workshops", "users"
 end

@@ -52,16 +52,6 @@ else
   echo "goggles_api not found, skipping."
 fi
 
-# goggles_chrono
-if [ -d ../goggles_chrono/db ];
-then
-  echo "Updating goggles_chrono..."
-  cp ./db/schema.rb ../goggles_chrono/db/schema.rb
-  cp ./db/structure.sql ../goggles_chrono/db/structure.sql
-else
-  echo "goggles_chrono not found, skipping."
-fi
-
 # goggles_admin2
 if [ -d ../goggles_admin2/db ];
 then

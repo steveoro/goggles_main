@@ -101,6 +101,7 @@ guard :rspec, rspec_options do
   dsl.watch_spec_files_for(rails.app_files)
   dsl.watch_spec_files_for(rails.views)
 
+  # In case a controller changes, run a corresponding spec for each one of these cases:
   watch(rails.controllers) do |m|
     [
       rspec.spec.call("routing/#{m[1]}_routing"),
@@ -112,6 +113,11 @@ guard :rspec, rspec_options do
   # Rails config changes
   watch(rails.spec_helper)     { rspec.spec_dir }
   watch(rails.routes)          { "#{rspec.spec_dir}/routing" }
+
+  # Watch split spec files, due to multiple long contexts:
+  watch('app/strategies/solver/lookup_entity.rb') { Dir.glob('spec/strategies/solver/lookup_entity*_spec.rb') }
+
+  # Watch controller specs directly as requests:
   watch(rails.app_controller)  { "#{rspec.spec_dir}/requests" }
 
   # Capybara features specs
