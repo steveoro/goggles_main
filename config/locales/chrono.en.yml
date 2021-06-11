@@ -6,6 +6,7 @@ en:
       queue_notice: "Here you can check the list of queued time recordings on the server. When a time recording gets successfully registered it will automatically disappear from the queue."
       registration_notice: "The successfully registered timings can be found as result details of the Meeting or the Workshop you choose as container for the event."
       no_data_notice: '(Your recording queue is empty)'
+      confirm_delete: "Do you really want to erase from the queue this time recording? (The recording ' %{queue_label}' will be lost.)"
     new:
       title: 'New Chrono'
     rec:
@@ -22,8 +23,11 @@ en:
       error:
         missing_meeting_or_workshop_name: "You have to choose or create a Meeting or a Workshop name in order to make a chronometric recording."
         commit_missing_parameters: "Invalid commit request: some required parameters are missing or wrong."
+        delete_invalid_parameters: "Invalid delete request: row not found."
       confirm_delete: 'Are you sure you want to delete this lap row?'
       confirm_reset: "Reset & clear Chrono's log?"
       confirm_post: "Post these lap timings to Master-Goggles.org? Editing finished? Ready to send?"
       post_done: "Data sent & queued for registration."
       post_error: "Sorry: an error during data registration prevented this data from being queued."
+      delete_done: "Recording deleted."
+      delete_error: "Sorry: an error prevented the deletion of this recording."

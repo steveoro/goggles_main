@@ -1,4 +1,5 @@
-import { Controller } from "stimulus"
+import { Controller } from 'stimulus'
+import $ from 'jquery'
 
 /**
  * = StimulusJS controller for Pop-overs, Modals & Tooltips =
@@ -32,7 +33,7 @@ export default class extends Controller {
    * Sets up the controller.
    * (Called whenever the controller instance connects to the DOM)
    */
-  connect() {
+  connect () {
     // DEBUG
     // console.log('Connecting popover controller...')
 
@@ -44,9 +45,9 @@ export default class extends Controller {
     // Auto-hide all tooltips after they've being shown:
     $('[data-toggle="tooltip"]').on('shown.bs.tooltip', function () {
       $('[data-toggle="tooltip"]').delay(2000).queue(function (next) {
-        $(this).tooltip('hide');
-        next();
-      });
+        $(this).tooltip('hide')
+        next()
+      })
     })
 
     // *** Alerts setup: ***
@@ -66,5 +67,5 @@ export default class extends Controller {
         })
     })
   }
-  //---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
 }

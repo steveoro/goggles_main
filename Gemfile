@@ -66,6 +66,7 @@ group :development do
   gem 'guard-inch'
   gem 'guard-rspec'
   gem 'guard-rubocop'
+  gem 'guard-shell'
   gem 'guard-spring'
   gem 'haml_lint', require: false
   gem 'inch', require: false # grades source documentation

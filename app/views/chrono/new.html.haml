@@ -7,27 +7,37 @@
         %i.fa.fa-clock-o
         = t('chrono.new.title')
 
-    = form_tag(chrono_rec_path, hidden_id: 'frm-chrono-index', method: :post) do
+    = form_tag(chrono_rec_path, hidden_id: 'frm-chrono-new', method: :post) do
       .container.mb-2
         = render(Switch::XorComponent.new(t('chrono.selector.meeting'), 'meeting',
                  t('chrono.selector.workshop'), 'workshop', hidden_id: 'rec_type', class: 'round'))
 
+      .container.mt-2
+        .row
+          - season_options = options_from_collection_for_select(SeasonDecorator.decorate_collection(@seasons),
+                             'id', 'text_label')
+          = render(ComboBox::DbLookupComponent.new(nil, t('meetings.season'), 'season',
+                                                   required: true, values: season_options))
+
       .container.bg-light-green.pt-3.shadow-box#meeting{ data: { 'switch-target' => 'area1' } }
         .row
-          = render(ComboBox::DbLookupComponent.new('/meetings', t('chrono.selector.meeting'), 'meeting',
+          = render(ComboBox::DbLookupComponent.new('meetings', t('chrono.selector.meeting'), 'meeting',
                                                    free_text: true))
       .container.bg-light-blue.pt-3.shadow-box.d-none#workshop{ data: { 'switch-target' => 'area2' } }
         .row
-          = render(ComboBox::DbLookupComponent.new('/user_workshops', t('chrono.selector.workshop'), 'workshop',
+          = render(ComboBox::DbLookupComponent.new('user_workshops', t('chrono.selector.workshop'), 'workshop',
                                                    free_text: true))
-
       .container.mt-2
         .row
-          = render(ComboBox::DbLookupComponent.new('/swimming_pools', t('meetings.dashboard.swimming_pool'),
-                                                   'swimming_pool', free_text: true))
+          = render(ComboBox::DbSwimmingPoolComponent.new(t('meetings.dashboard.swimming_pool'),
+                                                         'swimming_pool', free_text: true, use_2_api: true))
           - pool_type_options = options_from_collection_for_select(@pool_types, 'id', 'long_label')
           = render(ComboBox::DbLookupComponent.new(nil, t('meetings.dashboard.pool_type'), 'pool_type',
                                                    required: true, values: pool_type_options))
+          = render(ComboBox::DbCityComponent.new(required: true, free_text: true))
+
+      .container.bg-light-yellow.pt-3.shadow-box
+        .row
           .col-auto
             .form-group
               .field
@@ -38,17 +48,23 @@
           = render(ComboBox::DbLookupComponent.new(nil, t('meetings.event'), 'event_type',
                                                    required: true, values: event_type_options))
 
-          - default_swimmer = SwimmerDecorator.decorate(current_user.swimmer) if current_user.swimmer
-          - preselect_options = options_for_select([[default_swimmer.text_label, default_swimmer.id], ['- - -', nil]],
-                                                   default_swimmer.id) if default_swimmer
-          = render(ComboBox::DbLookupComponent.new('/swimmers', t('swimmers.swimmer'), 'swimmer',
-                                                   free_text: true, values: preselect_options))
+      .container.mt-2
+        .row
+          - team_options = nil
+          - if current_user.swimmer
+            - decorated_swimmer = SwimmerDecorator.decorate(current_user.swimmer)
+            - team_options = options_from_collection_for_select(decorated_swimmer.associated_teams,
+                                                                'id', 'editable_name')
+          = render(ComboBox::DbLookupComponent.new('teams', t('teams.team'), 'team', required: true,
+                                                   free_text: true, values: team_options))
+          = render(ComboBox::DbSwimmerComponent.new(t('swimmers.swimmer'), 'swimmer',
+                                                    free_text: true, default_row: current_user.swimmer))
 
           - category_type_options = options_from_collection_for_select(@category_types, 'id', 'short_name')
           = render(ComboBox::DbLookupComponent.new(nil, t('meetings.category'), 'category_type',
                                                    required: true, values: category_type_options))
 
-      .container.mt-2
+      .container.mt-2.mb-4
         .row
           .col-auto
             = submit_tag(t('chrono.buttons.start_recording'), id: 'btn-rec-chrono', class: 'btn btn-primary',

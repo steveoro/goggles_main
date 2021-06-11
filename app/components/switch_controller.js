@@ -1,4 +1,5 @@
-import { Controller } from "stimulus"
+import { Controller } from 'stimulus'
+import $ from 'jquery'
 
 /**
  * = Switch::XorComponent StimulusJS controller =
@@ -39,19 +40,19 @@ export default class extends Controller {
    * Sets up the controller.
    * (Called whenever the controller instance connects to the DOM)
    */
-  connect() {
+  connect () {
     // DEBUG
     // console.log('Connecting Switch controller...')
 
     // TODO: add visibility setup boilerplate for the targets, given state saved in cookies
   }
-  //---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
 
   /**
    * Toggles visibility between the two targets & sets the current choice
    * value in the selector target field.
    */
-  toggleTargets(_event) {
+  toggleTargets (_event) {
     if (this.hasArea1Target) {
       $(this.area1Target).toggleClass('d-none')
     }

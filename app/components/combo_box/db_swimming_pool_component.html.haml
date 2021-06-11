@@ -1,0 +1,19 @@
+%div{ class: @wrapper_class, data: { controller: 'lookup', 'lookup-placeholder-value' => placeholder_text,
+      'lookup-api-url-value' => @api_url,
+      'lookup-field-base-name-value' => @base_name,
+      'lookup-free-text-value' => @free_text,
+      'lookup-query-column-value' => @query_column,
+      'lookup-api-url2-value' => @api_url2 } }
+  .form-group
+    .field
+      = hidden_field_tag("#{@base_name}_id", @default_row&.id)
+      = hidden_field_tag("#{@base_name}_label", "#{@default_row&.name} (#{@default_row&.nick_name})")
+      = hidden_field_tag("#{@base_name}_name", @default_row&.name)
+      = hidden_field_tag("#{@base_name}_nick_name", @default_row&.nick_name)
+      = hidden_field_tag("#{@base_name}_city_id", @default_row&.city_id)
+      = hidden_field_tag("#{@base_name}_pool_type_id", @default_row&.pool_type_id)
+      = label_tag(@base_name, @label)
+      %b.text-danger{ id: "#{@base_name}-presence" } *
+      %select.select2{ id: "#{@base_name}_select", autofocus: true, required: @required,
+                       data: { 'lookup-target' => 'field' } }
+        = preselected_option

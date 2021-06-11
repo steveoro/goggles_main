@@ -147,7 +147,7 @@ end
 #-- ---------------------------------------------------------------------------
 #++
 
-# == HAMLLint ==
+# == HAML-Lint ==
 
 # Guard-HamlLint supports a lot options with default values:
 # all_on_start: true            # Check all files at Guard startup. default: true
@@ -157,6 +157,12 @@ guard :haml_lint do
   watch('.haml-lint.yml')
   watch(/.+\.html.*\.haml$/)
   watch(%r{(?:.+/)?\.haml-lint\.yml$}) { |m| File.dirname(m[0]) }
+end
+
+# == ESLint / StandardJS ==
+
+guard :shell do
+  watch(%r{app/(components|javascript)/.+\.js$}) { |m| `yarn lint #{m[0]}` }
 end
 #-- ---------------------------------------------------------------------------
 #++

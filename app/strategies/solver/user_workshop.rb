@@ -35,18 +35,20 @@ module Solver
     #-- -----------------------------------------------------------------------
     #++
 
-    # Returns a newly created target entity instance if all the bindings were solved
-    # and the row could be saved.
-    # Returns +nil+ when not found.
+    # Returns a newly created target entity instance, serialized if and only if
+    # all the bindings were solved and the resulting row was valid.
+    #
+    # == Returns:
+    # - +nil+ until all required bindings are solved;
+    # - a new target entity instance when done, saved successfully if valid,
+    #   and yielding any validation erros as #error_messages.
     def creator_strategy
       solve_bindings
       return nil unless required_bindings.values.all?(&:present?)
 
       new_instance = GogglesDb::UserWorkshop.new
-      bindings.each { |key, solved| new_instance.send("#{key}=", solved) }
-      return nil unless new_instance.valid?
-
-      new_instance.save!
+      bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
+      new_instance.save # Don't throw validation errors
       new_instance
     end
     #-- -----------------------------------------------------------------------
@@ -63,8 +65,9 @@ module Solver
     #
     # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def init_bindings
+      meeting_description = value_from_req(key: 'user_workshop_description', nested: 'user_workshop', sub_key: 'description')
       @bindings = {
-        description: value_from_req(key: 'user_workshop_description', nested: 'user_workshop', sub_key: 'description'),
+        description: meeting_description,
         # User id must always be supplied, cannot be found or created:
         user_id: value_from_req(key: 'user_workshop_user_id', nested: 'user_workshop', sub_key: 'user_id'),
         team_id: Solver::Factory.for('Team', root_key?('team') ? req : req['user_workshop']),
@@ -72,12 +75,16 @@ module Solver
         header_date: value_from_req(key: 'header_date', nested: 'user_workshop', sub_key: 'header_date') || Date.today.to_s,
 
         # Fields w/ defaults:
-        edition: value_from_req(key: 'edition', nested: 'user_workshop', sub_key: 'edition') || 0,
+        edition: value_from_req(key: 'edition', nested: 'user_workshop', sub_key: 'edition') ||
+                 Date.today.year.to_s,
         edition_type_id: Solver::Factory.for('EditionType', root_key?('edition_type') ? req : req['user_workshop']),
         timing_type_id: Solver::Factory.for('TimingType', root_key?('timing_type') ? req : req['user_workshop']),
-        # Optional fields:
-        header_year: value_from_req(key: 'header_year', nested: 'user_workshop', sub_key: 'header_year') || Date.today.year.to_s,
-        code: value_from_req(key: 'user_workshop_code', nested: 'user_workshop', sub_key: 'code'),
+        header_year: value_from_req(key: 'header_year', nested: 'user_workshop', sub_key: 'header_year') ||
+                     Date.today.year.to_s,
+        code: value_from_req(key: 'user_workshop_code', nested: 'user_workshop', sub_key: 'code') ||
+              normalize_string_name_into_code(meeting_description),
+
+        # Truly optional fields:
         swimming_pool_id: Solver::Factory.for('SwimmingPool', root_key?('swimming_pool') ? req : req['user_workshop'])
       }
     end

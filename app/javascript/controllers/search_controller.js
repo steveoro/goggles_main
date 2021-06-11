@@ -27,21 +27,21 @@ import SwipeElement from '../src/swipe_element'
  * @author Steve A.
  */
 export default class extends Controller {
-  static targets = ["swiper"]
-  static values  = { max: Number, current: Number, url: String }
+  static targets = ['swiper']
+  static values = { max: Number, current: Number, url: String }
 
   /**
    * Initialization boilerplate for the Swipe element/widget.
    * (Re-run each time the controller is connected to the DOM)
    */
-  connect() {
+  connect () {
     // Build a swiper target only if we have more than 1 page:
     if (this.hasSwiperTarget && this.maxValue > 1) {
       window.pageSwiper = new SwipeElement(this.swiperTarget, {
         // Options:
         continuous: true, // (wrap back at pagination end)
         index: this.hasCurrentValue ? this.currentValue : 1,
-        total: this.hasMaxValue     ? this.maxValue : 1,
+        total: this.hasMaxValue ? this.maxValue : 1,
         // debug: true,
 
         // Callbacks:
@@ -55,28 +55,26 @@ export default class extends Controller {
     }
   }
 
-
   /**
    * Fetches a paginated result page directly from the server and replaces the innerHTML of
    * the search results
    *
    * @param {Number} pageIndex the new index for the data page to be retrieved
    */
-  fetchSearchResultPage(pageIndex) {
+  fetchSearchResultPage (pageIndex) {
     if (!(this.hasUrlValue && this.hasSwiperTarget)) {
       return
     }
     // Display loading indicator:
     document.querySelector('#loading-indicator').classList.remove('d-none')
     this.currentValue = pageIndex
-    var url = this.urlValue
+    let url = this.urlValue
 
     // Set or add the next browsing page parameter:
-    url = url.includes('page=') ?
-          url.replace(/(?<=\W)(page=\d+)/i, `page=${pageIndex}`) : `${url}&page=${pageIndex}`
+    url = url.includes('page=') ? url.replace(/(?<=\W)(page=\d+)/i, `page=${pageIndex}`) : `${url}&page=${pageIndex}`
+
     // Set or add 'raw' request parameter:
-    url = url.includes('raw=') ?
-          url.replace(/(?<=\W)(raw=\d+)/i, `raw=1`) : `${url}&raw=1`
+    url = url.includes('raw=') ? url.replace(/(?<=\W)(raw=\d+)/i, 'raw=1') : `${url}&raw=1`
     // DEBUG
     // console.log(`fetchSearchResultPage('${url}')`)
 

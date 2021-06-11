@@ -71,6 +71,19 @@ module Solver
       entity&.valid? || false
     end
 
+    # Returns the Hash of ActiveRecord error messages that may have prevented
+    # the #entity from being saved.
+    #
+    # == Returns, depending on case:
+    # - not solved yet (before #solve!) => nil
+    # - solved successfully => empty
+    # - unsolved due to missing or wrong data => nil
+    # - unsolved due to binding errors in optional fields => Hash of AR messages,
+    #   having format: { <column_name>: <localized_error_message> }
+    def error_messages
+      entity&.errors&.messages
+    end
+
     # Tries to "solve" the requested target by finding the row referred by the attributes
     # or by creating a new one, if all the required values are given or already solved.
     #
@@ -172,5 +185,36 @@ module Solver
     #
     # ==> OVERRIDE IN SIBLINGS to enable usage of this strategy <==
     def creator_strategy; end
+    #-- -----------------------------------------------------------------------
+    #++
+
+    # Cleans the supplied text name into a more compact version
+    # that we can use for almost-unique, displayable and verbose meeting
+    # codes.
+    # (Just for grouping them together as "belonging to the same type" of meeting/workshop)
+    #
+    # TODO: refactor this piece of legacy code into its own dedicated strategy object
+    def normalize_string_name_into_code(name)
+      # [Steve, 20170426] We use the "non-word" char code in Regexp ("\W") because it's
+      # the most generic and works even for SHIFT-SPACEs and other strange mis-typings
+      # made by hand by operators (in some cases "\s" is not enough)
+      name.to_s
+          .gsub(/\W\d{4}/iu, '')
+          .gsub(%r{[\-_'`\\/:.,;]}, '')
+          .gsub(/à/iu, 'a')
+          .gsub(/[èé]/iu, 'e')
+          .gsub(/ì/iu, 'i')
+          .gsub(/ò/iu, 'o')
+          .gsub(/ù/iu, 'u')
+          .gsub(/\d+°?\W/iu, '')
+          .gsub(/meeting|mtng|memorial|coppa\W+|trofeo\W+|finali\W|tr\W+/iu, '')
+          .gsub(/sport\W?center/ui, 'sc')
+          .gsub(/villaggio\W?sportivo/ui, 'vs')
+          .gsub(/centro\W?sportivo/ui, 'cs')
+          .gsub(/citta\W+di\W+|circolo/iu, '')
+          .gsub(/team\Wasi|acsi|snp\W|dna\W/iu, '')
+          .downcase.strip
+          .gsub(/\W/iu, '')
+    end
   end
 end

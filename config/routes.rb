@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   get 'chrono/new'
   post 'chrono/rec'
   post 'chrono/commit'
+  delete 'chrono/delete'
 
   put 'lookup/matching_swimmers'
 

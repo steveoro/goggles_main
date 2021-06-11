@@ -9,7 +9,6 @@
       #tools-fin-score
         %h2 Tools > Compute FIN score
         = form_for(:fin_params, url: tools_compute_fin_score_path, html: { method: :post }) do |f|
-          -# 'lookup-field-id-value' => 'swimmer_id'
           .form-row{ data: { controller: 'lookup', 'lookup-placeholder-value' => t('lookup.placeholder'),
             'lookup-api-url-value' => api_req_url } }
             - if user_signed_in?
@@ -23,13 +22,6 @@
                 = f.label(:category_type, 'Category')
                 = f.text_field(:category_type, required: true, autofocus: true,
                               class: 'form-control', placeholder: 'Category')
-
-            -#       = f.select(:swimmer_id, options_for_select(collection, current_user.swimmer_id),
-            -# { include_blank: true },
-            -#                 { class: 'custom-select col-sm-6 mb-1', disabled: true })
-            -#       %a.btn.btn-primary.btn-sm.align-baseline{ role: 'button',
-            -#         onclick: "console.log('clicked')" }
-            -#         %i.fa.fa.fa-pencil
 
           .form-group
             .mt-2.col-auto.actions

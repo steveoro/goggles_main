@@ -21,4 +21,9 @@ class SeasonDecorator < Draper::Decorator
                      .by_begin_date
                      .last
   end
+
+  # Returns a displayable text label (shorter than the official description).
+  def text_label
+    "#{season_type.short_name} (#{header_year})"
+  end
 end

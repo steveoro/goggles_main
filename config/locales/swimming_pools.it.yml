@@ -3,6 +3,8 @@ it:
     pool: Piscina
     swimming_pools: Piscine
     city: "Città"
+    area_code: "Provincia"
+    country_code: "Stato"
     go_to_dashboard: "Vai alla pagina dettagli per questa piscina"
     dashboard:
       title: Piscina

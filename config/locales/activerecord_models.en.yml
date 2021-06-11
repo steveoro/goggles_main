@@ -111,3 +111,11 @@ en:
               blank: "can't be blank"
               too_short: "is too short"
               invalid: "is not valid"
+        goggles_db/user_workshop:
+          attributes:
+            code:
+              blank: "can't be blank"
+            edition_type:
+              blank: "can't be blank"
+            timing_type:
+              blank: "can't be blank"

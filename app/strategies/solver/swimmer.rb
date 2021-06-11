@@ -44,9 +44,13 @@ module Solver
     #-- -----------------------------------------------------------------------
     #++
 
-    # Returns a newly created target entity instance if all the bindings are solved
-    # and the row can be saved.
-    # Returns +nil+ when not found.
+    # Returns a newly created target entity instance, serialized if and only if
+    # all the bindings were solved and the resulting row was valid.
+    #
+    # == Returns:
+    # - +nil+ until all required bindings are solved;
+    # - a new target entity instance when done, saved successfully if valid,
+    #   and yielding any validation erros as #error_messages.
     #
     # == Arguments:
     # - complete_name: Swimmer#complete_name used when creating a new instance
@@ -65,12 +69,10 @@ module Solver
       # - year_of_birth...: supplied || guessable by AgeGuesser(new_row, category_type_id) => year_guessed: true (TODO)
       # - last_name.......: supplied || guessable by #name_splitter(new_row)
       # - first_name......: supplied || guessable by #name_splitter(new_row)
-      bindings.each { |key, solved| new_instance.send("#{key}=", solved) }
-      return nil unless new_instance.valid?
-
+      bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
       # Make sure every new instance has also the split-name if missing:
       new_instance = name_splitter(new_instance) unless new_instance.last_name.present?
-      new_instance.save!
+      new_instance.save # Don't throw validation errors
       new_instance
     end
     #-- -----------------------------------------------------------------------

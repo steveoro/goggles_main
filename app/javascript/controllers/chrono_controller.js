@@ -1,23 +1,24 @@
 import { Controller } from 'stimulus'
 import TimerElement from '../src/timer_element'
-import Backbone from 'backbone';
-import Backgrid from 'backgrid';
+import Backbone from 'backbone'
+import Backgrid from 'backgrid'
+import $ from 'jquery'
 
 // Row data model:
 const Timing = Backbone.Model.extend({
   defaults: {
-    "lap": 0,
-    "hours": 0,         // (not currently used)
-    "minutes": 0,
-    "seconds": 0,
-    "hundredths": 0,
-    "labelOverall": "",
-    "trash": "x",
-    "gridRef": null // internal reference
+    order: 0,
+    hours: 0, // (not currently used)
+    minutes: 0,
+    seconds: 0,
+    hundredths: 0,
+    meters: 0,
+    labelOverall: '',
+    trash: 'x',
+    gridRef: null // internal reference
   }
-});
-//-----------------------------------------------------------------------------
-
+})
+// -----------------------------------------------------------------------------
 
 /**
  * = StimulusJS Search-browse/swipe controller =
@@ -44,6 +45,12 @@ const Timing = Backbone.Model.extend({
  * @param {String} 'data-chrono-target': 'btnSave'
  *                 DOM "save" button
  *
+ * @param {String} 'data-chrono-target': 'payload'
+ *                 DOM field tag for storing the data payload as JSON text
+ *
+ * @param {String} 'data-chrono-target': 'mainForm'
+ *                 DOM form used to POST the payload
+ *
  *
  * == Values ==
  * (no static values)
@@ -59,12 +66,12 @@ const Timing = Backbone.Model.extend({
  * @author Steve A.
  */
 export default class extends Controller {
-  static targets = ["timer", "lapsGrid", "btnSwitch", "btnLap", "btnSave"]
+  static targets = ['timer', 'lapsGrid', 'btnSwitch', 'btnLap', 'btnSave', 'payload', 'mainForm']
 
   /**
    * Initialization boilerplate for the TimerElement.
    */
-  connect() {
+  connect () {
     // DEBUG
     // console.log('Connecting ChronoController...')
 
@@ -82,51 +89,50 @@ export default class extends Controller {
           this.afterReset()
         },
         onlap: (timing) => {
-          this.afterLap(timing) // timing: { lap:, hours:, minutes:, seconds:, hundredths: }
+          this.afterLap(timing)
         },
         onstop: (timing) => {
-          this.afterStop(timing) // timing: { lap:, hours:, minutes:, seconds:, hundredths: }
+          this.afterStop(timing)
         }
       })
       this.setupLapsGrid()
     }
 
-
     /**
      * Takes a "timing" object or a Timing model with compatible field names and
      * returns the formatted labelTime string field.
      */
-    this.updateLabelTime = function(timing) {
-      console.log("updateLabelTime()")
+    this.updateLabelTime = function (timing) {
+      console.log('updateLabelTime()')
       console.log(this)
       console.log(timing)
 
       // Format digit strings:
       // let labelHours = `${timing.hours < 10 ? '0' + timing.hours : timing.hours}` // (unused)
-      let labelMins = `${timing.minutes < 10 ? '0' + timing.minutes : timing.minutes}`
-      let labelSecs = `${timing.seconds < 10 ? '0' + timing.seconds : timing.seconds}`
-      let labelHundredths = `${timing.hundredths < 10 ? '0' + timing.hundredths : timing.hundredths}`
-      return `${labelMins}'${labelSecs}"${labelHundredths}`;;
+      const labelMins = `${timing.minutes < 10 ? '0' + timing.minutes : timing.minutes}`
+      const labelSecs = `${timing.seconds < 10 ? '0' + timing.seconds : timing.seconds}`
+      const labelHundredths = `${timing.hundredths < 10 ? '0' + timing.hundredths : timing.hundredths}`
+      return `${labelMins}'${labelSecs}"${labelHundredths}`
     }
   }
-  //---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
 
   /**
    * == initLapGrid() ==
    * Setup laps grid
    */
-  setupLapsGrid() {
-    var LapTimings = Backbone.Collection.extend({
+  setupLapsGrid () {
+    const LapTimings = Backbone.Collection.extend({
       model: Timing
-    });
-    var lapTimings = new LapTimings();
-    var confirmMessage = this.data.get("delete-message");
-    var columns = [
+    })
+    const lapTimings = new LapTimings()
+    const confirmMessage = this.data.get('delete-message')
+    const columns = [
       {
-        name: "lap",        // The key of the model attribute
-        label: "#",         // The name to display in the header
+        name: 'order', // The key of the model attribute
+        label: '#', // The name to display in the header
         // editable: true,  // (By default every cell in a column is editable)
-        sortable: false,
+        sortable: true,
         // Defines a cell type, and ID is displayed as an integer without the ',' separating 1000s.
         cell: Backgrid.IntegerCell.extend({ orderSeparator: '' })
       },
@@ -141,79 +147,87 @@ export default class extends Controller {
       },
       */
       {
-        name: "minutes",
-        label: "min",
+        name: 'minutes',
+        label: 'min',
         sortable: false,
         cell: Backgrid.IntegerCell.extend({ orderSeparator: '' })
       },
       {
-        name: "seconds",
-        label: "sec",
+        name: 'seconds',
+        label: 'sec',
         sortable: false,
         cell: Backgrid.IntegerCell.extend({ orderSeparator: '' })
       },
       {
-        name: "hundredths",
-        label: "1/100",
+        name: 'hundredths',
+        label: '1/100',
         sortable: false,
         cell: Backgrid.IntegerCell.extend({ orderSeparator: '' })
       },
       {
-        name: "labelTime",
-        label: "t",
+        name: 'meters',
+        label: 'm',
+        sortable: false,
+        cell: Backgrid.IntegerCell.extend({ orderSeparator: '' })
+      },
+      {
+        name: 'labelTime',
+        label: 't',
         editable: false,
         sortable: false,
-        cell: "string"
+        cell: 'string'
       },
       {
-        name: "trash",
-        label: "",
+        name: 'trash',
+        label: '',
         editable: false,
         sortable: false,
         cell: Backgrid.StringCell.extend({
           render: function () {
-            var btn = $("<button>", {
-              tabIndex: -1, class: "btn btn-xs btn-outline-danger btn-delete-lap",
-              disabled: true, text: "X", role: "button"
-            });
-            var cid = this.model.cid
-            var rowAttr = this.model.attributes;
-            btn.on("click", function () {
+            const btn = $('<button>', {
+              tabIndex: -1,
+              class: 'btn btn-xs btn-outline-danger btn-delete-lap',
+              disabled: true,
+              text: 'X',
+              role: 'button'
+            })
+            const cid = this.model.cid
+            const rowAttr = this.model.attributes
+            btn.on('click', function () {
               if (confirm(`${confirmMessage}\r\n(${rowAttr.labelTime})`)) {
-                let modelRow = rowAttr.gridRef.collection.get(cid)
+                const modelRow = rowAttr.gridRef.collection.get(cid)
                 rowAttr.gridRef.removeRow(modelRow)
               }
-            });
-            this.$el.empty();
-            this.$el.append(btn);
-            this.delegateEvents();
-            return this;
+            })
+            this.$el.empty()
+            this.$el.append(btn)
+            this.delegateEvents()
+            return this
           }
         })
       }
-    ];
+    ]
 
     // Initialize the Grid instance:
     this.grid = new Backgrid.Grid({
       columns: columns,
       collection: lapTimings,
-      emptyText: "- - -"
-    });
+      emptyText: '- - -'
+    })
 
     // Render the grid and attach the root of the target node:
-    this.lapsGridTarget.append(this.grid.render().el);
+    this.lapsGridTarget.append(this.grid.render().el)
   }
-  //---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
 
   /**
    * == start/Stop action ==
    * Toggles between starting & stopping the timer, depending on current timer widget state.
    */
-  startStop(_event) {
+  startStop (_event) {
     if (this.timerWidget.running) {
       this.stop()
-    }
-    else {
+    } else {
       this.start()
     }
   }
@@ -221,111 +235,111 @@ export default class extends Controller {
   /**
    * == Reset action ==
    */
-  reset(_event) {
-    if (confirm(this.data.get("reset-message"))) {
+  reset (_event) {
+    if (confirm(this.data.get('reset-message'))) {
       this.timerWidget.handleReset()
       // Disable "save" button:
       if (this.hasBtnSaveTarget) {
-        this.btnSaveTarget.setAttribute("disabled", "true")
+        this.btnSaveTarget.setAttribute('disabled', 'true')
       }
     }
-
   }
 
   /**
    * == Start action ==
    */
-  start(_event) {
+  start (_event) {
     this.timerWidget.handleStart()
     // Toggle "start" label into "stop":
     if (this.hasBtnSwitchTarget) {
       this.btnSwitchTarget.classList.add('btn-outline-warning')
       this.btnSwitchTarget.classList.remove('btn-outline-success')
-      this.btnSwitchTarget.innerHTML = `<span><i class="fa fa-stop"></i> STOP</span>`
+      this.btnSwitchTarget.innerHTML = '<span><i class="fa fa-stop"></i> STOP</span>'
     }
     // Enable "lap" button:
     if (this.hasBtnLapTarget) {
-      this.btnLapTarget.removeAttribute("disabled")
+      this.btnLapTarget.removeAttribute('disabled')
     }
     // Disable "save" button:
     if (this.hasBtnSaveTarget) {
-      this.btnSaveTarget.setAttribute("disabled", "true")
+      this.btnSaveTarget.setAttribute('disabled', 'true')
     }
   }
 
   /**
    * == Stop action ==
    */
-  stop(_event) {
+  stop (_event) {
     this.timerWidget.handleStop()
     // Toggle "stop" label into "start":
     if (this.hasBtnSwitchTarget) {
       this.btnSwitchTarget.classList.add('btn-outline-success')
       this.btnSwitchTarget.classList.remove('btn-outline-warning')
-      this.btnSwitchTarget.innerHTML = `<span><i class="fa fa-play"></i> START</span>`
+      this.btnSwitchTarget.innerHTML = '<span><i class="fa fa-play"></i> START</span>'
     }
     // Disable "lap" button:
     if (this.hasBtnLapTarget) {
-      this.btnLapTarget.setAttribute("disabled", "true")
+      this.btnLapTarget.setAttribute('disabled', 'true')
     }
     // Enable "save" button:
     if (this.hasBtnSaveTarget) {
-      this.btnSaveTarget.removeAttribute("disabled")
+      this.btnSaveTarget.removeAttribute('disabled')
     }
   }
 
   /**
    * == Lap action ==
    */
-  lap(_event) {
+  lap (_event) {
     this.timerWidget.handleLap()
   }
 
   /**
    * == Save action ==
    */
-  save(_event) {
+  save (_event) {
     // DEBUG
-    console.log(`save() action`)
+    console.log('save() action')
     _event.preventDefault()
 
-    if (confirm(this.data.get("post-message"))) {
+    if (confirm(this.data.get('post-message')) && this.hasPayloadTarget) {
       // Prepare payload:
-      let dataPayload = this.grid.collection.map((model) => {
+      const dataPayload = this.grid.collection.map((model) => {
         return {
-          lap: model.attributes.lap,
+          order: model.attributes.order,
           minutes: model.attributes.minutes,
           seconds: model.attributes.seconds,
           hundredths: model.attributes.hundredths,
+          length_in_meters: model.attributes.meters,
           label: model.attributes.labelTime
         }
       })
-      $('#payload').val(JSON.stringify(dataPayload))
+      $(this.payloadTarget).val(JSON.stringify(dataPayload))
 
       // Post & Save data:
-      $('#frm-chrono-rec').submit()
-      return true;
+      if (this.hasMainFormTarget) {
+        $(this.mainFormTarget).trigger('submit')
+      }
+      return true
     }
-    return false;
+    return false
   }
-  //---------------------------------------------------------------------------
-
+  // ---------------------------------------------------------------------------
 
   /**
    * "onstart" controller handler, called from the corresponding widget event
    */
-  afterStart() {
+  afterStart () {
     // DEBUG
     // console.log(`afterStart()`)
 
     // (no-op)
   }
 
-
   /**
    * "onreset" controller handler, called from the corresponding widget event
    */
-  afterReset() {
+  afterReset () {
     // DEBUG
     // console.log(`afterReset()`)
 
@@ -336,13 +350,12 @@ export default class extends Controller {
     }
   }
 
-
   /**
    * "onstop" controller handler, called from the corresponding widget event
    * @param {Object} timing  an object with the current timer field values having format:
-   *                         { lap:, hours:, minutes:, seconds:, hundredths: }
+   *                         { order:, hours:, minutes:, seconds:, hundredths: }
    */
-  afterStop(timing) {
+  afterStop (timing) {
     // DEBUG
     // console.log(`afterStop()`)
 
@@ -351,35 +364,35 @@ export default class extends Controller {
     $('.btn-delete-lap').removeAttr('disabled')
   }
 
-
   /**
    * "onlap" controller handler, called from the corresponding widget event
    * @param {Object} timing  an object with the current timer field values having format:
-   *                         { lap:, hours:, minutes:, seconds:, hundredths: }
+   *                         { order:, hours:, minutes:, seconds:, hundredths: }
    */
-  afterLap(timing) {
+  afterLap (timing) {
     // DEBUG
     // console.log(`afterLap()`)
 
     // Add a new lap row:
     if (this.hasLapsGridTarget) {
-      let lapTimeModel = new Timing({
-        lap: timing.lap,
+      const lapTimeModel = new Timing({
+        order: timing.order,
         hours: timing.hours,
         minutes: timing.minutes,
         seconds: timing.seconds,
         hundredths: timing.hundredths,
+        meters: timing.order * 25, // Use a default minimum step, since the recordings can be user-edited
         labelTime: this.updateLabelTime(timing),
         gridRef: this.grid
       })
       // Bind change events to cell updates:
       lapTimeModel.on(
-        "change:hours change:minutes change:seconds change:hundredths",
+        'change:hours change:minutes change:seconds change:hundredths',
         (model) => { model.set('labelTime', this.updateLabelTime(model.attributes)) },
         this
-      );
+      )
 
-      this.grid.insertRow([lapTimeModel]);
+      this.grid.insertRow([lapTimeModel])
     }
   }
 }

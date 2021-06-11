@@ -1,4 +1,4 @@
-import { Controller } from "stimulus"
+import { Controller } from 'stimulus'
 
 /**
  * = StimulusJS controller for user email & name edits =
@@ -41,41 +41,41 @@ export default class extends Controller {
    * Sets up the controller.
    * (Called whenever the controller instance connects to the DOM)
    */
-  connect() {
+  connect () {
     // DEBUG
     // console.log('Connecting user-edit...')
   }
-  //---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
 
   /**
    * Updates: edits on 'first' & 'last' targets |=> 'description' target
    */
-  updateDescription() {
+  updateDescription () {
     if (this.hasDescriptionTarget && this.hasFirstTarget && this.hasLastTarget) {
-      this.descriptionTarget.value.value = `${this.firstTarget.value} ${this.lastTarget.value}`;
+      this.descriptionTarget.value.value = `${this.firstTarget.value} ${this.lastTarget.value}`
     }
   }
 
   /**
    * Updates: edits on 'email' target |=> 'name', 'first' & 'last' targets
    */
-  updateNames() {
+  updateNames () {
     if (this.hasEmailTarget && this.hasNameTarget && this.hasFirstTarget && this.hasLastTarget) {
-      var splitEMail = this.emailTarget.value.split('@')[0];
-      this.nameTarget.value = splitEMail;
-      var splitNames = splitEMail.split(/[_\.-]/);
-      this.firstTarget.value = this.titleize(splitNames[0]);
-      this.lastTarget.value = this.titleize(splitNames[1]);
+      const splitEMail = this.emailTarget.value.split('@')[0]
+      this.nameTarget.value = splitEMail
+      const splitNames = splitEMail.split(/[_.-]/)
+      this.firstTarget.value = this.titleize(splitNames[0])
+      this.lastTarget.value = this.titleize(splitNames[1])
     }
   }
-  //---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
 
   /**
    * Convert a string 'word' to 'Word'.
    * @param {String} word the word to be "titleized"
    * @return word, with first letter converted to upper case
    */
-  titleize(word) {
-    return word[0].toUpperCase() + word.substring(1);
+  titleize (word) {
+    return word[0].toUpperCase() + word.substring(1)
   }
 }

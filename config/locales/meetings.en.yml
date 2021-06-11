@@ -2,6 +2,7 @@ en:
   meetings:
     category: Category
     event: Event
+    season: Season
     meeting: Meeting
     meetings: Meetings
     header_date: Date

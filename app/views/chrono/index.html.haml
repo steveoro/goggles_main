@@ -12,14 +12,25 @@
           %i= t('chrono.index.queue_notice')
 
     .container.mt-2
-      %ul.list-group
-        - if @queues.count.positive?
-          - ImportQueueDecorator.decorate_collection(@queues).each do |queue|
-            %li.list-group-item.text-center
+      - if @queues.count.positive?
+        - ImportQueueDecorator.decorate_collection(@queues).each do |queue|
+          .row.border
+            .col.mt-2.text-left
               %small= queue.text_label
-        - else
-          %li.list-group-item.text-center
-            %small= t('chrono.index.no_data_notice')
+              - if queue.chrono_siblings.count.positive?
+                = render(Switch::RotatingComponent.new(target_id: "laps#{queue.id}"))
+            .col-2.my-1.text-center
+              = button_to('X', chrono_delete_path, id: "frm-delete-row-#{queue.id}", method: :delete,
+                          class: 'btn btn-sm btn-outline-danger', params: { id: queue.id },
+                          data: { confirm: t('chrono.index.confirm_delete', queue_label: queue.text_label) })
+          - if queue.chrono_siblings.count.positive?
+            %ul.collapse{ id: "laps#{queue.id}" }
+              - ImportQueueDecorator.decorate_collection(queue.chrono_siblings).each do |linked_queue|
+                %li.text-left
+                  %small= linked_queue.text_label
+      - else
+        .row.list-group-item.text-center
+          %small= t('chrono.index.no_data_notice')
 
     .container
       %p

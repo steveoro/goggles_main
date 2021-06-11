@@ -109,7 +109,7 @@ shared_examples_for 'Solver::BaseStrategy common methods defaults' do
     'responding to a list of methods',
     %i[entity req bindings
        all_bindings_solved? bindings_solved bindings_left solved?
-       solve!]
+       solve! error_messages]
   )
   it_behaves_like('unsolved Solver strategy (#solved? & #entity)')
 end
@@ -126,6 +126,11 @@ shared_examples_for 'Solver strategy, NO bindings, finder ONLY, before #solve!' 
 
   it "is a #{expected_solver} instance" do
     expect(subject).to be_a(expected_solver)
+  end
+  describe '#error_messages' do
+    it 'is nil' do
+      expect(subject.error_messages).to be nil
+    end
   end
   it_behaves_like('Solver::BaseStrategy common methods defaults')
   it_behaves_like('responding to a list of methods', %i[finder_strategy])
@@ -145,6 +150,11 @@ shared_examples_for 'Solver strategy, bindings, finder ONLY, before #solve!' do 
   it "is a #{expected_solver} instance" do
     expect(subject).to be_a(expected_solver)
   end
+  describe '#error_messages' do
+    it 'is nil' do
+      expect(subject.error_messages).to be nil
+    end
+  end
   it_behaves_like('Solver::BaseStrategy common methods defaults')
   it_behaves_like('responding to a list of methods', %i[finder_strategy])
   it_behaves_like('unsolved Solver strategy (bindings)')
@@ -162,6 +172,11 @@ shared_examples_for 'Solver strategy, bindings, finder & creator, before #solve!
 
   it "is a #{expected_solver} instance" do
     expect(subject).to be_a(expected_solver)
+  end
+  describe '#error_messages' do
+    it 'is nil' do
+      expect(subject.error_messages).to be nil
+    end
   end
   it_behaves_like('Solver::BaseStrategy common methods defaults')
   it_behaves_like('responding to a list of methods', %i[finder_strategy creator_strategy])
@@ -181,6 +196,12 @@ shared_examples_for 'Solver strategy, NO bindings, UNSOLVABLE req, after #solve!
     solver.solve!
     solver
   end
+  describe '#error_messages' do
+    it 'is either nil or present' do
+      # (^^ it depends wether the domain has missing data or wrong bindings, but we can't tell from here)
+      expect(subject.error_messages.nil? || subject.error_messages.present?).to be true
+    end
+  end
   it_behaves_like('unsolved or solved Solver strategy (NO bindings)')
   it_behaves_like('unsolved Solver strategy (#solved? & #entity)')
 end
@@ -195,6 +216,11 @@ shared_examples_for 'Solver strategy, bindings, UNSOLVABLE req, after #solve!' d
     solver = Solver::Factory.for(target_name, fixture_req)
     solver.solve!
     solver
+  end
+  describe '#error_messages' do
+    it 'is either nil or present' do
+      expect(subject.error_messages.nil? || subject.error_messages.present?).to be true
+    end
   end
   it_behaves_like('unsolved Solver strategy (bindings)')
   it_behaves_like('unsolved Solver strategy (#solved? & #entity)')
@@ -216,6 +242,11 @@ shared_examples_for 'Solver strategy, NO bindings, solvable req, after #solve!' 
   it_behaves_like('unsolved or solved Solver strategy (NO bindings)')
   it_behaves_like('solved Solver strategy (#solved? & #entity)', exp_entity)
 
+  describe '#error_messages' do
+    it 'is empty' do
+      expect(subject.error_messages).to be_empty
+    end
+  end
   describe '#entity' do
     it 'has expected ID' do
       expect(subject.entity.id).to eq(expected_id) if expected_id
@@ -233,6 +264,11 @@ shared_examples_for 'Solver strategy, bindings, solvable req, after #solve!' do 
   it_behaves_like('solved Solver strategy (bindings)')
   it_behaves_like('solved Solver strategy (#solved? & #entity)', exp_entity)
 
+  describe '#error_messages' do
+    it 'is empty' do
+      expect(subject.error_messages).to be_empty
+    end
+  end
   describe '#entity' do
     it 'has expected ID' do
       expect(subject.entity.id).to eq(expected_id) if expected_id
@@ -250,6 +286,11 @@ shared_examples_for 'Solver strategy, OPTIONAL bindings, solvable req, after #so
   # (Don't care if all the bindings have been resolved, since some of these are supposed to be optional in this case)
   it_behaves_like('solved Solver strategy (#solved? & #entity)', exp_entity)
 
+  describe '#error_messages' do
+    it 'is empty' do
+      expect(subject.error_messages).to be_empty
+    end
+  end
   describe '#entity' do
     it 'has expected ID' do
       expect(subject.entity.id).to eq(expected_id) if expected_id

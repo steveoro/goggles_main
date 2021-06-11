@@ -35,18 +35,20 @@ module Solver
     #-- -----------------------------------------------------------------------
     #++
 
-    # Returns a newly created target entity instance if all the bindings were solved
-    # and the row could be saved.
-    # Returns +nil+ when not found.
+    # Returns a newly created target entity instance, serialized if and only if
+    # all the bindings were solved and the resulting row was valid.
+    #
+    # == Returns:
+    # - +nil+ until all required bindings are solved;
+    # - a new target entity instance when done, saved successfully if valid,
+    #   and yielding any validation erros as #error_messages.
     def creator_strategy
       solve_bindings
       return nil unless required_bindings.values.all?(&:present?)
 
       new_instance = GogglesDb::UserResult.new
-      bindings.each { |key, solved| new_instance.send("#{key}=", solved) }
-      return nil unless new_instance.valid?
-
-      new_instance.save!
+      bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
+      new_instance.save # Don't throw validation errors
       new_instance
     end
     #-- -----------------------------------------------------------------------

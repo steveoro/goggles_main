@@ -287,6 +287,9 @@ GEM
     guard-rubocop (1.4.0)
       guard (~> 2.0)
       rubocop (< 2.0)
+    guard-shell (0.7.2)
+      guard (>= 2.0.0)
+      guard-compat (~> 1.0)
     guard-spring (1.1.1)
       guard (~> 2.0)
       guard-compat (~> 1.1)
@@ -641,6 +644,7 @@ DEPENDENCIES
   guard-inch
   guard-rspec
   guard-rubocop
+  guard-shell
   guard-spring
   haml-rails
   haml_lint

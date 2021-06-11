@@ -1,0 +1,13 @@
+= render(ComboBox::DbLookupComponent.new(@api_endpoint, t('swimming_pools.city'), 'city',
+         required: @required, free_text: @free_text, bound_query_param: 'country_code'))
+.col-auto
+  .form-group
+    .field
+      = label_tag(:city_area, t('swimming_pools.area_code'))
+      = text_field_tag('city_area', nil, autofocus: true, required: true, class: 'form-control')
+.col-3
+  .form-group
+    .field
+      = label_tag(:city_country_code, t('swimming_pools.country_code'))
+      = text_field_tag('city_country_code', 'IT', maxlength: 3, required: true,
+                       autofocus: true, class: 'form-control')

@@ -1,5 +1,5 @@
-import { Application } from "stimulus"
-import { definitionsFromContext } from "stimulus/webpack-helpers"
+import { Application } from 'stimulus'
+import { definitionsFromContext } from 'stimulus/webpack-helpers'
 
 const application = Application.start()
 // const context = require.context(".", true, /\.js$/)
@@ -11,8 +11,8 @@ const application = Application.start()
 //
 // Then, load into the application both contexts appended together:
 //
-const context = require.context(".", true, /\.js$/)
-const contextComponents = require.context("../../components", true, /_controller\.js$/)
+const context = require.context('.', true, /\.js$/)
+const contextComponents = require.context('../../components', true, /_controller\.js$/)
 application.load(
   definitionsFromContext(context).concat(
     definitionsFromContext(contextComponents)

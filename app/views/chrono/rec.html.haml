@@ -11,13 +11,13 @@
 
     %dl.row#rec-header
       %dt.col-auto
-        %b= label_tag(:swimmer, "#{@swimmer_label} - #{@category_type_label}")
+        %b= label_tag(:swimmer, "#{@adapter.params['swimmer_label']} - #{@adapter.params['category_type_label']}")
       %dt.col-auto
-        %small= label_tag(:event, "#{@event_date} - #{@event_type_label}")
+        %small= label_tag(:event, "#{@adapter.params['event_date']} - #{@adapter.params['event_type_label']}")
       %dt.col-auto
-        %small= label_tag(:title, @meeting_label.present? ? @meeting_label : @workshop_label)
+        %small= label_tag(:title, @adapter.params['meeting_label'] || @adapter.params['workshop_label'])
       %dd.col-auto
-        %small= label_tag(:pool, @swimming_pool_label)
+        %small= label_tag(:pool, @adapter.params['swimming_pool_label'])
 
     .row-fluid
       #timer-container
@@ -50,9 +50,9 @@
       %hr/
 
     .row-fluid.text-center
-      = form_tag(chrono_commit_path, id: 'frm-chrono-rec', method: :post) do
-        = hidden_field_tag(:header, @header_payload)
-        = hidden_field_tag(:payload, nil)
+      = form_tag(chrono_commit_path, id: 'frm-chrono-rec', method: :post, data: { 'chrono-target' => 'mainForm' }) do
+        = hidden_field_tag(:header, @request_header)
+        = hidden_field_tag(:payload, nil, data: { 'chrono-target' => 'payload' })
         = submit_tag(t('chrono.buttons.save'), id: 'timer-btn-save', class: 'btn btn-primary',
                      'aria-label' => 'Save', disabled: true, type: 'submit',
                      data: { 'chrono-target' => 'btnSave', action: 'click->chrono#save' })

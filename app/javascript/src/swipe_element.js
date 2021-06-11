@@ -45,51 +45,50 @@
  * - low-level touch support code adapted from: https://developers.google.com/web/fundamentals/design-and-ux/input/touch
  */
 export default class SwipeElement {
-  constructor(element, options) {
-    'use strict';
+  constructor (element, options) {
+    'use strict'
     // Global state variables
-    var STATE_DEFAULT = 1;
-    var STATE_SWEPT_LEFT = 2;
-    var STATE_SWEPT_RIGHT = 3;
+    const STATE_DEFAULT = 1
+    const STATE_SWEPT_LEFT = 2
+    const STATE_SWEPT_RIGHT = 3
 
-    var swipeElement = element;
-    var reqAnimFrmPending = false;
-    var initialTouchPos = null;
-    var lastTouchPos = null;
-    var currentXPosition = 0;
-    var currentState = STATE_DEFAULT;
+    const swipeElement = element
+    let reqAnimFrmPending = false
+    let initialTouchPos = null
+    let lastTouchPos = null
+    let currentXPosition = 0
+    let currentState = STATE_DEFAULT
 
     // == Options with defaults ==
-    options = options || {};
-    var continuous = options.continuous;
-    var debug = options.debug;
-    var totalIndex = options.total || 1;
-    var currentIndex = options.index || 1;
+    options = options || {}
+    const continuous = options.continuous
+    const debug = options.debug
+    const totalIndex = options.total || 1
+    let currentIndex = options.index || 1
     // DEBUG
     if (debug) {
       console.log(`new SwipeElement(idx: ${currentIndex}/${totalIndex})`)
     }
 
     // Perform client width here as this can be expensive and doesn't change until window.onresize:
-    var itemWidth = swipeElement.clientWidth;
-    var slopeValue = itemWidth * (1 / 4);
+    let itemWidth = swipeElement.clientWidth
+    let slopeValue = itemWidth * (1 / 4)
 
     // On resize, change the slope value:
     this.resize = function () {
-      itemWidth = swipeElement.clientWidth;
-      slopeValue = itemWidth * (1 / 4);
-    };
+      itemWidth = swipeElement.clientWidth
+      slopeValue = itemWidth * (1 / 4)
+    }
 
     window.requestAnimFrameMultiBrowser = (function () {
       return window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame ||
         function (callback) {
-          window.setTimeout(callback, 1000 / 60);
-        };
-    })();
+          window.setTimeout(callback, 1000 / 60)
+        }
+    })()
     // ------------------------------------------------------------------------
-
 
     /**
      * SwipeElement: handleGestureStart
@@ -97,23 +96,22 @@ export default class SwipeElement {
      * Handles the start of gestures, storing starting coordinates
      */
     this.handleGestureStart = function (evt) {
-      evt.preventDefault();
+      evt.preventDefault()
 
       if (evt.touches && evt.touches.length > 1) {
-        return;
+        return
       }
 
       if (window.PointerEvent) { // Add the move and end listeners
-        evt.target.setPointerCapture(evt.pointerId);
+        evt.target.setPointerCapture(evt.pointerId)
       } else { // Add Mouse Listeners
-        document.addEventListener('mousemove', this.handleGestureMove, true);
-        document.addEventListener('mouseup', this.handleGestureEnd, true);
+        document.addEventListener('mousemove', this.handleGestureMove, true)
+        document.addEventListener('mouseup', this.handleGestureEnd, true)
       }
 
-      initialTouchPos = getGesturePointFromEvent(evt);
-      swipeElement.style.transition = 'initial';
-    }.bind(this);
-
+      initialTouchPos = getGesturePointFromEvent(evt)
+      swipeElement.style.transition = 'initial'
+    }.bind(this)
 
     /**
      * SwipeElement: handleGestureMove
@@ -121,20 +119,19 @@ export default class SwipeElement {
      * Handles move gestures
      */
     this.handleGestureMove = function (evt) {
-      evt.preventDefault();
+      evt.preventDefault()
       if (!initialTouchPos) {
-        return;
+        return
       }
 
-      lastTouchPos = getGesturePointFromEvent(evt);
+      lastTouchPos = getGesturePointFromEvent(evt)
       if (reqAnimFrmPending) { // Animation frame requested and pending?
-        return;
+        return
       }
 
-      reqAnimFrmPending = true;
-      window.requestAnimFrameMultiBrowser(onAnimFrame);
-    }.bind(this);
-
+      reqAnimFrmPending = true
+      window.requestAnimFrameMultiBrowser(onAnimFrame)
+    }
 
     /**
      * SwipeElement: handleGestureEnd
@@ -142,25 +139,24 @@ export default class SwipeElement {
      * Handles end gestures
      */
     this.handleGestureEnd = function (evt) {
-      evt.preventDefault();
+      evt.preventDefault()
       if (evt.touches && evt.touches.length > 0) {
-        return;
+        return
       }
 
-      reqAnimFrmPending = false;
+      reqAnimFrmPending = false
 
       if (window.PointerEvent) { // Remove Event Listeners
-        evt.target.releasePointerCapture(evt.pointerId);
+        evt.target.releasePointerCapture(evt.pointerId)
       } else { // Remove Mouse Listeners
-        document.removeEventListener('mousemove', this.handleGestureMove, true);
-        document.removeEventListener('mouseup', this.handleGestureEnd, true);
+        document.removeEventListener('mousemove', this.handleGestureMove, true)
+        document.removeEventListener('mouseup', this.handleGestureEnd, true)
       }
 
-      updateSwipeRestPosition();
+      updateSwipeRestPosition()
 
-      initialTouchPos = null;
-    }.bind(this);
-
+      initialTouchPos = null
+    }.bind(this)
 
     /**
      * SwipeElement: resetPosition
@@ -168,33 +164,32 @@ export default class SwipeElement {
      * Clears CSS transition & transform, so that the element node returns immediately
      * visible at the center.
      */
-    this.resetPosition = function() {
+    this.resetPosition = function () {
       if (debug) {
         console.log('resetPosition')
       }
-      swipeElement.style.transition = 'all 0ms linear'; // make it snappy
-      changeState(STATE_DEFAULT);
-    }.bind(this);
-
+      swipeElement.style.transition = 'all 0ms linear' // make it snappy
+      changeState(STATE_DEFAULT)
+    }
 
     /**
      * SwipeElement: updateSwipeRestPosition
      *
      * State-automata for swipeElement transition to destination state (and position)
      */
-    function updateSwipeRestPosition() {
-      var differenceInX = initialTouchPos && lastTouchPos ? initialTouchPos.x - lastTouchPos.x : 0;
-      currentXPosition = currentXPosition - differenceInX;
+    function updateSwipeRestPosition () {
+      const differenceInX = initialTouchPos && lastTouchPos ? initialTouchPos.x - lastTouchPos.x : 0
+      currentXPosition = currentXPosition - differenceInX
 
       // Go to the default state and change according to gesture:
-      var newState = STATE_DEFAULT;
+      let newState = STATE_DEFAULT
 
       // Check if we need to change state to left or right based on slope value
       if (Math.abs(differenceInX) > slopeValue) {
         if (currentState === STATE_DEFAULT) {
           if (differenceInX > 0) {
-            newState = STATE_SWEPT_LEFT;
-            currentIndex++; // Update data index
+            newState = STATE_SWEPT_LEFT
+            currentIndex++ // Update data index
             // DEBUG
             if (debug) {
               console.log(`currentIndex: ${currentIndex}, totalIndex: ${totalIndex}`)
@@ -210,11 +205,9 @@ export default class SwipeElement {
               }
               options.onswipeleft(currentIndex)
             }
-          }
-
-          else {
-            newState = STATE_SWEPT_RIGHT;
-            currentIndex--; // Update data index
+          } else {
+            newState = STATE_SWEPT_RIGHT
+            currentIndex-- // Update data index
             // DEBUG
             if (debug) {
               console.log(`currentIndex: ${currentIndex}, totalIndex: ${totalIndex}`)
@@ -231,25 +224,20 @@ export default class SwipeElement {
               options.onswiperight(currentIndex)
             }
           }
-        }
-
-        else {
+        } else {
           if (currentState === STATE_SWEPT_LEFT && differenceInX > 0) {
-            newState = STATE_DEFAULT;
-          }
-          else if (currentState === STATE_SWEPT_RIGHT && differenceInX < 0) {
-            newState = STATE_DEFAULT;
+            newState = STATE_DEFAULT
+          } else if (currentState === STATE_SWEPT_RIGHT && differenceInX < 0) {
+            newState = STATE_DEFAULT
           }
         }
-      }
-      else {
-        newState = currentState;
+      } else {
+        newState = currentState
       }
 
-      changeState(newState);
-      swipeElement.style.transition = 'all 150ms ease-out';
+      changeState(newState)
+      swipeElement.style.transition = 'all 150ms ease-out'
     }
-
 
     /**
      * SwipeElement: changeState
@@ -257,27 +245,25 @@ export default class SwipeElement {
      * Internal swipe state setter (sets also transform & translateX)
      * @param {*} newState the destination logic state associated to the swipe gesture
      */
-    function changeState(newState) {
-      var transformStyle;
+    function changeState (newState) {
       switch (newState) {
         case STATE_DEFAULT:
-          currentXPosition = 0;
-          break;
+          currentXPosition = 0
+          break
         case STATE_SWEPT_LEFT:
           currentXPosition = '-110%'
-          break;
+          break
         case STATE_SWEPT_RIGHT:
           currentXPosition = '110%'
-          break;
+          break
       }
-      transformStyle = `translateX(${currentXPosition})`
-      swipeElement.style.msTransform = transformStyle;
-      swipeElement.style.MozTransform = transformStyle;
-      swipeElement.style.webkitTransform = transformStyle;
-      swipeElement.style.transform = transformStyle;
-      currentState = newState;
+      const transformStyle = `translateX(${currentXPosition})`
+      swipeElement.style.msTransform = transformStyle
+      swipeElement.style.MozTransform = transformStyle
+      swipeElement.style.webkitTransform = transformStyle
+      swipeElement.style.transform = transformStyle
+      currentState = newState
     }
-
 
     /**
      * SwipeElement: getGesturePointFromEvent
@@ -286,41 +272,39 @@ export default class SwipeElement {
      * @param {*} evt the touch/mouse/pointer event
      * @returns a point object having x & y member values
      */
-    function getGesturePointFromEvent(evt) {
-      var point = {};
+    function getGesturePointFromEvent (evt) {
+      const point = {}
 
       if (evt.targetTouches) {
-        point.x = evt.targetTouches[0].clientX;
-        point.y = evt.targetTouches[0].clientY;
+        point.x = evt.targetTouches[0].clientX
+        point.y = evt.targetTouches[0].clientY
       } else {
         // Either Mouse event or Pointer Event
-        point.x = evt.clientX;
-        point.y = evt.clientY;
+        point.x = evt.clientX
+        point.y = evt.clientY
       }
-      return point;
+      return point
     }
-
 
     /**
      * SwipeElement: onAnimFrame
      *
      * Update & transform coordinates for swipeElement during animation frames
      */
-    function onAnimFrame() {
+    function onAnimFrame () {
       if (!reqAnimFrmPending) { // No requested animation frame pending?
-        return;
+        return
       }
 
-      var differenceInX = initialTouchPos.x - lastTouchPos.x;
-      var newXTransform = (currentXPosition - differenceInX) + 'px';
-      var transformStyle = 'translateX(' + newXTransform + ')';
-      swipeElement.style.webkitTransform = transformStyle;
-      swipeElement.style.MozTransform = transformStyle;
-      swipeElement.style.msTransform = transformStyle;
-      swipeElement.style.transform = transformStyle;
-      reqAnimFrmPending = false;
+      const differenceInX = initialTouchPos.x - lastTouchPos.x
+      const newXTransform = (currentXPosition - differenceInX) + 'px'
+      const transformStyle = 'translateX(' + newXTransform + ')'
+      swipeElement.style.webkitTransform = transformStyle
+      swipeElement.style.MozTransform = transformStyle
+      swipeElement.style.msTransform = transformStyle
+      swipeElement.style.transform = transformStyle
+      reqAnimFrmPending = false
     }
-
 
     /**
      * Add event listeners for the above functions
@@ -328,20 +312,19 @@ export default class SwipeElement {
     // Check if pointer events are supported.
     if (window.PointerEvent) {
       // Add Pointer Event Listener
-      swipeElement.addEventListener('pointerdown', this.handleGestureStart, true);
-      swipeElement.addEventListener('pointermove', this.handleGestureMove, true);
-      swipeElement.addEventListener('pointerup', this.handleGestureEnd, true);
-      swipeElement.addEventListener('pointercancel', this.handleGestureEnd, true);
-    }
-    else {
+      swipeElement.addEventListener('pointerdown', this.handleGestureStart, true)
+      swipeElement.addEventListener('pointermove', this.handleGestureMove, true)
+      swipeElement.addEventListener('pointerup', this.handleGestureEnd, true)
+      swipeElement.addEventListener('pointercancel', this.handleGestureEnd, true)
+    } else {
       // Add Touch Listener
-      swipeElement.addEventListener('touchstart', this.handleGestureStart, true);
-      swipeElement.addEventListener('touchmove', this.handleGestureMove, true);
-      swipeElement.addEventListener('touchend', this.handleGestureEnd, true);
-      swipeElement.addEventListener('touchcancel', this.handleGestureEnd, true);
+      swipeElement.addEventListener('touchstart', this.handleGestureStart, true)
+      swipeElement.addEventListener('touchmove', this.handleGestureMove, true)
+      swipeElement.addEventListener('touchend', this.handleGestureEnd, true)
+      swipeElement.addEventListener('touchcancel', this.handleGestureEnd, true)
 
       // Add Mouse Listener
-      swipeElement.addEventListener('mousedown', this.handleGestureStart, true);
+      swipeElement.addEventListener('mousedown', this.handleGestureStart, true)
     }
   }
 }

@@ -31,15 +31,21 @@ module ComboBox
     #
     # - base_name...: base name for the form & table fields of this widget;
     #   Any <BASE_NAME> set (e.g. 'meeting') will use:
-    #   - '<BASE_NAME>_id'     => ('meeting_id') hidden form field DOM ID for the selected *id* value
-    #   - '<BASE_NAME>_label'  => ('meeting_label') hidden form field DOM ID for the selected *text/label* value
+    #   - '<BASE_NAME>_id'     => ('meeting_id') *hidden* form field DOM ID for the selected *id* value
+    #   - '<BASE_NAME>_label'  => ('meeting_label') *hidden* form field DOM ID for the selected *text/label* value
     #   - '<BASE_NAME>'        => ('meeting') Select2 widget name
     #   - '<BASE_NAME>_select' => ('meeting_select') Select2 widget DOM ID
+    #
+    #   'base_name' is also used for "#{@base_name}-presence", the DOM node that acts
+    #   as a flag for the hidden fields value presence. Visibility of this "flag" is managed by
+    #   the StimulusJS LookupController.
     #
     #
     # == Supported options & defaults:
     # - values: nil               => pre-existing options for select (which may include default selection)
     #                                (either use +options_for_select+ or +options_from_collection_for_select+)
+    #
+    # - use_2_api: false          => toggles secondary API call to retrieve more entity details
     #
     # - free_text: false          => allows/disables free text as input
     #
@@ -47,19 +53,27 @@ module ComboBox
     #
     # - query_column: 'name'      => column name used for the API query call (default: 'name')
     #
+    # - bound_query_param:        => DOM ID for a field holding the value for a same-named, additional API query parameter
+    #
     # - wrapper_class: 'col-auto' => CSS class for the wrapping DIV
     #
     def initialize(api_url, label, base_name, options = {})
       super
-      base_api_url = GogglesDb::AppParameter.config.settings(:framework_urls).api
       @api_url = api_url.present? ? "#{base_api_url}/api/v3/#{api_url}" : nil
+      @api_url2 = "#{base_api_url}/api/v3" if options[:use_2_api] # Toggle secondary call by setting the shared base URL
       @label = label
       @base_name = base_name
       @free_text = options[:free_text] || false
       @required = options[:required] || false
       @query_column = options[:query_column] || 'name'
+      @bound_query_param = options[:bound_query_param]
       @wrapper_class = options[:wrapper_class] || 'col-auto'
       @values = options[:values]
+    end
+
+    # Returns the base API URL for all endpoints
+    def base_api_url
+      GogglesDb::AppParameter.config.settings(:framework_urls).api
     end
 
     # Returns the placeholder text depending on the constructor parameters

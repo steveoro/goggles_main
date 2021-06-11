@@ -4,22 +4,22 @@
 // that code so it'll be compiled.
 
 import jQuery from 'jquery'
-window.$ = window.jQuery = jQuery
 import 'popper.js'
 import 'bootstrap'
 import 'select2'
 import 'select2/dist/css/select2.css'
-
-require("@rails/ujs").start()
-require("turbolinks").start()
-require("@rails/activestorage").start()
-require('channels')
 
 import '../controllers/stimulus_setup'
 import './components'
 
 // Styles:
 import '../stylesheets/application'
+window.$ = window.jQuery = jQuery
+
+require('@rails/ujs').start()
+require('turbolinks').start()
+require('@rails/activestorage').start()
+require('channels')
 
 // Before each page load:
 // document.addEventListener('turbolinks:load', () => {

@@ -1,4 +1,5 @@
-import { Controller } from "stimulus"
+import { Controller } from 'stimulus'
+import $ from 'jquery'
 
 /**
  * = StimulusJS simple remote partial update controller =
@@ -43,7 +44,7 @@ export default class extends Controller {
    * Sets up the controller.
    * (Called whenever the controller instance connects to the DOM)
    */
-  connect() {
+  connect () {
     // DEBUG
     // console.log('Connecting remote-partial...')
   }
@@ -57,18 +58,18 @@ export default class extends Controller {
    * == Params:
    * @param {Object} _event (unused)
    */
-  update(_event) {
+  update (_event) {
     if (!this.hasTextTarget || (this.hasTextTarget && this.textTarget.disabled)) {
       // DEBUG
       // console.log('No target or disabled: skipping.')
       return
     }
 
-    var req_url = this.data.get("url"), payload = this.buildPayload()
+    const reqURL = this.data.get('url'); const payload = this.buildPayload()
     // DEBUG
-    // console.log('req_url:', req_url)
+    // console.log('reqURL:', reqURL)
 
-    fetch(req_url,
+    fetch(reqURL,
       {
         method: 'PUT',
         headers: {
@@ -84,7 +85,7 @@ export default class extends Controller {
         this.textTarget.innerHTML = txt
       })
   }
-  //---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
 
   /**
    * Assuming the payload fields come from a form (typical input field name format: "model_name[field_name]"),
@@ -96,12 +97,12 @@ export default class extends Controller {
    *
    * @returns the object payload composed for the PUT request.
    */
-  buildPayload() {
-    var payloadNodes = $('[data-remote-partial-payload="true"]').toArray(),
-      modelObjName = payloadNodes[0].name.split(/\[(.+)\]/)[0], // get just the 'model' part
-      attributesObj = {},
-      attrObjName = '',
-      resultObj = {}
+  buildPayload () {
+    const payloadNodes = $('[data-remote-partial-payload="true"]').toArray()
+    const modelObjName = payloadNodes[0].name.split(/\[(.+)\]/)[0] // get just the 'model' part
+    const attributesObj = {}
+    let attrObjName = ''
+    const resultObj = {}
 
     payloadNodes.forEach(node => {
       attrObjName = node.name.split(/\[(.+)\]/)[1] // get the part in between brackets

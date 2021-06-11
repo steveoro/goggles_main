@@ -3,6 +3,8 @@ en:
     pool: Swimming pool
     swimming_pools: Swimming pools
     city: City
+    area_code: "Area"
+    country_code: "Country"
     go_to_dashboard: "Go to the details page for this Swimming pool"
     dashboard:
       title: Swimming pool

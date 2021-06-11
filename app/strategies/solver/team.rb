@@ -44,20 +44,22 @@ module Solver
     #-- -----------------------------------------------------------------------
     #++
 
-    # Returns a newly created target entity instance if all the bindings were solved
-    # and the row could be saved.
-    # Returns +nil+ when not found.
+    # Returns a newly created target entity instance, serialized if and only if
+    # all the bindings were solved and the resulting row was valid.
+    #
+    # == Returns:
+    # - +nil+ until all required bindings are solved;
+    # - a new target entity instance when done, saved successfully if valid,
+    #   and yielding any validation erros as #error_messages.
     def creator_strategy
       solve_bindings
       # (city_id is optional)
       return nil unless @bindings[:name].present?
 
       new_instance = GogglesDb::Team.new
-      bindings.each { |key, solved| new_instance.send("#{key}=", solved) }
+      bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
       new_instance.editable_name = @bindings[:name] unless new_instance.editable_name.present?
-      return nil unless new_instance.valid?
-
-      new_instance.save!
+      new_instance.save # Don't throw validation errors
       new_instance
     end
     #-- -----------------------------------------------------------------------

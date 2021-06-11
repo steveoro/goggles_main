@@ -91,7 +91,7 @@ it:
         goggles_db/user:
           attributes:
             email:
-              blank: "non puo' essere vuota"
+              blank: "non può essere vuota"
               taken: "è già stata scelta"
               too_short: "è troppo corta"
               already_exists: "esiste già"
@@ -111,3 +111,11 @@ it:
               blank: "non puo' essere vuota"
               too_short: "è troppo corta"
               invalid: "non è valida"
+        goggles_db/user_workshop:
+          attributes:
+            code:
+              blank: "non può essere vuoto"
+            edition_type:
+              blank: "non può essere vuoto"
+            timing_type:
+              blank: "non può essere vuoto"

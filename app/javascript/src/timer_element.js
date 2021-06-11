@@ -35,7 +35,7 @@
  * @param {function}  onlap       *callback*: triggered on lap timing measurement, yields a "timing" object as parameter (*)
  *
  * (*) The "timing" object parameter has members: { lap:, hours:, minutes:, seconds:, hundredths: };
- * - 'lap'.......: current lap index
+ * - 'order'.....: current lap index
  * - 'hours'.....: elapsed hours since start
  * - 'minutes'...: elapsed minutes since start
  * - 'seconds'...: elapsed seconds since start
@@ -49,23 +49,23 @@
 export default class TimerElement {
   running = false
 
-  constructor(digitsElement, options) {
-    'use strict';
+  constructor (digitsElement, options) {
+    'use strict'
     // Options with defaults:
-    options = options || {};
+    options = options || {}
 
     // Properties:
-    let debug = options.debug;
-    let showHours = options.showHours || false;
-    let divDigits = digitsElement;
+    const debug = options.debug
+    const showHours = options.showHours || false
+    const divDigits = digitsElement
 
-    let timerObj = null; // timer object (from setInterval)
-    let tickCount = 0;   // overall elapsed timer ticks from start
-    let lapIndex = 0;
-    let hours = 0;
-    let mins = 0;
-    let secs = 0;
-    let hundredths = 0;
+    let timerObj = null // timer object (from setInterval)
+    let tickCount = 0 // overall elapsed timer ticks from start
+    let lapIndex = 0
+    let hours = 0
+    let mins = 0
+    let secs = 0
+    let hundredths = 0
 
     if (debug) { console.log('TimerElement constructor') }
 
@@ -75,12 +75,12 @@ export default class TimerElement {
      */
     this.clearTimerFields = function () {
       if (debug) { console.log('clearTimerFields()') }
-      tickCount = -1;
-      lapIndex = 0;
-      hours = 0;
-      mins = 0;
-      secs = 0;
-      hundredths = 0;
+      tickCount = -1
+      lapIndex = 0
+      hours = 0
+      mins = 0
+      secs = 0
+      hundredths = 0
     }
 
     /**
@@ -88,14 +88,14 @@ export default class TimerElement {
      * Updates the internal timer fields given the "tickCount" value of the Timer object
      */
     this.updateTimerFields = function () {
-      let remain = tickCount;
-      hours = Math.floor(remain / 360_000);
-      remain -= hours * 360_000;
-      mins = Math.floor(remain / 6_000);
-      remain -= mins * 6_000;
-      secs = Math.floor(remain / 100);
-      remain -= secs * 100;
-      hundredths = remain;
+      let remain = tickCount
+      hours = Math.floor(remain / 360_000)
+      remain -= hours * 360_000
+      mins = Math.floor(remain / 6_000)
+      remain -= mins * 6_000
+      secs = Math.floor(remain / 100)
+      remain -= secs * 100
+      hundredths = remain
     }
 
     /**
@@ -104,32 +104,32 @@ export default class TimerElement {
      *      { lap:, hours:, minutes:, seconds:, hundredths: }
      */
     this.readTimerFields = function () {
-      lapIndex++;
+      lapIndex++
       if (debug) { console.log(`readTimerFields() - current lap: ${lapIndex}`) }
       return {
-        lap: lapIndex,
+        order: lapIndex,
         hours: hours,
         minutes: mins,
         seconds: secs,
         hundredths: hundredths
       }
     }
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
 
     /**
      *   == handle Update ==
      */
     this.handleTickUpdate = function () {
-      tickCount++;
-      this.updateTimerFields();
+      tickCount++
+      this.updateTimerFields()
       // Format digit strings:
-      let ledHours = `${hours < 10 ? '0' + hours : hours}`
-      let ledMins = `${mins < 10 ? '0' + mins : mins}`
-      let ledSecs = `${secs < 10 ? '0' + secs : secs}`
-      let ledHundredths = `${hundredths < 10 ? '0' + hundredths : hundredths}`
-      divDigits.innerHTML = showHours ?
-                            `${ledHours}:${ledMins}:${ledSecs}.${ledHundredths}` :
-                            `${ledMins}:${ledSecs}.${ledHundredths}`;
+      const ledHours = `${hours < 10 ? '0' + hours : hours}`
+      const ledMins = `${mins < 10 ? '0' + mins : mins}`
+      const ledSecs = `${secs < 10 ? '0' + secs : secs}`
+      const ledHundredths = `${hundredths < 10 ? '0' + hundredths : hundredths}`
+      divDigits.innerHTML = showHours
+        ? `${ledHours}:${ledMins}:${ledSecs}.${ledHundredths}`
+        : `${ledMins}:${ledSecs}.${ledHundredths}`
     }.bind(this)
 
     /**
@@ -138,45 +138,45 @@ export default class TimerElement {
     this.handleStart = function () {
       if (debug) { console.log('handleStart') }
       this.running = true
-      timerObj = setInterval(this.handleTickUpdate, 10);
+      timerObj = setInterval(this.handleTickUpdate, 10)
       // Trigger event handler:
       if (options.onstart) {
         if (debug) { console.log('onstart triggered.') }
         options.onstart()
       }
     }.bind(this)
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
 
     /**
      *   == handle Lap ==
      */
     this.handleLap = function () {
       if (debug) { console.log('handleLap') }
-      let timing = this.readTimerFields()
+      const timing = this.readTimerFields()
       // Trigger event handler:
       if (options.onlap) {
         if (debug) { console.log('onlap triggered.') }
         options.onlap(timing)
       }
     }.bind(this)
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
 
     /**
      *   == handle Stop ==
      */
     this.handleStop = function () {
       if (debug) { console.log('handleStop') }
-      clearInterval(timerObj);
-      timerObj = null;
+      clearInterval(timerObj)
+      timerObj = null
       this.running = false
-      let timing = this.readTimerFields()
+      const timing = this.readTimerFields()
       // Trigger event handler:
       if (options.onstop) {
         if (debug) { console.log('onstop triggered.') }
         options.onstop(timing)
       }
     }.bind(this)
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
 
     /**
      *   == handle Reset ==
@@ -185,15 +185,15 @@ export default class TimerElement {
       if (debug) { console.log('handleReset') }
       if (timerObj != null) { this.handleStop() }
       // Clear timer fields:
-      this.clearTimerFields();
-      this.handleTickUpdate();
+      this.clearTimerFields()
+      this.handleTickUpdate()
       // Trigger event handler:
       if (options.onreset) {
         if (debug) { console.log('onreset triggered.') }
         options.onreset()
       }
     }.bind(this)
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
   }
-  //---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
 }

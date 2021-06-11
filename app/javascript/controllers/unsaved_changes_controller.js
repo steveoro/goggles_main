@@ -1,4 +1,4 @@
-import { Controller } from "stimulus"
+import { Controller } from 'stimulus'
 
 /**
  * = StimulusJS "unsaved changes" detection controller =
@@ -41,37 +41,37 @@ export default class extends Controller {
   /**
    * Sets the 'changed' flag
    */
-  formIsChanged(event) {
-    this.setChanged("true")
+  formIsChanged (event) {
+    this.setChanged('true')
   }
 
   /**
    * Clears the 'changed' flag
    */
-  allowFormSubmission(_event) {
-    this.setChanged("false")
+  allowFormSubmission (_event) {
+    this.setChanged('false')
   }
 
   /**
    * 'changed' flag getter
    */
-  isFormChanged() {
-    return this.data.get("changed") == "true";
+  isFormChanged () {
+    return this.data.get('changed') === 'true'
   }
 
   /**
    * Prevents data submission if the 'changed' flag is set
    */
-  leavingPage(event) {
+  leavingPage (event) {
     if (this.isFormChanged()) {
-      var msg = this.data.get("message")
-      if (event.type == "turbolinks:before-visit") {
+      const msg = this.data.get('message')
+      if (event.type === 'turbolinks:before-visit') {
         if (!window.confirm(msg)) {
           event.preventDefault()
         }
       } else {
-        event.returnValue = msg;
-        return event.returnValue;
+        event.returnValue = msg
+        return event.returnValue
       }
     }
   }
@@ -79,7 +79,7 @@ export default class extends Controller {
   /**
    * Data-attribute 'changed' flag setter
    */
-  setChanged(changed) {
-    this.data.set("changed", changed)
+  setChanged (changed) {
+    this.data.set('changed', changed)
   }
 }

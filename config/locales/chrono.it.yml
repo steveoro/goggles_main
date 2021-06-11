@@ -6,6 +6,7 @@ it:
       queue_notice: "Qui puoi vedere l'elenco dei tempi accodati sul server per l'acquisizione come risultati. Quando questi saranno registrati con successo, spariranno automaticamente dalla coda."
       registration_notice: "I tempi registrati con successo li puoi trovare come risultati nei dettagli del Meeting o del Collegiale che hai scelto come contenitore per l'evento a cui i tempi si riferiscono."
       no_data_notice: '(La coda delle tue registrazioni è vuota)'
+      confirm_delete: "Vuoi davvero cancellare dalla coda questa registrazione di tempi? (La registrazione %{queue_label} andrà persa.)"
     new:
       title: 'Nuovo Chrono'
     rec:
@@ -22,8 +23,11 @@ it:
       error:
         missing_meeting_or_workshop_name: "Devi scegliere o creare un nome di Meeting o di Collegiale per poter fare una registrazione di tempi."
         commit_missing_parameters: "La richiesta di registrazione dati contiene dati o parametri non validi."
+        delete_invalid_parameters: "Richiesta di cancellazione non valida: riga dati non trovata."
       confirm_delete: 'Vuoi davvero cancellare questa riga di passaggi?'
       confirm_reset: 'Azzero e ripulisco il Chrono?'
       confirm_post: 'Mando questi tempi a Master-Goggles? Niente da modificare? Tutto a posto?'
       post_done: 'Dati inviati ed accodati per la registrazione.'
       post_error: "Mi spiace: un errore ha impedito ai dati inviati di venire accodati per la registrazione."
+      delete_done: "Registrazione eliminata."
+      delete_error: "Mi spiace: un errore ha impedito l'eliminazione della registrazione."

@@ -39,6 +39,8 @@ Metrics/BlockLength:
   Max: 40
   CountAsOne: ['array', 'heredoc']
   IgnoredMethods: ['describe', 'context', 'define', 'namespace']
+  Exclude:
+    - 'spec/decorators/iq_request/chrono_rec_param_adapter_spec.rb'
 
 Metrics/ClassLength:
   Max: 120

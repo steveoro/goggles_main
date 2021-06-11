@@ -2,6 +2,7 @@ it:
   meetings:
     category: Categoria
     event: Evento
+    season: Stagione
     meeting: Meeting
     meetings: Meetings
     header_date: Data

@@ -39,6 +39,13 @@ class SwimmerDecorator < Draper::Decorator
     GogglesDb::Badge.for_swimmer(object).select(:team_id).distinct.map(&:team_id)
   end
 
+  # Returns the ActiveRecord Team association of teams that have a badge belonging to this Swimmer.
+  # Returns an empty association when nothing is found.
+  #
+  def associated_teams
+    GogglesDb::Team.where(id: associated_team_ids)
+  end
+
   # Returns a comma-separated string text mapping all the distinct team
   # names associated with the object row.
   #
@@ -49,7 +56,7 @@ class SwimmerDecorator < Draper::Decorator
   # - max_length: truncate length for names; default: 20 (characters)
   #
   def link_to_teams(max_length = 20)
-    links = GogglesDb::Team.where(id: associated_team_ids).map do |team|
+    links = associated_teams.map do |team|
       short_name = h.truncate(team.editable_name, length: max_length, separator: ' ')
       h.tag.li(h.link_to(short_name, h.team_show_path(id: team.id)))
       # [Steve, 20210208] Adding a tooltip here doesn't give a good UX for the moment:
