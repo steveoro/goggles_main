@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_15_172357) do
+ActiveRecord::Schema.define(version: 2021_06_14_132647) do
 
   create_table "achievement_rows", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "lock_version", default: 0
@@ -1046,19 +1046,19 @@ ActiveRecord::Schema.define(version: 2021_05_15_172357) do
   create_table "import_queues", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.integer "lock_version", default: 0
     t.bigint "user_id", null: false
-    t.integer "processed_depth", default: 0
-    t.integer "requested_depth", default: 0
-    t.integer "solvable_depth", default: 0
+    t.integer "process_runs", default: 0
     t.text "request_data", null: false
     t.text "solved_data", null: false
     t.boolean "done", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "uid"
+    t.integer "bindings_left_count", default: 0, null: false
+    t.string "bindings_left_list"
+    t.text "error_messages"
+    t.integer "import_queue_id"
     t.index ["done"], name: "index_import_queues_on_done"
-    t.index ["processed_depth"], name: "index_import_queues_on_processed_depth"
-    t.index ["requested_depth"], name: "index_import_queues_on_requested_depth"
-    t.index ["solvable_depth"], name: "index_import_queues_on_solvable_depth"
+    t.index ["import_queue_id"], name: "index_import_queues_on_import_queue_id"
     t.index ["user_id", "uid"], name: "index_import_queues_on_user_id_and_uid"
     t.index ["user_id"], name: "index_import_queues_on_user_id"
   end

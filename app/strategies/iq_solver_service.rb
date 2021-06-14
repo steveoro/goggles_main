@@ -41,7 +41,7 @@ class IqSolverService
 
     # Update the solved bindings in solved data:
     iq_row.done = solver.solved?
-    iq_row.processed_depth = iq_row.processed_depth + 1
+    iq_row.process_runs = iq_row.process_runs + 1
     iq_row.solved_data = prepare_solved_data_hash(iq_row, solver).to_json
     iq_row.save!
   end

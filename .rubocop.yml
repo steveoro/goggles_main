@@ -51,6 +51,8 @@ Metrics/CyclomaticComplexity:
 
 Metrics/MethodLength:
   Max: 35
+  Exclude:
+    - 'db/migrate/*'
 
 Metrics/PerceivedComplexity:
   Exclude:

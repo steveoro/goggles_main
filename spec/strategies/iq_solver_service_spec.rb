@@ -23,10 +23,10 @@ RSpec.describe IqSolverService, type: :service do
         subject.call(solvable_row)
         expect(solvable_row.reload.done).to be true
       end
-      it 'increases #processed_depth' do
-        old_value = solvable_row.reload.processed_depth
+      it 'increases #process_runs' do
+        old_value = solvable_row.reload.process_runs
         subject.call(solvable_row)
-        expect(solvable_row.reload.processed_depth).to eq(old_value + 1)
+        expect(solvable_row.reload.process_runs).to eq(old_value + 1)
       end
       it 'sets #solved_data to a non-empty JSON hash (with the solved bindings)' do
         subject.call(solvable_row)
@@ -47,10 +47,10 @@ RSpec.describe IqSolverService, type: :service do
         subject.call(unsolvable_row)
         expect(unsolvable_row.reload.done).to be false
       end
-      it 'increases #processed_depth' do
-        old_value = unsolvable_row.reload.processed_depth
+      it 'increases #process_runs' do
+        old_value = unsolvable_row.reload.process_runs
         subject.call(unsolvable_row)
-        expect(unsolvable_row.reload.processed_depth).to eq(old_value + 1)
+        expect(unsolvable_row.reload.process_runs).to eq(old_value + 1)
       end
       it 'sets #solved_data to a non-empty JSON hash (with the solved bindings)' do
         subject.call(unsolvable_row)

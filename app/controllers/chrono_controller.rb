@@ -73,11 +73,10 @@ class ChronoController < ApplicationController
   def delete
     # DEBUG
     logger.debug("\r\n\r\n#{delete_params.inspect}\r\n")
-    master_queue = GogglesDb::ImportQueue.find_by_id(delete_params['id'])
+    queue = GogglesDb::ImportQueue.find_by_id(delete_params['id'])
 
-    if master_queue.present?
-      queue = ImportQueueDecorator.decorate(master_queue)
-      queue.chrono_siblings
+    if queue.present?
+      queue.sibling_rows
            .or(GogglesDb::ImportQueue.where(id: queue.id))
            .delete_all
       flash[:notice] = t('chrono.messages.delete_done')
@@ -161,11 +160,11 @@ class ChronoController < ApplicationController
     adapter = IqRequest::ChronoRecParamAdapter.from_request_data(commit_params[:header])
     # Update parent result timing using last lap:
     adapter.update_result_data(overall_result_timing(laps_list))
-    # Prepare a sequential base UID for the sibling rows:
-    base_uid = GogglesDb::ImportQueue.select(:id).max.id + 1
+    parent_id = nil
 
-    # Create an IQ row for each lap data obtained from the payload:
-    laps_list.each_with_index do |lap_data, index|
+    # Create an IQ row for each lap data obtained from the payload, starting from last lap
+    # which, allegedly, should contain the last overall timing:
+    laps_list.reverse.each do |lap_data, index|
       # DEBUG
       logger.debug("\r\n- lap_data: #{lap_data.inspect}")
 
@@ -174,12 +173,15 @@ class ChronoController < ApplicationController
       # DEBUG
       logger.debug("- full request:\r\n#{adapter.request_hash.inspect}")
 
-      GogglesDb::ImportQueue.create!(
+      iq_row = GogglesDb::ImportQueue.create!(
         user: current_user,
-        uid: index + 1 < laps_list.size ? "chrono-#{base_uid}" : 'chrono',
+        uid: index.zero? ? 'chrono' : "chrono-#{parent_id}",
+        import_queue_id: parent_id,
         request_data: adapter.request_hash.to_json,
-        solved_data: { base_uid: base_uid }.to_json
+        solved_data: {}.to_json
       )
+      # Set the parent ID for next processed rows only during first run:
+      parent_id = iq_row.id if index.zero?
     end
   end
 end
