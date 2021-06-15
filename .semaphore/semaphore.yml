@@ -144,6 +144,7 @@ blocks:
           - 'curl -L -o db/dump/test.sql.bz2 "https://github.com/steveoro/goggles_db/raw/master/spec/dummy/db/dump/test.sql.bz2"'
           - 'RAILS_ENV=test bin/rails db:rebuild from=test to=test'
           - 'RAILS_ENV=test bin/rails db:migrate'
+          - 'RAILS_ENV=test bundle exec bin/webpack'
       jobs:
         - name: Cucumber desktop, large
           commands:
