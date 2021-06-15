@@ -45,7 +45,6 @@ blocks:
             # Use this to log the actual bundle destination path for Semaphore 2.0 (currently uses Rbenv):
             # - bundle info rake --path
             - yarn
-            - 'RAILS_ENV=test bundle exec rails assets:precompile'
             # The cache will be updated with the new content just once for all blocks in the pipeline:
             - cache store bundle-3.01-$(checksum Gemfile.lock yarn.lock) vendor/bundle
 
