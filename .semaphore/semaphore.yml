@@ -45,7 +45,7 @@ blocks:
             # Use this to log the actual bundle destination path for Semaphore 2.0 (currently uses Rbenv):
             # - bundle info rake --path
             - yarn
-            - bundle exec bin/webpack
+            - 'RAILS_ENV=test bundle exec rails assets:precompile'
             # The cache will be updated with the new content just once for all blocks in the pipeline:
             - cache store bundle-3.01-$(checksum Gemfile.lock yarn.lock) vendor/bundle
 
@@ -70,13 +70,13 @@ blocks:
           - bundle config set path 'vendor/bundle'
           - GIT_LFS_SKIP_SMUDGE=1 bundle install
           - yarn
-          - bundle exec bin/webpack
           - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
           - chmod +x ./cc-test-reporter
           - cp config/database.semaphore_2.yml config/database.yml
           - 'curl -L -o db/dump/test.sql.bz2 "https://github.com/steveoro/goggles_db/raw/master/spec/dummy/db/dump/test.sql.bz2"'
           - 'RAILS_ENV=test bin/rails db:rebuild from=test to=test'
           - 'RAILS_ENV=test bin/rails db:migrate'
+          - 'RAILS_ENV=test bundle exec rails assets:precompile'
           - ./cc-test-reporter before-build
       jobs:
         - name: RSpec - components
@@ -93,6 +93,13 @@ blocks:
             - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-decorator.json
             - cache store cc-decorator-goggles_main coverage/cc-decorator.json
 
+        - name: RSpec - jobs
+          commands:
+            - 'bundle exec rspec -t type:job'
+            - cache delete cc-job-goggles_main
+            - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-job.json
+            - cache store cc-job-goggles_main coverage/cc-job.json
+
         - name: RSpec - mailers
           commands:
             - 'bundle exec rspec -t type:mailer'
@@ -107,6 +114,14 @@ blocks:
             - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-request.json
             - cache store cc-request-goggles_main coverage/cc-request.json
 
+        - name: RSpec - strategies & services
+          commands:
+            - 'bundle exec rspec -t type:strategy'
+            - 'bundle exec rspec -t type:service'
+            - cache delete cc-strategy-goggles_main
+            - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-strategy.json
+            - cache store cc-strategy-goggles_main coverage/cc-strategy.json
+
         - name: RSpec - views
           commands:
             - 'bundle exec rspec -t type:view'
@@ -116,8 +131,6 @@ blocks:
 
         # Not currently used:
         # - name: RSpec - commands
-        # - name: RSpec - strategies
-        # - name: RSpec - jobs
         # - name: RSpec - helpers
 
   - name: Cucumber integration tests
@@ -129,11 +142,11 @@ blocks:
           - bundle config set path 'vendor/bundle'
           - GIT_LFS_SKIP_SMUDGE=1 bundle install
           - yarn
-          - bundle exec bin/webpack
           - cp config/database.semaphore_2.yml config/database.yml
           - 'curl -L -o db/dump/test.sql.bz2 "https://github.com/steveoro/goggles_db/raw/master/spec/dummy/db/dump/test.sql.bz2"'
           - 'RAILS_ENV=test bin/rails db:rebuild from=test to=test'
           - 'RAILS_ENV=test bin/rails db:migrate'
+          - 'RAILS_ENV=test bundle exec rails assets:precompile'
       jobs:
         - name: Cucumber desktop, large
           commands:
