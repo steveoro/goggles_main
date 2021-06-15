@@ -29,7 +29,7 @@ global_job_config:
       # Make sure we are using Bundler 2+:
       - gem i bundler
       # Use GogglesDb::VERSION as master reference here, or force a minor version change to rebuild the cache:
-      - cache restore bundle-2.12-$(checksum Gemfile.lock yarn.lock)
+      - cache restore bundle-3.01-$(checksum Gemfile.lock yarn.lock)
 
 blocks:
   - name: Bundle cache store
@@ -45,8 +45,9 @@ blocks:
             # Use this to log the actual bundle destination path for Semaphore 2.0 (currently uses Rbenv):
             # - bundle info rake --path
             - yarn
+            - bundle exec bin/webpack
             # The cache will be updated with the new content just once for all blocks in the pipeline:
-            - cache store bundle-2.12-$(checksum Gemfile.lock yarn.lock) vendor/bundle
+            - cache store bundle-3.01-$(checksum Gemfile.lock yarn.lock) vendor/bundle
 
   - name: Code scanning
     task:
@@ -69,6 +70,7 @@ blocks:
           - bundle config set path 'vendor/bundle'
           - GIT_LFS_SKIP_SMUDGE=1 bundle install
           - yarn
+          - bundle exec bin/webpack
           - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
           - chmod +x ./cc-test-reporter
           - cp config/database.semaphore_2.yml config/database.yml
@@ -127,6 +129,7 @@ blocks:
           - bundle config set path 'vendor/bundle'
           - GIT_LFS_SKIP_SMUDGE=1 bundle install
           - yarn
+          - bundle exec bin/webpack
           - cp config/database.semaphore_2.yml config/database.yml
           - 'curl -L -o db/dump/test.sql.bz2 "https://github.com/steveoro/goggles_db/raw/master/spec/dummy/db/dump/test.sql.bz2"'
           - 'RAILS_ENV=test bin/rails db:rebuild from=test to=test'
