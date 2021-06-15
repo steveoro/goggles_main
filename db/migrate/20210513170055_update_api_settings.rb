@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'goggles_db/version'
+
 class UpdateAPISettings < ActiveRecord::Migration[6.0]
   def change
     # --- Update DB settings to latest release setup:
