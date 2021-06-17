@@ -23,6 +23,10 @@ class ChronoController < ApplicationController
   def new
     # Prepare pool_types, event_types & latest category_types belonging to the
     # last available FIN season for current_user:
+    @last_chosen_swimmer = last_chosen_swimmer
+    @last_chosen_swimming_pool = last_chosen_swimming_pool
+    @last_chosen_team = last_chosen_team
+    @last_chosen_city = last_chosen_city
     @seasons = GogglesDb::Season.includes(:season_type).in_range(Date.today - 1.year, Date.today + 3.months)
     @pool_types = GogglesDb::PoolType.all
     @event_types = GogglesDb::EventType.all_eventable
@@ -38,6 +42,7 @@ class ChronoController < ApplicationController
     # DEBUG
     logger.debug("\r\n\r\n#{params.inspect}\r\n")
     @adapter = IqRequest::ChronoRecParamAdapter.new(current_user, rec_params)
+    store_rec_params_in_cookies
     @request_header = @adapter.to_request_hash.to_json
   end
   #-- -------------------------------------------------------------------------
@@ -110,7 +115,7 @@ class ChronoController < ApplicationController
   # for a Meeting or a Workshop. Redirects to /new otherwise.
   def validate_rec_params
     return if rec_params['rec_type'].present? &&
-              (rec_params['meeting_label'].present? || rec_params['workshop_label'].present?)
+              (rec_params['meeting_label'].present? || rec_params['user_workshop_label'].present?)
 
     flash[:error] = I18n.t('chrono.messages.error.missing_meeting_or_workshop_name')
     redirect_to(chrono_new_path)
@@ -142,6 +147,90 @@ class ChronoController < ApplicationController
     nil
   end
 
+  # Saves the current choices for /rec into cookies
+  # rubocop:disable Metrics/AbcSize
+  def store_rec_params_in_cookies
+    cookies[:season_id] = rec_params[:season_id]
+    cookies[:meeting_id] = rec_params[:meeting_id]
+    cookies[:meeting_label] = rec_params[:meeting_label]
+    cookies[:user_workshop_id] = rec_params[:user_workshop_id]
+    cookies[:user_workshop_label] = rec_params[:user_workshop_label]
+
+    cookies[:event_date] = rec_params[:event_date]
+    cookies[:event_type_id] = rec_params[:event_type_id]
+
+    cookies[:swimming_pool_id] = rec_params[:swimming_pool_id]
+    cookies[:swimming_pool_label] = rec_params[:swimming_pool_label]
+    cookies[:swimming_pool_name] = rec_params[:swimming_pool_name] || rec_params[:swimming_pool_label]
+    cookies[:pool_type_id] = rec_params[:pool_type_id]
+
+    cookies[:swimmer_id] = rec_params[:swimmer_id]
+    cookies[:swimmer_label] = rec_params[:swimmer_label]
+    cookies[:swimmer_complete_name] = rec_params[:swimmer_complete_name]
+    cookies[:swimmer_year_of_birth] = rec_params[:swimmer_year_of_birth]
+    cookies[:gender_type_id] = rec_params[:gender_type_id]
+
+    cookies[:category_type_id] = rec_params[:category_type_id]
+    cookies[:team_id] = rec_params[:team_id]
+    cookies[:team_name] = rec_params[:team_name] || rec_params[:team_label]
+
+    cookies[:city_id] = rec_params[:city_id]
+    cookies[:city_label] = rec_params[:city_label]
+    cookies[:city_name] = rec_params[:city_name] || rec_params[:city_label]
+    cookies[:city_area] = rec_params[:city_area]
+    cookies[:city_country_code] = rec_params[:city_country_code]
+  end
+  # rubocop:enable Metrics/AbcSize
+
+  # Returns the last chosen Swimmer from the cookies or the default one besed on the current user.
+  def last_chosen_swimmer
+    return GogglesDb::Swimmer.find_by_id(cookies[:swimmer_id]) if cookies[:swimmer_id].to_i.positive?
+
+    if cookies[:swimmer_complete_name].present?
+      return GogglesDb::Swimmer.new(
+        complete_name: cookies[:swimmer_complete_name],
+        year_of_birth: cookies[:swimmer_year_of_birth],
+        gender_type_id: cookies[:gender_type_id]
+      )
+    end
+
+    current_user.swimmer
+  end
+
+  # Returns the last chosen SwimmingPool values restored from the cookies, or nil.
+  def last_chosen_swimming_pool
+    return nil unless cookies[:swimming_pool_id].to_i.positive? || cookies[:swimming_pool_name].present?
+
+    GogglesDb::SwimmingPool.find_by_id(cookies[:swimming_pool_id]) ||
+      GogglesDb::SwimmingPool.new(
+        name: cookies[:swimming_pool_name],
+        pool_type_id: cookies[:pool_type_id]
+      )
+  end
+
+  # Returns the last chosen Team values restored from the cookies or nil.
+  def last_chosen_team
+    return nil unless cookies[:team_id].to_i.positive? || cookies[:team_name].present? || cookies[:team_label].present?
+
+    GogglesDb::Team.find_by_id(cookies[:team_id]) ||
+      GogglesDb::Team.new(
+        name: cookies[:team_name] || cookies[:team_label],
+        editable_name: cookies[:team_name]
+      )
+  end
+
+  # Returns the last chosen City values restored from the cookies or nil.
+  def last_chosen_city
+    return nil unless cookies[:city_id].to_i.positive? || cookies[:city_name].present? || cookies[:city_label].present?
+
+    GogglesDb::City.find_by_id(cookies[:city_id]) ||
+      GogglesDb::City.new(
+        name: cookies[:city_name] || cookies[:city_label],
+        area: cookies[:city_area],
+        country_code: cookies[:city_country_code]
+      )
+  end
+
   # Returns the last recored timing data, minus the order (which is not used in the actual result).
   def overall_result_timing(laps_list)
     return {} unless laps_list.present?
@@ -164,7 +253,7 @@ class ChronoController < ApplicationController
 
     # Create an IQ row for each lap data obtained from the payload, starting from last lap
     # which, allegedly, should contain the last overall timing:
-    laps_list.reverse.each do |lap_data, index|
+    laps_list.reverse.each_with_index do |lap_data, index|
       # DEBUG
       logger.debug("\r\n- lap_data: #{lap_data.inspect}")
 

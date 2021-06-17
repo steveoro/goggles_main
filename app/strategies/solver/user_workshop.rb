@@ -24,7 +24,7 @@ module Solver
     def finder_strategy
       id = value_from_req(key: 'user_workshop_id', nested: 'user_workshop', sub_key: 'id')
       # Priority #1
-      return GogglesDb::UserWorkshop.find_by_id(id) if id
+      return GogglesDb::UserWorkshop.find_by_id(id) if id.to_i.positive?
 
       # Priority #2
       solve_bindings

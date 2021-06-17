@@ -52,19 +52,20 @@ module IqRequest
     SUPPORTED_PARAMS = %w[
       rec_type
       meeting_id meeting_label meeting_code meeting_header_date
-      workshop_id workshop_label workshop_code workshop_header_date workshop_edition workshop_edition_type_id
+      user_workshop_id user_workshop_label user_workshop_code user_workshop_header_date
+      user_workshop_edition user_workshop_edition_type_id
       event_date header_year
-      season_id season_description season_begin_date season_end_date season_edition
+      season_id season_label season_description season_begin_date season_end_date season_edition
       season_type_id season_edition_type_id
       swimming_pool_id swimming_pool_label swimming_pool_name swimming_pool_nick_name
       swimming_pool_city_id swimming_pool_pool_type_id
       pool_type_id pool_type_label
       event_type_id event_type_label
       swimmer_id swimmer_label swimmer_complete_name swimmer_first_name swimmer_last_name
-      swimmer_year_of_birth swimmer_gender_type_id
+      swimmer_year_of_birth swimmer_gender_type_id gender_type_id
       team_id team_label team_name team_editable_name team_city_id
       category_type_id category_type_label
-      city_id city_name city_country_code
+      city_id city_name city_label city_area city_country_code
     ].freeze
 
     # Allowed detail keys for the rec-data hash
@@ -260,7 +261,7 @@ module IqRequest
         'last_name' => @params['swimmer_last_name'],
         'complete_name' => @params['swimmer_complete_name'],
         'year_of_birth' => @params['swimmer_year_of_birth'],
-        'gender_type_id' => @params['swimmer_gender_type_id']
+        'gender_type_id' => @params['swimmer_gender_type_id'] || @params['gender_type_id']
       }
     end
 
@@ -283,8 +284,8 @@ module IqRequest
       {
         'id' => @params['team_id'],
         'label' => @params['team_label'],
-        'name' => @params['team_name'],
-        'editable_name' => @params['team_editable_name'],
+        'name' => @params['team_name'] || @params['team_label'],
+        'editable_name' => @params['team_editable_name'] || @params['team_name'] || @params['team_label'],
         'city_id' => @params['team_city_id']
       }
     end
@@ -294,13 +295,13 @@ module IqRequest
       return @request_hash['user_workshop'] if @request_hash.present?
 
       {
-        'id' => @params['workshop_id'],
-        'description' => @params['workshop_label'],
-        'code' => @params['workshop_code'],
-        'header_date' => @params['workshop_header_date'] || @params['event_date'],
+        'id' => @params['user_workshop_id'],
+        'description' => @params['user_workshop_label'],
+        'code' => @params['user_workshop_code'],
+        'header_date' => @params['user_workshop_header_date'] || @params['event_date'],
         'header_year' => header_year,
-        'edition' => @params['workshop_edition'],
-        'edition_type_id' => @params['workshop_edition_type_id'],
+        'edition' => @params['user_workshop_edition'],
+        'edition_type_id' => @params['user_workshop_edition_type_id'],
         'user_id' => @current_user.id,
         'team' => team_attr,
         'season' => season_attr,
@@ -320,7 +321,7 @@ module IqRequest
         'category_type_id' => @params['category_type_id'],
         'pool_type_id' => @params['pool_type_id'] || @params['swimming_pool_id'],
         'event_type_id' => @params['event_type_id'],
-        'event_date' => @params['event_date'] || @params['workshop_header_date']
+        'event_date' => @params['event_date'] || @params['user_workshop_header_date']
       }
     end
 

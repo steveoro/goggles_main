@@ -24,7 +24,7 @@ module Solver
     def finder_strategy
       id = value_from_req(key: 'swimming_pool_id', nested: 'swimming_pool', sub_key: 'id')
       # Priority #1
-      return GogglesDb::SwimmingPool.find_by_id(id) if id
+      return GogglesDb::SwimmingPool.find_by_id(id) if id.to_i.positive?
 
       # Priority #2
       solve_bindings

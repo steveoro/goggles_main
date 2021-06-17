@@ -26,8 +26,8 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       'rec_type' => '2', # workshop
       'meeting_id' => '',
       'meeting_label' => '',
-      'workshop_id' => '0', # new workshop
-      'workshop_label' => 'CSI at home 2021 - test',
+      'user_workshop_id' => '0', # new workshop
+      'user_workshop_label' => 'CSI at home 2021 - test',
       'swimming_pool_id' => fixture_pool.id.to_s,
       'event_date' => Date.today.to_s,
       'event_type_id' => fixture_event.id.to_s,

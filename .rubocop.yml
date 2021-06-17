@@ -44,6 +44,8 @@ Metrics/BlockLength:
 
 Metrics/ClassLength:
   Max: 120
+  Exclude:
+  - 'app/controllers/chrono_controller.rb'
 
 Metrics/CyclomaticComplexity:
   Exclude:

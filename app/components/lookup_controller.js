@@ -62,6 +62,18 @@ require('select2')
  * @assert the widget can use '.select2' CSS to customize width
  * @assert 'data-lookup-target' must be a parent node the actual '.select2' widget
  *
+ * == About the 2nd API call feature:
+ * By enabling and making a second API call for specific details of that particular chosen row (by using its ID) typically
+ * the single row GET endpoint will return a multi-level nested JSON object with all its associated nested entities details.
+ * (For example SwimmingPool ->City, ->PoolType, ...)
+ *
+ * Then, relying on entity association naming conventions and on the nested structure of the resulting JSON object, by looking
+ * for the presence of other coherently-named DOM widgets or fields, this controller will try to update their values
+ * when the main target widget/field changes its values or its selection.
+ *
+ * For instance, when using correct naming & parameters for this controller, a 'swimming_pool_select' widget could
+ * update any of its related 'pool_type_select', 'city_select' or 'city_area' fields found on the same page.
+ *
  * @author Steve A.
  */
 export default class extends Controller {
@@ -257,10 +269,14 @@ export default class extends Controller {
           if (row.pool_type_id && row.name) {
             return this.setDataMembersForSwimmingPool(row)
           }
+          // Recognize Meeting/Workshop:
+          if (row.code && row.description && row.header_date && row.header_year && row.edition) {
+            return this.setDataMembersForMeetings(row)
+          }
           // Recognize City:
           if ((row.region || row.area) && row.name) {
             const area = row.region || row.area
-            return { id: row.id, text: `${row.name} (${area})`, area: area }
+            return { id: row.id, text: row.name, area: area }
           }
 
           // Generic Lookup entity support by checking for long_label or label:
@@ -283,9 +299,28 @@ export default class extends Controller {
   // ---------------------------------------------------------------------------
 
   /**
+   * Returns the usual text label used for displaying a row of the specified entityName.
+   * @param {String} entityName a snake_case name of the key entity
+   * @param {Object} resultRow  the result object holding the entity attributes
+   */
+  getLabelForEntity (entityName, resultRow) {
+    if (entityName === 'swimmer') {
+      return `${resultRow.complete_name} (${resultRow.year_of_birth})`
+    }
+    if (entityName === 'swimming_pool') {
+      return `${resultRow.name} (${resultRow.nick_name})`
+    }
+    if (entityName === 'meeting' || entityName === 'user_workshop') {
+      return `${resultRow.description} (${resultRow.header_date})`
+    }
+    // Defaults, in priority order:
+    return resultRow.label || resultRow.name || resultRow.description
+  }
+
+  /**
    * Returns an object with all the custom 'data' members for a Swimmer option lookup,
    * plus the obligatory id key & text label for display.
-   * @param {Object} resultRow result data object holding Swimmer data fields
+   * @param {Object} resultRow result object holding Swimmer detailed data fields
    */
   setDataMembersForSwimmer (resultRow) {
     return {
@@ -295,14 +330,14 @@ export default class extends Controller {
       last_name: resultRow.last_name,
       year_of_birth: resultRow.year_of_birth,
       gender_type_id: resultRow.gender_type_id,
-      text: `${resultRow.complete_name} (${resultRow.year_of_birth})`
+      text: this.getLabelForEntity('swimmer', resultRow)
     }
   }
 
   /**
    * Returns an object with all the custom 'data' members for a SwimmingPool option lookup,
    * plus the obligatory id key & text label for display.
-   * @param {Object} resultRow result data object holding SwimmingPool data fields
+   * @param {Object} resultRow result data object holding SwimmingPool detailed data fields
    */
   setDataMembersForSwimmingPool (resultRow) {
     return {
@@ -311,7 +346,29 @@ export default class extends Controller {
       nick_name: resultRow.nick_name,
       city_id: resultRow.city_id,
       pool_type_id: resultRow.pool_type_id,
-      text: `${resultRow.name} (${resultRow.nick_name})`
+      text: this.getLabelForEntity('swimming_pool', resultRow)
+    }
+  }
+
+  /**
+   * Returns an object with all the custom 'data' members for a Meeting/UserWorkshop option lookup,
+   * plus the obligatory id key & text label for display.
+   * @param {Object} resultRow result data object holding Meeting/UserWorkshop detailed data fields
+   */
+  setDataMembersForMeetings (resultRow) {
+    return {
+      id: resultRow.id,
+      code: resultRow.code,
+      description: resultRow.description,
+      header_date: resultRow.header_date,
+      header_year: resultRow.header_year,
+      edition: resultRow.edition,
+      edition_type_id: resultRow.edition_type_id,
+      season_id: resultRow.season_id,
+      swimming_pool_id: resultRow.swimming_pool_id,
+      team_id: resultRow.team_id,
+      timing_type_id: resultRow.timing_type_id,
+      text: this.getLabelForEntity('meeting', resultRow)
     }
   }
   // ---------------------------------------------------------------------------
@@ -332,18 +389,36 @@ export default class extends Controller {
     mapData.set('id', $(targetWidget).find(':selected').first().val())
     mapData.set('label', $(targetWidget).find(':selected').first().text())
     if ($(targetWidget).find(':selected').first().data()) {
-      Object.entries($(targetWidget).find(':selected').first().data())
-        .forEach(
-          ([key, value]) => {
-            if (key !== 'select2Id') {
-              mapData.set(key, value)
-            }
-          }
-        )
+      this.copyObjectToMap($(targetWidget).find(':selected').first().data(), mapData)
     }
     return mapData
   }
   // ---------------------------------------------------------------------------
+
+  /**
+   * Copies all attributes of a specified Object into a Map of key attributes and values.
+   * The method skips certain attributes which may be found when dealing with internal data objects
+   * from the Select2 widget.
+   * Both object and destMap are assumed to be existing and defined.
+   *
+   * @param {Object} object   an Object with data properties
+   * @param {Map}    destMap  the destination data Map
+   * @returns the converted/enriched Map object data
+   */
+  copyObjectToMap (object, destMap) {
+    if (object && destMap) {
+      Object.entries(object)
+        .forEach(
+          ([key, value]) => {
+            // Skip peculiar attributes:
+            if (key !== 'text' && key !== 'selected' && key !== 'select2Id') {
+              destMap.set(key, value)
+            }
+          }
+        )
+    }
+    return destMap
+  }
 
   /**
    * Sets the text color of the span text identified by '#<BASE_NAME>-presence'.
@@ -370,6 +445,8 @@ export default class extends Controller {
    * Setter for all the hidden fields stored in the lookup option data (id, label, ...).
    * (Does nothing if the data field is not found.)
    *
+   * @param {String} baseName base name for the context of the provided data map and base prefix for
+   *                          all the hidden fields;
    * @param {Object} mapData a Map including all attribute names and values that have to be
    *                         stored on hidden field tags having DOM IDs = "<BASE_NAME>_<ATTR_NAME>"
    *
@@ -381,36 +458,46 @@ export default class extends Controller {
    * - stores "whatever" as value of the DOM node having ID "<BASE_NAME>_label"
    * - stores "anything" as value of the DOM node having ID "<BASE_NAME>_another_field"
    */
-  setHiddenFieldsValue (mapData) {
+  setHiddenFieldsValue (baseName, mapData) {
     // DEBUG
-    // console.log('setHiddenFieldsValue()')
-    // console.log(mapData)
+    console.log('setHiddenFieldsValue()')
+    console.log(mapData)
 
-    if (this.hasFieldBaseNameValue && mapData) {
+    if (baseName && mapData) {
       /*
+       * Free-input text case handling:
        * Clear the ID field if it's equal to the label.
-       * (when this happens, it means the value was set by a free-input text tag)
        */
       if (mapData.get('id') === mapData.get('label')) {
         mapData.set('id', 0)
+        // Update also swimmer's complete name, if we're dealing with swimmers:
+        if (baseName.startsWith('swimmer') && mapData.get('label') && document.querySelector(`#${baseName}_complete_name`)) {
+          document.querySelector(`#${baseName}_complete_name`).value = mapData.get('label')
+        }
       }
+
       // "Status led" update for the main data input:
-      this.presenceLedUpdate(this.fieldBaseNameValue, mapData.get('label').length > 0)
+      this.presenceLedUpdate(baseName, mapData.has('label'))
+      const baseSelector = `#${baseName}_`
 
       // Set each hidden field tag value from data map only if the DOM node is found:
       mapData.forEach(
         (value, key) => {
-          // If a field is found, trigger all the related changes:
-          if (document.querySelector(`#${this.fieldBaseNameValue}_${key}`)) {
+          // If a kwy field is found (prefixed with base name), trigger all the related changes,
+          // including any '<BASE_NAME><key>_select' value selects (which will work only on Select2
+          // widget with pre-fixed list of options):
+          if (document.querySelector(`${baseSelector}${key}`)) {
             // DEBUG
-            // console.log(`Found DOM field for '${key}': ${value}`)
-            document.querySelector(`#${this.fieldBaseNameValue}_${key}`).value = value
+            console.log(`Found DOM field for '${key}': [${baseSelector}${key}] <= ${value}`)
+            document.querySelector(`${baseSelector}${key}`).value = value
             /*
              * Trigger a sub-entity change for in-bound select2 widgets.
              * (Updates only the linked sub-entity's hidden id & label)
              *
-             * If the current field name ("key") ends with "_id", then it's the Rails convention for an association column name.
-             * Given this, if there's also a possible Select2 widget bound to this by a similar name, update that too.
+             * If the current field name ("key") ends with "_id" (as in 'swimming_pool_id', or 'city_id'),
+             * then it's assumed to imply the Rails convention for an association column name.
+             * Thus, we check if there's also a possible Select2 widget bound to this by a similar name,
+             * and we update that too when found.
              *
              * The naming convention is:
              * - "key" ("<something>_id") DOM node for source value
@@ -422,10 +509,24 @@ export default class extends Controller {
             const boundSelectBaseName = key.split('_id')[0]
             const boundSelectID = `#${boundSelectBaseName}_select`
 
-            // Process bound select widgets & hidden fields (but skip special cases handled below)
+            // Process bound select widgets & hidden fields (but skip special cases handled elsewhere)
             if (key.endsWith('_id') && (key !== 'city_id') && document.querySelector(boundSelectID)) {
               this.setOrCreateSelect2Option(boundSelectBaseName, value, null)
             }
+          }
+
+          // If there's another Select2 widget with an DOM ID based on the current key and the current
+          // value holds nested details, we can go deep with recursion and update its fields too:
+          // (but skip special cases handled elsewhere)
+          if (!key.endsWith('_id') && (key !== 'city') && document.querySelector(`#${key}_select`) && value.id) {
+            // DEBUG
+            console.log(`Nested data details w/ '#${key}_select' widget found: going deep...`)
+            const nestedLabel = this.getLabelForEntity(key, value)
+            this.setOrCreateSelect2Option(key, value.id, nestedLabel)
+            const nestedMap = new Map()
+            this.copyObjectToMap(value, nestedMap)
+            nestedMap.set('label', nestedLabel)
+            this.setHiddenFieldsValue(key, nestedMap)
           }
         }
       )
@@ -477,35 +578,47 @@ export default class extends Controller {
    * but only if the target DOM IDs are found and mapData contains any one among the following attribute keys:
    *
    * - year_of_birth => updates #category_type_select
-   * - city_id       => updates #city_select
+   * - year_of_birth => updates #category_type_select
+   * - (FUTUREDEV: add more here)
    *
    * @param {Object} mapData a Map including all attribute names for the current selection
    */
   handleSpecialCases (mapData) {
     /*
-     * Special case #1: 'year_of_birth' => update 'category_type_select'
+     * Special case #1:
+     * - 'year_of_birth' => update 'category_type_select'
      * (selection dataset assumed to be already present)
      */
     if (mapData.get('year_of_birth') && document.querySelector('#category_type_select')) {
       const age = (new Date().getFullYear() - mapData.get('year_of_birth'))
       const code = Math.floor(age / 5) * 5
       // Find the ID value looking for the displayed code:
-      const categoryId = $('#category_type_select').find(`option:contains('M${code}')`).first().val()
-      $('#category_type_select').val(categoryId)
+      const valueId = $('#category_type_select').find(`option:contains('M${code}')`).first().val()
+      $('#category_type_select').val(valueId)
       $('#category_type_select').trigger('change')
       // Programmatically set also any related fields:
-      $('#category_type_id').val(categoryId)
+      $('#category_type_id').val(valueId)
       $('#category_type_label').val($('#category_type_select').select2('data')[0].text)
+    }
+    /*
+     * Special case #2:
+     * - 'gender_type_id' => update 'gender_type_id' standard select_tag
+     * (selection dataset assumed to be already present)
+     */
+    if (mapData.get('gender_type_id') && document.querySelector('#gender_type_id')) {
+      const valueId = mapData.get('gender_type_id')
+      $('#gender_type_id').val(valueId)
+      $('#gender_type_id').trigger('change')
     }
 
     /*
-     * Special case #2: 'city_id' w/ city object => update 'city_select'
+     * Special case #3: 'city_id' w/ city object => update 'city_select'
      * (selection dataset will be created if missing)
      */
     if (mapData.get('city_id') && mapData.get('city') && document.querySelector('#city_select')) {
       // DEBUG
-      console.log('city details:')
-      console.log(mapData.get('city'))
+      // console.log('city details:')
+      // console.log(mapData.get('city'))
       this.setOrCreateSelect2Option('city', mapData.get('city_id'), mapData.get('city').name)
       // Programmatically set also any other related fields:
       $('#city_country_code').val(mapData.get('city').country_code)
@@ -535,18 +648,11 @@ export default class extends Controller {
           // DEBUG
           // console.log('enrichMapDataWithDetails result:')
           // console.log(json)
-          Object.entries(json)
-            .forEach(
-              ([key, value]) => {
-                if (key !== 'text' && key !== 'selected') {
-                  mapData.set(key, value)
-                }
-              }
-            )
-          this.setHiddenFieldsValue(mapData)
+          this.copyObjectToMap(json, mapData)
+          this.setHiddenFieldsValue(this.hasFieldBaseNameValue ? this.fieldBaseNameValue : '', mapData)
         })
     } else {
-      this.setHiddenFieldsValue(mapData)
+      this.setHiddenFieldsValue(this.hasFieldBaseNameValue ? this.fieldBaseNameValue : '', mapData)
     }
   }
   // ---------------------------------------------------------------------------
@@ -575,7 +681,7 @@ export default class extends Controller {
       // DEBUG
       // console.log('select2 => :selected')
       const mapData = this.prepareMapDataFromCurrentSelection(target)
-      this.setHiddenFieldsValue(mapData)
+      this.setHiddenFieldsValue(this.hasFieldBaseNameValue ? this.fieldBaseNameValue : '', mapData)
     }
     // Update target hidden fields also when the drop-down menu is closing.
     // Note: 'change' & 'select2:select' events) may not always be triggered due to AJAX delay,
@@ -585,7 +691,7 @@ export default class extends Controller {
       // DEBUG
       // console.log('select2 => select2:closing')
       const mapData = this.prepareMapDataFromCurrentSelection(target)
-      this.setHiddenFieldsValue(mapData)
+      this.setHiddenFieldsValue(this.hasFieldBaseNameValue ? this.fieldBaseNameValue : '', mapData)
     })
 
     // Update target hidden fields when the actual selection occurs:
@@ -596,14 +702,7 @@ export default class extends Controller {
       // const mapData = this.prepareMapDataFromCurrentSelection(target)
       const mapData = new Map()
       mapData.set('label', event.params.data.text)
-      Object.entries(event.params.data)
-        .forEach(
-          ([key, value]) => {
-            if (key !== 'text' && key !== 'selected') {
-              mapData.set(key, value)
-            }
-          }
-        )
+      this.copyObjectToMap(event.params.data, mapData)
       this.enrichMapDataWithDetails(currJWT, mapData)
     })
   }

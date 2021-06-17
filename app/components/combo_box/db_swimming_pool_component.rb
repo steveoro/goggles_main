@@ -67,7 +67,7 @@ module ComboBox
         :option,
         @default_row.text_label,
         selected: 'selected',
-        value: @default_row.id,
+        value: @default_row.id.to_i,
         'data-name': @default_row.name,
         'data-nick_name': @default_row.nick_name,
         'data-city_id': @default_row.city_id,

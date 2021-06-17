@@ -2,12 +2,14 @@ it:
   swimmers:
     swimmer: Nuotatore
     swimmers: Nuotatori
+    swimmer_with_layout: "Nuotatore (cognome e nome)"
     affiliated_with: Squadre
     year_of_birth: Anno di nascita
     swimmer_and_teams: "Atleta/Affiliazioni"
     name: Nome
     birth_year_and_age: Classe / Età
-    age_class_and_category: "Classe/Cat."
+    sex: "Sesso"
+    age_class: "Classe"
     age_class_and_category: "Classe/Cat."
     current_category: Categoria attuale
     search_result_item: item

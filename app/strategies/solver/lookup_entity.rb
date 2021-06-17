@@ -41,7 +41,7 @@ module Solver
       id = value_from_req(key: "#{@entity_name}_id", nested: @entity_name, sub_key: 'id')
       code = value_from_req(key: "#{@entity_name}_code", nested: @entity_name, sub_key: 'code')
 
-      if id
+      if id.to_i.positive?
         @entity_class.find_by(id: id)
       elsif code
         @entity_class.find_by(code: code)

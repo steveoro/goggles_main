@@ -25,7 +25,7 @@ module Solver
     def finder_strategy
       id = value_from_req(key: 'team_id', nested: 'team', sub_key: 'id')
       # Priority #1
-      return GogglesDb::Team.find_by(id: id) if id
+      return GogglesDb::Team.find_by(id: id) if id.to_i.positive?
 
       # Priority #2
       solve_bindings

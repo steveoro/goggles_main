@@ -13,7 +13,7 @@ class ImportQueueDecorator < Draper::Decorator
   def text_label
     case uid
     when 'chrono'
-      "⏱ #{req_event_type&.label}: #{req_timing}, #{req_swimmer_name}"
+      "⏱ #{req_event_type&.label}: #{req_timing}, #{req_swimmer_name} (#{req_swimmer_year_of_birth})"
     when /chrono-\d+/
       "#{req_timing}, #{req_length_in_meters} m"
     when 'res'
@@ -21,5 +21,11 @@ class ImportQueueDecorator < Draper::Decorator
     else
       "#{target_entity} by #{user.name}"
     end
+  end
+
+  # Returns the associated Swimmer year_of_birth at root-key depth of the request, if any,
+  # or +nil+ when not set.
+  def req_swimmer_year_of_birth
+    req&.fetch(root_key, nil)&.fetch('swimmer', nil)&.fetch('year_of_birth', nil)
   end
 end

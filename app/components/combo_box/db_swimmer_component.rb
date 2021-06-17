@@ -3,7 +3,7 @@
 #
 # = ComboBox components module
 #
-#   - version:  7.02
+#   - version:  7.03
 #   - author:   Steve A.
 #
 module ComboBox
@@ -51,12 +51,13 @@ module ComboBox
       super('swimmers', label, base_name, options)
       return unless options[:default_row].instance_of?(GogglesDb::Swimmer)
 
+      @gender_types = [GogglesDb::GenderType.male, GogglesDb::GenderType.female]
       @default_row = SwimmerDecorator.decorate(options[:default_row])
     end
 
     protected
 
-    # Returns the preselected option item if a default entity instance is
+    # Returns the preselected option item for this component if a default entity instance is
     # specified in the constructor
     def preselected_option
       return unless @default_row
@@ -65,13 +66,18 @@ module ComboBox
         :option,
         @default_row.text_label,
         selected: 'selected',
-        value: @default_row.id,
+        value: @default_row.id.to_i,
         'data-complete_name': @default_row.complete_name,
         'data-first_name': @default_row.first_name,
         'data-last_name': @default_row.last_name,
         'data-year_of_birth': @default_row.year_of_birth,
         'data-gender_type_id': @default_row.gender_type_id
       )
+    end
+
+    # Returns the option item list for GenderType selection
+    def gender_type_options
+      options_from_collection_for_select(@gender_types, 'id', 'label', @default_row&.gender_type_id)
     end
   end
 end

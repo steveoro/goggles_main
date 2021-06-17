@@ -11,9 +11,7 @@ module ComboBox
   # = ComboBox::DbCityComponent
   #
   # Creates a Select2-based combo-box, with AJAX retrieval of the datasource,
-  # using the StimulusJS LookupController.
-  #
-  # This sibling version is tailored to handle GogglesDb::SwimmingPool extra data fields
+  # using the StimulusJS LookupController to handle GogglesDb::City extra data fields
   # as hidden_field tags.
   #
   # @see ComboBox::DbLookupComponent
@@ -38,6 +36,15 @@ module ComboBox
       @free_text = options[:free_text] || false
       @required = options[:required] || false
       @default_row = options[:default_row] if options[:default_row].instance_of?(GogglesDb::City)
+    end
+
+    private
+
+    # Prepares the default options for select when a @default_row is supplied
+    def value_options
+      return nil unless @default_row
+
+      options_for_select({ @default_row.name => @default_row.id.to_i }, @default_row.id.to_i)
     end
   end
 end

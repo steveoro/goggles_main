@@ -14,6 +14,11 @@ class SwimmingPoolDecorator < Draper::Decorator
     h.link_to(name, h.swimming_pool_show_path(id: object.id))
   end
 
+  # Returns the a text label describing this instance.
+  def text_label
+    "#{name} (#{nick_name || city&.name || '?'})"
+  end
+
   # Returns either the styled button link to the Google Maps pool location together with
   # its name or just its plain text name if no location query fields are available.
   #

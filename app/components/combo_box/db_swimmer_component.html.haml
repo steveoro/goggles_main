@@ -11,10 +11,20 @@
       = hidden_field_tag("#{@base_name}_complete_name", @default_row&.complete_name)
       = hidden_field_tag("#{@base_name}_first_name", @default_row&.first_name)
       = hidden_field_tag("#{@base_name}_last_name", @default_row&.last_name)
-      = hidden_field_tag("#{@base_name}_year_of_birth", @default_row&.year_of_birth)
-      = hidden_field_tag("#{@base_name}_gender_type_id", @default_row&.gender_type_id)
       = label_tag(@base_name, @label)
       %b.text-danger{ id: "#{@base_name}-presence" } *
       %select.select2{ id: "#{@base_name}_select", autofocus: true, required: @required,
                        data: { 'lookup-target' => 'field' } }
         = preselected_option
+.col-4
+  .form-group
+    .field
+      = label_tag("#{@base_name}_year_of_birth", t('swimmers.age_class'))
+      = number_field_tag("#{@base_name}_year_of_birth", @default_row&.year_of_birth, min: 1910,
+                         max: Date.today.year, required: @required, autofocus: true, class: 'form-control')
+.col-4
+  .form-group
+    .field
+      = label_tag(:gender_type_id, t('swimmers.sex'))
+      = select_tag(:gender_type_id, gender_type_options, required: true, autofocus: true,
+                    class: 'form-control')

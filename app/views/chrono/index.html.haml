@@ -25,7 +25,8 @@
                           data: { confirm: t('chrono.index.confirm_delete', queue_label: queue.text_label) })
           - if queue.sibling_rows.count.positive?
             %ul.collapse{ id: "laps#{queue.id}" }
-              - ImportQueueDecorator.decorate_collection(queue.sibling_rows).each do |linked_queue|
+              - collection = queue.sibling_rows.includes(:import_queues)
+              - ImportQueueDecorator.decorate_collection(collection).each do |linked_queue|
                 %li.text-left
                   %small= linked_queue.text_label
       - else
