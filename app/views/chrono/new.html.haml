@@ -14,21 +14,15 @@
 
       .container.mt-2
         .row
-          - season_options = options_from_collection_for_select(SeasonDecorator.decorate_collection(@seasons),
-                             'id', 'text_label', cookies[:season_id])
           = render(ComboBox::DbLookupComponent.new(nil, t('meetings.season'), 'season',
-                                                   required: true, values: season_options))
+                                                   required: true, values: season_options(@seasons)))
 
       .container.bg-light-green.pt-3.shadow-box#meeting{ data: { 'switch-target' => 'area1' } }
         .row
-          - meeting_options = options_for_select({ cookies[:meeting_label] => cookies[:meeting_id] },
-                                                 cookies[:meeting_id])
           = render(ComboBox::DbLookupComponent.new('meetings', t('chrono.selector.meeting'), 'meeting',
                                                    free_text: true, use_2_api: true, values: meeting_options))
       .container.bg-light-blue.pt-3.shadow-box.d-none#workshop{ data: { 'switch-target' => 'area2' } }
         .row
-          - workshop_options = options_for_select({ cookies[:user_workshop_label] => cookies[:user_workshop_id] },
-                                                  cookies[:user_workshop_id])
           = render(ComboBox::DbLookupComponent.new('user_workshops', t('chrono.selector.workshop'), 'user_workshop',
                                                    free_text: true, use_2_api: true, values: workshop_options))
       .container.my-2
@@ -36,10 +30,8 @@
           = render(ComboBox::DbSwimmingPoolComponent.new(t('meetings.dashboard.swimming_pool'),
                                                          'swimming_pool', free_text: true, use_2_api: true,
                                                          default_row: @last_chosen_swimming_pool))
-          - pool_type_options = options_from_collection_for_select(@pool_types, 'id', 'long_label',
-                                                                   cookies[:pool_type_id])
           = render(ComboBox::DbLookupComponent.new(nil, t('meetings.dashboard.pool_type'), 'pool_type',
-                                                   required: true, values: pool_type_options))
+                                                   required: true, values: pool_type_options(@pool_types)))
           = render(ComboBox::DbCityComponent.new(required: true, free_text: true, default_row: @last_chosen_city))
 
       .container.bg-warning.pt-3.shadow-box
@@ -51,36 +43,19 @@
                 = date_field_tag(:event_date, cookies[:event_date] || Date.today, required: true,
                                  autofocus: true, class: 'form-control')
 
-          - event_type_options = options_from_collection_for_select(@event_types, 'id', 'long_label',
-                                                                    cookies[:event_type_id])
           = render(ComboBox::DbLookupComponent.new(nil, t('meetings.event'), 'event_type',
-                                                   required: true, values: event_type_options))
+                                                   required: true, values: event_type_options(@event_types)))
 
       .container.mt-2
-        :ruby
-          team_options = nil
-          if @last_chosen_team
-            team_options = options_for_select(
-              { @last_chosen_team.name => @last_chosen_team.id.to_i },
-              @last_chosen_team.id.to_i
-            )
-          elsif @last_chosen_swimmer
-            decorated_swimmer = SwimmerDecorator.decorate(@last_chosen_swimmer)
-            team_options = options_from_collection_for_select(
-              decorated_swimmer.associated_teams,
-              'id', 'editable_name', @last_chosen_team&.id.to_i
-            )
-          end
         .row
+          -# TODO: use t('teams.team') for Meetings & t('chrono.selector.home_team') for Workshops
           = render(ComboBox::DbLookupComponent.new('teams', t('teams.team'), 'team', required: true,
-                                                   free_text: true, values: team_options))
+                                                   free_text: true,
+                                                   values: team_options(@last_chosen_team, @last_chosen_swimmer)))
           = render(ComboBox::DbSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer',
                                                     free_text: true, default_row: @last_chosen_swimmer))
-
-          - category_type_options = options_from_collection_for_select(@category_types, 'id', 'short_name',
-                                                                       cookies[:category_type_id])
           = render(ComboBox::DbLookupComponent.new(nil, t('meetings.category'), 'category_type',
-                                                   required: true, values: category_type_options))
+                                                   required: true, values: category_type_options(@category_types)))
 
       .container.mt-2.mb-4
         .row

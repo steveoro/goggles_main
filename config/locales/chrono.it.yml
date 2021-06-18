@@ -15,6 +15,7 @@ it:
       meeting: 'Meeting'
       workshop: 'Collegiale'
       event_date: 'Data evento'
+      home_team: 'Squadra organizzatrice'
     buttons:
       new_recording: 'Nuova registrazione'
       start_recording: 'Vai al Chrono'

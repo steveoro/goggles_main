@@ -15,6 +15,7 @@ en:
       meeting: 'Meeting'
       workshop: 'Workshop'
       event_date: 'Event date'
+      home_team: "Organizing/Home team"
     buttons:
       new_recording: 'New recording'
       start_recording: 'Go to Chrono'
