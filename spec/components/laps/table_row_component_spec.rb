@@ -12,20 +12,17 @@ RSpec.describe Laps::TableRowComponent, type: :component do
       expect(fixture_lap.meeting_individual_result_id).to eq(fixture_mir.id)
     end
 
-    subject { render_inline(described_class.new(lap: fixture_lap)).to_html }
+    subject { render_inline(described_class.new(lap: fixture_lap)) }
 
     it 'renders a collapsed table row with 2 cells' do
-      tr_node = Nokogiri::HTML.fragment(subject).css('tr.collapse')
-      expect(tr_node).to be_present
-      expect(tr_node.css('td').count).to eq(2)
+      expect(subject.css('tr.collapse')).to be_present
+      expect(subject.css('tr.collapse').css('td').count).to eq(2)
     end
     it 'includes the length in meters' do
-      td_node = Nokogiri::HTML.fragment(subject).at_css('tr.collapse td.text-muted')
-      expect(td_node.text).to include(fixture_lap.length_in_meters&.to_s)
+      expect(subject.at_css('tr.collapse td.text-muted').text).to include(fixture_lap.length_in_meters&.to_s)
     end
     it 'includes the lap timing' do
-      td_node = Nokogiri::HTML.fragment(subject).at_css('tr.collapse td.text-left')
-      expect(td_node.text).to include(fixture_lap.to_timing&.to_s)
+      expect(subject.at_css('tr.collapse td.text-left').text).to include(fixture_lap.to_timing&.to_s)
     end
   end
 

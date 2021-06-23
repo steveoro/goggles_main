@@ -13,6 +13,8 @@ module ChronoHelper
   # - seasons: an Array or an AR association of GogglesDb::Season instances available for selection
   #
   def season_options(seasons)
+    return unless seasons.respond_to?(:each) && seasons.present?
+
     options_from_collection_for_select(
       SeasonDecorator.decorate_collection(seasons),
       'id',
@@ -24,6 +26,8 @@ module ChronoHelper
   # Returns the select tag options based either on any previous choice made or
   # nil, if no previous choice was made.
   def meeting_options
+    return unless cookies[:meeting_label].present? && cookies[:meeting_id].present?
+
     options_for_select(
       { cookies[:meeting_label] => cookies[:meeting_id] },
       cookies[:meeting_id]
@@ -33,6 +37,8 @@ module ChronoHelper
   # Returns the select tag options based either on any previous choice or
   # nil, if no previous choice was made.
   def workshop_options
+    return unless cookies[:user_workshop_label].present? && cookies[:user_workshop_id].present?
+
     options_for_select(
       { cookies[:user_workshop_label] => cookies[:user_workshop_id] },
       cookies[:user_workshop_id]
@@ -49,6 +55,8 @@ module ChronoHelper
   # - pool_types: an Array or an AR association of GogglesDb::PoolType instances available for selection
   #
   def pool_type_options(pool_types)
+    return unless pool_types.respond_to?(:each) && pool_types.present?
+
     options_from_collection_for_select(
       pool_types,
       'id',
@@ -67,6 +75,8 @@ module ChronoHelper
   # - event_types: an Array or an AR association of GogglesDb::EventType instances available for selection
   #
   def event_type_options(event_types)
+    return unless event_types.respond_to?(:each) && event_types.present?
+
     options_from_collection_for_select(
       event_types,
       'id',
@@ -85,6 +95,8 @@ module ChronoHelper
   # - category_types: an Array or an AR association of GogglesDb::CategoryType instances available for selection
   #
   def category_type_options(category_types)
+    return unless category_types.respond_to?(:each) && category_types.present?
+
     options_from_collection_for_select(
       category_types,
       'id',

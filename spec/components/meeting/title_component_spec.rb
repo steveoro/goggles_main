@@ -6,7 +6,7 @@ RSpec.describe Meeting::TitleComponent, type: :component do
   context 'with a valid parameter,' do
     let(:fixture_row) { GogglesDb::Meeting.first(100).sample }
     before(:each) { expect(fixture_row).to be_a(GogglesDb::Meeting).and be_valid }
-    subject { render_inline(described_class.new(meeting: fixture_row)).to_html }
+    subject { render_inline(described_class.new(meeting: fixture_row)) }
 
     it_behaves_like('a Meeting detail page rendering the meeting description text')
   end
@@ -14,7 +14,7 @@ RSpec.describe Meeting::TitleComponent, type: :component do
   context 'for a cancelled meeting,' do
     let(:fixture_row) { FactoryBot.create(:meeting, cancelled: true) }
     before(:each) { expect(fixture_row).to be_a(GogglesDb::Meeting).and be_valid }
-    subject { render_inline(described_class.new(meeting: fixture_row)).to_html }
+    subject { render_inline(described_class.new(meeting: fixture_row)) }
 
     it_behaves_like('any subject that renders the \'cancelled\' stamp')
   end

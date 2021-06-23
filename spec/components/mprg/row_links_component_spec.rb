@@ -15,16 +15,14 @@ RSpec.describe Mprg::RowLinksComponent, type: :component do
       expect(fixture_event.meeting_programs.count).to be_positive
     end
 
-    subject { render_inline(described_class.new(meeting_programs: fixture_event.meeting_programs)).to_html }
+    subject { render_inline(described_class.new(meeting_programs: fixture_event.meeting_programs)) }
 
     it 'renders a table header with 2 table rows' do
-      node = Nokogiri::HTML.fragment(subject).css('thead tr')
-      expect(node).to be_present
-      expect(node.count).to eq(2)
+      expect(subject.css('thead tr')).to be_present
+      expect(subject.css('thead tr').count).to eq(2)
     end
     it 'renders as many links to programs as the specified association' do
-      node = Nokogiri::HTML.fragment(subject).css('thead tr th.mprg-links')
-      expect(node.css('a').count).to eq(fixture_event.meeting_programs.count)
+      expect(subject.css('thead tr th.mprg-links').css('a').count).to eq(fixture_event.meeting_programs.count)
     end
   end
 

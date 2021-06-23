@@ -47,14 +47,12 @@ RSpec.describe Switch::XorComponent, type: :component do
 
   context 'when using all the available options,' do
     let(:fragment) do
-      Nokogiri::HTML.fragment(
-        render_inline(
-          described_class.new(
-            fixture_label1, fixture_target1,
-            fixture_label2, fixture_target2,
-            hidden_id: hidden_id, class: custom_css
-          )
-        ).to_html
+      render_inline(
+        described_class.new(
+          fixture_label1, fixture_target1,
+          fixture_label2, fixture_target2,
+          hidden_id: hidden_id, class: custom_css
+        )
       )
     end
     before(:each) { expect(fragment).to be_present }
@@ -78,13 +76,11 @@ RSpec.describe Switch::XorComponent, type: :component do
 
   context 'when skipping the hidden_id field option,' do
     let(:fragment) do
-      Nokogiri::HTML.fragment(
-        render_inline(
-          described_class.new(
-            fixture_label1, fixture_target1,
-            fixture_label2, fixture_target2
-          )
-        ).to_html
+      render_inline(
+        described_class.new(
+          fixture_label1, fixture_target1,
+          fixture_label2, fixture_target2
+        )
       )
     end
     before(:each) { expect(fragment).to be_present }

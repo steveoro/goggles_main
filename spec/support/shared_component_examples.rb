@@ -22,7 +22,7 @@ end
 
 # == Generic ==
 # REQUIRES/ASSUMES:
-# - subject...........: any call that renders HTML text
+# - subject...........: any call that returns rendered HTML text (as in render or Nokogiri::HTML.fragment.to_html)
 shared_examples_for 'any subject that renders nothing' do
   it 'doesn\'t raise errors' do
     expect { subject }.not_to raise_error
@@ -33,69 +33,73 @@ shared_examples_for 'any subject that renders nothing' do
 end
 
 # REQUIRES/ASSUMES:
-# - subject...........: any call that renders HTML text
+# - subject.......: result from #render_inline (renders a Nokogiri::HTML.fragment)
 shared_examples_for 'any subject that renders the \'cancelled\' stamp' do
   it 'shows the cancelled text stamp' do
-    node = Nokogiri::HTML.fragment(subject).css('.cancelled')
-    expect(node).to be_present
-    expect(node.text).to eq(I18n.t('activerecord.attributes.goggles_db/meeting.cancelled'))
+    expect(subject.css('.cancelled')).to be_present
+    expect(subject.css('.cancelled').text).to eq(I18n.t('activerecord.attributes.goggles_db/meeting.cancelled'))
   end
 end
 #-- ---------------------------------------------------------------------------
 #++
 
 # == Meeting components / dashboard view ==
+# SUPPORTS: both views & components
+#
 # REQUIRES/ASSUMES:
-# - subject.......: any call that renders HTML text
+# - subject.......: either, the result from #render_inline (renders a Nokogiri::HTML.fragment),
+#                   or the rendered HTML (from calling render on a view)
 # - fixture_row...: a Meeting instance
 shared_examples_for 'a Meeting detail page rendering the meeting description text' do
+  let(:parsed_node) { Nokogiri::HTML.fragment(subject) }
+
   it 'shows the description with its edition label' do
-    node = Nokogiri::HTML.fragment(subject)
-    expect(node).to be_present
-    expect(node.text).to include(fixture_row.description).and include(fixture_row.edition_label)
+    expect(parsed_node).to be_present
+    expect(parsed_node.text).to include(fixture_row.description).and include(fixture_row.edition_label)
   end
 end
 
 # REQUIRES/ASSUMES:
-# - subject.......: any call that renders HTML text
+# - subject.......: either, the result from #render_inline (renders a Nokogiri::HTML.fragment),
+#                   or the rendered HTML (from calling render on a view)
 # - fixture_row...: a Meeting instance
 shared_examples_for 'a Meeting detail page rendering the collapsed \'more\' details' do
+  let(:parsed_node) { Nokogiri::HTML.fragment(subject) }
+
   it 'includes the meeting details boolean flags' do
-    expect(Nokogiri::HTML.fragment(subject).at_css('td#warm-up-pool')).to be_present
-    expect(Nokogiri::HTML.fragment(subject).at_css('td#allows-under25')).to be_present
-    expect(Nokogiri::HTML.fragment(subject).at_css('td#confirmed')).to be_present
+    expect(parsed_node.at_css('td#warm-up-pool')).to be_present
+    expect(parsed_node.at_css('td#allows-under25')).to be_present
+    expect(parsed_node.at_css('td#confirmed')).to be_present
   end
   it 'includes various contact information' do
-    expect(Nokogiri::HTML.fragment(subject).at_css('td#contact-name')).to be_present
+    expect(parsed_node.at_css('td#contact-name')).to be_present
   end
 end
 
 # REQUIRES/ASSUMES:
-# - subject.......: any call that renders HTML text
+# - subject.......: result from #render_inline (renders a Nokogiri::HTML.fragment)
 # - fixture_row...: a Meeting instance
 shared_examples_for 'a Meeting detail page rendering main \'header\' details' do
-  it 'shows the swimming pool name, when set' do
-    return true unless fixture_row.swimming_pools.count.positive?
+  let(:parsed_node) { Nokogiri::HTML.fragment(subject) }
 
-    node = Nokogiri::HTML.fragment(subject).at_css('td#swimming-pool')
-    expect(node).to be_present
-    expect(node.text).to include(
-      ERB::Util.html_escape(fixture_row.swimming_pools.first.name)
-    )
+  it 'shows the swimming pool name, when set' do
+    if fixture_row.swimming_pools.count.positive?
+      expect(parsed_node.at_css('td#swimming-pool')).to be_present
+      expect(parsed_node.at_css('td#swimming-pool').text).to include(
+        ERB::Util.html_escape(fixture_row.swimming_pools.first.name)
+      )
+    end
   end
 
   it 'shows the entry deadline' do
-    node = Nokogiri::HTML.fragment(subject).at_css('td#entry-deadline')
-    expect(node).to be_present
-    expect(node.text).to include(fixture_row.entry_deadline.to_s)
+    expect(parsed_node.at_css('td#entry-deadline')).to be_present
+    expect(parsed_node.at_css('td#entry-deadline').text).to include(fixture_row.entry_deadline.to_s)
   end
   it 'shows the meeting date' do
-    node = Nokogiri::HTML.fragment(subject).at_css('td#header-date')
-    expect(node).to be_present
+    expect(parsed_node.at_css('td#header-date')).to be_present
   end
   it 'includes the rotating toggle switch to show the collapsed details sub-page' do
-    node = Nokogiri::HTML.fragment(subject).at_css('.rotating-toggle')
-    expect(node).to be_present
+    expect(parsed_node.at_css('.rotating-toggle')).to be_present
   end
 end
 #-- ---------------------------------------------------------------------------

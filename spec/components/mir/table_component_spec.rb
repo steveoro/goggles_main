@@ -15,15 +15,13 @@ RSpec.describe MIR::TableComponent, type: :component do
       expect(fixture_mprg.meeting_individual_results.count).to be_positive
     end
 
-    subject { render_inline(described_class.new(mirs: fixture_mprg.meeting_individual_results)).to_html }
+    subject { render_inline(described_class.new(mirs: fixture_mprg.meeting_individual_results)) }
 
     it 'renders a table body' do
-      node = Nokogiri::HTML.fragment(subject).css('tbody:first-child')
-      expect(node).to be_present
+      expect(subject.css('tbody:first-child')).to be_present
     end
     it 'renders as many table rows as the results specified' do
-      node = Nokogiri::HTML.fragment(subject).css('tbody tr')
-      expect(node.count).to eq(fixture_mprg.meeting_individual_results.count)
+      expect(subject.css('tbody tr').count).to eq(fixture_mprg.meeting_individual_results.count)
     end
   end
 

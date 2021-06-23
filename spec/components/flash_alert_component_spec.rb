@@ -14,27 +14,25 @@ RSpec.describe FlashAlertComponent, type: :component do
 
   FlashAlertComponent::SUPPORTED_SYMS.each do |symbol|
     context "when using a supported symbol (#{symbol})," do
-      subject { render_inline(described_class.new(symbol: symbol, body: text_body, title: text_title)).to_html }
+      subject { render_inline(described_class.new(symbol: symbol, body: text_body, title: text_title)) }
 
       it 'renders an alert box' do
-        node = Nokogiri::HTML.fragment(subject).css('.alert')
-        expect(node).to be_present
+        expect(subject.css('.alert')).to be_present
       end
 
       it 'includes a close button' do
-        node = Nokogiri::HTML.fragment(subject).css('button.close')
-        expect(node).to be_present
+        expect(subject.css('button.close')).to be_present
       end
 
       it 'includes the text body' do
-        node = Nokogiri::HTML.fragment(subject).css('p.flash-body')
-        expect(node.text).to include(text_body)
+        expect(subject.css('p.flash-body').text).to include(text_body)
       end
 
       it 'includes the text title, when set' do
         if text_title.to_s.present?
-          node = Nokogiri::HTML.fragment(subject).css('h5.alert-heading')
-          expect(node.text).to include(text_title)
+          expect(
+            subject.css('h5.alert-heading').text
+          ).to include(text_title)
         end
       end
     end

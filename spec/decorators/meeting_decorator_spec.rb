@@ -5,7 +5,7 @@ require 'support/shared_decorator_examples'
 
 RSpec.describe MeetingDecorator, type: :decorator do
   let(:model_obj) { GogglesDb::Meeting.limit(50).sample }
-  subject { MeetingDecorator.decorate(model_obj) }
+  subject { described_class.decorate(model_obj) }
 
   it_behaves_like('a paginated model decorated with', MeetingDecorator)
 

@@ -10,15 +10,13 @@ RSpec.describe RelayLaps::TableComponent, type: :component do
       expect(fixture_mrr.meeting_relay_swimmers.count).to be_positive
     end
 
-    subject { render_inline(described_class.new(relay_swimmers: fixture_mrr.meeting_relay_swimmers)).to_html }
+    subject { render_inline(described_class.new(relay_swimmers: fixture_mrr.meeting_relay_swimmers)) }
 
     it 'renders a table body' do
-      node = Nokogiri::HTML.fragment(subject).css('tbody')
-      expect(node).to be_present
+      expect(subject.css('tbody')).to be_present
     end
     it 'renders as many table rows as the laps specified' do
-      node = Nokogiri::HTML.fragment(subject).css('tr')
-      expect(node.count).to eq(fixture_mrr.meeting_relay_swimmers.count)
+      expect(subject.css('tr').count).to eq(fixture_mrr.meeting_relay_swimmers.count)
     end
   end
 

@@ -5,8 +5,8 @@ require 'rails_helper'
 RSpec.describe Footer::MainComponent, type: :component do
   include Rails.application.routes.url_helpers
 
-  subject { render_inline(described_class.new).to_html }
-  let(:rendered_footer) { Nokogiri::HTML.fragment(subject).at_css('footer') }
+  subject { render_inline(described_class.new) }
+  let(:rendered_footer) { subject.at_css('footer') }
 
   it 'renders the footer section' do
     expect(rendered_footer).to be_present

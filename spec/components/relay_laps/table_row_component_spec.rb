@@ -12,24 +12,20 @@ RSpec.describe RelayLaps::TableRowComponent, type: :component do
       expect(fixture_lap).to be_a(GogglesDb::MeetingRelaySwimmer).and be_valid
     end
 
-    subject { render_inline(described_class.new(relay_swimmer: fixture_lap)).to_html }
+    subject { render_inline(described_class.new(relay_swimmer: fixture_lap)) }
 
     it 'renders a collapsed table row with 2 cells' do
-      tr_node = Nokogiri::HTML.fragment(subject).css('tr.collapse')
-      expect(tr_node).to be_present
-      expect(tr_node.css('td').count).to eq(2)
+      expect(subject.css('tr.collapse')).to be_present
+      expect(subject.css('tr.collapse').css('td').count).to eq(2)
     end
     it 'includes the lap swimmer name' do
-      td_node = Nokogiri::HTML.fragment(subject).css('tr.collapse td')
-      expect(td_node.text).to include(fixture_lap.swimmer.complete_name)
+      expect(subject.css('tr.collapse td').text).to include(fixture_lap.swimmer.complete_name)
     end
     it 'includes the lap swimmer year of birth' do
-      td_node = Nokogiri::HTML.fragment(subject).css('tr.collapse td')
-      expect(td_node.text).to include(fixture_lap.swimmer.year_of_birth.to_s)
+      expect(subject.css('tr.collapse td').text).to include(fixture_lap.swimmer.year_of_birth.to_s)
     end
     it 'includes the lap timing' do
-      td_node = Nokogiri::HTML.fragment(subject).css('tr.collapse td.text-left')
-      expect(td_node.text).to include(fixture_lap.to_timing&.to_s)
+      expect(subject.css('tr.collapse td.text-left').text).to include(fixture_lap.to_timing&.to_s)
     end
   end
 

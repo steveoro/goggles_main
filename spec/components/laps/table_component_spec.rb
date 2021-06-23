@@ -10,15 +10,13 @@ RSpec.describe Laps::TableComponent, type: :component do
       expect(fixture_mir.laps.count).to be_positive
     end
 
-    subject { render_inline(described_class.new(laps: fixture_mir.laps)).to_html }
+    subject { render_inline(described_class.new(laps: fixture_mir.laps)) }
 
     it 'renders a table body' do
-      node = Nokogiri::HTML.fragment(subject).css('tbody')
-      expect(node).to be_present
+      expect(subject.css('tbody')).to be_present
     end
     it 'renders as many table rows as the laps specified' do
-      node = Nokogiri::HTML.fragment(subject).css('tr')
-      expect(node.count).to eq(fixture_mir.laps.count)
+      expect(subject.css('tr').count).to eq(fixture_mir.laps.count)
     end
   end
 

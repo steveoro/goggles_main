@@ -41,6 +41,7 @@ Metrics/BlockLength:
   IgnoredMethods: ['describe', 'context', 'define', 'namespace']
   Exclude:
     - 'spec/decorators/iq_request/chrono_rec_param_adapter_spec.rb'
+    - 'spec/components/combo_box/db_lookup_component_spec.rb'
 
 Metrics/ClassLength:
   Max: 120

@@ -5,19 +5,16 @@ require 'rails_helper'
 RSpec.describe Footer::SocialUrlsComponent, type: :component do
   context 'when the social media URLs are present in the settings,' do
     # (Default settings values will do just fine)
-    subject { render_inline(described_class.new).to_html }
+    subject { render_inline(described_class.new) }
 
     it 'renders the Facebook URL link' do
-      node = Nokogiri::HTML.fragment(subject).at_css('#social-fb-link')
-      expect(node).to be_present
+      expect(subject.at_css('#social-fb-link')).to be_present
     end
     it 'renders the Linkedin URL link' do
-      node = Nokogiri::HTML.fragment(subject).at_css('#social-linkedin-link')
-      expect(node).to be_present
+      expect(subject.at_css('#social-linkedin-link')).to be_present
     end
     it 'renders the Twitter URL link' do
-      node = Nokogiri::HTML.fragment(subject).at_css('#social-twitter-link')
-      expect(node).to be_present
+      expect(subject.at_css('#social-twitter-link')).to be_present
     end
   end
 

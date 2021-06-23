@@ -41,13 +41,15 @@ require('select2')
  *                 additional (inbound) query parameter value. (In the example, a node with DOM ID = "<BASE_NAME>_country_code")
  *
  * @param {String} 'data-lookup-api-url2-value'
- *                 secondary base API URL for any additional data request (w/o params);
+ *                 secondary base API URL for any additional data request (automated, w/o params except the current row ID);
  *                 allows a second API query for entity details after the first lookup,
  *                 using the base name value as target entity and the chosen ID value from the select2 widget as key;
  *                 turned off when not set.
  *
- * @param {String} 'data-lookup-free-text-value'
- *                 query field name used in the API lookup call; defaults to 'name'
+ * @param {Boolean} 'data-lookup-free-text-value'
+ *                 enables free text input (the user can enter any text, not just the one matching the items in the value list);
+ *                 when set to 'true' (or true by JS DOM attribute getter) it will enable the free 'tags' option of the Select2 widget,
+ *                 which allows the user to input any free text that can be used or set as current selection. Disabled by default.
  *
  * @param {String} 'data-lookup-field-base-name-value'
  *                 base name for the DOM IDs used to access the actual fields that will store the
@@ -63,15 +65,15 @@ require('select2')
  * @assert 'data-lookup-target' must be a parent node the actual '.select2' widget
  *
  * == About the 2nd API call feature:
- * By enabling and making a second API call for specific details of that particular chosen row (by using its ID) typically
- * the single row GET endpoint will return a multi-level nested JSON object with all its associated nested entities details.
- * (For example SwimmingPool ->City, ->PoolType, ...)
+ * By enabling the second API call, the current row ID is used as key for retrieving all row details, including most associated entities,
+ * in a single multi-level nested JSON object with all its associated details.
+ * (For example: SwimmingPool(current row ID), -> City, -> PoolType, ...)
  *
- * Then, relying on entity association naming conventions and on the nested structure of the resulting JSON object, by looking
+ * Relying mostly on entity association naming conventions and on the nested structure of the resulting JSON object, and by looking
  * for the presence of other coherently-named DOM widgets or fields, this controller will try to update their values
  * when the main target widget/field changes its values or its selection.
  *
- * For instance, when using correct naming & parameters for this controller, a 'swimming_pool_select' widget could
+ * For instance, when using correct naming & parameters in configuring this controller, a 'swimming_pool_select' widget could
  * update any of its related 'pool_type_select', 'city_select' or 'city_area' fields found on the same page.
  *
  * @author Steve A.
