@@ -43,4 +43,7 @@
           = link_to(t('chrono.buttons.new_recording'), chrono_new_path, id: 'btn-new-chrono',
                     class: 'btn btn-primary', 'aria-label' => 'New recording', type: 'button')
 
+    %section.fixed-bottom#footer
+      = render(Footer::MainComponent.new)
+
   .spacer-right

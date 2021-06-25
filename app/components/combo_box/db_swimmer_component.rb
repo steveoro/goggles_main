@@ -39,6 +39,8 @@ module ComboBox
     # == Supported options & defaults:
     # - default_row: nil          => pre-selected Swimmer for the input box
     #
+    # - use_2_api: false          => toggles secondary API call to retrieve more entity details
+    #
     # - free_text: false          => allows/disables free text as input
     #
     # - required: false           => sets the HTML5 'required' attribute for the select field

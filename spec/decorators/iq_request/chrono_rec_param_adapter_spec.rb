@@ -13,13 +13,6 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
   let(:fixture_event) { GogglesDb::EventsByPoolType.eventable.individuals.sample.event_type }
   let(:fixture_category) { GogglesDb::CategoryType.eventable.individuals.sample }
 
-  before(:each) do
-    expect(fixture_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
-    expect(fixture_pool).to be_a(GogglesDb::SwimmingPool).and be_valid
-    expect(fixture_event).to be_an(GogglesDb::EventType).and be_valid
-    expect(fixture_category).to be_a(GogglesDb::CategoryType).and be_valid
-  end
-
   # Minimalistic example:
   let(:fixture_params) do
     {
@@ -50,6 +43,44 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       'hundredths_from_start' => ((rand * 99) % 99).to_i
     }
   end
+
+  # Fixture request_data (JSON-ified) that includes a recorded timing:
+  let(:minutes) { (rand * 5).to_i }
+  let(:seconds) { (rand * 59).to_i }
+  let(:hundredths) { (rand * 99).to_i }
+  let(:meters) { 50 + (rand * 8).to_i * 50 }
+  let(:order) { 1 + (rand * 8).to_i }
+  let(:rec_data_hash) do
+    {
+      'order' => order,
+      'length_in_meters' => meters,
+      'minutes' => minutes,
+      'seconds' => seconds,
+      'hundredths' => hundredths
+    }
+  end
+  let(:recdetail_min_request_data) do
+    {
+      'target_entity' => 'Lap',
+      'lap' => {
+        'swimmer' => { 'complete_name' => fixture_swimmer.complete_name },
+        'meeting_individual_result' => {
+          'user_id' => current_user.id,
+          'event_type_id' => fixture_event.id
+        }
+      }
+    }.to_json
+  end
+
+  before(:each) do
+    expect(current_user).to be_a(GogglesDb::User).and be_valid
+    expect(fixture_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
+    expect(fixture_pool).to be_a(GogglesDb::SwimmingPool).and be_valid
+    expect(fixture_event).to be_an(GogglesDb::EventType).and be_valid
+    expect(fixture_category).to be_a(GogglesDb::CategoryType).and be_valid
+    expect(rec_data_hash).to be_a(Hash).and be_present
+    expect(recdetail_min_request_data).to be_a(String).and be_present
+  end
   #-- -------------------------------------------------------------------------
   #++
 
@@ -63,8 +94,8 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       'responding to a list of methods',
       %i[
         params rec_data target_entity
-        root_key root_request_hash
-        to_request_hash update_rec_detail_data
+        root_key result_parent_key root_request_hash
+        to_request_hash update_rec_detail_data update_result_data
         header_year rec_type_meeting? rec_type_workshop?
       ]
     )
@@ -101,7 +132,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       it_behaves_like('a valid ChronoRecParamAdapter instance')
 
       describe '#params' do
-        let(:example_params_hash) { { 'rec_type' => 1 } }
+        let(:example_params_hash) { { 'rec_type' => Switch::XorComponent::TYPE_TARGET1 } }
         subject { described_class.new(current_user, example_params_hash) }
         it 'is an Hash' do
           expect(subject.params).to be_an(Hash)
@@ -111,27 +142,66 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
         end
       end
 
-      describe '#target_entity' do
-        context 'when rec_type is set to TYPE_TARGET1 in the params_hash,' do
-          let(:example_params_hash) { { 'rec_type' => Switch::XorComponent::TYPE_TARGET1 } }
-          subject { described_class.new(current_user, example_params_hash) }
+      context 'when #rec_type is set to TYPE_TARGET1 (meeting) in the params_hash,' do
+        let(:example_params_hash) { { 'rec_type' => Switch::XorComponent::TYPE_TARGET1 } }
+        subject { described_class.new(current_user, example_params_hash) }
+        describe '#target_entity' do
           it 'is Lap' do
             expect(subject.target_entity).to eq('Lap')
           end
         end
-        context 'when rec_type is set to TYPE_TARGET2 in the params_hash,' do
-          let(:example_params_hash) { { 'rec_type' => Switch::XorComponent::TYPE_TARGET2 } }
-          subject { described_class.new(current_user, example_params_hash) }
+        describe '#result_parent_key' do
+          it 'is meeting_individual_result' do
+            expect(subject.result_parent_key).to eq('meeting_individual_result')
+          end
+        end
+      end
+
+      context 'when #rec_type is set to TYPE_TARGET2 (workshop) in the params_hash,' do
+        let(:example_params_hash) { { 'rec_type' => Switch::XorComponent::TYPE_TARGET2 } }
+        subject { described_class.new(current_user, example_params_hash) }
+        describe '#target_entity' do
           it 'is UserLap' do
             expect(subject.target_entity).to eq('UserLap')
           end
         end
-        context 'when rec_type is not set at all,' do
-          let(:example_params_hash) { { 'anything_else' => 0 } }
-          subject { described_class.new(current_user, example_params_hash) }
+        describe '#result_parent_key' do
+          it 'is user_result' do
+            expect(subject.result_parent_key).to eq('user_result')
+          end
+        end
+      end
+
+      context 'when #rec_type is not set at all,' do
+        let(:example_params_hash) { { 'anything_else' => 0 } }
+        subject { described_class.new(current_user, example_params_hash) }
+        describe '#target_entity' do
           it 'defaults to Lap' do
             expect(subject.target_entity).to eq('Lap')
           end
+        end
+        describe '#result_parent_key' do
+          it 'defaults to meeting_individual_result' do
+            expect(subject.result_parent_key).to eq('meeting_individual_result')
+          end
+        end
+      end
+
+      describe '#to_request_hash' do
+        let(:example_params_hash) do
+          {
+            'rec_type' => [Switch::XorComponent::TYPE_TARGET1, Switch::XorComponent::TYPE_TARGET2].sample
+          }
+        end
+        subject { described_class.new(current_user, example_params_hash) }
+        it 'is an Hash' do
+          expect(subject.to_request_hash).to be_an(Hash)
+        end
+        it 'includes the target_entity' do
+          expect(subject.to_request_hash).to have_key('target_entity')
+        end
+        it 'includes the root_key' do
+          expect(subject.to_request_hash).to have_key(subject.root_key)
         end
       end
 
@@ -163,20 +233,6 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
           end
         end
       end
-
-      describe '#to_request_hash' do
-        let(:example_params_hash) { { 'rec_type' => 1 } }
-        subject { described_class.new(current_user, example_params_hash) }
-        it 'is an Hash' do
-          expect(subject.to_request_hash).to be_an(Hash)
-        end
-        it 'includes the target_entity' do
-          expect(subject.to_request_hash).to have_key('target_entity')
-        end
-        it 'includes the root_key' do
-          expect(subject.to_request_hash).to have_key(subject.root_key)
-        end
-      end
     end
   end
   #-- -------------------------------------------------------------------------
@@ -198,7 +254,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
     end
 
     %w[UserLap Lap].each do |target_entity|
-      context 'with a valid JSON hash,' do
+      context "with a valid JSON hash (for a '#{target_entity}' target)," do
         let(:request_hash) { { 'target_entity' => target_entity, 'user_id' => 1 } }
         before(:each) do
           expect(request_hash['target_entity']).to eq(target_entity)
@@ -247,4 +303,150 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
   end
   #-- -------------------------------------------------------------------------
   #++
+
+  shared_examples_for '#update_rec_detail_data or #update_result_data with no #request_hash' do
+    it 'has a nil #request_hash' do
+      expect(subject.request_hash).to be nil
+    end
+    it 'updates or overwrites #rec_data with the timing data specified into rec_data_hash' do
+      # Changes in result: rec_data will have the new specified values (including any missing keys)
+      rec_data_hash.each do |key, value|
+        expect(subject.rec_data).to have_key(key)
+        expect(subject.rec_data[key]).to eq(value)
+      end
+    end
+  end
+
+  describe '#update_rec_detail_data' do
+    context 'when no #rec_data or #request_hash are set,' do
+      subject { described_class.new(current_user, {}) }
+
+      before(:each) do
+        expect(subject.rec_data).to be_an(Hash).and be_empty
+        expect(subject.request_hash).to be nil
+        # Run the update method:
+        subject.update_rec_detail_data({ order: 1 })
+      end
+
+      it 'does nothing (not changing #rec_data nor #request_hash)' do
+        # No changes in result:
+        expect(subject.rec_data).to be_an(Hash).and be_empty
+        expect(subject.request_hash).to be nil
+      end
+    end
+
+    context 'when #request_hash is set (by self.from_request_data),' do
+      subject { described_class.from_request_data(recdetail_min_request_data) }
+
+      before(:each) do
+        expect(subject.rec_data).to be_an(Hash).and be_empty
+        expect(subject.request_hash).to be_an(Hash).and be_present
+        expect(subject.request_hash['lap']).to be_an(Hash).and be_present
+        rec_data_hash.each_key do |key|
+          expect(subject.request_hash['lap']).not_to have_key(key)
+        end
+        # Run the update method:
+        subject.update_rec_detail_data(rec_data_hash)
+      end
+
+      it 'updates #request_hash (at detail level) with the timing data specified into rec_data_hash' do
+        # Changes in result: request_hash will have the new specified values (including any missing keys)
+        rec_data_hash.each do |key, value|
+          expect(subject.request_hash['lap']).to have_key(key)
+          expect(subject.request_hash['lap'][key]).to eq(value)
+        end
+        expect(subject.rec_data).to be_an(Hash).and be_empty
+      end
+    end
+
+    context 'when #rec_data is set by the constructor,' do
+      subject { described_class.new(current_user, fixture_params, fixture_rec_data) }
+
+      before(:each) do
+        expect(subject.request_hash).to be nil
+        expect(subject.rec_data).to be_an(Hash).and be_present
+        # Domain check:
+        fixture_rec_data.each do |key, value|
+          expect(subject.rec_data).to have_key(key)
+          expect(subject.rec_data[key]).to eq(value)
+        end
+        # This shall be added by rec_data_hash:
+        expect(subject.rec_data).not_to have_key('order')
+        # Run the update method:
+        subject.update_rec_detail_data(rec_data_hash)
+      end
+
+      it_behaves_like('#update_rec_detail_data or #update_result_data with no #request_hash')
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  describe '#update_result_data' do
+    context 'when no #rec_data or #request_hash are set,' do
+      subject { described_class.new(current_user, {}) }
+
+      before(:each) do
+        expect(subject.rec_data).to be_an(Hash).and be_empty
+        expect(subject.request_hash).to be nil
+        # Run the update method:
+        subject.update_result_data({ order: 1 })
+      end
+
+      it 'does nothing (not changing #rec_data nor #request_hash)' do
+        # No changes in result:
+        expect(subject.rec_data).to be_an(Hash).and be_empty
+        expect(subject.request_hash).to be nil
+      end
+    end
+
+    context 'when #request_hash is set (by self.from_request_data),' do
+      subject { described_class.from_request_data(recdetail_min_request_data) }
+
+      before(:each) do
+        expect(subject.rec_data).to be_an(Hash).and be_empty
+        # Domain check:
+        expect(subject.request_hash).to be_an(Hash).and be_present
+        expect(subject.request_hash['lap']).to be_an(Hash).and be_present
+        expect(subject.request_hash['lap']['meeting_individual_result']).to be_an(Hash).and be_present
+        rec_data_hash.each_key do |key|
+          expect(subject.request_hash['lap']).not_to have_key(key)
+          expect(subject.request_hash['lap']['meeting_individual_result']).not_to have_key(key)
+        end
+        # Run the update method:
+        subject.update_result_data(rec_data_hash)
+      end
+
+      it 'updates #request_hash (at result level) with the timing data specified into rec_data_hash' do
+        # Changes in result: request_hash will have the new specified values (including any missing keys)
+        rec_data_hash.each do |key, value|
+          expect(subject.request_hash['lap']).not_to have_key(key)
+          expect(subject.request_hash['lap']['meeting_individual_result']).to have_key(key)
+          expect(subject.request_hash['lap']['meeting_individual_result'][key]).to eq(value)
+        end
+        expect(subject.rec_data).to be_an(Hash).and be_empty
+      end
+    end
+
+    context 'when #rec_data is set by the constructor,' do
+      subject { described_class.new(current_user, fixture_params, fixture_rec_data) }
+
+      before(:each) do
+        expect(subject.request_hash).to be nil
+        expect(subject.rec_data).to be_an(Hash).and be_present
+        # Domain check:
+        fixture_rec_data.each do |key, value|
+          expect(subject.rec_data).to have_key(key)
+          expect(subject.rec_data[key]).to eq(value)
+        end
+        # This shall be added by rec_data_hash:
+        expect(subject.rec_data).not_to have_key('order')
+
+        # Run the update method:
+        subject.update_result_data(rec_data_hash)
+      end
+
+      it_behaves_like('#update_rec_detail_data or #update_result_data with no #request_hash')
+    end
+  end
 end

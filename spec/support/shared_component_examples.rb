@@ -104,3 +104,95 @@ shared_examples_for 'a Meeting detail page rendering main \'header\' details' do
 end
 #-- ---------------------------------------------------------------------------
 #++
+
+# REQUIRES/ASSUMES:
+# - subject............: result from #render_inline (renders a Nokogiri::HTML.fragment)
+# - wrapper_class......: CSS class name for the wrapper DIV of the component
+# - free_text_option...: 'true' to enable the free-text input
+# - base_name..........: API/widget base name
+# - label_text.........: display label for the widget
+# - required_option....: 'true' to enable the required HTML attribute for the select input tag
+shared_examples_for 'ComboBox::DbLookupComponent common rendered result' do
+  describe 'the wrapper DIV' do
+    it 'has the customizable wrapper class' do
+      expect(subject.css("div.#{wrapper_class}")).to be_present
+    end
+    it 'includes the reference to the StimulusJS LookupController' do
+      expect(subject.css("div.#{wrapper_class}").attr('data-controller')).to be_present
+      expect(subject.css("div.#{wrapper_class}").attr('data-controller').value).to eq('lookup')
+    end
+    it "sets the 'free-text' controller option accordingly (when set)" do
+      if free_text_option
+        expect(subject.css("div.#{wrapper_class}").attr('data-lookup-free-text-value'))
+          .to be_present
+        expect(subject.css("div.#{wrapper_class}").attr('data-lookup-free-text-value').value)
+          .to eq(free_text_option)
+      end
+    end
+    it "sets the 'base name' controller option" do
+      expect(subject.css("div.#{wrapper_class}").attr('data-lookup-field-base-name-value'))
+        .to be_present
+      expect(subject.css("div.#{wrapper_class}").attr('data-lookup-field-base-name-value').value)
+        .to eq(base_name)
+    end
+  end
+
+  it 'renders the hidden ID input field' do
+    expect(subject.css("div.#{wrapper_class} input##{base_name}_id")).to be_present
+    expect(subject.css("div.#{wrapper_class} input##{base_name}_id").attr('type').value)
+      .to eq('hidden')
+  end
+  it 'renders the hidden label input field (the text value of the currently chosen option)' do
+    expect(subject.css("div.#{wrapper_class} input##{base_name}_label")).to be_present
+    expect(subject.css("div.#{wrapper_class} input##{base_name}_label").attr('type').value)
+      .to eq('hidden')
+  end
+  it 'renders the display label text' do
+    expect(subject.css("div.#{wrapper_class} label[for=\"#{base_name}\"]")).to be_present
+    expect(subject.css("div.#{wrapper_class} label[for=\"#{base_name}\"]").text).to eq(label_text)
+  end
+
+  it "renders the 'input presence' flag (which is red by default)" do
+    expect(subject.css("div.#{wrapper_class} b##{base_name}-presence")).to be_present
+    expect(subject.css("div.#{wrapper_class} b##{base_name}-presence").text).to eq('*')
+    expect(subject.css("div.#{wrapper_class} b##{base_name}-presence").attr('class').value).to eq('text-danger')
+  end
+
+  it 'renders the Select input tag with the proper parameters for the LookupController' do
+    expect(subject.css("div.#{wrapper_class} select.select2##{base_name}_select")).to be_present
+    expect(subject.css("div.#{wrapper_class} select.select2##{base_name}_select").attr('data-lookup-target').value)
+      .to eq('field')
+  end
+
+  it "sets the 'required' HTML field flag accordingly (when set)" do
+    if required_option
+      expect(subject.css("##{base_name}_select").attr('required')).to be_present
+      expect(subject.css("##{base_name}_select").attr('required').value).to eq(required_option)
+    end
+  end
+end
+
+# REQUIRES/ASSUMES:
+# - subject............: result from #render_inline (renders a Nokogiri::HTML.fragment)
+# - api_url............: base API URL option ('use_2_api: true' assumed also as set)
+# - wrapper_class......: CSS class name for the wrapper DIV of the component
+# - free_text_option...: 'true' to enable the free-text input
+# - base_name..........: API/widget base name
+# - label_text.........: display label for the widget
+# - required_option....: 'true' to enable the required HTML attribute for the select input tag
+shared_examples_for 'ComboBox::DbLookupComponent with double-API call enabled' do
+  it_behaves_like('ComboBox::DbLookupComponent common rendered result')
+
+  it 'includes the associated API URL value' do
+    expect(subject.css("div.#{wrapper_class}").attr('data-lookup-api-url-value')).to be_present
+    # The actual API URL used will feature the full protocol/port URI, so we test for inclusion only:
+    expect(subject.css("div.#{wrapper_class}").attr('data-lookup-api-url-value').value).to include(api_url)
+  end
+  it 'includes the associated API-2 URL value' do
+    expect(subject.css("div.#{wrapper_class}").attr('data-lookup-api-url2-value')).to be_present
+    expect(subject.css("div.#{wrapper_class}").attr('data-lookup-api-url2-value').value)
+      .to end_with('/api/v3') # The API URL2 must be "rooted"
+  end
+end
+#-- ---------------------------------------------------------------------------
+#++

@@ -7,10 +7,29 @@ module IqRequest
   # = IqRequest::ChronoRecParamAdapter
   #
   # Given a source data hash, this class prepares & maps the hashed parameters
-  # that will be JSON-ified and saved as the actual content for a GogglesDb::ImportQueue#request_data.
+  # that will become JSON-ified and saved as the actual content for a GogglesDb::ImportQueue#request_data.
   # (It's more of a mapper than an actual decorator.)
   #
-  # Check out the supported key values for the source parameter params in #SUPPORTED_PARAMS.
+  # Basically, this converts sets of plain (flattened, unnested) parameter values, into a structured, nested Hash that can
+  # then be easily converted to JSON and has a resulting layout which is coherent with what is expected
+  # by the solver strategy classes that process an ImportQueue.
+  #
+  #
+  # == About naming conventions:
+  #
+  # - 'params': original request params, no nesting: flat, everything available at root level.
+  #
+  # - 'rec_data': recorded timing data, no nesting (flat, everything at root): instance member.
+  #
+  # - 'rec_data_hash': parameter name used when setting the 'rec_data' member.
+  #
+  # - 'request_hash': converted request Hash, with the entity association tree almost "reproduced" from the *bottom-up*,
+  #                   with the bottom (root) entity key being the actual target entity. The more levels of
+  #                   nesting are available, the more likely the resulting JSONified request data will result solvable.
+  #                   (Typically, 3 levels of nesting are enough: lap => result => event container)
+  #
+  # Check out the supported key values for the source params listed in #SUPPORTED_PARAMS.
+  #
   #
   # == Special parameters:
   #
@@ -23,16 +42,17 @@ module IqRequest
   # (In the case of a Meeting => Lap, in the case of a UserWorkshop => UserLap.)
   #
   # For most other entity definition value that may be shared "in between" association,
-  # like in the case of a SwimmingPool definition, these will be mostly set at root depth
-  # in the resulting hash so that these are reused as defaults for any other missing associations.
+  # like in the case of a SwimmingPool definition, these will be mostly set as nested at root depth
+  # in the resulting hash (= depth level 1) so that these can easily be reused as defaults for any other
+  # missing associations.
   #
-  # Most shared column values are also kept on root level on purpose.
+  # Most shared column values may also be kept on root level on purpose.
   # For example, the event_date can be shared as setting value between a MeetingSession
   # and its correlated Meeting definition.
   #
   # Whenever an id field is not present or set to 0, if the specified values
-  # aren't enough to pick an existing row, a new one will be scheduled for
-  # creation if the overall request can be resolved.
+  # aren't enough to pick an existing row when solving the request, a new one entity row will be scheduled
+  # for creation (if the overall request can be resolved).
   #
   # @see any Solver class for more info.
   #
@@ -83,7 +103,7 @@ module IqRequest
     #                (See +SUPPORTED_PARAMS+ list)
     #
     # - rec_data_hash: source detail parameter Hash with stringified keys, defining all
-    #                  the available lap/user_lap attributes (default: {})
+    #                  the available lap/user_lap attributes at *root* level (no nesting; default: {})
     #
     def initialize(current_user, params_hash, rec_data_hash = {})
       valid_params = current_user.is_a?(GogglesDb::User) &&
@@ -107,7 +127,8 @@ module IqRequest
 
       # Find the user_id if present (fail fast if it's neither @ root level nor nested)
       user_id = request_hash.fetch('user_id', nil) ||
-                request_hash.fetch('user_lap', nil)&.fetch('user_result', nil)&.fetch('user_id', nil)
+                request_hash.fetch('user_lap', nil)&.fetch('user_result', nil)&.fetch('user_id', nil) ||
+                request_hash.fetch('lap', nil)&.fetch('meeting_individual_result', nil)&.fetch('user_id', nil)
       instance = IqRequest::ChronoRecParamAdapter.new(GogglesDb::User.find_by_id(user_id), {})
       instance.request_hash = request_hash
       instance
@@ -160,10 +181,12 @@ module IqRequest
     # @see REC_DETAIL_PARAMS for the list of supported keys (stringified). Keys will only be updated
     # if supported and not empty.
     #
+    # If no #request_hash is set, this will simply update #rec_data (with all keys at root level)
+    #
     # == Example:
     # - root_key = 'lap'
     # - rec_data_hash = { 'order' => 1, 'minutes' => 0, 'seconds' => '31', 'hundredths' => '23' }
-    # - result => { 'lap' => <existing keys merged with rec_data_hash> }
+    # - result = { 'lap' => <existing keys merged with rec_data_hash> }
     #
     def update_rec_detail_data(rec_data_hash)
       if @request_hash.present?
@@ -174,7 +197,7 @@ module IqRequest
       end
       return unless @rec_data.present?
 
-      REC_DETAIL_PARAMS.each { |key| @rec_data[root_key][key] = rec_data_hash[key] if rec_data_hash.key?(key) }
+      REC_DETAIL_PARAMS.each { |key| @rec_data[key] = rec_data_hash[key] if rec_data_hash.key?(key) }
     end
 
     # Updates the internal request hash representation with the total timing specified in the rec_data_hash.
@@ -182,10 +205,12 @@ module IqRequest
     # the overall result timing of the race (unless a lap timing has been skipped for any reason).
     # Supports the same fields as #update_rec_detail_data. Keys will only be updated if supported and not empty.
     #
+    # If no #request_hash is set, this will simply update #rec_data (with all keys at root level)
+    #
     # == Example:
     # - root_key = 'lap'
     # - rec_data_hash = { 'order' => 1, 'minutes' => 0, 'seconds' => '31', 'hundredths' => '23' }
-    # - result => { 'lap' => { 'meeting_individual_result' => <existing keys merged with rec_data_hash> } }
+    # - result = { 'lap' => { 'meeting_individual_result' => <existing keys merged with rec_data_hash> } }
     #
     def update_result_data(rec_data_hash)
       if @request_hash.present?
@@ -196,17 +221,18 @@ module IqRequest
       end
       return unless @rec_data.present?
 
-      REC_DETAIL_PARAMS.each { |key| @rec_data[root_key][result_parent_key][key] = rec_data_hash[key] if rec_data_hash.key?(key) }
+      REC_DETAIL_PARAMS.each { |key| @rec_data[key] = rec_data_hash[key] if rec_data_hash.key?(key) }
     end
     #-- -----------------------------------------------------------------------
     #++
 
-    # Returns the 'header_year' field if present or tries to build one
+    # Returns the 'header_year' field when present; tries to build one
     # given the event date.
+    # Defaults to the current year if no event date or header_year is set.
     def header_year
       return @request_hash['header_year'] if @request_hash.present?
-
       return @params['header_year'] if @params['header_year'].present?
+      return Date.today.year unless @params['event_date'].present?
 
       year = /\d{4}/.match(@params['event_date'].to_s).values_at(0).first.to_i
       month = begin
