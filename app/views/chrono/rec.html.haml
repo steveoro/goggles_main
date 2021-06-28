@@ -4,20 +4,20 @@
   .main-content{ data: { controller: 'chrono', 'chrono-delete-message' => t('chrono.messages.confirm_delete'),
                  'chrono-reset-message' => t('chrono.messages.confirm_reset'),
                  'chrono-post-message' => t('chrono.messages.confirm_post') } }
-    .row-fluid#chrono-index-title
+    .row-fluid#chrono-rec-title
       %h4.text-center.pb-3
         %i.fa.fa-clock-o
         = t('chrono.rec.title')
 
     %dl.row#rec-header
       %dt.col-auto
-        %b= label_tag(:swimmer, "#{@adapter.params['swimmer_label']} - #{@adapter.params['category_type_label']}")
+        %b= label_tag(:swimmer, @adapter&.chrono_swimmer_label)
       %dt.col-auto
-        %small= label_tag(:event, "#{@adapter.params['event_date']} - #{@adapter.params['event_type_label']}")
+        %small= label_tag(:event, @adapter&.chrono_event_label)
       %dt.col-auto
-        %small= label_tag(:title, @adapter.params['meeting_label'] || @adapter.params['workshop_label'])
+        %small= label_tag(:title, @adapter&.chrono_event_container_label)
       %dd.col-auto
-        %small= label_tag(:pool, @adapter.params['swimming_pool_label'])
+        %small= label_tag(:pool, @adapter&.chrono_swimming_pool_label)
 
     .row-fluid
       #timer-container

@@ -21,12 +21,16 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       'meeting_label' => '',
       'user_workshop_id' => '0', # new workshop
       'user_workshop_label' => 'CSI at home 2021 - test',
+      'swimming_pool_label' => fixture_pool.name,
       'swimming_pool_id' => fixture_pool.id.to_s,
       'event_date' => Date.today.to_s,
+      'event_type_label' => fixture_event.code,
       'event_type_id' => fixture_event.id.to_s,
       'pool_type_id' => fixture_pool.pool_type_id.to_s,
+      'swimmer_label' => fixture_swimmer.complete_name,
       'swimmer_id' => fixture_swimmer.id.to_s,
       'swimmer_gender_type_id' => fixture_swimmer.gender_type_id.to_s,
+      'category_type_label' => fixture_category.code,
       'category_type_id' => fixture_category.id.to_s
     }
   end
@@ -97,6 +101,8 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
         root_key result_parent_key root_request_hash
         to_request_hash update_rec_detail_data update_result_data
         header_year rec_type_meeting? rec_type_workshop?
+        chrono_swimmer_label chrono_event_label
+        chrono_event_container_label chrono_swimming_pool_label
       ]
     )
 
@@ -204,6 +210,53 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
           expect(subject.to_request_hash).to have_key(subject.root_key)
         end
       end
+      #-- ---------------------------------------------------------------------
+      #++
+
+      describe '#chrono_swimmer_label' do
+        subject { described_class.new(current_user, fixture_params) }
+        it 'is an String' do
+          expect(subject.chrono_swimmer_label).to be_a(String).and be_present
+        end
+        it 'includes both the swimmer_label & the category_type_label' do
+          expect(subject.chrono_swimmer_label).to include(subject.params.fetch('swimmer_label', nil))
+            .and include(subject.params.fetch('category_type_label', nil))
+        end
+      end
+
+      describe '#chrono_event_label' do
+        subject { described_class.new(current_user, fixture_params) }
+        it 'is an String' do
+          expect(subject.chrono_event_label).to be_a(String).and be_present
+        end
+        it 'includes both the event_date & the event_type_label' do
+          expect(subject.chrono_event_label).to include(subject.params.fetch('event_date', nil))
+            .and include(subject.params.fetch('event_type_label', nil))
+        end
+      end
+
+      describe '#chrono_event_container_label' do
+        subject { described_class.new(current_user, fixture_params) }
+        it 'is an String' do
+          expect(subject.chrono_event_container_label).to be_a(String).and be_present
+        end
+        it 'includes the meeting_label or the workshop_label (which one is defined first)' do
+          expect(subject.chrono_event_container_label).to include(subject.params.fetch('meeting_label', nil))
+            .or include(subject.params.fetch('user_workshop_label', nil))
+        end
+      end
+
+      describe '#chrono_swimming_pool_label' do
+        subject { described_class.new(current_user, fixture_params) }
+        it 'is an String' do
+          expect(subject.chrono_swimming_pool_label).to be_a(String).and be_present
+        end
+        it 'includes the meeting_label or the workshop_label (which one is defined first)' do
+          expect(subject.chrono_swimming_pool_label).to include(subject.params.fetch('swimming_pool_label', nil))
+        end
+      end
+      #-- ---------------------------------------------------------------------
+      #++
 
       describe '#header_year' do
         context 'when it is set in the source object,' do

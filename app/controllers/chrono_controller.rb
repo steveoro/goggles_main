@@ -123,7 +123,7 @@ class ChronoController < ApplicationController
 
   # Validates presence of required /commit parameters. Redirects to /new otherwise.
   def validate_commit_params
-    return if commit_params[:header].present? && commit_params[:payload].present?
+    return if commit_params['header'].present? && commit_params['payload'].present?
 
     flash[:error] = I18n.t('chrono.messages.error.commit_missing_parameters')
     redirect_to(chrono_new_path)
@@ -234,6 +234,7 @@ class ChronoController < ApplicationController
   # Returns the last recored timing data, minus the order (which is not used in the actual result).
   def overall_result_timing(laps_list)
     return {} unless laps_list.present?
+    return laps_list if laps_list.is_a?(Hash)
 
     laps_list.last.reject { |key| key == 'order' }
   end
@@ -246,10 +247,11 @@ class ChronoController < ApplicationController
   # - laps_list: the list of Hash data from the actual detail payload
   #
   def commit_import_queues(laps_list)
-    adapter = IqRequest::ChronoRecParamAdapter.from_request_data(commit_params[:header])
+    adapter = IqRequest::ChronoRecParamAdapter.from_request_data(commit_params['header'])
     # Update parent result timing using last lap:
     adapter.update_result_data(overall_result_timing(laps_list))
     parent_id = nil
+    laps_list = [laps_list] if laps_list.is_a?(Hash)
 
     # Create an IQ row for each lap data obtained from the payload, starting from last lap
     # which, allegedly, should contain the last overall timing:

@@ -1,13 +1,13 @@
 .wrapper-body
   .spacer-left
 
-  .main-content{ data: { controller: 'chrono switch' } }
-    .row-fluid#chrono-index-title
+  .main-content{ data: { controller: 'switch' } }
+    .row-fluid#chrono-new-title
       %h4.text-center.pb-3
         %i.fa.fa-clock-o
         = t('chrono.new.title')
 
-    = form_tag(chrono_rec_path, hidden_id: 'frm-chrono-new', method: :post) do
+    = form_tag(chrono_rec_path, id: 'frm-chrono-new', method: :post) do
       .container.mb-2
         = render(Switch::XorComponent.new(t('chrono.selector.meeting'), 'meeting',
                  t('chrono.selector.workshop'), 'workshop', hidden_id: 'rec_type', class: 'round'))

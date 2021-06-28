@@ -247,14 +247,38 @@ module IqRequest
     def rec_type_meeting?
       return @request_hash.present? && @request_hash['target_entity'] == 'Lap' if @request_hash.present?
 
-      @params['rec_type'].to_i == Switch::XorComponent::TYPE_TARGET1
+      @params&.fetch('rec_type', nil).to_i == Switch::XorComponent::TYPE_TARGET1
     end
 
     # Returns +true+ if the request data is a Workshop recording
     def rec_type_workshop?
       return @request_hash.present? && @request_hash['target_entity'] == 'UserLap' if @request_hash.present?
 
-      @params['rec_type'].to_i == Switch::XorComponent::TYPE_TARGET2
+      @params&.fetch('rec_type', nil).to_i == Switch::XorComponent::TYPE_TARGET2
+    end
+    #-- -----------------------------------------------------------------------
+    #++
+
+    # Returns the display label for the Swimmer being recorded
+    def chrono_swimmer_label
+      "#{@params&.fetch('swimmer_label', nil)} - #{@params&.fetch('category_type_label', nil)}"
+    end
+
+    # Returns the display label for the Event being recorded
+    def chrono_event_label
+      "#{@params&.fetch('event_date', nil)} - #{@params&.fetch('event_type_label', nil)}"
+    end
+
+    # Returns the display label for the "Event container" (either meeting or workshop) being recorded
+    def chrono_event_container_label
+      return @params&.fetch('meeting_label') if @params&.fetch('meeting_label', nil).present?
+
+      @params&.fetch('user_workshop_label', nil)
+    end
+
+    # Returns the display label for the Swimming pool in which the time recording takes place
+    def chrono_swimming_pool_label
+      @params&.fetch('swimming_pool_label', nil)
     end
     #-- -----------------------------------------------------------------------
     #++

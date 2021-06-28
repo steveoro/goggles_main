@@ -51,9 +51,10 @@ module ComboBox
     #
     def initialize(label, base_name, options = {})
       super('swimmers', label, base_name, options)
-      return unless options[:default_row].instance_of?(GogglesDb::Swimmer)
 
       @gender_types = [GogglesDb::GenderType.male, GogglesDb::GenderType.female]
+      return unless options[:default_row].instance_of?(GogglesDb::Swimmer)
+
       @default_row = SwimmerDecorator.decorate(options[:default_row])
     end
 
@@ -79,7 +80,12 @@ module ComboBox
 
     # Returns the option item list for GenderType selection
     def gender_type_options
-      options_from_collection_for_select(@gender_types, 'id', 'label', @default_row&.gender_type_id)
+      options_from_collection_for_select(
+        @gender_types,
+        'id',
+        'label',
+        @default_row&.gender_type_id || GogglesDb::GenderType.male.id
+      )
     end
   end
 end
