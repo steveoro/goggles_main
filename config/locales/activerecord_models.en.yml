@@ -1,12 +1,16 @@
 en:
   activerecord:
     models:
+      goggles_db/badge: Badge
+      goggles_db/meeting_session: Session
       goggles_db/meeting: Meeting
       goggles_db/swimming_pool: Swimming pool
       goggles_db/swimmer: Swimmer
       goggles_db/team: Team
       goggles_db/user: User
     attributes:
+      goggles_db/badge:
+        entry_time_type: "Entry-time type"
       goggles_db/meeting:
         description: Name
         entry_deadline: Entry deadline
@@ -88,6 +92,10 @@ en:
       messages:
         record_invalid: "The record has failed the validation process."
       models:
+        goggles_db/badge:
+          attributes:
+            entry_time_type:
+              required: "is required"
         goggles_db/user:
           attributes:
             email:

@@ -1,12 +1,16 @@
 it:
   activerecord:
     models:
+      goggles_db/badge: Tesserino
+      goggles_db/meeting_session: Sessione
       goggles_db/meeting: Meeting
       goggles_db/swimming_pool: Piscina
       goggles_db/swimmer: Nuotatore
       goggles_db/team: Squadra
       goggles_db/user: Utente
     attributes:
+      goggles_db/badge:
+        entry_time_type: "Tipo tempi di iscrizione"
       goggles_db/meeting:
         description: Nome
         entry_deadline: Termine iscrizioni
@@ -88,6 +92,10 @@ it:
       messages:
         record_invalid: "Il record non ha superato i controlli di validazione."
       models:
+        goggles_db/badge:
+          attributes:
+            entry_time_type:
+              required: "è richiesto"
         goggles_db/user:
           attributes:
             email:

@@ -6,14 +6,14 @@
 #
 module Solver
   #
-  # = UserWorkshop solver strategy object
+  # = Badge solver strategy object
   #
-  #   - version:  7.02.18
+  #   - version:  7.3.05
   #   - author:   Steve A.
   #
-  # Resolves the request for building a new GogglesDb::UserWorkshop.
+  # Resolves the request for building a new GogglesDb::Badge.
   #
-  class UserWorkshop < BaseStrategy
+  class Badge < BaseStrategy
     # Returns the first entity row found that matches at least one of the key attributes.
     # Returns +nil+ when not found.
     #
@@ -22,15 +22,15 @@ module Solver
     # 2. bindings match
     #
     def finder_strategy
-      id = value_from_req(key: 'user_workshop_id', nested: 'user_workshop', sub_key: 'id')
+      id = value_from_req(key: 'badge_id', nested: 'badge', sub_key: 'id')
       # Priority #1
-      return GogglesDb::UserWorkshop.find_by_id(id) if id.to_i.positive?
+      return GogglesDb::Badge.find_by(id: id) if id.to_i.positive?
 
       # Priority #2
       solve_bindings
       return nil unless required_bindings.values.all?(&:present?)
 
-      GogglesDb::UserWorkshop.where(required_bindings).first
+      GogglesDb::Badge.where(required_bindings).first
     end
     #-- -----------------------------------------------------------------------
     #++
@@ -46,7 +46,7 @@ module Solver
       solve_bindings
       return nil unless required_bindings.values.all?(&:present?)
 
-      new_instance = GogglesDb::UserWorkshop.new
+      new_instance = GogglesDb::Badge.new
       bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
       new_instance.save # Don't throw validation errors
       new_instance
@@ -65,27 +65,24 @@ module Solver
     #
     # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def init_bindings
-      meeting_description = value_from_req(key: 'user_workshop_description', nested: 'user_workshop', sub_key: 'description')
       @bindings = {
-        description: meeting_description,
-        # User id must always be supplied, cannot be found or created:
-        user_id: value_from_req(key: 'user_workshop_user_id', nested: 'user_workshop', sub_key: 'user_id'),
-        team_id: Solver::Factory.for('Team', root_key?('team') ? req : req['user_workshop']),
-        season_id: Solver::Factory.for('Season', root_key?('season') ? req : req['user_workshop']),
-        header_date: value_from_req(key: 'header_date', nested: 'user_workshop', sub_key: 'header_date') || Date.today.to_s,
+        # Required:
+        category_type_id: Solver::Factory.for('CategoryType', root_key?('category_type') ? req : req['badge']),
+        team_affiliation_id: Solver::Factory.for('TeamAffiliation', root_key?('team_affiliation') ? req : req['badge']),
+        team_id: Solver::Factory.for('Team', root_key?('team') ? req : req['badge']),
+        swimmer_id: Solver::Factory.for('Swimmer', root_key?('swimmer') ? req : req['badge']),
+        season_id: Solver::Factory.for('Season', root_key?('season') ? req : req['badge']),
 
         # Fields w/ defaults:
-        edition: value_from_req(key: 'edition', nested: 'user_workshop', sub_key: 'edition') ||
-                 Date.today.year.to_s,
-        edition_type_id: Solver::Factory.for('EditionType', root_key?('edition_type') ? req : req['user_workshop']),
-        timing_type_id: Solver::Factory.for('TimingType', root_key?('timing_type') ? req : req['user_workshop']),
-        header_year: value_from_req(key: 'header_year', nested: 'user_workshop', sub_key: 'header_year') ||
-                     Date.today.year.to_s,
-        code: value_from_req(key: 'user_workshop_code', nested: 'user_workshop', sub_key: 'code') ||
-              normalize_string_name_into_code(meeting_description),
-
-        # Truly optional fields:
-        swimming_pool_id: Solver::Factory.for('SwimmingPool', root_key?('swimming_pool') ? req : req['user_workshop'])
+        entry_time_type_id: Solver::Factory.for('EntryTimeType', root_key?('entry_time_type') ? req : req['badge']) ||
+                            GogglesDb::EntryTimeType::LAST_RACE_ID,
+        number: value_from_req(key: 'badge_number', nested: 'badge', sub_key: 'number') || '?',
+        # NOTE: for booleans, we cannot use +true+ as default or the condition will skip any other value found in the request.
+        #       (The default is there just to prevent +nil+)
+        off_gogglecup: value_from_req(key: 'badge_off_gogglecup', nested: 'badge', sub_key: 'off_gogglecup') || false,
+        fees_due: value_from_req(key: 'badge_fees_due', nested: 'badge', sub_key: 'fees_due') || false,
+        badge_due: value_from_req(key: 'badge_badge_due', nested: 'badge', sub_key: 'badge_due') || false,
+        relays_due: value_from_req(key: 'badge_relays_due', nested: 'badge', sub_key: 'relays_due') || false
       }
     end
     # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -95,7 +92,7 @@ module Solver
     # Filtered hash of minimum required field bindings
     def required_bindings
       @bindings.select do |key, _value|
-        %i[description user_id team_id season_id header_date].include?(key)
+        %i[category_type_id team_affiliation_id team_id swimmer_id season_id].include?(key)
       end
     end
   end

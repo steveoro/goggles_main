@@ -44,27 +44,45 @@ module Solver
     # In a few cases, the conflict can be resolved automatically by giving priority to
     # the object that has similar data but with more solved bindings in it. (TODO)
     #
-    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
     def self.for(target_entity_name, req)
       case target_entity_name
+      when 'Badge'
+        Badge.new(req: req)
       when 'CategoryType'
         CategoryType.new(req: req)
       when 'City'
         City.new(req: req)
+      when 'Lap'
+        Lap.new(req: req)
 
-      when 'DisqualificationCodeType',
-           'EditionType', 'EventType', 'GenderType',
+      when 'DayPartType', 'DisqualificationCodeType',
+           'EditionType', 'EntryTimeType', 'EventType', 'GenderType',
            'PoolType', 'SeasonType', 'TimingType'
         LookupEntity.new(req: req, target_name: target_entity_name)
 
-      # when 'MeetingIndividualResult'
-      #   MeetingIndividualResult.new(req: req)
+      when 'MeetingEvent'
+        MeetingEvent.new(req: req)
+      when 'MeetingIndividualResult'
+        MeetingIndividualResult.new(req: req)
+      when 'MeetingProgram'
+        MeetingProgram.new(req: req)
+      when 'MeetingRelayResult'
+        MeetingRelayResult.new(req: req)
+      when 'MeetingRelaySwimmer'
+        MeetingRelaySwimmer.new(req: req)
+      when 'MeetingSession'
+        MeetingSession.new(req: req)
+      when 'Meeting'
+        Meeting.new(req: req)
       when 'Season'
         Season.new(req: req)
       when 'Swimmer'
         Swimmer.new(req: req)
       when 'SwimmingPool'
         SwimmingPool.new(req: req)
+      when 'TeamAffiliation'
+        TeamAffiliation.new(req: req)
       when 'Team'
         Team.new(req: req)
       when 'UserLap'
@@ -78,6 +96,6 @@ module Solver
         raise(ArgumentError, "New, unsupported or unimplemented target requested (#{target_entity_name}).")
       end
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
   end
 end

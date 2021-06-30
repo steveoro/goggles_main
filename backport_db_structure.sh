@@ -19,7 +19,7 @@ echo ' '
 echo "Press ENTER when ready, or CTRL-C to abort."
 read
 
-echo "Making sure migration are run in all environments (this will also update the schema file)..."
+echo "Making sure migrations are run in all environments (this will also update the schema file)..."
 RAILS_ENV=test rails db:migrate
 rails db:migrate
 RAILS_ENV=production rails db:migrate

@@ -101,14 +101,5 @@ module Solver
         ].include?(key)
       end
     end
-
-    # Filtered hash of optional field bindings
-    def optional_bindings
-      @bindings.select do |key, _value|
-        %i[
-          event_date swimming_pool_id reaction_time minutes seconds hundredths disqualification_code_type_id
-        ].include?(key)
-      end
-    end
   end
 end

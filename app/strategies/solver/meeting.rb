@@ -6,14 +6,14 @@
 #
 module Solver
   #
-  # = UserWorkshop solver strategy object
+  # = Meeting solver strategy object
   #
-  #   - version:  7.02.18
+  #   - version:  7.3.05
   #   - author:   Steve A.
   #
-  # Resolves the request for building a new GogglesDb::UserWorkshop.
+  # Resolves the request for building a new GogglesDb::Meeting.
   #
-  class UserWorkshop < BaseStrategy
+  class Meeting < BaseStrategy
     # Returns the first entity row found that matches at least one of the key attributes.
     # Returns +nil+ when not found.
     #
@@ -22,15 +22,15 @@ module Solver
     # 2. bindings match
     #
     def finder_strategy
-      id = value_from_req(key: 'user_workshop_id', nested: 'user_workshop', sub_key: 'id')
+      id = value_from_req(key: 'meeting_id', nested: 'meeting', sub_key: 'id')
       # Priority #1
-      return GogglesDb::UserWorkshop.find_by_id(id) if id.to_i.positive?
+      return GogglesDb::Meeting.find_by_id(id) if id.to_i.positive?
 
       # Priority #2
       solve_bindings
       return nil unless required_bindings.values.all?(&:present?)
 
-      GogglesDb::UserWorkshop.where(required_bindings).first
+      GogglesDb::Meeting.where(required_bindings).first
     end
     #-- -----------------------------------------------------------------------
     #++
@@ -46,7 +46,7 @@ module Solver
       solve_bindings
       return nil unless required_bindings.values.all?(&:present?)
 
-      new_instance = GogglesDb::UserWorkshop.new
+      new_instance = GogglesDb::Meeting.new
       bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
       new_instance.save # Don't throw validation errors
       new_instance
@@ -65,27 +65,26 @@ module Solver
     #
     # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def init_bindings
-      meeting_description = value_from_req(key: 'user_workshop_description', nested: 'user_workshop', sub_key: 'description')
+      meeting_description = value_from_req(key: 'meeting_description', nested: 'meeting', sub_key: 'description')
       @bindings = {
         description: meeting_description,
-        # User id must always be supplied, cannot be found or created:
-        user_id: value_from_req(key: 'user_workshop_user_id', nested: 'user_workshop', sub_key: 'user_id'),
-        team_id: Solver::Factory.for('Team', root_key?('team') ? req : req['user_workshop']),
-        season_id: Solver::Factory.for('Season', root_key?('season') ? req : req['user_workshop']),
-        header_date: value_from_req(key: 'header_date', nested: 'user_workshop', sub_key: 'header_date') || Date.today.to_s,
+        season_id: Solver::Factory.for('Season', root_key?('season') ? req : req['meeting']),
+        header_date: value_from_req(key: 'header_date', nested: 'meeting', sub_key: 'header_date') || Date.today.to_s,
 
         # Fields w/ defaults:
-        edition: value_from_req(key: 'edition', nested: 'user_workshop', sub_key: 'edition') ||
+        edition: value_from_req(key: 'edition', nested: 'meeting', sub_key: 'edition') ||
                  Date.today.year.to_s,
-        edition_type_id: Solver::Factory.for('EditionType', root_key?('edition_type') ? req : req['user_workshop']),
-        timing_type_id: Solver::Factory.for('TimingType', root_key?('timing_type') ? req : req['user_workshop']),
-        header_year: value_from_req(key: 'header_year', nested: 'user_workshop', sub_key: 'header_year') ||
+        edition_type_id: Solver::Factory.for('EditionType', root_key?('edition_type') ? req : req['meeting']) ||
+                         GogglesDb::EditionType::YEARLY_ID,
+        timing_type_id: Solver::Factory.for('TimingType', root_key?('timing_type') ? req : req['meeting']) ||
+                        GogglesDb::TimingType::SEMIAUTO_ID,
+        header_year: value_from_req(key: 'header_year', nested: 'meeting', sub_key: 'header_year') ||
                      Date.today.year.to_s,
-        code: value_from_req(key: 'user_workshop_code', nested: 'user_workshop', sub_key: 'code') ||
+        code: value_from_req(key: 'meeting_code', nested: 'meeting', sub_key: 'code') ||
               normalize_string_name_into_code(meeting_description),
 
         # Truly optional fields:
-        swimming_pool_id: Solver::Factory.for('SwimmingPool', root_key?('swimming_pool') ? req : req['user_workshop'])
+        home_team_id: Solver::Factory.for('Team', root_key?('team') ? req : req['meeting'])
       }
     end
     # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -95,7 +94,7 @@ module Solver
     # Filtered hash of minimum required field bindings
     def required_bindings
       @bindings.select do |key, _value|
-        %i[description user_id team_id season_id header_date].include?(key)
+        %i[description season_id header_date].include?(key)
       end
     end
   end

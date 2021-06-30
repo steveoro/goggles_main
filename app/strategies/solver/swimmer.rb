@@ -8,7 +8,7 @@ module Solver
   #
   # = Swimmer solver strategy object
   #
-  #   - version:  7.02.18
+  #   - version:  7.03.05
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::Swimmer.
@@ -71,7 +71,8 @@ module Solver
       # - first_name......: supplied || guessable by #name_splitter(new_row)
       bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
       # Make sure every new instance has also the split-name if missing:
-      new_instance = name_splitter(new_instance) unless new_instance.last_name.present?
+      new_instance = name_splitter(new_instance) unless new_instance.complete_name.nil? ||
+                                                        new_instance.last_name.present?
       new_instance.save # Don't throw validation errors
       new_instance
     end
