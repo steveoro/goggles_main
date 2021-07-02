@@ -58,6 +58,7 @@ module Solver
 
       when 'DayPartType', 'DisqualificationCodeType',
            'EditionType', 'EntryTimeType', 'EventType', 'GenderType',
+           'HeatType',
            'PoolType', 'SeasonType', 'TimingType'
         LookupEntity.new(req: req, target_name: target_entity_name)
 

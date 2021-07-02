@@ -63,14 +63,20 @@ module Solver
     # A direct attribute binding will be resolved to +nil+ if can't be found inside the
     # current data set after a call to #solve!.
     #
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def init_bindings
       @bindings = {
-        user_result_id: Solver::Factory.for(
+        meeting_individual_result_id: Solver::Factory.for(
           'MeetingIndividualResult',
           root_key?('meeting_individual_result') ? req : req['lap']
         ),
-        # Give priority to the nested version of Swimmer (to avoid conflicts):
+        meeting_program_id: Solver::Factory.for(
+          'MeetingProgram',
+          root_key?('meeting_program') ? req : req['lap']
+        ),
+        # Give priority to the nested version of Swimmer & Team:
         swimmer_id: Solver::Factory.for('Swimmer', nested_key?('lap', 'swimmer') ? req['lap'] : req),
+        team_id: Solver::Factory.for('Team', nested_key?('lap', 'team') ? req['lap'] : req),
         length_in_meters: value_from_req(key: 'lap_length_in_meters', nested: 'lap', sub_key: 'length_in_meters'),
 
         # Optional fields:
@@ -78,30 +84,44 @@ module Solver
         minutes: value_from_req(key: 'lap_minutes', nested: 'lap', sub_key: 'minutes'),
         seconds: value_from_req(key: 'lap_seconds', nested: 'lap', sub_key: 'seconds'),
         hundredths: value_from_req(key: 'lap_hundredths', nested: 'lap', sub_key: 'hundredths'),
+
         position: value_from_req(key: 'lap_position', nested: 'lap', sub_key: 'position'),
         minutes_from_start: value_from_req(
           key: 'minutes_from_start',
-          nested: 'lap',
-          sub_key: 'minutes_from_start'
+          nested: 'lap', sub_key: 'minutes_from_start'
         ),
         seconds_from_start: value_from_req(
           key: 'seconds_from_start',
-          nested: 'lap',
-          sub_key: 'seconds_from_start'
+          nested: 'lap', sub_key: 'seconds_from_start'
         ),
         hundredths_from_start: value_from_req(
           key: 'hundredths_from_start',
-          nested: 'lap',
-          sub_key: 'hundredths_from_start'
+          nested: 'lap', sub_key: 'hundredths_from_start'
+        ),
+
+        breath_cycles: value_from_req(key: 'lap_breath_cycles', nested: 'lap', sub_key: 'breath_cycles'),
+        stroke_cycles: value_from_req(key: 'lap_stroke_cycles', nested: 'lap', sub_key: 'stroke_cycles'),
+        underwater_seconds: value_from_req(
+          key: 'lap_underwater_seconds',
+          nested: 'lap', sub_key: 'underwater_seconds'
+        ),
+        underwater_hundredths: value_from_req(
+          key: 'lap_underwater_hundredths',
+          nested: 'lap', sub_key: 'underwater_hundredths'
         )
       }
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     private
 
     # Filtered hash of minimum required field bindings
     def required_bindings
-      @bindings.select { |key, _value| %i[user_result_id swimmer_id length_in_meters].include?(key) }
+      @bindings.select do |key, _value|
+        %i[
+          meeting_individual_result_id meeting_program_id swimmer_id team_id length_in_meters
+        ].include?(key)
+      end
     end
   end
 end

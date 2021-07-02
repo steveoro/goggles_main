@@ -22,6 +22,8 @@ namespace :status do
       #
       # To remove all mails in the deferred queue, use:
       # $> postsuper -d ALL deferred
+    rescue StandardError
+      info('Postfix or mailq installation not found!')
     end
   end
 
