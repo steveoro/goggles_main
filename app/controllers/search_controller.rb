@@ -44,11 +44,23 @@ class SearchController < ApplicationController
     prepare_swimmer_search_results
     prepare_team_search_results
     prepare_meeting_search_results
+    prepare_workshop_search_results
     prepare_pool_search_results
     prepare_flash_info
 
     respond_to do |format|
-      format.html { render(partial: 'refreshed_content', locals: { swimmers: @swimmers, teams: @teams, meetings: @meetings, swimming_pools: @swimming_pools }) }
+      format.html do
+        render(
+          partial: 'refreshed_content',
+          locals: {
+            swimmers: @swimmers,
+            teams: @teams,
+            meetings: @meetings,
+            user_workshops: @user_workshops,
+            swimming_pools: @swimming_pools
+          }
+        )
+      end
       format.js
     end
   end
@@ -77,6 +89,13 @@ class SearchController < ApplicationController
                                   .page(params['page']).per(5)
   end
 
+  # Sets the @user_workshops member
+  def prepare_workshop_search_results
+    @user_workshops = GogglesDb::UserWorkshop.includes([:edition_type])
+                                             .for_name(params['q']).by_date(:desc)
+                                             .page(params['page']).per(5)
+  end
+
   # Sets the @swimming_pools member
   def prepare_pool_search_results
     @swimming_pools = GogglesDb::SwimmingPool.includes([:city])
@@ -102,11 +121,13 @@ class SearchController < ApplicationController
 
   # Returns the overall search matches count
   def total_search_matches_count
-    @swimmers.total_count + @teams.total_count + @meetings.total_count + @swimming_pools.total_count
+    @swimmers.total_count + @teams.total_count + @meetings.total_count +
+      @user_workshops.total_count + @swimming_pools.total_count
   end
 
   # Returns +true+ if pagination will be enabled for any of the result groups; +false+ otherwise
   def pagination_required?
-    @swimmers.total_pages > 1 || @teams.total_pages > 1 || @meetings.total_pages > 1 || @swimming_pools.total_pages > 1
+    @swimmers.total_pages > 1 || @teams.total_pages > 1 || @meetings.total_pages > 1 ||
+      @user_workshops.total_pages > 1 || @swimming_pools.total_pages > 1
   end
 end

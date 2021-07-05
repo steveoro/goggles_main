@@ -3,7 +3,7 @@
 #
 # = Meeting components module
 #
-#   - version:  7.01
+#   - version:  7.05
 #   - author:   Steve A.
 #
 module Meeting
@@ -12,6 +12,8 @@ module Meeting
   #
   # Meeting label as dashboard title.
   # Renders also the "cancelled" stamp if @meeting.cancelled? is +true+.
+  #
+  # => Suitable for *any* AbstractMeeting <=
   #
   class TitleComponent < ViewComponent::Base
     # Creates a new ViewComponent
@@ -25,7 +27,7 @@ module Meeting
 
     # Skips rendering unless the member is properly set
     def render?
-      @meeting.instance_of?(GogglesDb::Meeting)
+      @meeting.class.ancestors.include?(GogglesDb::AbstractMeeting)
     end
   end
 end

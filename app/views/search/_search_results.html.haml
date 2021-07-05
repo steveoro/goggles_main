@@ -1,16 +1,16 @@
 -# This won't work unless there's at least a result group:
-- if swimmers&.exists? || teams&.exists? || meetings&.exists? || swimming_pools&.exists?
+- if swimmers&.exists? || teams&.exists? || meetings&.exists? || user_workshops&.exists? || swimming_pools&.exists?
   -# Data page indexes are "shared" among groups (one index for all).
      Requesting a page that's out of scope for the current data group won't halt Kaminari.
      So we just need the top limit among all groups, as well as the first defined index there is.
   :ruby
-    max_pages = [swimmers&.total_pages.to_i, teams&.total_pages.to_i,
-                 meetings&.total_pages.to_i, swimming_pools&.total_pages.to_i].max
-    current_page_num = swimmers&.current_page || teams&.current_page ||
-                       meetings&.current_page || swimming_pools&.current_page
+    max_pages = [swimmers&.total_pages.to_i, teams&.total_pages.to_i, meetings&.total_pages.to_i,
+                 user_workshops&.total_pages.to_i, swimming_pools&.total_pages.to_i].max
+    current_page_num = swimmers&.current_page || teams&.current_page || meetings&.current_page ||
+                       user_workshops&.current_page || swimming_pools&.current_page
 
   .swipe-wrapper{ data: { controller: 'search', 'search-max-value' => max_pages,
                           'search-current-value' => current_page_num, 'search-url-value' => request.url,
                           'search-target' => 'swiper' } }
     = render(partial: 'refreshed_content', locals: { swimmers: swimmers, teams: teams,
-             meetings: meetings, swimming_pools: swimming_pools })
+             meetings: meetings, user_workshops: user_workshops, swimming_pools: swimming_pools })

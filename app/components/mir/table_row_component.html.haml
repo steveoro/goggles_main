@@ -15,7 +15,7 @@
       %br/
       %small.text-muted
         #{@mir.swimmer&.year_of_birth} -
-        %i= @mir.team&.editable_name
+        %i= TeamDecorator.decorate(@mir.team).link_to_full_name
     %td
       .text-muted
         = result_score

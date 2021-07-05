@@ -14,24 +14,27 @@ class SearchDecorator < Draper::Decorator
   # Returns the parameters to render an empty string otherwise.
   # (null pattern used to reduce view logic)
   #
+  # rubocop:disable Metrics/CyclomaticComplexity
   def self.rendering_parameters(results_collection)
-    if results_collection&.exists?
-      case results_collection.first
-      when GogglesDb::Swimmer
-        { partial: 'swimmer_results', locals: { swimmers: results_collection } }
+    # Don't render anything otherwise:
+    return { plain: '' } unless results_collection&.exists?
 
-      when GogglesDb::Team
-        { partial: 'team_results', locals: { teams: results_collection } }
+    case results_collection.first
+    when GogglesDb::Swimmer
+      { partial: 'swimmer_results', locals: { swimmers: results_collection } }
 
-      when GogglesDb::Meeting
-        { partial: 'meeting_results', locals: { meetings: results_collection } }
+    when GogglesDb::Team
+      { partial: 'team_results', locals: { teams: results_collection } }
 
-      when GogglesDb::SwimmingPool
-        { partial: 'swimming_pool_results', locals: { swimming_pools: results_collection } }
-      end
-    # Don't render anything otherwise
-    else
-      { plain: '' }
+    when GogglesDb::Meeting
+      { partial: 'meeting_results', locals: { meetings: results_collection } }
+
+    when GogglesDb::UserWorkshop
+      { partial: 'user_workshop_results', locals: { user_workshops: results_collection } }
+
+    when GogglesDb::SwimmingPool
+      { partial: 'swimming_pool_results', locals: { swimming_pools: results_collection } }
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 end

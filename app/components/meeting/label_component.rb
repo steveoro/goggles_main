@@ -3,7 +3,7 @@
 #
 # = Meeting components module
 #
-#   - version:  7.01
+#   - version:  7.05
 #   - author:   Steve A.
 #
 module Meeting
@@ -11,6 +11,8 @@ module Meeting
   # = Meeting::LabelComponent
   #
   # Renders the correct title of a Meeting
+  #
+  # => Suitable for *any* AbstractMeeting <=
   #
   class LabelComponent < ViewComponent::Base
     # Creates a new ViewComponent
@@ -24,7 +26,7 @@ module Meeting
 
     # Skips rendering unless the member is properly set
     def render?
-      @meeting.instance_of?(GogglesDb::Meeting)
+      @meeting.class.ancestors.include?(GogglesDb::AbstractMeeting)
     end
 
     # Inline rendering

@@ -13,10 +13,8 @@ RSpec.describe 'meetings/show.html.haml', type: :view do
     end
     subject { rendered }
 
-    it_behaves_like('a Meeting detail page rendering the meeting description text')
-    it_behaves_like('a Meeting detail page rendering main \'header\' details')
-    it_behaves_like('a Meeting detail page rendering the collapsed \'more\' details')
+    it_behaves_like('an AbstractMeeting detail page rendering the meeting description text')
+    it_behaves_like('an AbstractMeeting detail page rendering main \'header\' details')
+    it_behaves_like('an AbstractMeeting detail page rendering the collapsed \'more\' details')
   end
-  #-- -------------------------------------------------------------------------
-  #++
 end

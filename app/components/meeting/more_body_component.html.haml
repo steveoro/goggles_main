@@ -1,21 +1,28 @@
 %tbody.collapse{ id: 'more-details' }
-  %tr{ scope: 'row', colspan: 4 }
-    %th{ colspan: 2 }= t('activerecord.attributes.goggles_db/meeting.warm_up_pool')
-    %td{ id: 'warm-up-pool', colspan: 2 }
-      = render(Icon::CheckMarkComponent.new(value: @meeting.warm_up_pool?))
-  %tr{ scope: 'row', colspan: 4 }
-    %th{ colspan: 2 }= t('activerecord.attributes.goggles_db/meeting.allows_under25')
-    %td{ id: 'allows-under25', colspan: 2 }
-      = render(Icon::CheckMarkComponent.new(value: @meeting.allows_under25?))
+  - if @home_team
+    %tr{ scope: 'row', colspan: 4 }
+      %th{ colspan: 2 }= t('chrono.selector.home_team')
+      %td{ id: 'home-team', colspan: 2 }
+        = TeamDecorator.decorate(@home_team).link_to_full_name
+  - if @meeting.instance_of?(GogglesDb::Meeting)
+    %tr{ scope: 'row', colspan: 4 }
+      %th{ colspan: 2 }= t('activerecord.attributes.goggles_db/meeting.warm_up_pool')
+      %td{ id: 'warm-up-pool', colspan: 2 }
+        = render(Icon::CheckMarkComponent.new(value: @meeting.warm_up_pool?))
+    %tr{ scope: 'row', colspan: 4 }
+      %th{ colspan: 2 }= t('activerecord.attributes.goggles_db/meeting.allows_under25')
+      %td{ id: 'allows-under25', colspan: 2 }
+        = render(Icon::CheckMarkComponent.new(value: @meeting.allows_under25?))
   %tr{ scope: 'row', colspan: 4 }
     %th{ colspan: 2 }= t('activerecord.attributes.goggles_db/meeting.confirmed')
     %td{ id: 'confirmed', colspan: 2 }
       = render(Icon::CheckMarkComponent.new(value: @meeting.confirmed?))
-  %tr{ scope: 'row', colspan: 4 }
-    %th{ colspan: 2 }= t('meetings.dashboard.reference')
-    %td{ id: 'contact-name', colspan: 2 }
-      = @meeting.reference_name
-      %br/
-      %small= @meeting.reference_e_mail
-      %br/
-      = @meeting.reference_phone
+  - if @meeting.instance_of?(GogglesDb::Meeting)
+    %tr{ scope: 'row', colspan: 4 }
+      %th{ colspan: 2 }= t('meetings.dashboard.reference')
+      %td{ id: 'contact-name', colspan: 2 }
+        = @meeting.reference_name
+        %br/
+        %small= @meeting.reference_e_mail
+        %br/
+        = @meeting.reference_phone

@@ -3,7 +3,7 @@
 # = MeetingsController
 #
 class MeetingsController < ApplicationController
-  # Show Meeting details
+  # Show the details page
   # == Params
   # - :id, required
   def show

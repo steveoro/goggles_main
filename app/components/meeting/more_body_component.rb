@@ -3,7 +3,7 @@
 #
 # = Meeting components module
 #
-#   - version:  7.01
+#   - version:  7.05
 #   - author:   Steve A.
 #
 module Meeting
@@ -14,6 +14,8 @@ module Meeting
   #
   # - collapse DOM ID: 'more-details'
   #   (typically, to be triggered by an external component)
+  #
+  # => Suitable for *any* AbstractMeeting <=
   #
   # === Known hack:
   # Wrap multiple +tbody+s inside another container +tbody+ for maximum
@@ -27,11 +29,13 @@ module Meeting
     def initialize(meeting:)
       super
       @meeting = meeting
+      # Fallback to team_id for UserWorkshops / nils:
+      @home_team = meeting.respond_to?(:home_team) ? meeting.home_team : meeting&.team
     end
 
     # Skips rendering unless the member is properly set
     def render?
-      @meeting.instance_of?(GogglesDb::Meeting)
+      @meeting.class.ancestors.include?(GogglesDb::AbstractMeeting)
     end
   end
 end

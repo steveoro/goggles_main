@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   get 'swimming_pools/show/:id',  to: 'swimming_pools#show',  as: 'swimming_pool_show'
   get 'swimmers/show/:id',        to: 'swimmers#show',        as: 'swimmer_show'
   get 'teams/show/:id',           to: 'teams#show',           as: 'team_show'
+  get 'user_workshops/show/:id',  to: 'user_workshops#show',  as: 'user_workshop_show'
 
   get 'tools/fin_score'
   # TODO: move the following to a dedicated API endpoint:

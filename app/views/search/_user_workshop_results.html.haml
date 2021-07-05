@@ -1,0 +1,31 @@
+#meeting-results
+  %h5
+    = page_entries_info(user_workshops, entry_name: 'trophy')
+
+  %table.table.table-striped.table-hover.table-condensed.table-sm
+    %thead.bg-secondary.text-light
+      %tr.text-center
+        %td{ colspan: 2 }
+          %b= I18n.t('user_workshops.workshop')
+        %td
+          %b= I18n.t('chrono.selector.home_team')
+        %td
+          %b= I18n.t('user_workshops.header_date')
+    %tbody
+      - UserWorkshopDecorator.decorate_collection(user_workshops).each do |user_workshop|
+        %tr
+          %td{ colspan: 2 }
+            = user_workshop.link_to_full_name
+          %td
+            %small
+              - if user_workshop.team
+                = TeamDecorator.decorate(user_workshop.team).link_to_full_name
+              - else
+                ?
+          %td
+            %small
+              = user_workshop.header_year
+              %br/
+              = user_workshop.header_year
+  %br/
+  = paginate(user_workshops, remote: true)

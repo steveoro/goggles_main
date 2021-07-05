@@ -1,0 +1,15 @@
+it:
+  user_workshops:
+    category: Categoria
+    event: Evento
+    season: Stagione
+    workshop: Collegiale
+    workshops: Collegiali
+    header_date: Data
+    go_to_dashboard: "Vai alla pagina dettagli & risultati per questo collegiale"
+    dashboard:
+      title: Collegiale
+      subtitle: Dettagli
+      reference: Riferimento
+      swimming_pool: Piscina
+      pool_type: Tipo vasca

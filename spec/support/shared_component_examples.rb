@@ -50,7 +50,7 @@ end
 # - subject.......: either, the result from #render_inline (renders a Nokogiri::HTML.fragment),
 #                   or the rendered HTML (from calling render on a view)
 # - fixture_row...: a Meeting instance
-shared_examples_for 'a Meeting detail page rendering the meeting description text' do
+shared_examples_for 'an AbstractMeeting detail page rendering the meeting description text' do
   let(:parsed_node) { Nokogiri::HTML.fragment(subject) }
 
   it 'shows the description with its edition label' do
@@ -63,27 +63,40 @@ end
 # - subject.......: either, the result from #render_inline (renders a Nokogiri::HTML.fragment),
 #                   or the rendered HTML (from calling render on a view)
 # - fixture_row...: a Meeting instance
-shared_examples_for 'a Meeting detail page rendering the collapsed \'more\' details' do
+shared_examples_for 'an AbstractMeeting detail page rendering the collapsed \'more\' details' do
   let(:parsed_node) { Nokogiri::HTML.fragment(subject) }
 
   it 'includes the meeting details boolean flags' do
-    expect(parsed_node.at_css('td#warm-up-pool')).to be_present
-    expect(parsed_node.at_css('td#allows-under25')).to be_present
+    if fixture_row.instance_of?(GogglesDb::Meeting)
+      expect(parsed_node.at_css('td#warm-up-pool')).to be_present
+      expect(parsed_node.at_css('td#allows-under25')).to be_present
+    end
     expect(parsed_node.at_css('td#confirmed')).to be_present
   end
-  it 'includes various contact information' do
-    expect(parsed_node.at_css('td#contact-name')).to be_present
+  it 'includes various contact information (for meetings only, when set)' do
+    if fixture_row.instance_of?(GogglesDb::Meeting)
+      expect(
+        parsed_node.at_css('td#contact-name')
+      ).to be_present
+    end
+  end
+  it 'includes the home/organizing team info (when set)' do
+    if (fixture_row.respond_to?(:home_team) && fixture_row.home_team) ||
+       (fixture_row.respond_to?(:team) && fixture_row.team)
+      expect(parsed_node.at_css('td#home-team')).to be_present
+    end
   end
 end
 
 # REQUIRES/ASSUMES:
 # - subject.......: result from #render_inline (renders a Nokogiri::HTML.fragment)
-# - fixture_row...: a Meeting instance
-shared_examples_for 'a Meeting detail page rendering main \'header\' details' do
+# - fixture_row...: an AbstractMeeting instance
+shared_examples_for 'an AbstractMeeting detail page rendering main \'header\' details' do
   let(:parsed_node) { Nokogiri::HTML.fragment(subject) }
 
   it 'shows the swimming pool name, when set' do
-    if fixture_row.swimming_pools.count.positive?
+    if (fixture_row.respond_to?(:swimming_pools) && fixture_row.swimming_pools.count.positive?) ||
+       (fixture_row.respond_to?(:swimming_pool) && fixture_row.swimming_pool.present?)
       expect(parsed_node.at_css('td#swimming-pool')).to be_present
       expect(parsed_node.at_css('td#swimming-pool').text).to include(
         ERB::Util.html_escape(fixture_row.swimming_pools.first.name)
@@ -92,8 +105,10 @@ shared_examples_for 'a Meeting detail page rendering main \'header\' details' do
   end
 
   it 'shows the entry deadline' do
-    expect(parsed_node.at_css('td#entry-deadline')).to be_present
-    expect(parsed_node.at_css('td#entry-deadline').text).to include(fixture_row.entry_deadline.to_s)
+    if fixture_row.respond_to?(:entry_deadline)
+      expect(parsed_node.at_css('td#entry-deadline')).to be_present
+      expect(parsed_node.at_css('td#entry-deadline').text).to include(fixture_row.entry_deadline.to_s)
+    end
   end
   it 'shows the meeting date' do
     expect(parsed_node.at_css('td#header-date')).to be_present

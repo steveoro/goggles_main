@@ -1,0 +1,15 @@
+en:
+  user_workshops:
+    category: Category
+    event: Event
+    season: Season
+    workshop: Workshop
+    workshops: Workshops
+    header_date: Date
+    go_to_dashboard: "Go to the details & results page for this workshop"
+    dashboard:
+      title: Workshop
+      subtitle: Details
+      reference: Reference
+      swimming_pool: Swimming pool
+      pool_type: Pool type
