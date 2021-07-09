@@ -82,6 +82,8 @@ module Solver
                      Date.today.year.to_s,
         code: value_from_req(key: 'meeting_code', nested: 'meeting', sub_key: 'code') ||
               normalize_string_name_into_code(meeting_description),
+        confirmed: value_from_req(key: 'confirmed', nested: 'meeting', sub_key: 'confirmed') ||
+                   true,
 
         # Truly optional fields:
         home_team_id: Solver::Factory.for('Team', root_key?('team') ? req : req['meeting'])

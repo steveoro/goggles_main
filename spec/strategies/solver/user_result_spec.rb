@@ -35,10 +35,11 @@ RSpec.describe Solver::UserResult, type: :strategy do
     # VALID data: EXISTING ID
     #
     context "with valid & solved #req data (valid @ depth #{index})," do
-      let(:fixture_row) { GogglesDb::UserResult.first(100).sample }
+      let(:fixture_row) { FactoryBot.create(:user_result) }
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { fixture_row.id }
       subject do
+        expect(fixture_row).to be_a(GogglesDb::UserResult).and be_valid
         solver = Solver::Factory.for('UserResult', fixture_req)
         solver.solve!
         solver
@@ -128,27 +129,33 @@ RSpec.describe Solver::UserResult, type: :strategy do
     # VALID data: EXISTING row data
     #
     context "with solvable #req data (valid w/ layout #{index})," do
-      let(:fixture_row) { FactoryBot.create(:user_result, event_date: Date.today) }
+      let(:fixture_row) { FactoryBot.create(:user_result) }
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { fixture_row.id }
-      subject do
+      before(:each) do
         expect(fixture_row).to be_a(GogglesDb::UserResult).and be_valid
+      end
+      subject do
         solver = Solver::Factory.for('UserResult', fixture_req)
         solver.solve!
+        # DEBUG ----------------------------------------------------------------
+        binding.pry unless solver.solved?
+        # ----------------------------------------------------------------------
+        expect(solver).to be_solved
         solver
       end
-      it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::UserResult)
+      # it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::UserResult)
 
-      describe '#entity' do
-        %i[
-          user_workshop_id user_id swimmer_id category_type_id pool_type_id
-          event_type_id event_date minutes seconds hundredths reaction_time
-        ].each do |column_name|
-          it "has the expected #{column_name}" do
-            expect(subject.entity.send(column_name)).to eq(fixture_row.send(column_name))
-          end
-        end
-      end
+      # describe '#entity' do
+      #   %i[
+      #     user_workshop_id user_id swimmer_id category_type_id pool_type_id swimming_pool_id
+      #     event_type_id event_date minutes seconds hundredths reaction_time
+      #   ].each do |column_name|
+      #     it "has the expected #{column_name}" do
+      #       expect(subject.entity.send(column_name)).to eq(fixture_row.send(column_name))
+      #     end
+      #   end
+      # end
     end
     #-- -----------------------------------------------------------------------
     #++
@@ -160,11 +167,11 @@ RSpec.describe Solver::UserResult, type: :strategy do
       let(:fixture_row) do
         FactoryBot.build(
           :user_result,
-          event_date: Date.today,
-          user_workshop_id: GogglesDb::UserWorkshop.first(100).sample.id,
+          user_workshop_id: FactoryBot.create(:user_workshop).id,
           user_id: GogglesDb::User.first(100).sample.id,
           swimmer_id: GogglesDb::Swimmer.first(150).sample.id,
           pool_type_id: GogglesDb::PoolType.all_eventable.sample.id,
+          swimming_pool_id: GogglesDb::SwimmingPool.first(100).sample.id,
           category_type_id: GogglesDb::CategoryType.eventable.individuals.sample.id,
           event_type_id: GogglesDb::EventsByPoolType.eventable.individuals.sample.event_type_id
         )
@@ -172,6 +179,7 @@ RSpec.describe Solver::UserResult, type: :strategy do
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { false }
       subject do
+        expect(fixture_row).to be_a(GogglesDb::UserResult).and be_valid
         solver = Solver::Factory.for('UserResult', fixture_req)
         solver.solve!
         solver
@@ -181,7 +189,7 @@ RSpec.describe Solver::UserResult, type: :strategy do
       describe '#entity' do
         # Check all prepared fields:
         %i[
-          user_workshop_id user_id swimmer_id category_type_id pool_type_id
+          user_workshop_id user_id swimmer_id category_type_id pool_type_id swimming_pool_id
           event_type_id event_date minutes seconds hundredths reaction_time
         ].each do |column_name|
           it "has the expected #{column_name}" do

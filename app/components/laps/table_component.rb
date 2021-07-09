@@ -3,12 +3,14 @@
 #
 # = Laps components module
 #
-#   - version:  7.01
+#   - version:  7.3.05
 #   - author:   Steve A.
 #
 module Laps
   #
   # = Laps::TableComponent
+  #
+  # => Suitable for *any* AbstractLap <=
   #
   # Collapsible table body (+tbody+) for laps data display.
   #
@@ -31,6 +33,13 @@ module Laps
     # Skips rendering unless @laps is enumerable and orderable :by_distance
     def render?
       @laps.respond_to?(:each) && @laps.respond_to?(:by_distance)
+    end
+
+    protected
+
+    # Returns the parent association name of the abstract lap instance (memoized)
+    def parent_association_name
+      @parent_association_name ||= @laps&.first&.class&.parent_association_sym
     end
   end
 end

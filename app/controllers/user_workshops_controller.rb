@@ -13,7 +13,8 @@ class UserWorkshopsController < ApplicationController
       redirect_to(root_path) && return
     end
 
-    @user_workshop_events = @user_workshop.event_types
+    @user_workshop_events = @user_workshop.event_types.uniq
+    @user_workshop_results = @user_workshop.user_results.includes(:event_type)
   end
 
   protected

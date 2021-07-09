@@ -3,17 +3,17 @@
 #
 # = Meeting components module
 #
-#   - version:  7.05
+#   - version:  7.3.05
 #   - author:   Steve A.
 #
 module Meeting
   #
   # = Meeting::TitleComponent
   #
+  # => Suitable for *any* AbstractMeeting <=
+  #
   # Meeting label as dashboard title.
   # Renders also the "cancelled" stamp if @meeting.cancelled? is +true+.
-  #
-  # => Suitable for *any* AbstractMeeting <=
   #
   class TitleComponent < ViewComponent::Base
     # Creates a new ViewComponent

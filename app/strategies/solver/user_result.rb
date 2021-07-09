@@ -8,7 +8,7 @@ module Solver
   #
   # = UserResult solver strategy object
   #
-  #   - version:  7.02.18
+  #   - version:  7.3.06
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::UserResult.
@@ -74,10 +74,10 @@ module Solver
         category_type_id: Solver::Factory.for('CategoryType', root_key?('category_type') ? req : req['user_result']),
         pool_type_id: Solver::Factory.for('PoolType', root_key?('pool_type') ? req : req['user_result']),
         event_type_id: Solver::Factory.for('EventType', root_key?('event_type') ? req : req['user_result']),
+        swimming_pool_id: Solver::Factory.for('SwimmingPool', root_key?('swimming_pool') ? req : req['user_result']),
 
         # Optional fields:
         event_date: value_from_req(key: 'event_date', nested: 'user_result', sub_key: 'event_date') || Date.today.to_s,
-        swimming_pool_id: Solver::Factory.for('SwimmingPool', root_key?('swimming_pool') ? req : req['user_result']),
         reaction_time: value_from_req(key: 'user_result_reaction_time', nested: 'user_result', sub_key: 'reaction_time') || 0.0,
         minutes: value_from_req(key: 'user_result_minutes', nested: 'user_result', sub_key: 'minutes') || 0,
         seconds: value_from_req(key: 'user_result_seconds', nested: 'user_result', sub_key: 'seconds') || 0,
@@ -97,7 +97,7 @@ module Solver
       @bindings.select do |key, _value|
         %i[
           user_workshop_id user_id swimmer_id category_type_id pool_type_id
-          event_type_id
+          event_type_id swimming_pool_id
         ].include?(key)
       end
     end

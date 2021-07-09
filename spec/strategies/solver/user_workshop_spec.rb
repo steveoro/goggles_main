@@ -39,6 +39,7 @@ RSpec.describe Solver::UserWorkshop, type: :strategy do
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { fixture_row.id }
       subject do
+        expect(fixture_row).to be_a(GogglesDb::UserWorkshop).and be_valid
         solver = Solver::Factory.for('UserWorkshop', fixture_req)
         solver.solve!
         solver
@@ -143,6 +144,7 @@ RSpec.describe Solver::UserWorkshop, type: :strategy do
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { fixture_row.id }
       subject do
+        expect(fixture_row).to be_a(GogglesDb::UserWorkshop).and be_valid
         solver = Solver::Factory.for('UserWorkshop', fixture_req)
         solver.solve!
         solver
@@ -177,6 +179,7 @@ RSpec.describe Solver::UserWorkshop, type: :strategy do
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { false }
       subject do
+        expect(fixture_row).to be_a(GogglesDb::UserWorkshop).and be_valid
         solver = Solver::Factory.for('UserWorkshop', fixture_req)
         solver.solve!
         solver

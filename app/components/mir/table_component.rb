@@ -3,12 +3,14 @@
 #
 # = MIR components module
 #
-#   - version:  7.01
+#   - version:  7.3.05
 #   - author:   Steve A.
 #
 module MIR
   #
   # = MIR::TableComponent
+  #
+  # => Suitable for *any* AbstractResult <=
   #
   # Collapsible table for MIR list/association data display.
   #

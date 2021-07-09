@@ -3,12 +3,14 @@
 #
 # = MIR components module
 #
-#   - version:  7.01
+#   - version:  7.3.05
 #   - author:   Steve A.
 #
 module MIR
   #
   # = MIR::TableRowComponent
+  #
+  # => Suitable for *any* AbstractResult <=
   #
   # Collapsible table row for MIR data display.
   #
@@ -26,14 +28,23 @@ module MIR
 
     # Skips rendering unless the member is properly set
     def render?
-      @mir.instance_of?(GogglesDb::MeetingIndividualResult)
+      @mir.class.ancestors.include?(GogglesDb::AbstractResult)
     end
 
     protected
 
+    # Memoized & generalized lap association
+    def laps
+      @laps ||= if @mir.respond_to?(:laps)
+                  @mir.laps
+                elsif @mir.respond_to?(:user_laps)
+                  @mir.user_laps
+                end
+    end
+
     # Memoized lap presence
-    def laps?
-      @laps ||= @mir.laps.count.positive?
+    def includes_laps?
+      @includes_laps ||= laps&.count&.positive?
     end
 
     # Result score; gives precedence to the standard scoring system, if used

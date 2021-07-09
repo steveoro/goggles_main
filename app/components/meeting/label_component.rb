@@ -3,16 +3,16 @@
 #
 # = Meeting components module
 #
-#   - version:  7.05
+#   - version:  7.3.05
 #   - author:   Steve A.
 #
 module Meeting
   #
   # = Meeting::LabelComponent
   #
-  # Renders the correct title of a Meeting
-  #
   # => Suitable for *any* AbstractMeeting <=
+  #
+  # Renders the correct title of a Meeting
   #
   class LabelComponent < ViewComponent::Base
     # Creates a new ViewComponent

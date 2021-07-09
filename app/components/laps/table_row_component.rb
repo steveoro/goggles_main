@@ -3,12 +3,14 @@
 #
 # = Laps components module
 #
-#   - version:  7.01
+#   - version:  7.3.05
 #   - author:   Steve A.
 #
 module Laps
   #
   # = Laps::TableRowComponent
+  #
+  # => Suitable for *any* AbstractLap <=
   #
   # Collapsible table row (tr) for lap data display.
   #
@@ -30,14 +32,14 @@ module Laps
 
     # Skips rendering unless the lap instance is properly set
     def render?
-      @lap.instance_of?(GogglesDb::Lap)
+      @lap.class.ancestors.include?(GogglesDb::AbstractLap)
     end
 
     protected
 
     # Returns the DOM ID for this component
     def dom_id
-      "laps#{@lap.meeting_individual_result_id}"
+      "laps#{@lap&.parent_result_id}"
     end
   end
 end

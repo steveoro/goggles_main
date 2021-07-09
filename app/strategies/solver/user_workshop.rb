@@ -8,7 +8,7 @@ module Solver
   #
   # = UserWorkshop solver strategy object
   #
-  #   - version:  7.02.18
+  #   - version:  7.3.06
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::UserWorkshop.
@@ -72,9 +72,9 @@ module Solver
         user_id: value_from_req(key: 'user_workshop_user_id', nested: 'user_workshop', sub_key: 'user_id'),
         team_id: Solver::Factory.for('Team', root_key?('team') ? req : req['user_workshop']),
         season_id: Solver::Factory.for('Season', root_key?('season') ? req : req['user_workshop']),
-        header_date: value_from_req(key: 'header_date', nested: 'user_workshop', sub_key: 'header_date') || Date.today.to_s,
 
         # Fields w/ defaults:
+        header_date: value_from_req(key: 'header_date', nested: 'user_workshop', sub_key: 'header_date') || Date.today.to_s,
         edition: value_from_req(key: 'edition', nested: 'user_workshop', sub_key: 'edition') ||
                  Date.today.year.to_s,
         edition_type_id: Solver::Factory.for('EditionType', root_key?('edition_type') ? req : req['user_workshop']),
@@ -83,6 +83,8 @@ module Solver
                      Date.today.year.to_s,
         code: value_from_req(key: 'user_workshop_code', nested: 'user_workshop', sub_key: 'code') ||
               normalize_string_name_into_code(meeting_description),
+        confirmed: value_from_req(key: 'confirmed', nested: 'user_workshop', sub_key: 'confirmed') ||
+                   true,
 
         # Truly optional fields:
         swimming_pool_id: Solver::Factory.for('SwimmingPool', root_key?('swimming_pool') ? req : req['user_workshop'])
@@ -95,7 +97,7 @@ module Solver
     # Filtered hash of minimum required field bindings
     def required_bindings
       @bindings.select do |key, _value|
-        %i[description user_id team_id season_id header_date].include?(key)
+        %i[description user_id team_id season_id].include?(key)
       end
     end
   end

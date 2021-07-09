@@ -3,19 +3,19 @@
 #
 # = Meeting components module
 #
-#   - version:  7.05
+#   - version:  7.3.05
 #   - author:   Steve A.
 #
 module Meeting
   #
   # = Meeting::HeaderBodyComponent
   #
+  # => Suitable for *any* AbstractMeeting <=
+  #
   # Renders the Meeting main header details as a single +tbody+.
   #
   # Includes the trigger button to expand a sub-page of additional
   # collapsed details.
-  #
-  # => Suitable for *any* AbstractMeeting <=
   #
   # === Known hack:
   # Wrap multiple +tbody+s inside another container +tbody+ for maximum

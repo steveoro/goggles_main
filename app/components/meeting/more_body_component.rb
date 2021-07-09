@@ -3,19 +3,19 @@
 #
 # = Meeting components module
 #
-#   - version:  7.05
+#   - version:  7.3.05
 #   - author:   Steve A.
 #
 module Meeting
   #
   # = Meeting::MoreBodyComponent
   #
+  # => Suitable for *any* AbstractMeeting <=
+  #
   # Collapsible table body (+tbody+) for additional Meeting details sub-page.
   #
   # - collapse DOM ID: 'more-details'
   #   (typically, to be triggered by an external component)
-  #
-  # => Suitable for *any* AbstractMeeting <=
   #
   # === Known hack:
   # Wrap multiple +tbody+s inside another container +tbody+ for maximum

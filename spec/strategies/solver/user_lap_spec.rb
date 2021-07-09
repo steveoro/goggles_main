@@ -35,10 +35,11 @@ RSpec.describe Solver::UserLap, type: :strategy do
     # VALID data: EXISTING ID
     #
     context "with valid & solved #req data (valid @ depth #{index})," do
-      let(:fixture_row) { GogglesDb::UserLap.first(100).sample }
+      let(:fixture_row) { FactoryBot.create(:user_lap) }
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { fixture_row.id }
       subject do
+        expect(fixture_row).to be_a(GogglesDb::UserLap).and be_valid
         solver = Solver::Factory.for('UserLap', fixture_req)
         solver.solve!
         solver

@@ -11,23 +11,14 @@
           = render(Meeting::MoreBodyComponent.new(meeting: @user_workshop))
 
     #workshop-show-results
-      = debug @user_workshop_events
-
       %table.table.table-striped.table-sm
-        - @user_workshop_events&.each_with_index do |meeting_event, index|
+        - @user_workshop_events.each_with_index do |event_type, index|
+          - results = @user_workshop_results.where(event_type_id: event_type.id)
           %thead
             = render(Mevent::RowSeparatorComponent.new) if index.positive? # skip first separator
-            = render(Mevent::RowTitleComponent.new(meeting_event: meeting_event))
-          = render(Mevent::RowLinksComponent.new(meeting_events: @user_workshop_events))
-          -# TODO
-          -# - prgs_for_event.each do |mprg|
-          -#   = render(Mprg::RowSeparatorComponent.new)
-          -#   = render(Mprg::RowLinksComponent.new(meeting_programs: prgs_for_event))
-          -#   %thead
-          -#     = render(Mprg::RowTitleComponent.new(meeting_program: mprg))
-          -#     - if mprg.relay?
-          -#       = render(MRR::TableComponent.new(mrrs: mprg.meeting_relay_results.includes(:team)))
-          -#     - else
-          -#       = render(MIR::TableComponent.new(mirs: mprg.meeting_individual_results.includes(:swimmer, :team)))
+            %tr{ id: event_type.id }
+              %th.mevent-separator{ colspan: 4 }
+                %h4= event_type.long_label
+            = render(MIR::TableComponent.new(mirs: results))
 
   .spacer-right
