@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.3.11** [Steve A.] data fixes for laps; fixes for sorter strategies; slightly improved user_workshop/show page; DB structure 1.92.0
 - **0.3.06** [Steve A.] swimming_pool association in UserResult is no longer optional; minimal support for UserWorkshops in search & show
 - **0.3.01** [Steve A.] improved structure for import_queues & helpers; data migrations, misc fixes; fully integrated Chrono controllers
 - **0.2.18** [Steve A.] upgraded gem set due to security fixes; added support for UserWorkshop, UserResult & UserLap

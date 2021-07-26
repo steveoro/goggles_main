@@ -13,11 +13,11 @@ Feature: Search anything from the root page
     Then the '<model_name>' search results are displayed, all matching <query_string>
     And the pagination controls are present
     Examples:
-      | model_name    | query_string | min_count |
-      | swimmer       | 'Anna'       |         5 |
-      | team          | 'Swimming'   |         5 |
-      | meeting       | 'prova'      |         5 |
-      | swimming_pool | 'comunale'   |         5 |
+      | model_name    | query_string    | min_count |
+      | swimmer       | 'Anna'          |         5 |
+      | team          | 'Swimming'      |         5 |
+      | meeting       | 'regionale CSI' |         5 |
+      | swimming_pool | 'comunale'      |         5 |
 
   Scenario Outline: Successful search with matches but no pagination
     Given there are no more than <max_count> <model_name>s matching my query <query_string>
