@@ -72,9 +72,14 @@ module IqRequest
     SUPPORTED_PARAMS = %w[
       rec_type
       meeting_id meeting_label meeting_code meeting_header_date
+      meeting_edition meeting_edition_type_id
+      meeting_session_id session_order meeting_session_description meeting_session_day_part_type_id
+      meeting_event_id meeting_program_id
+
       user_workshop_id user_workshop_label user_workshop_code user_workshop_header_date
       user_workshop_edition user_workshop_edition_type_id
       event_date header_year
+
       season_id season_label season_description season_begin_date season_end_date season_edition
       season_type_id season_edition_type_id
       swimming_pool_id swimming_pool_label swimming_pool_name swimming_pool_nick_name
@@ -156,12 +161,9 @@ module IqRequest
     # without its root_key.
     def root_request_hash
       return @request_hash[root_key] if @request_hash.present?
-
       return user_lap_attr if rec_type_workshop?
 
-      {
-        # TODO: lap_attr + all nested hierarchy (& solvers)
-      }
+      lap_attr
     end
     #-- -----------------------------------------------------------------------
     #++
@@ -311,7 +313,21 @@ module IqRequest
         'last_name' => @params['swimmer_last_name'],
         'complete_name' => @params['swimmer_complete_name'],
         'year_of_birth' => @params['swimmer_year_of_birth'],
-        'gender_type_id' => @params['swimmer_gender_type_id'] || @params['gender_type_id']
+        'gender_type_id' => @params['gender_type_id'] || @params['swimmer_gender_type_id']
+      }
+    end
+
+    # Maps the source params Hash into City def. attributes, without the root key ('city').
+    def city_attr
+      return @request_hash['city'] if @request_hash.present?
+
+      {
+        # Give priority to pre-set SwimmingPool city_ids when found:
+        'id' => @params['city_id'] || @params['swimming_pool_city_id'],
+        'label' => @params['city_label'],
+        'name' => @params['city_name'] || @params['city_label'],
+        'area' => @params['city_area'],
+        'country_code' => @params['city_country_code']
       }
     end
 
@@ -322,8 +338,10 @@ module IqRequest
       {
         'id' => @params['swimming_pool_id'],
         'label' => @params['swimming_pool_label'],
-        'name' => @params['swimming_pool_name'],
-        'nick_name' => @params['swimming_pool_nick_name']
+        'name' => @params['swimming_pool_name'] || @params['swimming_pool_label'],
+        'nick_name' => @params['swimming_pool_nick_name'],
+        'pool_type_id' => @params['pool_type_id'] || @params['swimming_pool_pool_type_id'],
+        'city' => city_attr
       }
     end
 
@@ -339,9 +357,168 @@ module IqRequest
         'city_id' => @params['team_city_id']
       }
     end
+    #-- -----------------------------------------------------------------------
+    #++
+
+    # Maps the source params Hash into Meeting def. attributes, without the root key ('meeting').
+    def meeting_attr
+      # FIXME: this will be nil unless the key is rooted: (same as many other fields)
+      # TODO: should return the sub-hash anyway?
+      return @request_hash['meeting'] if @request_hash.present?
+
+      {
+        'id' => @params['meeting_id'],
+        'description' => @params['meeting_label'],
+        'code' => @params['meeting_code'],
+        'season' => season_attr,
+        'header_date' => @params['meeting_header_date'] || @params['event_date'],
+        'header_year' => header_year,
+        'edition' => @params['meeting_edition'],
+        'edition_type_id' => @params['meeting_edition_type_id'],
+        'team' => team_attr
+      }
+    end
+
+    # Maps the source params Hash into MeetingSession def. attributes, without the root key ('meeting_session').
+    def meeting_session_attr
+      # FIXME: this will be nil unless the key is rooted: (same as many other fields)
+      # TODO: should return the sub-hash anyway?
+      return @request_hash['meeting_session'] if @request_hash.present?
+
+      {
+        'id' => @params['meeting_session_id'],
+        'meeting' => meeting_attr,
+        'session_order' => @params['session_order'],
+        'scheduled_date' => @params['meeting_header_date'] || @params['event_date'],
+        'meeting_session_description' => @params['meeting_session_description'],
+        'day_part_type_id' => @params['meeting_session_day_part_type_id'],
+        'swimming_pool' => swimming_pool_attr
+      }
+    end
+
+    # Maps the source params Hash into MeetingEvent def. attributes, without the root key ('meeting_session').
+    def meeting_event_attr
+      # FIXME: this will be nil unless the key is rooted: (same as many other fields)
+      # TODO: should return the sub-hash anyway?
+      return @request_hash['meeting_event'] if @request_hash.present?
+
+      {
+        'id' => @params['meeting_event_id'],
+        'meeting_session' => meeting_session_attr,
+        'event_type_id' => @params['event_type_id']
+      }
+    end
+
+    # Maps the source params Hash into MeetingEvent def. attributes, without the root key ('meeting_session').
+    def meeting_program_attr
+      # FIXME: this will be nil unless the key is rooted: (same as many other fields)
+      # TODO: should return the sub-hash anyway?
+      return @request_hash['meeting_program'] if @request_hash.present?
+
+      {
+        'id' => @params['meeting_program_id'],
+        'meeting_event' => meeting_event_attr,
+        'pool_type_id' => @params['pool_type_id'] || @params['swimming_pool_pool_type_id'],
+        'category_type_id' => @params['category_type_id'],
+        'gender_type_id' => @params['gender_type_id'] || @params['swimmer_gender_type_id']
+      }
+    end
+
+    # Maps the source params Hash into MeetingEvent def. attributes, without the root key ('meeting_session').
+    def meeting_individual_result_attr
+      # FIXME: this will be nil unless the key is rooted: (same as many other fields)
+      # TODO: should return the sub-hash anyway?
+      return @request_hash['meeting_individual_result'] if @request_hash.present?
+
+      {
+        'id' => @params['meeting_individual_result_id'],
+        'user_id' => @current_user.id,
+        'meeting_program' => meeting_program_attr,
+        'swimmer' => swimmer_attr,
+        'team' => team_attr
+        # TODO: Test this
+      }
+    end
+
+    # Maps the source params Hash into MeetingEvent def. attributes, without the root key ('meeting_session').
+    def lap_attr
+      # FIXME: this will be nil unless the key is rooted: (same as many other fields)
+      # TODO: should return the sub-hash anyway?
+      return @request_hash['lap'] if @request_hash.present?
+
+      {
+        'id' => @params['lap_id'],
+        'meeting_individual_result' => meeting_individual_result_attr,
+        'meeting_program' => meeting_program_attr,
+        'swimmer' => swimmer_attr,
+        'team' => team_attr,
+        'label' => @rec_data['label'],
+        'order' => @rec_data['order'],
+        'length_in_meters' => @rec_data['length_in_meters'],
+        'reaction_time' => @rec_data['reaction_time'],
+        'minutes' => @rec_data['minutes'],
+        'seconds' => @rec_data['seconds'],
+        'hundredths' => @rec_data['hundredths'],
+        'position' => @rec_data['position'],
+        'minutes_from_start' => @rec_data['minutes_from_start'],
+        'seconds_from_start' => @rec_data['seconds_from_start'],
+        'hundredths_from_start' => @rec_data['hundredths_from_start']
+        # TODO: Test this
+      }
+    end
+
+    # Maps the source params Hash into MeetingEvent def. attributes, without the root key ('meeting_session').
+    def meeting_relay_result_attr
+      # FIXME: this will be nil unless the key is rooted: (same as many other fields)
+      # TODO: should return the sub-hash anyway?
+      return @request_hash['meeting_relay_result'] if @request_hash.present?
+
+      {
+        'id' => @params['meeting_relay_result_id'],
+        'user_id' => @current_user.id,
+        'meeting_program' => meeting_program_attr,
+        'team' => team_attr,
+        'relay_code' => @params['relay_code'],
+        'team_affiliation_id' => @params['team_affiliation_id'],
+        # TODO: TeamAffiliation ^^^
+        'reaction_time' => @rec_data['reaction_time'],
+        'minutes' => @rec_data['minutes'],
+        'seconds' => @rec_data['seconds'],
+        'hundredths' => @rec_data['hundredths']
+        # TODO: missing fields
+      }
+    end
+
+    # Maps the source params Hash into MeetingEvent def. attributes, without the root key ('meeting_session').
+    def meeting_relay_swimmer_attr
+      # FIXME: this will be nil unless the key is rooted: (same as many other fields)
+      # TODO: should return the sub-hash anyway?
+      return @request_hash['meeting_relay_swimmer'] if @request_hash.present?
+
+      {
+        'id' => @params['meeting_relay_swimmer_id'],
+        'meeting_relay_result' => meeting_relay_result_attr,
+        'swimmer' => swimmer_attr,
+        'stroke_type_id' => @rec_data['stroke_type_id'],
+        # TODO: stroke_type_id ^^^
+        'label' => @rec_data['label'],
+        'order' => @rec_data['order'],
+        'length_in_meters' => @rec_data['length_in_meters'],
+        'reaction_time' => @rec_data['reaction_time'],
+        'minutes' => @rec_data['minutes'],
+        'seconds' => @rec_data['seconds'],
+        'hundredths' => @rec_data['hundredths'],
+        'badge_id' => @rec_data['badge_id']
+        # TODO: badge_id ^^^
+      }
+    end
+    #-- -----------------------------------------------------------------------
+    #++
 
     # Maps the source params Hash into UserWorkshop def. attributes, without the root key ('user_workshop').
     def user_workshop_attr
+      # FIXME: this will be nil unless the key is rooted: (same as many other fields)
+      # TODO: should return the sub-hash anyway?
       return @request_hash['user_workshop'] if @request_hash.present?
 
       {
@@ -368,6 +545,7 @@ module IqRequest
         'user_workshop' => user_workshop_attr,
         'user_id' => @current_user.id,
         'swimmer' => swimmer_attr,
+        'swimming_pool' => swimming_pool_attr,
         'category_type_id' => @params['category_type_id'],
         'pool_type_id' => @params['pool_type_id'] || @params['swimming_pool_id'],
         'event_type_id' => @params['event_type_id'],

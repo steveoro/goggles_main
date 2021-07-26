@@ -14,7 +14,6 @@ class SearchDecorator < Draper::Decorator
   # Returns the parameters to render an empty string otherwise.
   # (null pattern used to reduce view logic)
   #
-  # rubocop:disable Metrics/CyclomaticComplexity
   def self.rendering_parameters(results_collection)
     # Don't render anything otherwise:
     return { plain: '' } unless results_collection&.exists?
@@ -36,5 +35,4 @@ class SearchDecorator < Draper::Decorator
       { partial: 'swimming_pool_results', locals: { swimming_pools: results_collection } }
     end
   end
-  # rubocop:enable Metrics/CyclomaticComplexity
 end

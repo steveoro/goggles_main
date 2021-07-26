@@ -8,7 +8,7 @@ module Solver
   #
   # = CategoryType solver strategy object
   #
-  #   - version:  7.02.18
+  #   - version:  7.3.07
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::CategoryType.
@@ -22,6 +22,8 @@ module Solver
     # 2. bindings match: code + season
     #
     def finder_strategy
+      return nil if @bindings.empty?
+
       id = value_from_req(key: 'category_type_id', nested: 'category_type', sub_key: 'id')
       # Priority #1
       return GogglesDb::CategoryType.find_by(id: id) if id.to_i.positive?

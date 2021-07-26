@@ -10,6 +10,14 @@ RSpec.describe Solver::UserResult, type: :strategy do
   #++
 
   #
+  # INVALID data: empty request
+  #
+  context 'with EMPTY #req data,' do
+    let(:fixture_req) { {} }
+    it_behaves_like('Solver strategy, NO bindings, UNSOLVABLE req, after #solve!', 'UserResult')
+  end
+
+  #
   # INVALID data: BAD ID, @ root
   #
   context 'with INVALID #req data (non-existing id @ root lv.),' do
@@ -138,24 +146,21 @@ RSpec.describe Solver::UserResult, type: :strategy do
       subject do
         solver = Solver::Factory.for('UserResult', fixture_req)
         solver.solve!
-        # DEBUG ----------------------------------------------------------------
-        binding.pry unless solver.solved?
-        # ----------------------------------------------------------------------
         expect(solver).to be_solved
         solver
       end
-      # it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::UserResult)
+      it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::UserResult)
 
-      # describe '#entity' do
-      #   %i[
-      #     user_workshop_id user_id swimmer_id category_type_id pool_type_id swimming_pool_id
-      #     event_type_id event_date minutes seconds hundredths reaction_time
-      #   ].each do |column_name|
-      #     it "has the expected #{column_name}" do
-      #       expect(subject.entity.send(column_name)).to eq(fixture_row.send(column_name))
-      #     end
-      #   end
-      # end
+      describe '#entity' do
+        %i[
+          user_workshop_id user_id swimmer_id category_type_id pool_type_id swimming_pool_id
+          event_type_id event_date minutes seconds hundredths reaction_time
+        ].each do |column_name|
+          it "has the expected #{column_name}" do
+            expect(subject.entity.send(column_name)).to eq(fixture_row.send(column_name))
+          end
+        end
+      end
     end
     #-- -----------------------------------------------------------------------
     #++

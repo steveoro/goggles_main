@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_09_090644) do
+ActiveRecord::Schema.define(version: 2021_07_26_121625) do
 
   create_table "achievement_rows", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "lock_version", default: 0
@@ -2179,6 +2179,9 @@ ActiveRecord::Schema.define(version: 2021_07_09_090644) do
     t.index ["voter_id", "voter_type"], name: "index_votes_on_voter_id_and_voter_type"
   end
 
+  add_foreign_key "laps", "meeting_individual_results"
+  add_foreign_key "laps", "swimmers"
+  add_foreign_key "laps", "teams"
   add_foreign_key "meeting_event_reservations", "badges"
   add_foreign_key "meeting_event_reservations", "meeting_events"
   add_foreign_key "meeting_event_reservations", "meetings"

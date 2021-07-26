@@ -49,6 +49,7 @@ Metrics/ClassLength:
   - 'app/controllers/chrono_controller.rb'
 
 Metrics/CyclomaticComplexity:
+  Max: 8
   Exclude:
     - 'bin/bundle'
 

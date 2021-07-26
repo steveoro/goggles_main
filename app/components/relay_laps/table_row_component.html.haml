@@ -9,7 +9,9 @@
 
   %td.text-left{ colspan: 2 }
     %small
-      = @relay_swimmer.to_timing&.to_s
+      - if Rails.env.development?
+        ID: #{@relay_swimmer.id}&nbsp;
+      #{@relay_swimmer.to_timing} Δ
       &nbsp;
       %i.fa.fa-long-arrow-right
       &nbsp;

@@ -8,7 +8,7 @@ module Solver
   #
   # = UserResult solver strategy object
   #
-  #   - version:  7.3.06
+  #   - version:  7.3.07
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::UserResult.
@@ -22,6 +22,8 @@ module Solver
     # 2. bindings match
     #
     def finder_strategy
+      return nil if @bindings.empty?
+
       id = value_from_req(key: 'user_result_id', nested: 'user_result', sub_key: 'id')
       # Priority #1
       return GogglesDb::UserResult.find_by_id(id) if id.to_i.positive?
@@ -43,6 +45,8 @@ module Solver
     # - a new target entity instance when done, saved successfully if valid,
     #   and yielding any validation erros as #error_messages.
     def creator_strategy
+      return nil if @bindings.empty?
+
       solve_bindings
       return nil unless required_bindings.values.all?(&:present?)
 
@@ -69,12 +73,12 @@ module Solver
         user_workshop_id: Solver::Factory.for('UserWorkshop', root_key?('user_workshop') ? req : req['user_result']),
         # User id must always be supplied, cannot be found or created:
         user_id: value_from_req(key: 'user_result_user_id', nested: 'user_result', sub_key: 'user_id'),
-        # Give priority to the nested version of Swimmer:
+        # Give priority to the nested version of Swimmer & SwimmingPool:
         swimmer_id: Solver::Factory.for('Swimmer', nested_key?('user_result', 'swimmer') ? req['user_result'] : req),
+        swimming_pool_id: Solver::Factory.for('SwimmingPool', nested_key?('user_result', 'swimming_pool') ? req['user_result'] : req),
         category_type_id: Solver::Factory.for('CategoryType', root_key?('category_type') ? req : req['user_result']),
         pool_type_id: Solver::Factory.for('PoolType', root_key?('pool_type') ? req : req['user_result']),
         event_type_id: Solver::Factory.for('EventType', root_key?('event_type') ? req : req['user_result']),
-        swimming_pool_id: Solver::Factory.for('SwimmingPool', root_key?('swimming_pool') ? req : req['user_result']),
 
         # Optional fields:
         event_date: value_from_req(key: 'event_date', nested: 'user_result', sub_key: 'event_date') || Date.today.to_s,

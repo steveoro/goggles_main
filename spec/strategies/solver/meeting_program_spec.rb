@@ -10,6 +10,14 @@ RSpec.describe Solver::MeetingProgram, type: :strategy do
   #++
 
   #
+  # INVALID data: empty request
+  #
+  context 'with EMPTY #req data,' do
+    let(:fixture_req) { {} }
+    it_behaves_like('Solver strategy, NO bindings, UNSOLVABLE req, after #solve!', 'MeetingProgram')
+  end
+
+  #
   # INVALID data: BAD ID, @ root
   #
   context 'with INVALID #req data (non-existing id @ root lv.),' do
@@ -71,10 +79,8 @@ RSpec.describe Solver::MeetingProgram, type: :strategy do
           'category_type_id' => row.category_type_id,
           'gender_type_id' => row.gender_type_id,
           'event_order' => row.event_order,
-          'begin_time' => row.begin_time
-        },
-        'meeting_session' => {
-          'pool_type' => { 'id' => row.pool_type_id }
+          'begin_time' => row.begin_time,
+          'pool_type_id' => row.pool_type_id
         }
       }
     },
@@ -90,7 +96,6 @@ RSpec.describe Solver::MeetingProgram, type: :strategy do
         'gender_type_id' => row.gender_type_id
       }
     },
-    # depth 2
     lambda { |row|
       {
         'meeting_program' => {
@@ -103,6 +108,7 @@ RSpec.describe Solver::MeetingProgram, type: :strategy do
         'gender_type' => { 'id' => row.gender_type_id }
       }
     },
+    # depth 2
     lambda { |row|
       {
         'meeting_program' => {
@@ -110,9 +116,7 @@ RSpec.describe Solver::MeetingProgram, type: :strategy do
           'begin_time' => row.begin_time,
           'meeting_event' => { 'id' => row.meeting_event_id },
           'category_type' => { 'id' => row.category_type_id },
-          'gender_type' => { 'id' => row.gender_type_id }
-        },
-        'meeting_session' => {
+          'gender_type' => { 'id' => row.gender_type_id },
           'pool_type' => { 'id' => row.pool_type_id }
         }
       }

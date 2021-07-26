@@ -10,6 +10,14 @@ RSpec.describe Solver::SwimmingPool, type: :strategy do
   #++
 
   #
+  # INVALID data: empty request
+  #
+  context 'with EMPTY #req data,' do
+    let(:fixture_req) { {} }
+    it_behaves_like('Solver strategy, NO bindings, UNSOLVABLE req, after #solve!', 'SwimmingPool')
+  end
+
+  #
   # INVALID data: BAD ID, @ root
   #
   context 'with INVALID #req data (non-existing id @ root lv.),' do
@@ -59,6 +67,13 @@ RSpec.describe Solver::SwimmingPool, type: :strategy do
         'pool_type_id' => row.pool_type_id
       }
     },
+    lambda { |row| # check that nick_name can actually be computed:
+      {
+        'swimming_pool_name' => row.name,
+        'city_id' => row.city_id,
+        'pool_type_id' => row.pool_type_id
+      }
+    },
     # depth 1
     lambda { |row|
       {
@@ -66,6 +81,13 @@ RSpec.describe Solver::SwimmingPool, type: :strategy do
           'name' => row.name,
           'nick_name' => row.nick_name
         },
+        'city_id' => row.city_id,
+        'pool_type_id' => row.pool_type_id
+      }
+    },
+    lambda { |row|
+      {
+        'swimming_pool' => { 'name' => row.name },
         'city_id' => row.city_id,
         'pool_type_id' => row.pool_type_id
       }
@@ -83,9 +105,25 @@ RSpec.describe Solver::SwimmingPool, type: :strategy do
     },
     lambda { |row|
       {
+        'swimming_pool' => { 'name' => row.name },
+        'city' => { 'id' => row.city_id },
+        'pool_type' => { 'id' => row.pool_type_id }
+      }
+    },
+    lambda { |row|
+      {
         'swimming_pool' => {
           'name' => row.name,
           'nick_name' => row.nick_name,
+          'city' => { 'id' => row.city_id },
+          'pool_type' => { 'id' => row.pool_type_id }
+        }
+      }
+    },
+    lambda { |row|
+      {
+        'swimming_pool' => {
+          'name' => row.name,
           'city' => { 'id' => row.city_id },
           'pool_type' => { 'id' => row.pool_type_id }
         }
@@ -95,7 +133,7 @@ RSpec.describe Solver::SwimmingPool, type: :strategy do
     #
     # VALID data: EXISTING row data
     #
-    context "with solvable #req data (valid @ depth #{index})," do
+    context "with solvable #req data (valid @ depth #{index / 2}, var. #{index % 2})," do
       let(:fixture_row) { GogglesDb::SwimmingPool.first(50).sample }
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { fixture_row.id }
@@ -104,7 +142,7 @@ RSpec.describe Solver::SwimmingPool, type: :strategy do
         solver.solve!
         solver
       end
-      it_behaves_like('Solver strategy, bindings, solvable req, after #solve!', GogglesDb::SwimmingPool)
+      it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::SwimmingPool)
 
       describe '#entity' do
         it 'has the expected name' do
@@ -128,15 +166,29 @@ RSpec.describe Solver::SwimmingPool, type: :strategy do
     # VALID data: NEW row data
     #
     context "with solvable NEW #req data (valid @ depth #{index})," do
-      let(:fixture_row) { FactoryBot.build(:swimming_pool, city: GogglesDb::City.first(100).sample) }
+      let(:fixture_row) do
+        new_row = FactoryBot.build(
+          :swimming_pool,
+          city: GogglesDb::City.first(100).sample,
+          pool_type_id: [GogglesDb::PoolType::MT_25_ID, GogglesDb::PoolType::MT_25_ID].sample
+        )
+        # Use an actual pre-computed nick name based on the fixture values:
+        # (so that it's predictable by the Solver class)
+        new_row.nick_name = Solver::BaseStrategy.new.normalize_string_name_into_code(
+          "#{new_row.city.name} #{new_row.name} #{new_row.pool_type.length_in_meters}"
+        )
+        expect(new_row.nick_name.length).to be <= 50
+        new_row
+      end
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { false }
+
       subject do
         solver = Solver::Factory.for('SwimmingPool', fixture_req)
         solver.solve!
         solver
       end
-      it_behaves_like('Solver strategy, bindings, solvable req, after #solve!', GogglesDb::SwimmingPool)
+      it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::SwimmingPool)
 
       describe '#entity' do
         it 'has the expected name' do

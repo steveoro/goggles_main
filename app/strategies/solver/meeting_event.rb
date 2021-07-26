@@ -8,7 +8,7 @@ module Solver
   #
   # = MeetingEvent solver strategy object
   #
-  #   - version:  7.3.05
+  #   - version:  7.3.07
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::MeetingEvent.
@@ -22,6 +22,8 @@ module Solver
     # 2. bindings match
     #
     def finder_strategy
+      return nil if @bindings.empty?
+
       id = value_from_req(key: 'meeting_event_id', nested: 'meeting_event', sub_key: 'id')
       # Priority #1
       return GogglesDb::MeetingEvent.find_by_id(id) if id.to_i.positive?
@@ -43,11 +45,14 @@ module Solver
     # - a new target entity instance when done, saved successfully if valid,
     #   and yielding any validation erros as #error_messages.
     def creator_strategy
+      return nil if @bindings.empty?
+
       solve_bindings
       return nil unless required_bindings.values.all?(&:present?)
 
       new_instance = GogglesDb::MeetingEvent.new
       bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
+      new_instance.heat_type_id = GogglesDb::HeatType::FINALS_ID unless new_instance.heat_type_id.to_i.positive?
       new_instance.event_order = existing_event_order(new_instance) + 1 unless new_instance.event_order.positive?
       new_instance.save # Don't throw validation errors
       new_instance
@@ -70,8 +75,7 @@ module Solver
         event_type_id: Solver::Factory.for('EventType', root_key?('event_type') ? req : req['meeting_event']),
 
         # Fields w/ defaults:
-        heat_type_id: Solver::Factory.for('HeatType', root_key?('heat_type') ? req : req['meeting_event']) ||
-                      GogglesDb::HeatType::FINALS_ID,
+        heat_type_id: Solver::Factory.for('HeatType', root_key?('heat_type') ? req : req['meeting_event']),
         event_order: value_from_req(key: 'event_order', nested: 'meeting_event', sub_key: 'event_order') || 0,
         # NOTE: the following assumes most of the stored events will be referring to the Italy/Germany/Sweden
         #       time zone (which is still true as of 2021):

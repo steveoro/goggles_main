@@ -1,7 +1,7 @@
 %tbody
   %tr
     %td.text-right
-      = render(RankingPosComponent.new(rank: @mir.rank))
+      = render(RankingPosComponent.new(rank: rank))
     %td.text-right
       = @mir.to_timing.to_s
       - if includes_laps? || @mir.reaction_time > 0.0
@@ -11,15 +11,15 @@
           R: #{@mir.reaction_time}
       = render(Switch::RotatingComponent.new(target_id: "laps#{@mir.id}")) if includes_laps?
     %td
-      = @mir.swimmer&.complete_name
+      = swimmer&.complete_name
       %br/
       %small.text-muted
-        = @mir.swimmer&.year_of_birth
-        - if @mir.respond_to?(:team)
+        = swimmer&.year_of_birth
+        - if team
           %i
-            &nbsp;-&nbsp;#{TeamDecorator.decorate(@mir.team).link_to_full_name}
-        - elsif @mir.respond_to?(:swimming_pool) && @mir.swimming_pool
-          &nbsp;-&nbsp;#{@mir.swimming_pool&.link_to_full_name}
+            &nbsp;-&nbsp;#{TeamDecorator.decorate(team).link_to_full_name}
+        - elsif swimming_pool
+          &nbsp;-&nbsp;#{SwimmingPoolDecorator.decorate(swimming_pool).link_to_full_name}
     %td
       .text-muted
         = result_score

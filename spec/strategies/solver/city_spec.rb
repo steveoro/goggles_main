@@ -10,6 +10,14 @@ RSpec.describe Solver::City, type: :strategy do
   #++
 
   #
+  # INVALID data: empty request
+  #
+  context 'with EMPTY #req data,' do
+    let(:fixture_req) { {} }
+    it_behaves_like('Solver strategy, NO bindings, UNSOLVABLE req, after #solve!', 'City')
+  end
+
+  #
   # INVALID data: BAD ID, @ root
   #
   context 'with INVALID #req data (non-existing id @ root lv.),' do
@@ -79,7 +87,7 @@ RSpec.describe Solver::City, type: :strategy do
         solver.solve!
         solver
       end
-      it_behaves_like('Solver strategy, bindings, solvable req, after #solve!', GogglesDb::City)
+      it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::City)
 
       describe '#entity' do
         it 'has the expected name' do
@@ -105,7 +113,7 @@ RSpec.describe Solver::City, type: :strategy do
         solver.solve!
         solver
       end
-      it_behaves_like('Solver strategy, bindings, solvable req, after #solve!', GogglesDb::City)
+      it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::City)
 
       describe '#entity' do
         it 'has the expected name' do

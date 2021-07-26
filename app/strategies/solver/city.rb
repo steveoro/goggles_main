@@ -8,7 +8,7 @@ module Solver
   #
   # = City solver strategy object
   #
-  #   - version:  7.02.18
+  #   - version:  7.3.07
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::City.
@@ -23,13 +23,15 @@ module Solver
     # 3. name: full-text search index on #name
     #
     def finder_strategy
+      return nil if @bindings.empty?
+
       id = value_from_req(key: 'city_id', nested: 'city', sub_key: 'id')
       # Priority #1
       return GogglesDb::City.find_by_id(id) if id.to_i.positive?
 
       # Priority #2
       solve_bindings
-      if all_bindings_solved?
+      if required_bindings.values.all?(&:present?)
         return GogglesDb::City.where(
           name: @bindings[:name],
           country_code: @bindings[:country_code]
@@ -51,11 +53,15 @@ module Solver
     # - a new target entity instance when done, saved successfully if valid,
     #   and yielding any validation erros as #error_messages.
     def creator_strategy
+      return nil if @bindings.empty?
+
       solve_bindings
-      return nil unless all_bindings_solved?
+      return nil unless required_bindings.values.all?(&:present?)
 
       new_instance = GogglesDb::City.new
       bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
+      new_instance.country = new_instance.iso_attributes['country'] unless new_instance.country.present? ||
+                                                                           new_instance.country_code.to_s.empty?
       new_instance.save # Don't throw validation errors
       new_instance
     end
@@ -74,8 +80,18 @@ module Solver
     def init_bindings
       @bindings = {
         name: value_from_req(key: 'city_name', nested: 'city', sub_key: 'name'),
+        area: value_from_req(key: 'city_area', nested: 'city', sub_key: 'area'),
         country_code: value_from_req(key: 'city_country_code', nested: 'city', sub_key: 'country_code')
       }
+    end
+
+    private
+
+    # Filtered hash of minimum required field bindings
+    def required_bindings
+      @bindings.select do |key, _value|
+        %i[name country_code].include?(key)
+      end
     end
   end
 end

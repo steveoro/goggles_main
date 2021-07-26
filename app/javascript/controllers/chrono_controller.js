@@ -307,9 +307,12 @@ export default class extends Controller {
       const dataPayload = this.grid.collection.map((model) => {
         return {
           order: model.attributes.order,
-          minutes: model.attributes.minutes,
-          seconds: model.attributes.seconds,
-          hundredths: model.attributes.hundredths,
+          minutes: 0,
+          seconds: 0,
+          hundredths: 0,
+          minutes_from_start: model.attributes.minutes,
+          seconds_from_start: model.attributes.seconds,
+          hundredths_from_start: model.attributes.hundredths,
           length_in_meters: model.attributes.meters,
           label: model.attributes.labelTime
         }

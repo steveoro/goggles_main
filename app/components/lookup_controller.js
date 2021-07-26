@@ -472,7 +472,15 @@ export default class extends Controller {
        */
       if (mapData.get('id') === mapData.get('label')) {
         mapData.set('id', 0)
-        // Update also swimmer's complete name, if we're dealing with swimmers:
+        // Peculiar cases:
+        // 1. SwimmingPool: clear pre-existing values set by cookies when we're setting new records
+        if (baseName.startsWith('swimming_pool') && mapData.get('label')) {
+          document.querySelector('#swimming_pool_name').value = mapData.get('label')
+          document.querySelector('#swimming_pool_nick_name').value = null
+          document.querySelector('#swimming_pool_city_id').value = null
+          document.querySelector('#swimming_pool_pool_type_id').value = null
+        }
+        // 1. Swimmer: update complete_name
         if (baseName.startsWith('swimmer') && mapData.get('label') && document.querySelector(`#${baseName}_complete_name`)) {
           document.querySelector(`#${baseName}_complete_name`).value = mapData.get('label')
         }
@@ -625,6 +633,19 @@ export default class extends Controller {
       // Programmatically set also any other related fields:
       $('#city_country_code').val(mapData.get('city').country_code)
       $('#city_area').val(mapData.get('city').area)
+    }
+
+    /*
+     * Special case #4: 'pool_type_id' w/ PoolType object => update 'pool_type_select'
+     * (selection dataset will be created if missing)
+     */
+    if (mapData.get('pool_type_id') && mapData.get('pool_type') && document.querySelector('#pool_type_select')) {
+      // DEBUG
+      console.log('pool type details:')
+      console.log(mapData.get('pool_type'))
+      const valueId = mapData.get('pool_type_id')
+      $('#pool_type_id').val(valueId)
+      $('#pool_type_id').trigger('change')
     }
   }
   // ---------------------------------------------------------------------------

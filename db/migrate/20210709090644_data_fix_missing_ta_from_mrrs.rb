@@ -10,7 +10,7 @@ class DataFixMissingTaFromMrrs < ActiveRecord::Migration[6.0]
     puts "Count at start: #{count}"
 
     # Search for a valid TA for the MRR missing it:
-     GogglesDb::MeetingRelayResult.where(missing_ta_condition).each do |mrr|
+    GogglesDb::MeetingRelayResult.where(missing_ta_condition).each do |mrr|
       ta = mrr.team.team_affiliations.where(season_id: mrr.season.id).first
       mrr.team_affiliation_id = ta.id
       mrr.save!

@@ -3,7 +3,7 @@
 #
 # = MIR components module
 #
-#   - version:  7.3.05
+#   - version:  7.3.07
 #   - author:   Steve A.
 #
 module MIR
@@ -21,25 +21,49 @@ module MIR
     #
     # == Params
     # - mir: the GogglesDb::MeetingIndividualResult model instance to be displayed
-    def initialize(mir:)
+    # - index: the current MIR index, spanning the event context (can substitute rank when rank is missing)
+    def initialize(mir:, index: 0)
       super
       @mir = mir
+      @index = index
     end
 
     # Skips rendering unless the member is properly set
     def render?
-      @mir.class.ancestors.include?(GogglesDb::AbstractResult)
+      @mir.class.ancestors.include?(GogglesDb::AbstractResult) && @mir.swimmer_id.to_i.present?
     end
 
     protected
 
+    # Memoized rank value
+    def rank
+      @rank ||= @mir.rank.to_i.positive? ? @mir.rank.to_i : @index + 1
+    end
+
+    # Memoized Swimmer association
+    def swimmer
+      return unless @mir.respond_to?(:swimmer_id) && @mir.swimmer_id.to_i.positive?
+
+      @swimmer ||= GogglesDb::Swimmer.find_by_id(@mir.swimmer_id)
+    end
+
+    # Memoized Team association
+    def team
+      return unless @mir.respond_to?(:team_id) && @mir.team_id.to_i.positive?
+
+      @team ||= GogglesDb::Team.find_by_id(@mir.team_id)
+    end
+
+    # Memoized SwimmingPool association
+    def swimming_pool
+      return unless @mir.respond_to?(:swimming_pool_id) && @mir.swimming_pool_id.to_i.positive?
+
+      @swimming_pool ||= GogglesDb::SwimmingPool.find_by_id(@mir.swimming_pool_id)
+    end
+
     # Memoized & generalized lap association
     def laps
-      @laps ||= if @mir.respond_to?(:laps)
-                  @mir.laps
-                elsif @mir.respond_to?(:user_laps)
-                  @mir.user_laps
-                end
+      @laps ||= @mir.laps
     end
 
     # Memoized lap presence
@@ -47,9 +71,24 @@ module MIR
       @includes_laps ||= laps&.count&.positive?
     end
 
-    # Result score; gives precedence to the standard scoring system, if used
+    # Memoized season type
+    def season_type
+      @season_type ||= @mir.season_type
+    end
+
+    # Result score. Gives precedence to the standard FIN Championship scoring system, if set or used.
+    # Fallback: CSI Championship scoring system when standard or meeting points are not set.
     def result_score
-      @mir.standard_points > 0.0 ? @mir.standard_points : @mir.meeting_points
+      result_score = @mir.standard_points.positive? ? @mir.standard_points : @mir.meeting_points
+      return result_score unless result_score.zero?
+
+      compute_csi_score
+    end
+
+    # Computes points based on ranking, according to the CSI Championship rules.
+    def compute_csi_score
+      score = 100 - (rank - 1) * 5
+      score.positive? ? score : 0
     end
   end
 end

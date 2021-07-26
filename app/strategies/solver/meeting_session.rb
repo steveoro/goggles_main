@@ -8,7 +8,7 @@ module Solver
   #
   # = MeetingSession solver strategy object
   #
-  #   - version:  7.3.05
+  #   - version:  7.3.07
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::MeetingSession.
@@ -22,15 +22,17 @@ module Solver
     # 2. bindings match
     #
     def finder_strategy
+      return nil if @bindings.empty?
+
       id = value_from_req(key: 'meeting_session_id', nested: 'meeting_session', sub_key: 'id')
       # Priority #1
       return GogglesDb::MeetingSession.find_by_id(id) if id.to_i.positive?
 
       # Priority #2
       solve_bindings
-      return nil unless required_bindings.values.all?(&:present?)
+      return nil unless finder_required_bindings.values.all?(&:present?)
 
-      GogglesDb::MeetingSession.where(required_bindings).first
+      GogglesDb::MeetingSession.where(finder_required_bindings).first
     end
     #-- -----------------------------------------------------------------------
     #++
@@ -43,11 +45,15 @@ module Solver
     # - a new target entity instance when done, saved successfully if valid,
     #   and yielding any validation erros as #error_messages.
     def creator_strategy
+      return nil if @bindings.empty?
+
       solve_bindings
-      return nil unless required_bindings.values.all?(&:present?)
+      return nil unless creator_required_bindings.values.all?(&:present?)
 
       new_instance = GogglesDb::MeetingSession.new
       bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
+      new_instance.session_order = compute_session_order(new_instance.meeting) if new_instance.session_order.zero?
+      new_instance.scheduled_date = Date.today.to_s unless new_instance.scheduled_date.present?
       new_instance.save # Don't throw validation errors
       new_instance
     end
@@ -66,10 +72,9 @@ module Solver
     def init_bindings
       @bindings = {
         meeting_id: Solver::Factory.for('Meeting', root_key?('meeting') ? req : req['meeting_session']),
+        # Fields w/ defaults (either here or in the creator):
         session_order: value_from_req(key: 'session_order', nested: 'meeting_session', sub_key: 'session_order'),
-        # Fields w/ defaults:
-        scheduled_date: value_from_req(key: 'scheduled_date', nested: 'meeting_session', sub_key: 'scheduled_date') ||
-                        Date.today.to_s,
+        scheduled_date: value_from_req(key: 'scheduled_date', nested: 'meeting_session', sub_key: 'scheduled_date'),
         description: value_from_req(key: 'meeting_session_description', nested: 'meeting_session', sub_key: 'description') ||
                      "#{I18n.t('activerecord.models.goggles_db/meeting_session')} #{Date.today}",
         # Truly optional fields:
@@ -80,11 +85,32 @@ module Solver
 
     private
 
-    # Filtered hash of minimum required field bindings
-    def required_bindings
+    # Filtered hash of minimum required field bindings for the finder strategy
+    def finder_required_bindings
       @bindings.select do |key, _value|
-        %i[meeting_id session_order].include?(key)
+        %i[meeting_id session_order scheduled_date].include?(key)
       end
+    end
+
+    # Filtered hash of minimum required field bindings for the creator strategy
+    def creator_required_bindings
+      @bindings.select do |key, _value|
+        %i[meeting_id].include?(key)
+      end
+    end
+
+    # Computes a possible session order assuming the specified meeting is valid
+    def compute_session_order(meeting)
+      return unless meeting.is_a?(GogglesDb::Meeting)
+
+      max_value = meeting.meeting_sessions.order(:scheduled_date).last&.session_order
+      max_value.to_i + 1
+    end
+
+    # Uses the current bindings to retrieve a Meeting instance with which compute the session order
+    def compute_session_order_from_bindings
+      meeting_id = @bindings[:meeting_id]
+      compute_session_order(GogglesDb::Meeting.find_by_id(meeting_id))
     end
   end
 end

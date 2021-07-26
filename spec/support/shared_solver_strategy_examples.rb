@@ -50,11 +50,17 @@ shared_examples_for 'unsolved or solved Solver strategy (NO bindings)' do
     end
   end
   describe '#bindings_solved' do
+    it 'is an Hash' do
+      expect(subject.bindings_solved).to be_an(Hash)
+    end
     it 'is empty' do
       expect(subject.bindings_solved).to be_empty
     end
   end
   describe '#bindings_left' do
+    it 'is an Hash' do
+      expect(subject.bindings_left).to be_an(Hash)
+    end
     it 'is empty' do
       expect(subject.bindings_left).to be_empty
     end
@@ -72,7 +78,10 @@ shared_examples_for 'unsolved Solver strategy (bindings)' do
   # bindings_solved could be empty or not, depending if it was partially solved or totally unsolved,
   # so we cannot assert anything useful on it
   describe '#bindings_left' do
-    it 'is not_empty' do
+    it 'is an Hash' do
+      expect(subject.bindings_left).to be_an(Hash)
+    end
+    it 'is not empty' do
       expect(subject.bindings_left).not_to be_empty
     end
   end
@@ -87,11 +96,17 @@ shared_examples_for 'solved Solver strategy (bindings)' do
     end
   end
   describe '#bindings_solved' do
+    it 'is an Hash' do
+      expect(subject.bindings_solved).to be_an(Hash)
+    end
     it 'is not empty' do
       expect(subject.bindings_solved).not_to be_empty
     end
   end
   describe '#bindings_left' do
+    it 'is an Hash' do
+      expect(subject.bindings_left).to be_an(Hash)
+    end
     it 'is empty' do
       expect(subject.bindings_left).to be_empty
     end
@@ -109,7 +124,7 @@ shared_examples_for 'Solver::BaseStrategy common methods defaults' do
     'responding to a list of methods',
     %i[entity req bindings
        all_bindings_solved? bindings_solved bindings_left solved?
-       solve! error_messages]
+       solve! error_messages solve_issues]
   )
   it_behaves_like('unsolved Solver strategy (#solved? & #entity)')
 end
@@ -130,6 +145,11 @@ shared_examples_for 'Solver strategy, NO bindings, finder ONLY, before #solve!' 
   describe '#error_messages' do
     it 'is nil' do
       expect(subject.error_messages).to be nil
+    end
+  end
+  describe '#solve_issues' do
+    it 'is an empty Hash' do
+      expect(subject.solve_issues).to be_an(Hash).and be_empty
     end
   end
   it_behaves_like('Solver::BaseStrategy common methods defaults')
@@ -155,6 +175,11 @@ shared_examples_for 'Solver strategy, bindings, finder ONLY, before #solve!' do 
       expect(subject.error_messages).to be nil
     end
   end
+  describe '#solve_issues' do
+    it 'is an empty Hash' do
+      expect(subject.solve_issues).to be_an(Hash).and be_empty
+    end
+  end
   it_behaves_like('Solver::BaseStrategy common methods defaults')
   it_behaves_like('responding to a list of methods', %i[finder_strategy])
   it_behaves_like('unsolved Solver strategy (bindings)')
@@ -176,6 +201,11 @@ shared_examples_for 'Solver strategy, bindings, finder & creator, before #solve!
   describe '#error_messages' do
     it 'is nil' do
       expect(subject.error_messages).to be nil
+    end
+  end
+  describe '#solve_issues' do
+    it 'is an empty Hash' do
+      expect(subject.solve_issues).to be_an(Hash).and be_empty
     end
   end
   it_behaves_like('Solver::BaseStrategy common methods defaults')
@@ -202,6 +232,11 @@ shared_examples_for 'Solver strategy, NO bindings, UNSOLVABLE req, after #solve!
       expect(subject.error_messages.nil? || subject.error_messages.present?).to be true
     end
   end
+  describe '#solve_issues' do
+    it 'is an empty Hash' do
+      expect(subject.solve_issues).to be_an(Hash).and be_empty
+    end
+  end
   it_behaves_like('unsolved or solved Solver strategy (NO bindings)')
   it_behaves_like('unsolved Solver strategy (#solved? & #entity)')
 end
@@ -220,6 +255,11 @@ shared_examples_for 'Solver strategy, bindings, UNSOLVABLE req, after #solve!' d
   describe '#error_messages' do
     it 'is either nil or present' do
       expect(subject.error_messages.nil? || subject.error_messages.present?).to be true
+    end
+  end
+  describe '#solve_issues' do
+    it 'is a non-empty Hash' do
+      expect(subject.solve_issues).to be_an(Hash).and be_present
     end
   end
   it_behaves_like('unsolved Solver strategy (bindings)')
@@ -247,6 +287,11 @@ shared_examples_for 'Solver strategy, NO bindings, solvable req, after #solve!' 
       expect(subject.error_messages).to be_empty
     end
   end
+  describe '#solve_issues' do
+    it 'is an empty Hash' do
+      expect(subject.solve_issues).to be_an(Hash).and be_empty
+    end
+  end
   describe '#entity' do
     it 'has expected ID' do
       expect(subject.entity.id).to eq(expected_id) if expected_id
@@ -269,6 +314,11 @@ shared_examples_for 'Solver strategy, bindings, solvable req, after #solve!' do 
       expect(subject.error_messages).to be_empty
     end
   end
+  describe '#solve_issues' do
+    it 'is an empty Hash' do
+      expect(subject.solve_issues).to be_an(Hash).and be_empty
+    end
+  end
   describe '#entity' do
     it 'has expected ID' do
       expect(subject.entity.id).to eq(expected_id) if expected_id
@@ -289,6 +339,12 @@ shared_examples_for 'Solver strategy, OPTIONAL bindings, solvable req, after #so
   describe '#error_messages' do
     it 'is empty' do
       expect(subject.error_messages).to be_empty
+    end
+  end
+  describe '#solve_issues' do
+    # 'Can't be too specific in this case (could be present or empty):
+    it 'is an Hash' do
+      expect(subject.solve_issues).to be_an(Hash)
     end
   end
   describe '#entity' do

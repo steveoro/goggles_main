@@ -8,7 +8,7 @@ module Solver
   #
   # = Badge solver strategy object
   #
-  #   - version:  7.3.05
+  #   - version:  7.3.07
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::Badge.
@@ -22,6 +22,8 @@ module Solver
     # 2. bindings match
     #
     def finder_strategy
+      return nil if @bindings.empty?
+
       id = value_from_req(key: 'badge_id', nested: 'badge', sub_key: 'id')
       # Priority #1
       return GogglesDb::Badge.find_by(id: id) if id.to_i.positive?
@@ -43,6 +45,8 @@ module Solver
     # - a new target entity instance when done, saved successfully if valid,
     #   and yielding any validation erros as #error_messages.
     def creator_strategy
+      return nil if @bindings.empty?
+
       solve_bindings
       return nil unless required_bindings.values.all?(&:present?)
 

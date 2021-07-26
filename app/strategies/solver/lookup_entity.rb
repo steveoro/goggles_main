@@ -8,7 +8,7 @@ module Solver
   #
   # = LookupEntity solver strategy object
   #
-  #   - version:  7.02.18
+  #   - version:  7.3.07
   #   - author:   Steve A.
   #
   # Tries to resolve a request for building a new GogglesDb::<ANY_LOOKUP_ENTITY>.

@@ -10,6 +10,14 @@ RSpec.describe Solver::Badge, type: :strategy do
   #++
 
   #
+  # INVALID data: empty request
+  #
+  context 'with EMPTY #req data,' do
+    let(:fixture_req) { {} }
+    it_behaves_like('Solver strategy, NO bindings, UNSOLVABLE req, after #solve!', 'Badge')
+  end
+
+  #
   # INVALID data: BAD ID, @ root
   #
   context 'with INVALID #req data (non-existing id @ root lv.),' do

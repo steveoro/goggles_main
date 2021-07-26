@@ -39,6 +39,7 @@ RSpec.describe Solver::UserLap, type: :integration do
                 'year_of_birth' => row.user_result.swimmer.year_of_birth,
                 'gender_type_id' => row.user_result.swimmer.gender_type_id
               },
+              'swimming_pool' => { 'id' => row.user_result.swimming_pool_id },
               'category_type_id' => row.user_result.category_type_id,
               'pool_type_id' => row.user_result.pool_type_id,
               'event_type_id' => row.user_result.event_type_id,

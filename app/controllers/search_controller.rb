@@ -71,7 +71,6 @@ class SearchController < ApplicationController
   def prepare_swimmer_search_results
     # (NOTE: fulltext search filters like #for_name do not need strong checking)
     @swimmers = GogglesDb::Swimmer.for_name(params['q'])
-                                  .order(:complete_name, :year_of_birth)
                                   .page(params['page']).per(5)
   end
 
@@ -82,24 +81,22 @@ class SearchController < ApplicationController
                             .page(params['page']).per(5)
   end
 
+  # Sets the @swimming_pools member
+  def prepare_pool_search_results
+    @swimming_pools = GogglesDb::SwimmingPool.includes([:city])
+                                             .for_name(params['q']).by_name
+                                             .page(params['page']).per(5)
+  end
+
   # Sets the @meetings member
   def prepare_meeting_search_results
-    @meetings = GogglesDb::Meeting.includes([:edition_type])
-                                  .for_name(params['q']).by_date(:desc)
+    @meetings = GogglesDb::Meeting.for_name(params['q'])
                                   .page(params['page']).per(5)
   end
 
   # Sets the @user_workshops member
   def prepare_workshop_search_results
-    @user_workshops = GogglesDb::UserWorkshop.includes([:edition_type])
-                                             .for_name(params['q']).by_date(:desc)
-                                             .page(params['page']).per(5)
-  end
-
-  # Sets the @swimming_pools member
-  def prepare_pool_search_results
-    @swimming_pools = GogglesDb::SwimmingPool.includes([:city])
-                                             .for_name(params['q']).by_name
+    @user_workshops = GogglesDb::UserWorkshop.for_name(params['q'])
                                              .page(params['page']).per(5)
   end
 

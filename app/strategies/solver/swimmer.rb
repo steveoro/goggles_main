@@ -8,7 +8,7 @@ module Solver
   #
   # = Swimmer solver strategy object
   #
-  #   - version:  7.03.05
+  #   - version:  7.3.07
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::Swimmer.
@@ -23,6 +23,8 @@ module Solver
     # 3. complete_name: full-text search index on #complete_name, FIFO order
     #
     def finder_strategy
+      return nil if @bindings.empty?
+
       id = value_from_req(key: 'swimmer_id', nested: 'swimmer', sub_key: 'id')
       # Priority #1
       return GogglesDb::Swimmer.find_by_id(id) if id.to_i.positive?
@@ -59,6 +61,8 @@ module Solver
     # - first_name: as above, Swimmer#first_name
     #
     def creator_strategy
+      return nil if @bindings.empty?
+
       solve_bindings
       return nil unless all_bindings_solved?
 

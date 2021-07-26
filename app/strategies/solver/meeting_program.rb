@@ -8,7 +8,7 @@ module Solver
   #
   # = MeetingProgram solver strategy object
   #
-  #   - version:  7.3.05
+  #   - version:  7.3.07
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::MeetingProgram.
@@ -22,6 +22,8 @@ module Solver
     # 2. bindings match
     #
     def finder_strategy
+      return nil if @bindings.empty?
+
       id = value_from_req(key: 'meeting_program_id', nested: 'meeting_program', sub_key: 'id')
       # Priority #1
       return GogglesDb::MeetingProgram.find_by_id(id) if id.to_i.positive?
@@ -43,6 +45,8 @@ module Solver
     # - a new target entity instance when done, saved successfully if valid,
     #   and yielding any validation erros as #error_messages.
     def creator_strategy
+      return nil if @bindings.empty?
+
       solve_bindings
       return nil unless required_bindings.values.all?(&:present?)
 
@@ -68,7 +72,7 @@ module Solver
       @bindings = {
         meeting_event_id: Solver::Factory.for('MeetingEvent', root_key?('meeting_event') ? req : req['meeting_program']),
         # Get the pool_type from the meeting session when it is nested:
-        pool_type_id: Solver::Factory.for('PoolType', root_key?('pool_type') ? req : req['meeting_session']),
+        pool_type_id: Solver::Factory.for('PoolType', root_key?('pool_type') ? req : req['meeting_program']),
         category_type_id: Solver::Factory.for('CategoryType', root_key?('category_type') ? req : req['meeting_program']),
         gender_type_id: Solver::Factory.for('GenderType', root_key?('gender_type') ? req : req['meeting_program']),
 
