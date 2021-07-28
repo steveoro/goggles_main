@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 0da3f65273c786d9254e70e937ca257655fbf0b7
+  revision: 8c233e8ac2b0a0794afaddc8c511fa85212a8732
   specs:
-    goggles_db (0.3.11)
+    goggles_db (0.3.20)
       acts-as-taggable-on
       acts_as_votable
       carrierwave
@@ -254,8 +254,8 @@ GEM
     formatador (0.2.5)
     fuzzy-string-match (1.0.1)
       RubyInline (>= 3.8.6)
-    globalid (0.4.2)
-      activesupport (>= 4.2.0)
+    globalid (0.5.1)
+      activesupport (>= 5.0)
     guard (2.16.2)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -298,7 +298,7 @@ GEM
       guard (~> 2.0)
       guard-compat (~> 1.1)
       spring
-    haml (5.2.1)
+    haml (5.2.2)
       temple (>= 0.8.0)
       tilt
     haml-rails (2.0.1)

@@ -80,6 +80,8 @@ namespace :status do
       info('***********************')
       puts ["\r\n"] +
            capture(:docker, "exec #{fetch(:app_service)} sh -c 'bundle exec rails stats:daily days=7'").split("\n")
+    rescue StandardError
+      info('Exception raised when connecting to the docker service!')
     end
   end
 end
