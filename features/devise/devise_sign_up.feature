@@ -29,7 +29,6 @@ Feature: New user sign-up
     Then I can see that my user is the one from the OAuth response
     Examples:
       | provider_sym  | provider_name |
-      | google_oauth2 | Google        |
       | facebook      | Facebook      |
 
   Scenario: Failing direct sign-up
@@ -48,5 +47,4 @@ Feature: New user sign-up
     And a flash 'devise.customizations.invalid_credentials' message is present
     Examples:
       | provider_sym  |
-      | google_oauth2 |
       | facebook      |

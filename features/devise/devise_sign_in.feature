@@ -25,7 +25,6 @@ Feature: Existing user sign-in
     And a successful Omniauth flash message for '<provider_name>' is present
     Examples:
       | provider_sym  | provider_name |
-      | google_oauth2 | Google        |
       | facebook      | Facebook      |
 
   Scenario: Failing direct sign-in
@@ -46,5 +45,4 @@ Feature: Existing user sign-in
     And a flash 'devise.customizations.invalid_credentials' message is present
     Examples:
       | provider_sym  |
-      | google_oauth2 |
       | facebook      |

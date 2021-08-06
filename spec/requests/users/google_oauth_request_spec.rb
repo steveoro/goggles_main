@@ -60,6 +60,13 @@ RSpec.describe Users::GoogleOauthController, type: :request do
         end
       end
     end
+    after(:all) do
+      RSpec.configure do |config|
+        config.mock_with :rspec do |mocks|
+          mocks.syntax = :expect
+        end
+      end
+    end
 
     context 'when returning an already valid & confirmed user,' do
       let(:fixture_user) { FactoryBot.create(:user, sign_in_count: 0, provider: '', uid: '') }
@@ -80,6 +87,9 @@ RSpec.describe Users::GoogleOauthController, type: :request do
         # Make sure anything passed as JWT will yield our mocked valid GoogleSignIn::Identity instance:
         expect(GoogleSignIn::Identity.new('whatever')).to eq(valid_identity)
         get(users_google_oauth_continue_path)
+      end
+      after(:each) do
+        Users::GoogleOauthController.any_instance.unstub(:flash)
       end
 
       it_behaves_like('GoogleSignIn::Identity token_id valid & user find_or_create successful')
@@ -102,6 +112,9 @@ RSpec.describe Users::GoogleOauthController, type: :request do
         GoogleSignIn::Identity.stub(:new) { valid_identity }
         get(users_google_oauth_continue_path)
       end
+      after(:each) do
+        Users::GoogleOauthController.any_instance.unstub(:flash)
+      end
 
       it_behaves_like('GoogleSignIn::Identity token_id valid & user find_or_create successful')
     end
@@ -110,6 +123,9 @@ RSpec.describe Users::GoogleOauthController, type: :request do
       before(:each) do
         Users::GoogleOauthController.any_instance.stub(:flash) { { 'google_sign_in' => { 'error' => 'No way man!' } } }
         get(users_google_oauth_continue_path)
+      end
+      after(:each) do
+        Users::GoogleOauthController.any_instance.unstub(:flash)
       end
 
       it 'redirects to new_user_registration_url' do
