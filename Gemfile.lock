@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 5684adf14f6b0958715c1203785fca13f2e0f8d3
+  revision: 59197c048a8941d34f1cb5036226c6ba3b7b7c2c
   specs:
-    goggles_db (0.3.23)
+    goggles_db (0.3.24)
       acts-as-taggable-on
       acts_as_votable
       carrierwave
@@ -21,7 +21,6 @@ GIT
       ledermann-rails-settings
       mini_magick
       omniauth-facebook
-      omniauth-google-oauth2
       omniauth-rails_csrf_protection
       plus_codes
       rails (>= 6.0.3.7, < 6.1.0)
@@ -258,6 +257,12 @@ GEM
       RubyInline (>= 3.8.6)
     globalid (0.5.2)
       activesupport (>= 5.0)
+    google-id-token (1.4.2)
+      jwt (>= 1)
+    google_sign_in (1.2.0)
+      google-id-token (>= 1.4.0)
+      oauth2 (>= 1.4.0)
+      rails (>= 5.2.0)
     guard (2.16.2)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -385,8 +390,8 @@ GEM
       net-ssh (>= 2.6.5, < 7.0.0)
     net-ssh (6.1.0)
     netrc (0.11.0)
-    nio4r (2.5.7)
-    nokogiri (1.11.7-x86_64-linux)
+    nio4r (2.5.8)
+    nokogiri (1.12.2-x86_64-linux)
       racc (~> 1.4)
     notiffany (0.1.3)
       nenv (~> 0.1)
@@ -403,11 +408,6 @@ GEM
       rack-protection
     omniauth-facebook (8.0.0)
       omniauth-oauth2 (~> 1.2)
-    omniauth-google-oauth2 (1.0.0)
-      jwt (>= 2.0)
-      oauth2 (~> 1.1)
-      omniauth (~> 2.0)
-      omniauth-oauth2 (~> 1.7.1)
     omniauth-oauth2 (1.7.1)
       oauth2 (~> 1.4)
       omniauth (>= 1.9, < 3)
@@ -524,7 +524,7 @@ GEM
     ruby-vips (2.1.2)
       ffi (~> 1.12)
     ruby2_keywords (0.0.5)
-    ruby_parser (3.16.0)
+    ruby_parser (3.17.0)
       sexp_processor (~> 4.15, >= 4.15.1)
     rubyzip (2.3.0)
     sass-rails (6.0.0)
@@ -642,6 +642,7 @@ DEPENDENCIES
   ffaker
   font-awesome-rails
   goggles_db!
+  google_sign_in
   guard
   guard-brakeman
   guard-bundler
@@ -662,7 +663,6 @@ DEPENDENCIES
   n_plus_one_control
   nokogiri
   omniauth-facebook
-  omniauth-google-oauth2
   omniauth-rails_csrf_protection
   pry
   puma (>= 5.3.1)

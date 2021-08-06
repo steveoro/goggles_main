@@ -17,17 +17,11 @@ module Users
   # @see https://github.com/omniauth/omniauth/wiki/Integration-Testing
   #
   # Gem references:
-  # - https://github.com/zquestz/omniauth-google-oauth2
   # - https://github.com/simi/omniauth-facebook
   # - https://github.com/arunagw/omniauth-twitter (as of this writing, this gem supports only OAuth 1.1a)
+  # - Old: https://github.com/zquestz/omniauth-google-oauth2 (doesn't work anymore; subseeded by the following)
   #
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-    # Handles callbacks returning from Google OAuth2
-    # Assumes provider name = :google_oauth2
-    def google_oauth2
-      process_omniauth
-    end
-
     # Handles callbacks returning from Facebook
     # Assumes provider name = :facebook
     def facebook

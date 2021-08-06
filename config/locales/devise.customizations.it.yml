@@ -8,3 +8,7 @@ it:
         title: 'Richiedi conferma account'
       unlocks:
         title: 'Richiedi sblocco account'
+      google_oauth:
+        auth_error: "Errore di autenticazione con Google: %{error}"
+        empty_response: "Google non ha risposto o la risposta era vuota: impossible procedere. (Hai usato credenziali valide?)"
+        invalid_data: "Dati della risposta OAuth di Google non validi!"

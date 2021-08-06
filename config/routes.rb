@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   mount GogglesDb::Engine => '/'
 
   post 'api_sessions/jwt', format: :json
+  get 'users/google_oauth/continue'
 
   get 'home/index'
   get 'home/about'

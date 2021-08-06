@@ -5,8 +5,8 @@
 # == >> THIS SHOULD BE AN IDENTICAL COPY OF '/goggles_db/config/initializers/devise.rb' << ==
 # ===========================================================================================
 
-require 'omniauth-google-oauth2'
 require 'omniauth-facebook'
+# require 'omniauth-google-oauth2'
 # require 'omniauth-twitter'
 
 # Assuming you have not yet modified this file, each configuration option below
@@ -282,7 +282,11 @@ Devise.setup do |config|
   # up on your models and hooks.
   config.omniauth :facebook, ENV['FACEBOOK_APP_ID'], ENV['FACEBOOK_APP_SECRET'],
                   scope: 'email,user_birthday', display: 'popup'
-  config.omniauth :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], {}
+
+  # [Steve, 20210804] Google changed OAuth ID flow in 2021: it now returns a JWT with a different structure,
+  # so OmniAuth as a Devise strategy can't be used for Devise.
+  # config.omniauth :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], {}
+
   # Twitter disabled for the time being (supports only OAuth 1a)
   # config.omniauth :twitter, ENV['TWITTER_API_KEY'], ENV['TWITTER_API_SECRET']
 

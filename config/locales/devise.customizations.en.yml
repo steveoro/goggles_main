@@ -8,3 +8,7 @@ en:
         title: 'Account confirmation request'
       unlocks:
         title: 'Unlock account request'
+      google_oauth:
+        auth_error: "Google authentication error: %{error}"
+        empty_response: "Google returned an empty response: cannot proceed. (Did you select valid credentials?)"
+        invalid_data: "Invalid Google OAuth response data!"

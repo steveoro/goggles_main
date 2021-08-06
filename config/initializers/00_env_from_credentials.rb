@@ -10,7 +10,6 @@
 # that may need those ENV values.
 #
 %w[
-  GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET
   FACEBOOK_APP_ID FACEBOOK_APP_SECRET
   TWITTER_API_KEY TWITTER_API_SECRET
 ].each do |env_key|
