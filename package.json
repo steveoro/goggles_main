@@ -1,7 +1,7 @@
 {
   "name": "goggles_main",
   "description": "Goggles Main app support modules",
-  "version": "0.2.18",
+  "version": "0.3.25",
   "private": true,
   "author": "steve.alloro@gmail.com",
   "contributors": [],

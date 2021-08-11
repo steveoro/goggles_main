@@ -42,34 +42,36 @@
                     %i.form-text.text-muted#name-help
                       = t('users.help_labels.name')
 
-            .form-row
-              .form-group
-                .field.col-auto
-                  :ruby
-                  = f.label(:password, t('users.help_labels.change_password'))
-                  = f.password_field(:password, autocomplete: 'new-password',
-                                     class: 'form-control', placeholder: t('users.placeholders.new_password'))
-                  %small
-                    %i.form-text.text-muted#new-password-help
-                      = t('.leave_blank_if_you_don_t_want_to_change_it')
-                    - if @minimum_password_length
-                      = t('devise.shared.minimum_password_length', count: @minimum_password_length)
-              .form-group#change-pwd-confirmation
-                .field.col-auto
-                  = f.label(:password_confirmation, t('activerecord.attributes.goggles_db/user.password_confirmation'))
-                  %br/
-                  = f.password_field(:password_confirmation, autocomplete: 'confirm-password',
-                                     class: 'form-control', placeholder: t('users.placeholders.confirm_password'))
-            .form-row.border-top.mt-1.pt-3
-              .form-group
-                .field.col-auto
-                  = f.label(:current_password, t('activerecord.attributes.goggles_db/user.current_password'))
-                  %br/
-                  = f.password_field(:current_password, autocomplete: 'current-password',
-                                     class: 'form-control', placeholder: t('users.placeholders.old_password'))
-                  %small
-                    %i.form-text.text-muted#current-password-help
-                      = t('.we_need_your_current_password_to_confirm_your_changes')
+            - if !%w[facebook google].include?(current_user.provider) && current_user.uid.blank?
+              .form-row
+                .form-group
+                  .field.col-auto
+                    :ruby
+                    = f.label(:password, t('users.help_labels.change_password'))
+                    = f.password_field(:password, autocomplete: 'new-password',
+                                      class: 'form-control', placeholder: t('users.placeholders.new_password'))
+                    %small
+                      %i.form-text.text-muted#new-password-help
+                        = t('.leave_blank_if_you_don_t_want_to_change_it')
+                      - if @minimum_password_length
+                        = t('devise.shared.minimum_password_length', count: @minimum_password_length)
+                .form-group#change-pwd-confirmation
+                  .field.col-auto
+                    = f.label(:password_confirmation, t('activerecord.attributes.goggles_db/user.password_confirmation'))
+                    %br/
+                    = f.password_field(:password_confirmation, autocomplete: 'confirm-password',
+                                      class: 'form-control', placeholder: t('users.placeholders.confirm_password'))
+              .form-row.border-top.mt-1.pt-3
+                .form-group
+                  .field.col-auto
+                    - pwd_value = resource && resource.uid.present? && resource.provider.present? ? resource.password : nil
+                    = f.label(:current_password, t('activerecord.attributes.goggles_db/user.current_password'))
+                    %br/
+                    = f.password_field(:current_password, autocomplete: 'current-password', value: pwd_value,
+                                      class: 'form-control', placeholder: t('users.placeholders.old_password'))
+                    %small
+                      %i.form-text.text-muted#current-password-help
+                        = t('.we_need_your_current_password_to_confirm_your_changes')
 
           = render('edit_user_id', f: f)
 

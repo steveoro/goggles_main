@@ -35,13 +35,13 @@ module Users
       super
     end
 
-    # GET /resource/edit
-    # def edit
+    # PUT /resource
+    # def update
     #   super
     # end
 
-    # PUT /resource
-    # def update
+    # GET /resource/edit
+    # def edit
     #   super
     # end
 
@@ -60,6 +60,16 @@ module Users
     # end
 
     protected
+
+    # Overwrite update_resource to let users to update their user without giving their password
+    def update_resource(resource, params)
+      if %w[facebook google].include?(current_user.provider)
+        params.delete("current_password")
+        resource.update_without_password(params)
+      else
+        resource.update_with_password(params)
+      end
+    end
 
     # Checks client response against hCaptcha's /siteverify
     def verify_hcaptcha

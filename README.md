@@ -44,7 +44,7 @@ Cloning also `goggles_api` repo is not needed since you can just recreate the re
 
 Make sure you have a recovery DB dump somewhere (a test dump can be obtained by cloning `goggles_db` repo).
 
-Copy the recovery DB dump (for instance, `test.sql.bz2`) to the shared dump folder: `goggles_main/db/dump`.
+Copy the recovery DB dump (for instance, `test.sql.bz2`) to the shared dump folder of this project: `db/dump`.
 
 If your goal is to use, for example, the `development` configuration, go with:
 

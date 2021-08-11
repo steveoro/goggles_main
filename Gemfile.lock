@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 59197c048a8941d34f1cb5036226c6ba3b7b7c2c
+  revision: 533ca64a816205bfc2ae5c02fee4333fb7b6639e
   specs:
-    goggles_db (0.3.24)
+    goggles_db (0.3.25)
       acts-as-taggable-on
       acts_as_votable
       carrierwave
@@ -229,7 +229,7 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
-    faraday (1.6.0)
+    faraday (1.7.0)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
@@ -391,7 +391,7 @@ GEM
     net-ssh (6.1.0)
     netrc (0.11.0)
     nio4r (2.5.8)
-    nokogiri (1.12.2-x86_64-linux)
+    nokogiri (1.12.3-x86_64-linux)
       racc (~> 1.4)
     notiffany (0.1.3)
       nenv (~> 0.1)

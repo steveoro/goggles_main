@@ -4,7 +4,8 @@ Rails.application.routes.draw do
   devise_for :users, class_name: 'GogglesDb::User',
                      controllers: {
                        omniauth_callbacks: 'users/omniauth_callbacks',
-                       registrations: 'users/registrations'
+                       registrations: 'users/registrations',
+                       sessions: 'users/sessions'
                      }
   root to: 'home#index'
 
