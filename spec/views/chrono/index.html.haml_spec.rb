@@ -102,7 +102,7 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
         .to eq(@queues.count)
     end
     it 'includes the list of IQ decorated rows' do
-      ImportQueueDecorator.decorate_collection(@queues).each do |queue|
+      GogglesDb::ImportQueueDecorator.decorate_collection(@queues).each do |queue|
         expect(subject.css('.main-content .container .row.border').text).to include(queue.text_label)
       end
     end

@@ -14,7 +14,7 @@ module Users
       # not the omniauth strategy, so we use this override to clean-up any previously
       # set OAuth field.
       self.resource = warden.authenticate!(auth_options)
-      self.resource.update_columns(uid: nil, provider: nil)
+      resource.update_columns(uid: nil, provider: nil)
       super
     end
   end

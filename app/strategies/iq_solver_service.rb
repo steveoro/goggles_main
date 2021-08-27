@@ -30,7 +30,7 @@ class IqSolverService
     return if import_queue_row.done?
 
     # Use the helper methods from the decorator:
-    iq_row = ImportQueueDecorator.decorate(import_queue_row)
+    iq_row = GogglesDb::ImportQueueDecorator.decorate(import_queue_row)
     # Get the latest version of the requested root key:
     latest_request = iq_row.solved.present? ? iq_row.solved : iq_row.req
     return unless latest_request.present?

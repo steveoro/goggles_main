@@ -56,16 +56,7 @@ export default class extends Controller {
     })
 
     // *** Modals setup: ***
-    // Show & auto-hide all modals after a while:
-    // $('[data-toggle="modal"]').modal().fadeTo(250, 1).delay(1000).slideUp(250, function () {
-    $('[data-toggle="modal"]').modal().delay(2000).slideUp(250, function () {
-      $('[data-toggle="modal"]')
-        .modal('hide')
-        .on('hidden.bs.modal', function (e) {
-          // Remove content after show: (no need for the time being)
-          // document.querySelectorAll('[data-toggle="modal"]').forEach(element => element.remove())
-        })
-    })
+    // (none so far)
   }
   // ---------------------------------------------------------------------------
 }
