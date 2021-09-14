@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'home/about.html.haml', type: :view do
   # Test basic/required content:
   context 'when rendering with data,' do
-    before(:each) { render }
+    before { render }
 
     it 'shows the #about section' do
       node = Nokogiri::HTML.fragment(rendered).at_css('.row-fluid#about')
@@ -18,11 +18,13 @@ RSpec.describe 'home/about.html.haml', type: :view do
       expect(node).to be_present
       expect(node.text).to include(I18n.t('how_does_it_work.title'))
     end
+
     it 'shows the #who-we-are section' do
       node = Nokogiri::HTML.fragment(rendered).at_css('.row-fluid#who-we-are')
       expect(node).to be_present
       expect(node.text).to include(I18n.t('who_we_are.title'))
     end
+
     it 'shows the #contributing section' do
       node = Nokogiri::HTML.fragment(rendered).at_css('.row-fluid#contributing')
       expect(node).to be_present
@@ -40,6 +42,7 @@ RSpec.describe 'home/about.html.haml', type: :view do
       expect(node).to be_present
       expect(node.text).to include(I18n.t('privacy_policy.title'))
     end
+
     it 'shows the #legal-terms section' do
       node = Nokogiri::HTML.fragment(rendered).at_css('.row-fluid#legal-terms')
       expect(node).to be_present

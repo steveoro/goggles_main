@@ -26,7 +26,7 @@ module Solver
 
       id = value_from_req(key: 'swimming_pool_id', nested: 'swimming_pool', sub_key: 'id')
       # Priority #1
-      return GogglesDb::SwimmingPool.find_by_id(id) if id.to_i.positive?
+      return GogglesDb::SwimmingPool.find_by(id: id) if id.to_i.positive?
 
       # Priority #2
       solve_bindings
@@ -53,7 +53,7 @@ module Solver
       new_instance = GogglesDb::SwimmingPool.new
       bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
       # Compute nick_name afterwards if missing:
-      unless new_instance.nick_name.present?
+      if new_instance.nick_name.blank?
         new_instance.nick_name = normalize_string_name_into_code(
           "#{new_instance.city.name} #{new_instance.name} #{new_instance.pool_type.length_in_meters}"
         )

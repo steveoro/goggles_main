@@ -30,7 +30,7 @@ class ApplicationMailer < ActionMailer::Base
     mail(
       subject: "[Goggles@#{@host}] #{subject_text}",
       to: @user_email,
-      date: Time.now
+      date: Time.zone.now
     )
   end
   #-- -------------------------------------------------------------------------
@@ -53,7 +53,7 @@ class ApplicationMailer < ActionMailer::Base
       subject: "[Goggles@#{@host}] [SYS] #{subject_text}",
       to: to_address,
       cc: cc_address,
-      date: Time.now
+      date: Time.zone.now
     )
   end
   #-- -------------------------------------------------------------------------

@@ -6,7 +6,7 @@ RSpec.describe Solver::MeetingIndividualResult, type: :strategy do
   context 'before #solve!,' do
     it_behaves_like(
       'Solver strategy, bindings, finder & creator, before #solve!',
-      'MeetingIndividualResult', Solver::MeetingIndividualResult
+      'MeetingIndividualResult', described_class
     )
   end
   #-- -------------------------------------------------------------------------
@@ -17,6 +17,7 @@ RSpec.describe Solver::MeetingIndividualResult, type: :strategy do
   #
   context 'with EMPTY #req data,' do
     let(:fixture_req) { {} }
+
     it_behaves_like('Solver strategy, NO bindings, UNSOLVABLE req, after #solve!', 'MeetingIndividualResult')
   end
 
@@ -25,6 +26,7 @@ RSpec.describe Solver::MeetingIndividualResult, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ root lv.),' do
     let(:fixture_req) { { 'meeting_individual_result_id' => -1 } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'MeetingIndividualResult')
   end
 
@@ -33,6 +35,7 @@ RSpec.describe Solver::MeetingIndividualResult, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ sub-entity lv.),' do
     let(:fixture_req) { { 'meeting_individual_result' => { 'id' => -1 } } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'MeetingIndividualResult')
   end
   #-- -------------------------------------------------------------------------
@@ -46,14 +49,16 @@ RSpec.describe Solver::MeetingIndividualResult, type: :strategy do
     # VALID data: EXISTING ID
     #
     context "with valid & solved #req data (valid @ depth #{index})," do
-      let(:fixture_row) { GogglesDb::MeetingIndividualResult.first(100).sample }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         solver = Solver::Factory.for('MeetingIndividualResult', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { GogglesDb::MeetingIndividualResult.first(100).sample }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::MeetingIndividualResult)
     end
   end
@@ -139,15 +144,17 @@ RSpec.describe Solver::MeetingIndividualResult, type: :strategy do
     # VALID data: EXISTING row data
     #
     context "with solvable #req data (valid w/ layout #{index})," do
-      let(:fixture_row) { FactoryBot.create(:meeting_individual_result) }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         expect(fixture_row).to be_a(GogglesDb::MeetingIndividualResult).and be_valid
         solver = Solver::Factory.for('MeetingIndividualResult', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { FactoryBot.create(:meeting_individual_result) }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::MeetingIndividualResult)
 
       describe '#entity' do
@@ -167,6 +174,13 @@ RSpec.describe Solver::MeetingIndividualResult, type: :strategy do
     # VALID data: NEW row data
     #
     context "with solvable NEW #req data (valid w/ layout #{index})," do
+      subject do
+        expect(fixture_row).to be_a(GogglesDb::MeetingIndividualResult).and be_valid
+        solver = Solver::Factory.for('MeetingIndividualResult', fixture_req)
+        solver.solve!
+        solver
+      end
+
       let(:fixture_row) do
         badge = FactoryBot.create(:badge)
         FactoryBot.build(
@@ -180,12 +194,7 @@ RSpec.describe Solver::MeetingIndividualResult, type: :strategy do
       end
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { false }
-      subject do
-        expect(fixture_row).to be_a(GogglesDb::MeetingIndividualResult).and be_valid
-        solver = Solver::Factory.for('MeetingIndividualResult', fixture_req)
-        solver.solve!
-        solver
-      end
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::MeetingIndividualResult)
 
       describe '#entity' do

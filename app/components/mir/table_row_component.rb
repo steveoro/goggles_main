@@ -44,21 +44,21 @@ module MIR
     def swimmer
       return unless @mir.respond_to?(:swimmer_id) && @mir.swimmer_id.to_i.positive?
 
-      @swimmer ||= GogglesDb::Swimmer.find_by_id(@mir.swimmer_id)
+      @swimmer ||= GogglesDb::Swimmer.find_by(id: @mir.swimmer_id)
     end
 
     # Memoized Team association
     def team
       return unless @mir.respond_to?(:team_id) && @mir.team_id.to_i.positive?
 
-      @team ||= GogglesDb::Team.find_by_id(@mir.team_id)
+      @team ||= GogglesDb::Team.find_by(id: @mir.team_id)
     end
 
     # Memoized SwimmingPool association
     def swimming_pool
       return unless @mir.respond_to?(:swimming_pool_id) && @mir.swimming_pool_id.to_i.positive?
 
-      @swimming_pool ||= GogglesDb::SwimmingPool.find_by_id(@mir.swimming_pool_id)
+      @swimming_pool ||= GogglesDb::SwimmingPool.find_by(id: @mir.swimming_pool_id)
     end
 
     # Memoized & generalized lap association

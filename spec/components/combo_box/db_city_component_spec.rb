@@ -8,6 +8,13 @@ RSpec.describe ComboBox::DbCityComponent, type: :component do
   # Testing only the most complete option setup outcome:
   context 'with a complete setup (including a default row),' do
     # Default values for the rendered sub-component: (needed by the shared examples)
+    subject do
+      expect(default_row).to be_a(GogglesDb::City).and be_valid
+      render_inline(
+        described_class.new(free_text: free_text_option, required: required_option, default_row: default_row)
+      )
+    end
+
     let(:wrapper_class) { 'col-auto' }
     let(:api_url) { 'cities' }
     let(:label_text) { I18n.t('swimming_pools.city') }
@@ -17,13 +24,6 @@ RSpec.describe ComboBox::DbCityComponent, type: :component do
     let(:free_text_option) { ['true', 'false', nil].sample }
     let(:required_option) { ['true', 'false', nil].sample }
     let(:default_row) { GogglesDb::City.first(100).sample }
-
-    subject do
-      expect(default_row).to be_a(GogglesDb::City).and be_valid
-      render_inline(
-        described_class.new(free_text: free_text_option, required: required_option, default_row: default_row)
-      )
-    end
 
     it_behaves_like('ComboBox::DbLookupComponent common rendered result')
 
@@ -45,6 +45,7 @@ RSpec.describe ComboBox::DbCityComponent, type: :component do
       expect(subject.css('label[for="city_area"]')).to be_present
       expect(subject.css('label[for="city_area"]').text).to eq(I18n.t('swimming_pools.area_code'))
     end
+
     it 'renders the city area text input with the default value from the specified row (when present)' do
       expect(subject.css('input#city_area')).to be_present
       expect(subject.css('input#city_area').attr('value').value).to eq(default_row&.area)
@@ -54,6 +55,7 @@ RSpec.describe ComboBox::DbCityComponent, type: :component do
       expect(subject.css('label[for="city_country_code"]')).to be_present
       expect(subject.css('label[for="city_country_code"]').text).to eq(I18n.t('swimming_pools.country_code'))
     end
+
     it "renders the city country code text input with the default value from the specified row (with an 'IT' default)" do
       expect(subject.css('input#city_country_code')).to be_present
       expect(subject.css('input#city_country_code').attr('value').value)

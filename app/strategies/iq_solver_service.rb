@@ -32,8 +32,8 @@ class IqSolverService
     # Use the helper methods from the decorator:
     iq_row = GogglesDb::ImportQueueDecorator.decorate(import_queue_row)
     # Get the latest version of the requested root key:
-    latest_request = iq_row.solved.present? ? iq_row.solved : iq_row.req
-    return unless latest_request.present?
+    latest_request = iq_row.solved.presence || iq_row.req
+    return if latest_request.blank?
 
     # Solve the row:
     solver = Solver::Factory.for(iq_row.target_entity, latest_request)

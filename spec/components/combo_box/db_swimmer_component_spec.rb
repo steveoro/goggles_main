@@ -8,17 +8,6 @@ RSpec.describe ComboBox::DbSwimmerComponent, type: :component do
   # Testing only the most complete option setup outcome:
   context 'with a full setup (including a default row, with dual-API enabled),' do
     # Default values for the rendered sub-component: (needed by the shared examples)
-    let(:wrapper_class) { 'col-auto' }
-    let(:api_url) { 'swimmers' }
-    let(:label_text) { I18n.t('swimmers.swimmer_with_layout') }
-    let(:base_name) { 'swimmer' }
-
-    # Actual options:
-    let(:free_text_option) { ['true', 'false', nil].sample }
-    let(:required_option) { ['true', 'false', nil].sample }
-    let(:default_row) { GogglesDb::Swimmer.first(150).sample }
-    let(:decorated_default_row) { SwimmerDecorator.decorate(default_row) }
-
     subject do
       expect(default_row).to be_a(GogglesDb::Swimmer).and be_valid
       expect(decorated_default_row).to be_a(SwimmerDecorator).and be_valid
@@ -35,12 +24,24 @@ RSpec.describe ComboBox::DbSwimmerComponent, type: :component do
       )
     end
 
+    let(:wrapper_class) { 'col-auto' }
+    let(:api_url) { 'swimmers' }
+    let(:label_text) { I18n.t('swimmers.swimmer_with_layout') }
+    let(:base_name) { 'swimmer' }
+
+    # Actual options:
+    let(:free_text_option) { ['true', 'false', nil].sample }
+    let(:required_option) { ['true', 'false', nil].sample }
+    let(:default_row) { GogglesDb::Swimmer.first(150).sample }
+    let(:decorated_default_row) { SwimmerDecorator.decorate(default_row) }
+
     it_behaves_like('ComboBox::DbLookupComponent with double-API call enabled')
 
     it 'renders the default option tag of the preselected item for the select' do
       expect(subject.css("div.#{wrapper_class} select.select2##{base_name}_select option")).to be_present
       expect(subject.css("div.#{wrapper_class} select.select2##{base_name}_select option").count).to eq(1)
     end
+
     it 'pre-selects the specified option' do
       expect(subject.css("div.#{wrapper_class} select.select2##{base_name}_select option").text)
         .to eq(decorated_default_row.text_label)
@@ -51,6 +52,7 @@ RSpec.describe ComboBox::DbSwimmerComponent, type: :component do
       expect(subject.css("input##{base_name}_id").attr('value').value)
         .to eq(default_row.id.to_s)
     end
+
     it 'sets the hidden label field with the value from the default row (when present)' do
       expect(subject.css("input##{base_name}_label").attr('value').value)
         .to eq(decorated_default_row.text_label)
@@ -61,24 +63,29 @@ RSpec.describe ComboBox::DbSwimmerComponent, type: :component do
       expect(subject.css("input##{base_name}_complete_name").attr('type').value)
         .to eq('hidden')
     end
+
     it 'sets the hidden complete_name field with the value from the default row (when present)' do
       expect(subject.css("input##{base_name}_complete_name").attr('value').value)
         .to eq(decorated_default_row&.complete_name)
     end
+
     it 'renders the hidden first_name field' do
       expect(subject.css("input##{base_name}_first_name")).to be_present
       expect(subject.css("input##{base_name}_first_name").attr('type').value)
         .to eq('hidden')
     end
+
     it 'sets the hidden first_name field with the value from the default row (when present)' do
       expect(subject.css("input##{base_name}_first_name").attr('value').value)
         .to eq(decorated_default_row&.first_name)
     end
+
     it 'renders the hidden last_name field' do
       expect(subject.css("input##{base_name}_last_name")).to be_present
       expect(subject.css("input##{base_name}_last_name").attr('type').value)
         .to eq('hidden')
     end
+
     it 'sets the hidden last_name field with the value from the default row (when present)' do
       expect(subject.css("input##{base_name}_last_name").attr('value').value)
         .to eq(decorated_default_row&.last_name)
@@ -88,6 +95,7 @@ RSpec.describe ComboBox::DbSwimmerComponent, type: :component do
       expect(subject.css("label[for=\"#{base_name}_year_of_birth\"]")).to be_present
       expect(subject.css("label[for=\"#{base_name}_year_of_birth\"]").text).to eq(I18n.t('swimmers.age_class'))
     end
+
     it 'renders the year_of_birth input field with the value from the default row (when present)' do
       expect(subject.css("input##{base_name}_year_of_birth")).to be_present
       expect(subject.css("input##{base_name}_year_of_birth").attr('value').value)
@@ -98,6 +106,7 @@ RSpec.describe ComboBox::DbSwimmerComponent, type: :component do
       expect(subject.css('label[for="gender_type_id"]')).to be_present
       expect(subject.css('label[for="gender_type_id"]').text).to eq(I18n.t('swimmers.sex'))
     end
+
     it 'renders the gender_type select input with the value from the default row (when present)' do
       expect(subject.css('select#gender_type_id')).to be_present
       expect(subject.css('select#gender_type_id option[selected]').attr('value').value)

@@ -16,11 +16,13 @@ RSpec.describe ApplicationMailer, type: :mailer do
       it 'enqueues a mailers job when delivered later' do
         expect { mail.deliver_later }.to have_enqueued_job.on_queue('mailers')
       end
+
       it 'renders the specified headers' do
         expect(mail.subject).to include(email_subject)
         expect(mail.to).to include(user.email)
         expect(mail.from.first).to include("no-reply@#{ApplicationMailer::HOSTNAME}")
       end
+
       it 'renders the specified body content' do
         expect(mail.body.encoded).to include(ERB::Util.html_escape(email_content.html_safe))
       end
@@ -30,13 +32,14 @@ RSpec.describe ApplicationMailer, type: :mailer do
 
     context 'when using all parameters,' do
       let(:mail) do
-        ApplicationMailer.generic_message(
+        described_class.generic_message(
           user_email: user.email,
           user_name: user.name,
           subject_text: email_subject,
           content_body: email_content
         )
       end
+
       it_behaves_like('ApplicationMailer.generic_message email common fields')
 
       it 'shows a greetings for the user name' do
@@ -48,12 +51,13 @@ RSpec.describe ApplicationMailer, type: :mailer do
 
     context 'when giving a nil user_name,' do
       let(:mail) do
-        ApplicationMailer.generic_message(
+        described_class.generic_message(
           user_email: user.email,
           subject_text: email_subject,
           content_body: email_content
         )
       end
+
       it_behaves_like('ApplicationMailer.generic_message email common fields')
 
       it 'does not show the greetings section' do
@@ -74,12 +78,14 @@ RSpec.describe ApplicationMailer, type: :mailer do
       it 'enqueues a mailers job when delivered later' do
         expect { mail.deliver_later }.to have_enqueued_job.on_queue('mailers')
       end
+
       it 'renders the specified headers' do
         expect(mail.subject).to include(email_subject).and include('[SYS]')
         expect(mail.to).to include(to_address)
         expect(mail.cc).to include(cc_address)
         expect(mail.from.first).to include("no-reply@#{ApplicationMailer::HOSTNAME}")
       end
+
       it 'renders the specified body content' do
         expect(mail.body.encoded).to include(ERB::Util.html_escape(email_content.html_safe))
       end
@@ -87,7 +93,7 @@ RSpec.describe ApplicationMailer, type: :mailer do
 
     context 'when using all parameters,' do
       let(:mail) do
-        ApplicationMailer.system_message(
+        described_class.system_message(
           user: user,
           to_address: to_address,
           cc_address: cc_address,
@@ -95,6 +101,7 @@ RSpec.describe ApplicationMailer, type: :mailer do
           content_body: email_content
         )
       end
+
       it_behaves_like('ApplicationMailer.system_message email common fields')
 
       it 'shows the details of the specified user instance' do
@@ -110,7 +117,7 @@ RSpec.describe ApplicationMailer, type: :mailer do
 
     context 'when giving a nil user_name,' do
       let(:mail) do
-        ApplicationMailer.system_message(
+        described_class.system_message(
           user: nil,
           to_address: to_address,
           cc_address: cc_address,
@@ -118,6 +125,7 @@ RSpec.describe ApplicationMailer, type: :mailer do
           content_body: email_content
         )
       end
+
       it_behaves_like('ApplicationMailer.system_message email common fields')
 
       it 'does not show the user detail section' do

@@ -19,18 +19,23 @@ RSpec.describe Users::GoogleOauthController, type: :request do
     it 'redirects to default (for event: authentication)' do
       expect(response).to redirect_to(root_path)
     end
+
     it 'persists (and updates) the user matched by the identity fields' do
       expect(user_subject).to be_persisted
     end
+
     it 'updates the user provider' do
       expect(user_subject.provider).to eq('google')
     end
+
     it 'confirms the user' do
       expect(user_subject).to be_confirmed
     end
+
     it 'updates the user uid' do
       expect(user_subject.uid).to eq(returned_uid)
     end
+
     it 'signs-in the user' do
       expect(user_subject.sign_in_count).to be_positive # assumes: default must be 0
     end
@@ -60,6 +65,7 @@ RSpec.describe Users::GoogleOauthController, type: :request do
         end
       end
     end
+
     after(:all) do
       RSpec.configure do |config|
         config.mock_with :rspec do |mocks|
@@ -70,9 +76,10 @@ RSpec.describe Users::GoogleOauthController, type: :request do
 
     context 'when returning an already valid & confirmed user,' do
       let(:fixture_user) { FactoryBot.create(:user, sign_in_count: 0, provider: '', uid: '') }
-      before(:each) do
+
+      before do
         expect(fixture_user).to be_a(GogglesDb::User).and be_valid
-        Users::GoogleOauthController.any_instance.stub(:flash) { { 'google_sign_in' => { 'id_token' => 'anything' } } }
+        described_class.any_instance.stub(:flash) { { 'google_sign_in' => { 'id_token' => 'anything' } } }
         # Bypass everything GoogleSignIn::Identity-related: (very ugly!!!)
         valid_identity.stub(:is_a?)           { true } # bypass also internal checks
         valid_identity.stub(:locale)          { 'it' }
@@ -88,8 +95,9 @@ RSpec.describe Users::GoogleOauthController, type: :request do
         expect(GoogleSignIn::Identity.new('whatever')).to eq(valid_identity)
         get(users_google_oauth_continue_path)
       end
-      after(:each) do
-        Users::GoogleOauthController.any_instance.unstub(:flash)
+
+      after do
+        described_class.any_instance.unstub(:flash)
       end
 
       it_behaves_like('GoogleSignIn::Identity token_id valid & user find_or_create successful')
@@ -97,9 +105,10 @@ RSpec.describe Users::GoogleOauthController, type: :request do
 
     context 'when returning a NEW valid user,' do
       let(:fixture_user) { FactoryBot.build(:user, sign_in_count: 0, provider: '', uid: '') }
-      before(:each) do
+
+      before do
         expect(fixture_user).to be_a(GogglesDb::User).and be_valid
-        Users::GoogleOauthController.any_instance.stub(:flash) { { 'google_sign_in' => { 'id_token' => 'anything' } } }
+        described_class.any_instance.stub(:flash) { { 'google_sign_in' => { 'id_token' => 'anything' } } }
         valid_identity.stub(:is_a?)           { true }
         valid_identity.stub(:locale)          { 'it' }
         valid_identity.stub(:email_verified?) { true }
@@ -112,20 +121,22 @@ RSpec.describe Users::GoogleOauthController, type: :request do
         GoogleSignIn::Identity.stub(:new) { valid_identity }
         get(users_google_oauth_continue_path)
       end
-      after(:each) do
-        Users::GoogleOauthController.any_instance.unstub(:flash)
+
+      after do
+        described_class.any_instance.unstub(:flash)
       end
 
       it_behaves_like('GoogleSignIn::Identity token_id valid & user find_or_create successful')
     end
 
     context 'when returning an authentication error,' do
-      before(:each) do
-        Users::GoogleOauthController.any_instance.stub(:flash) { { 'google_sign_in' => { 'error' => 'No way man!' } } }
+      before do
+        described_class.any_instance.stub(:flash) { { 'google_sign_in' => { 'error' => 'No way man!' } } }
         get(users_google_oauth_continue_path)
       end
-      after(:each) do
-        Users::GoogleOauthController.any_instance.unstub(:flash)
+
+      after do
+        described_class.any_instance.unstub(:flash)
       end
 
       it 'redirects to new_user_registration_url' do

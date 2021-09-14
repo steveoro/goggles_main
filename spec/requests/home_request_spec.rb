@@ -5,6 +5,13 @@ require 'rails_helper'
 RSpec.describe 'Homes', type: :request do
   include ActiveJob::TestHelper
 
+  before { expect(fixture_user).to be_a(GogglesDb::User).and be_valid }
+
+  #-- -------------------------------------------------------------------------
+  #++
+
+  let(:fixture_user) { GogglesDb::User.first(50).sample }
+
   describe 'GET /index' do
     it 'returns http success' do
       get(home_index_path)
@@ -18,11 +25,6 @@ RSpec.describe 'Homes', type: :request do
       expect(response).to have_http_status(:success)
     end
   end
-  #-- -------------------------------------------------------------------------
-  #++
-
-  let(:fixture_user) { GogglesDb::User.first(50).sample }
-  before(:each) { expect(fixture_user).to be_a(GogglesDb::User).and be_valid }
 
   describe 'GET /contact_us' do
     context 'for an unlogged user' do
@@ -33,7 +35,8 @@ RSpec.describe 'Homes', type: :request do
     end
 
     context 'for a logged-in user' do
-      before(:each) { sign_in(fixture_user) }
+      before { sign_in(fixture_user) }
+
       it 'returns http success' do
         get(home_contact_us_path)
         expect(response).to have_http_status(:success)
@@ -50,14 +53,14 @@ RSpec.describe 'Homes', type: :request do
     end
 
     context 'for a logged-in user' do
-      before(:each) do
+      before do
         sign_in(fixture_user)
         # Remove mailer queue remnants from previous possible user confirmation emails:
         ActionMailer::Base.deliveries.clear
       end
 
       context 'without a body parameter,' do
-        before(:each) {  post(home_contact_us_path) }
+        before { post(home_contact_us_path) }
 
         it 'returns http success' do
           subject
@@ -73,7 +76,8 @@ RSpec.describe 'Homes', type: :request do
         # EMail bodies are enconded: any text longer than 73 chanraters will be split in multiple lines
         # separated by '+' & '='. We need to stick to a short text to simplify the tests:
         let(:email_content) { FFaker::Lorem.sentence[0..72] }
-        before(:each) do
+
+        before do
           expect(email_content).to be_present
           post(home_contact_us_path, params: { body: email_content })
         end

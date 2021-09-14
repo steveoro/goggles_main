@@ -13,7 +13,7 @@ class SwimmerDecorator < Draper::Decorator
   # == Params
   # - date: the date for which the age must be computed; default: +today+.
   #
-  def swimmer_age(date = Date.today)
+  def swimmer_age(date = Time.zone.today)
     date.year - year_of_birth
   end
 

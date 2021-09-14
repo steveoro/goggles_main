@@ -2,7 +2,7 @@
 
 class DataFixAddMissingSeasons < ActiveRecord::Migration[6.0]
   def self.up
-    puts "\r\n--> Adding new seasons..."
+    Rails.logger.debug "\r\n--> Adding new seasons..."
     [0, 1].each do |year_digit|
       [
         {
@@ -50,10 +50,10 @@ class DataFixAddMissingSeasons < ActiveRecord::Migration[6.0]
           individual_rank: prototype[:individual_rank],
           badge_fee: prototype[:badge_fee]
         )
-        $stdout.write("\033[1;33;32m.\033[0m") # Progress display
+        Rails.logger.debug("\033[1;33;32m.\033[0m") # Progress display
       end
     end
-    puts "\r\nDone."
+    Rails.logger.debug "\r\nDone."
   end
 
   def self.down

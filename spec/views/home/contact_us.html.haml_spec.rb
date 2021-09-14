@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'home/contact_us.html.haml', type: :view do
   # Test basic/required content:
   context 'when rendering with data,' do
-    before(:each) { render }
+    before { render }
 
     it 'shows the #contact-us-box section with the title' do
       node = Nokogiri::HTML.fragment(rendered).at_css('#contact-us-box')

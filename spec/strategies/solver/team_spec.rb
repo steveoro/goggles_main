@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Solver::Team, type: :strategy do
   context 'before #solve!,' do
-    it_behaves_like('Solver strategy, bindings, finder & creator, before #solve!', 'Team', Solver::Team)
+    it_behaves_like('Solver strategy, bindings, finder & creator, before #solve!', 'Team', described_class)
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -14,6 +14,7 @@ RSpec.describe Solver::Team, type: :strategy do
   #
   context 'with EMPTY #req data,' do
     let(:fixture_req) { {} }
+
     it_behaves_like('Solver strategy, NO bindings, UNSOLVABLE req, after #solve!', 'Team')
   end
 
@@ -22,6 +23,7 @@ RSpec.describe Solver::Team, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ root lv.),' do
     let(:fixture_req) { { 'team_id' => -1 } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'Team')
   end
 
@@ -30,6 +32,7 @@ RSpec.describe Solver::Team, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ sub-entity lv.),' do
     let(:fixture_req) { { 'team' => { 'id' => -1 } } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'Team')
   end
   #-- -------------------------------------------------------------------------
@@ -43,14 +46,16 @@ RSpec.describe Solver::Team, type: :strategy do
     # VALID data: EXISTING ID
     #
     context "with valid & solved #req data (valid @ depth #{index})," do
-      let(:fixture_row) { GogglesDb::Team.first(100).sample }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         solver = Solver::Factory.for('Team', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { GogglesDb::Team.first(100).sample }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::Team)
     end
   end
@@ -104,20 +109,23 @@ RSpec.describe Solver::Team, type: :strategy do
     # VALID data: EXISTING row data
     #
     context "with solvable #req data (valid w/ layout #{index})," do
-      let(:fixture_row) { GogglesDb::Team.first(100).sample }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         solver = Solver::Factory.for('Team', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { GogglesDb::Team.first(100).sample }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::Team)
 
       describe '#entity' do
         it 'has the expected name' do
           expect(subject.entity.name).to eq(fixture_row.name)
         end
+
         it 'has the expected city_id' do
           expect(subject.entity.city_id).to eq(fixture_row.city_id)
         end
@@ -130,14 +138,16 @@ RSpec.describe Solver::Team, type: :strategy do
     # VALID data: NEW row data
     #
     context "with solvable NEW #req data (valid @ depth #{index})," do
-      let(:fixture_row) { FactoryBot.build(:team, name: "NON-EXISTING A.S.D. #{(rand * 10_000).to_i}") }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { false }
       subject do
         solver = Solver::Factory.for('Team', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { FactoryBot.build(:team, name: "NON-EXISTING A.S.D. #{(rand * 10_000).to_i}") }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { false }
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::Team)
 
       describe '#entity' do

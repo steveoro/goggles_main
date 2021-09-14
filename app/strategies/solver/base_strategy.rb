@@ -265,13 +265,13 @@ module Solver
       # doesn't resolve to something, so that we can have a hierarchy of issues to show:
       unsolved_values = if solver.is_a?(BaseStrategy) && solver.solve_issues.present?
                           solver.solve_issues
-                        elsif !solver.present?
+                        elsif solver.blank?
                           solver
                         end
 
       if @solve_issues[key].present? && unsolved_values.is_a?(Hash)
         @solve_issues[key].merge!(unsolved_values)
-      elsif !@solve_issues[key].present? && (unsolved_values.is_a?(Hash) || unsolved_values.nil?)
+      elsif @solve_issues[key].blank? && (unsolved_values.is_a?(Hash) || unsolved_values.nil?)
         @solve_issues[key] = unsolved_values
       end
       # ^^ Skip the {key => anything} case when key exists because that would overwrite the existing nested hash

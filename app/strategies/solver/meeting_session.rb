@@ -26,7 +26,7 @@ module Solver
 
       id = value_from_req(key: 'meeting_session_id', nested: 'meeting_session', sub_key: 'id')
       # Priority #1
-      return GogglesDb::MeetingSession.find_by_id(id) if id.to_i.positive?
+      return GogglesDb::MeetingSession.find_by(id: id) if id.to_i.positive?
 
       # Priority #2
       solve_bindings
@@ -53,7 +53,7 @@ module Solver
       new_instance = GogglesDb::MeetingSession.new
       bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
       new_instance.session_order = compute_session_order(new_instance.meeting) if new_instance.session_order.zero?
-      new_instance.scheduled_date = Date.today.to_s unless new_instance.scheduled_date.present?
+      new_instance.scheduled_date = Time.zone.today.to_s if new_instance.scheduled_date.blank?
       new_instance.save # Don't throw validation errors
       new_instance
     end
@@ -76,7 +76,7 @@ module Solver
         session_order: value_from_req(key: 'session_order', nested: 'meeting_session', sub_key: 'session_order'),
         scheduled_date: value_from_req(key: 'scheduled_date', nested: 'meeting_session', sub_key: 'scheduled_date'),
         description: value_from_req(key: 'meeting_session_description', nested: 'meeting_session', sub_key: 'description') ||
-                     "#{I18n.t('activerecord.models.goggles_db/meeting_session')} #{Date.today}",
+                     "#{I18n.t('activerecord.models.goggles_db/meeting_session')} #{Time.zone.today}",
         # Truly optional fields:
         swimming_pool_id: Solver::Factory.for('SwimmingPool', root_key?('swimming_pool') ? req : req['meeting_session']),
         day_part_type_id: Solver::Factory.for('DayPartType', root_key?('day_part_type') ? req : req['meeting_session'])
@@ -110,7 +110,7 @@ module Solver
     # Uses the current bindings to retrieve a Meeting instance with which compute the session order
     def compute_session_order_from_bindings
       meeting_id = @bindings[:meeting_id]
-      compute_session_order(GogglesDb::Meeting.find_by_id(meeting_id))
+      compute_session_order(GogglesDb::Meeting.find_by(id: meeting_id))
     end
   end
 end

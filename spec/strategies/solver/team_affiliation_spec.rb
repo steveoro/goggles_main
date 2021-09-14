@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Solver::TeamAffiliation, type: :strategy do
   context 'before #solve!,' do
-    it_behaves_like('Solver strategy, bindings, finder & creator, before #solve!', 'TeamAffiliation', Solver::TeamAffiliation)
+    it_behaves_like('Solver strategy, bindings, finder & creator, before #solve!', 'TeamAffiliation', described_class)
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -14,6 +14,7 @@ RSpec.describe Solver::TeamAffiliation, type: :strategy do
   #
   context 'with EMPTY #req data,' do
     let(:fixture_req) { {} }
+
     it_behaves_like('Solver strategy, NO bindings, UNSOLVABLE req, after #solve!', 'TeamAffiliation')
   end
 
@@ -22,6 +23,7 @@ RSpec.describe Solver::TeamAffiliation, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ root lv.),' do
     let(:fixture_req) { { 'team_affiliation_id' => -1 } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'TeamAffiliation')
   end
 
@@ -30,6 +32,7 @@ RSpec.describe Solver::TeamAffiliation, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ sub-entity lv.),' do
     let(:fixture_req) { { 'team_affiliation' => { 'id' => -1 } } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'TeamAffiliation')
   end
   #-- -------------------------------------------------------------------------
@@ -43,14 +46,16 @@ RSpec.describe Solver::TeamAffiliation, type: :strategy do
     # VALID data: EXISTING ID
     #
     context "with valid & solved #req data (valid @ depth #{index})," do
-      let(:fixture_row) { GogglesDb::TeamAffiliation.first(150).sample }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         solver = Solver::Factory.for('TeamAffiliation', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { GogglesDb::TeamAffiliation.first(150).sample }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, bindings, solvable req, after #solve!', GogglesDb::TeamAffiliation)
     end
   end
@@ -104,23 +109,27 @@ RSpec.describe Solver::TeamAffiliation, type: :strategy do
     # VALID data: EXISTING row data
     #
     context "with solvable #req data (valid @ depth #{index})," do
-      let(:fixture_row) { GogglesDb::TeamAffiliation.first(150).sample }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         solver = Solver::Factory.for('TeamAffiliation', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { GogglesDb::TeamAffiliation.first(150).sample }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, bindings, solvable req, after #solve!', GogglesDb::TeamAffiliation)
 
       describe '#entity' do
         it 'has the expected name' do
           expect(subject.entity.name).to eq(fixture_row.name)
         end
+
         it 'has the expected team_id' do
           expect(subject.entity.team_id).to eq(fixture_row.team_id)
         end
+
         it 'has the expected season_id' do
           expect(subject.entity.season_id).to eq(fixture_row.season_id)
         end
@@ -133,6 +142,12 @@ RSpec.describe Solver::TeamAffiliation, type: :strategy do
     # VALID data: NEW row data
     #
     context "with solvable NEW #req data (valid @ depth #{index})," do
+      subject do
+        solver = Solver::Factory.for('TeamAffiliation', fixture_req)
+        solver.solve!
+        solver
+      end
+
       let(:fixture_row) do
         FactoryBot.build(
           :team_affiliation,
@@ -142,11 +157,7 @@ RSpec.describe Solver::TeamAffiliation, type: :strategy do
       end
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { false } # (disable ID check)
-      subject do
-        solver = Solver::Factory.for('TeamAffiliation', fixture_req)
-        solver.solve!
-        solver
-      end
+
       it_behaves_like('Solver strategy, bindings, solvable req, after #solve!', GogglesDb::TeamAffiliation)
 
       describe '#entity' do

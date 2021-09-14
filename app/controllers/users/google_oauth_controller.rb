@@ -39,7 +39,7 @@ module Users
       end
 
       # No JWT from Google:
-      unless id_token.present?
+      if id_token.blank?
         redirect_to(
           new_user_registration_url,
           alert: I18n.t('devise.customizations.google_oauth.empty_response')

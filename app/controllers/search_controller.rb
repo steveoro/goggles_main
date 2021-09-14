@@ -32,7 +32,7 @@ class SearchController < ApplicationController
       return
     end
 
-    unless params['q'].present? # Ignore empty requests
+    if params['q'].blank? # Ignore empty requests
       redirect_to root_path
       return
     end

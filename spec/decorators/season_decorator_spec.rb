@@ -11,7 +11,7 @@ RSpec.describe SeasonDecorator, type: :decorator do
       context "for a valid SeasonType (ID #{season_type_id}) for which exists at least a Season," do
         subject do
           # Any season will do, since this is a more generic helper:
-          SeasonDecorator
+          described_class
             .new(GogglesDb::Season.limit(10).sample)
             .last_season_by_type(season_type_id)
         end

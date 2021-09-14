@@ -6,18 +6,6 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
   include ActionView::Helpers::FormOptionsHelper
 
   context 'with a prefixed lookup list of option values,' do
-    let(:wrapper_class) { %w[my-class1 my-class2 my-class3].sample }
-    let(:base_name) { 'category_type' }
-    let(:label_text) { I18n.t('meetings.category') }
-    let(:free_text_option) { ['true', 'false', nil].sample }
-    let(:required_option) { ['true', 'false', nil].sample }
-    let(:category_types) do
-      GogglesDb::Season.for_season_type(GogglesDb::SeasonType.mas_fin)
-                       .by_begin_date.first
-                       .category_types
-                       .individuals.by_age
-    end
-
     subject do
       expect(category_types.count).to be_positive
       render_inline(
@@ -31,6 +19,18 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
           values: options_from_collection_for_select(category_types, 'id', 'short_name')
         )
       )
+    end
+
+    let(:wrapper_class) { %w[my-class1 my-class2 my-class3].sample }
+    let(:base_name) { 'category_type' }
+    let(:label_text) { I18n.t('meetings.category') }
+    let(:free_text_option) { ['true', 'false', nil].sample }
+    let(:required_option) { ['true', 'false', nil].sample }
+    let(:category_types) do
+      GogglesDb::Season.for_season_type(GogglesDb::SeasonType.mas_fin)
+                       .by_begin_date.first
+                       .category_types
+                       .individuals.by_age
     end
 
     it_behaves_like('ComboBox::DbLookupComponent common rendered result')
@@ -50,14 +50,6 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
   #++
 
   context 'with a single API-based lookup list,' do
-    let(:wrapper_class) { %w[my-class1 my-class2 my-class3].sample }
-    let(:api_url) { 'teams' }
-    let(:base_name) { 'team' }
-    let(:label_text) { I18n.t('teams.team') }
-    let(:free_text_option) { ['true', 'false', nil].sample }
-    let(:required_option) { ['true', 'false', nil].sample }
-    let(:last_chosen_row) { GogglesDb::Team.first(100).sample }
-
     subject do
       expect(last_chosen_row).to be_a(GogglesDb::Team).and be_valid
       render_inline(
@@ -73,6 +65,14 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
       )
     end
 
+    let(:wrapper_class) { %w[my-class1 my-class2 my-class3].sample }
+    let(:api_url) { 'teams' }
+    let(:base_name) { 'team' }
+    let(:label_text) { I18n.t('teams.team') }
+    let(:free_text_option) { ['true', 'false', nil].sample }
+    let(:required_option) { ['true', 'false', nil].sample }
+    let(:last_chosen_row) { GogglesDb::Team.first(100).sample }
+
     it_behaves_like('ComboBox::DbLookupComponent common rendered result')
 
     it 'includes the associated API URL value' do
@@ -80,6 +80,7 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
       # The actual API URL used will feature the full protocol/port URI, so we test for inclusion only:
       expect(subject.css("div.#{wrapper_class}").attr('data-lookup-api-url-value').value).to include(api_url)
     end
+
     it 'does not include the associated API-2 URL value' do
       expect(subject.css("div.#{wrapper_class}").attr('data-lookup-api-url2-value')).not_to be_present
     end
@@ -96,14 +97,6 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
   #++
 
   context 'with a dobule-API call setup,' do
-    let(:wrapper_class) { %w[my-class1 my-class2 my-class3].sample }
-    let(:api_url) { 'meetings' }
-    let(:base_name) { 'meeting' }
-    let(:label_text) { I18n.t('chrono.selector.meeting') }
-    let(:free_text_option) { ['true', 'false', nil].sample }
-    let(:required_option) { ['true', 'false', nil].sample }
-    let(:last_chosen_row) { GogglesDb::Meeting.first(100).sample }
-
     subject do
       expect(last_chosen_row).to be_a(GogglesDb::Meeting).and be_valid
       render_inline(
@@ -120,6 +113,14 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
       )
     end
 
+    let(:wrapper_class) { %w[my-class1 my-class2 my-class3].sample }
+    let(:api_url) { 'meetings' }
+    let(:base_name) { 'meeting' }
+    let(:label_text) { I18n.t('chrono.selector.meeting') }
+    let(:free_text_option) { ['true', 'false', nil].sample }
+    let(:required_option) { ['true', 'false', nil].sample }
+    let(:last_chosen_row) { GogglesDb::Meeting.first(100).sample }
+
     it_behaves_like('ComboBox::DbLookupComponent common rendered result')
 
     it 'includes the associated API URL value' do
@@ -127,6 +128,7 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
       # The actual API URL used will feature the full protocol/port URI, so we test for inclusion only:
       expect(subject.css("div.#{wrapper_class}").attr('data-lookup-api-url-value').value).to include(api_url)
     end
+
     it 'includes the associated API-2 URL value' do
       expect(subject.css("div.#{wrapper_class}").attr('data-lookup-api-url2-value')).to be_present
       expect(subject.css("div.#{wrapper_class}").attr('data-lookup-api-url2-value').value)

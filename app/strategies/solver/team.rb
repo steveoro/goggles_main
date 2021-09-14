@@ -58,11 +58,11 @@ module Solver
 
       solve_bindings
       # (city_id is optional)
-      return nil unless @bindings[:name].present?
+      return nil if @bindings[:name].blank?
 
       new_instance = GogglesDb::Team.new
       bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
-      new_instance.editable_name = @bindings[:name] unless new_instance.editable_name.present?
+      new_instance.editable_name = @bindings[:name] if new_instance.editable_name.blank?
       new_instance.save # Don't throw validation errors
       new_instance
     end

@@ -34,7 +34,8 @@ RSpec.describe IqProcessorJob, type: :job do
         }.to_json
       )
     end
-    before(:each) do
+
+    before do
       expect(solved_row).to be_a(GogglesDb::ImportQueue).and be_valid
       expect(unsolvable_row).to be_a(GogglesDb::ImportQueue).and be_valid
     end

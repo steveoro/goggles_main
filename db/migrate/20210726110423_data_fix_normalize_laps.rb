@@ -2,7 +2,7 @@
 
 class DataFixNormalizeLaps < ActiveRecord::Migration[6.0]
   def self.up
-    puts "\r\n--> Lap & UserLap normalization..."
+    Rails.logger.debug "\r\n--> Lap & UserLap normalization..."
     Rake::Task['normalize:laps'].invoke
   end
 

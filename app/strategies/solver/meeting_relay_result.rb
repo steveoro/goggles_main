@@ -26,7 +26,7 @@ module Solver
 
       id = value_from_req(key: 'meeting_relay_result_id', nested: 'meeting_relay_result', sub_key: 'id')
       # Priority #1
-      return GogglesDb::MeetingRelayResult.find_by_id(id) if id.to_i.positive?
+      return GogglesDb::MeetingRelayResult.find_by(id: id) if id.to_i.positive?
 
       # Priority #2
       solve_bindings

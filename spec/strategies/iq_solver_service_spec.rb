@@ -5,8 +5,9 @@ require 'rails_helper'
 RSpec.describe IqSolverService, type: :service do
   shared_examples_for 'IqSolverService valid instance' do
     it 'is an instance of the service' do
-      expect(subject).to be_an(IqSolverService)
+      expect(subject).to be_an(described_class)
     end
+
     it 'responds to call' do
       expect(subject).to respond_to(:call)
     end
@@ -19,15 +20,18 @@ RSpec.describe IqSolverService, type: :service do
         result = subject.call(solvable_row)
         expect(result).to be true
       end
+
       it 'sets #done to true' do
         subject.call(solvable_row)
         expect(solvable_row.reload.done).to be true
       end
+
       it 'increases #process_runs' do
         old_value = solvable_row.reload.process_runs
         subject.call(solvable_row)
         expect(solvable_row.reload.process_runs).to eq(old_value + 1)
       end
+
       it 'sets #solved_data to a non-empty JSON hash (with the solved bindings)' do
         subject.call(solvable_row)
         expect(solvable_row.reload.solved_data).to be_present
@@ -43,15 +47,18 @@ RSpec.describe IqSolverService, type: :service do
         result = subject.call(unsolvable_row)
         expect(result).to be true
       end
+
       it 'sets #done to false' do
         subject.call(unsolvable_row)
         expect(unsolvable_row.reload.done).to be false
       end
+
       it 'increases #process_runs' do
         old_value = unsolvable_row.reload.process_runs
         subject.call(unsolvable_row)
         expect(unsolvable_row.reload.process_runs).to eq(old_value + 1)
       end
+
       it 'sets #solved_data to a non-empty JSON hash (with the solved bindings)' do
         subject.call(unsolvable_row)
         expect(unsolvable_row.reload.solved_data).to be_present
@@ -63,6 +70,8 @@ RSpec.describe IqSolverService, type: :service do
   #++
 
   context "when given a row marked already as 'done'," do
+    subject { described_class.new }
+
     let(:solved_row) do
       FactoryBot.create(
         :import_queue,
@@ -73,8 +82,8 @@ RSpec.describe IqSolverService, type: :service do
         done: true
       )
     end
-    subject { described_class.new }
-    before(:each) { expect(solved_row).to be_a(GogglesDb::ImportQueue).and be_valid }
+
+    before { expect(solved_row).to be_a(GogglesDb::ImportQueue).and be_valid }
 
     it_behaves_like('IqSolverService valid instance')
 
@@ -86,6 +95,8 @@ RSpec.describe IqSolverService, type: :service do
   #++
 
   context 'when given a solvable row (FINDER),' do
+    subject { described_class.new }
+
     let(:solvable_row) do
       FactoryBot.create(
         :import_queue,
@@ -95,8 +106,8 @@ RSpec.describe IqSolverService, type: :service do
         }.to_json
       )
     end
-    subject { described_class.new }
-    before(:each) { expect(solvable_row).to be_a(GogglesDb::ImportQueue).and be_valid }
+
+    before { expect(solvable_row).to be_a(GogglesDb::ImportQueue).and be_valid }
 
     it_behaves_like('IqSolverService called with a solvable row')
   end
@@ -104,6 +115,8 @@ RSpec.describe IqSolverService, type: :service do
   #++
 
   context 'when given a solvable row (CREATOR),' do
+    subject { described_class.new }
+
     let(:solvable_row) do
       FactoryBot.create(
         :import_queue,
@@ -117,8 +130,8 @@ RSpec.describe IqSolverService, type: :service do
         }.to_json
       )
     end
-    subject { described_class.new }
-    before(:each) { expect(solvable_row).to be_a(GogglesDb::ImportQueue).and be_valid }
+
+    before { expect(solvable_row).to be_a(GogglesDb::ImportQueue).and be_valid }
 
     it_behaves_like('IqSolverService called with a solvable row')
   end
@@ -126,6 +139,8 @@ RSpec.describe IqSolverService, type: :service do
   #++
 
   context 'when given a partially solvable row (missing data),' do
+    subject { described_class.new }
+
     let(:unsolvable_row) do
       FactoryBot.create(
         :import_queue,
@@ -139,8 +154,8 @@ RSpec.describe IqSolverService, type: :service do
         }.to_json
       )
     end
-    subject { described_class.new }
-    before(:each) { expect(unsolvable_row).to be_a(GogglesDb::ImportQueue).and be_valid }
+
+    before { expect(unsolvable_row).to be_a(GogglesDb::ImportQueue).and be_valid }
 
     it_behaves_like('IqSolverService called with an unsolvable row')
   end
@@ -157,7 +172,8 @@ RSpec.describe IqSolverService, type: :service do
         }.to_json
       )
     end
-    before(:each) { expect(unsolvable_row).to be_a(GogglesDb::ImportQueue).and be_valid }
+
+    before { expect(unsolvable_row).to be_a(GogglesDb::ImportQueue).and be_valid }
 
     it_behaves_like('IqSolverService called with an unsolvable row')
   end

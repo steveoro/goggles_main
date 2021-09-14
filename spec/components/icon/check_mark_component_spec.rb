@@ -11,6 +11,7 @@ RSpec.describe Icon::CheckMarkComponent, type: :component do
     it 'renders two different values for true and false' do
       expect(result_true).not_to eq(result_false)
     end
+
     it 'renders the same result for both nil and false' do
       expect(result_nil).to eq(result_false)
     end

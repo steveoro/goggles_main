@@ -41,7 +41,7 @@
         = f.label(:year_of_birth)
         %br/
         = f.number_field(:year_of_birth, required: true, autocomplete: 'year-of-birth',
-                         min: 1920, max: Date.today.year - 5, class: 'form-control',
+                         min: 1920, max: Time.zone.today.year - 5, class: 'form-control',
                          data: { action: 'change->unsaved-changes#formIsChanged change->remote-partial#update',
                                  'remote-partial-payload' => true })
 

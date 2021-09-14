@@ -18,7 +18,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
 
   # Test empty content (no results):
   context 'when searching for anything without a positive match,' do
-    before(:each) do
+    before do
       render(
         partial: 'search_results',
         locals: {
@@ -34,6 +34,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
     it 'doesn\'t include the swipe-wrapper' do
       expect(rendered).not_to include('swipe-wrapper')
     end
+
     it 'doesn\'t show the pagination controls' do
       expect(rendered).not_to include('page-link')
     end
@@ -47,7 +48,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
 
   # Test content without pagination:
   context 'when searching for a swimmer name with a few (<= 5) positive matches,' do
-    before(:each) do
+    before do
       swimmers = GogglesDb::Swimmer.for_name('John').page(1).per(5)
       expect(swimmers.total_count).to be <= 5
       render(
@@ -75,7 +76,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
 
   # Test paginated content:
   context 'when searching for a swimmer name with positive matches enough for pagination,' do
-    before(:each) do
+    before do
       swimmers = GogglesDb::Swimmer.for_name('Anna').page(1).per(5)
       expect(swimmers.total_count).to be > 5
       # Stub out Kaminari completely to avoid mocking each individual view helper: (we don't have to test Kaminari here)
@@ -110,7 +111,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
 
   # Test just the generic paginated content for the remaining entities (to simplify tests)
   context 'when searching for a team name with positive matches enough for pagination,' do
-    before(:each) do
+    before do
       teams = GogglesDb::Team.for_name('nuoto').page(1).per(5)
       expect(teams.total_count).to be > 5
       allow(view).to receive(:paginate)
@@ -141,7 +142,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
   end
 
   context 'when searching for a meeting description with positive matches enough for pagination,' do
-    before(:each) do
+    before do
       meetings = GogglesDb::Meeting.for_name('Desenzano').page(1).per(5)
       expect(meetings.total_count).to be > 5
       allow(view).to receive(:paginate)
@@ -172,7 +173,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
   end
 
   context 'when searching for a user workshop description with positive matches enough for pagination,' do
-    before(:each) do
+    before do
       workshops = GogglesDb::UserWorkshop.limit(30).page(1).per(5)
       expect(workshops.total_count).to be > 5
       allow(view).to receive(:paginate)
@@ -203,7 +204,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
   end
 
   context 'when searching for a swimming-pool name with positive matches enough for pagination,' do
-    before(:each) do
+    before do
       swimming_pools = GogglesDb::SwimmingPool.for_name('Comunale').page(1).per(5)
       expect(swimming_pools.total_count).to be > 5
       allow(view).to receive(:paginate)

@@ -19,26 +19,30 @@ RSpec.describe 'APISessions', type: :request do
     end
 
     context 'for a logged-in user' do
-      before(:each) do
+      before do
         user = GogglesDb::User.first(50).sample
         sign_in(user)
       end
 
       context 'requesting plain HTML,' do
-        before(:each) { post(api_sessions_jwt_path) }
+        before { post(api_sessions_jwt_path) }
+
         it 'is a redirect to root_path' do
           expect(response).to redirect_to(root_path)
         end
+
         it 'set the flash error message' do
           expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
         end
       end
 
       context 'requesting JSON format,' do
-        before(:each) { post(api_sessions_jwt_path(format: :json)) }
+        before { post(api_sessions_jwt_path(format: :json)) }
+
         it 'is successful' do
           expect(response).to be_successful
         end
+
         it 'returns the new JWT as JSON' do
           json = JSON.parse(response.body)
           expect(json).to have_key('jwt')

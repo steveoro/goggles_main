@@ -27,6 +27,7 @@ shared_examples_for 'any subject that renders nothing' do
   it 'doesn\'t raise errors' do
     expect { subject }.not_to raise_error
   end
+
   it 'renders nothing' do
     expect(subject).to be_empty
   end
@@ -73,6 +74,7 @@ shared_examples_for 'an AbstractMeeting detail page rendering the collapsed \'mo
     end
     expect(parsed_node.at_css('td#confirmed')).to be_present
   end
+
   it 'includes various contact information (for meetings only, when set)' do
     if fixture_row.instance_of?(GogglesDb::Meeting)
       expect(
@@ -80,6 +82,7 @@ shared_examples_for 'an AbstractMeeting detail page rendering the collapsed \'mo
       ).to be_present
     end
   end
+
   it 'includes the home/organizing team info (when set)' do
     if (fixture_row.respond_to?(:home_team) && fixture_row.home_team) ||
        (fixture_row.respond_to?(:team) && fixture_row.team)
@@ -110,9 +113,11 @@ shared_examples_for 'an AbstractMeeting detail page rendering main \'header\' de
       expect(parsed_node.at_css('td#entry-deadline').text).to include(fixture_row.entry_deadline.to_s)
     end
   end
+
   it 'shows the meeting date' do
     expect(parsed_node.at_css('td#header-date')).to be_present
   end
+
   it 'includes the rotating toggle switch to show the collapsed details sub-page' do
     expect(parsed_node.at_css('.rotating-toggle')).to be_present
   end
@@ -132,10 +137,12 @@ shared_examples_for 'ComboBox::DbLookupComponent common rendered result' do
     it 'has the customizable wrapper class' do
       expect(subject.css("div.#{wrapper_class}")).to be_present
     end
+
     it 'includes the reference to the StimulusJS LookupController' do
       expect(subject.css("div.#{wrapper_class}").attr('data-controller')).to be_present
       expect(subject.css("div.#{wrapper_class}").attr('data-controller').value).to eq('lookup')
     end
+
     it "sets the 'free-text' controller option accordingly (when set)" do
       if free_text_option
         expect(subject.css("div.#{wrapper_class}").attr('data-lookup-free-text-value'))
@@ -144,6 +151,7 @@ shared_examples_for 'ComboBox::DbLookupComponent common rendered result' do
           .to eq(free_text_option)
       end
     end
+
     it "sets the 'base name' controller option" do
       expect(subject.css("div.#{wrapper_class}").attr('data-lookup-field-base-name-value'))
         .to be_present
@@ -157,11 +165,13 @@ shared_examples_for 'ComboBox::DbLookupComponent common rendered result' do
     expect(subject.css("div.#{wrapper_class} input##{base_name}_id").attr('type').value)
       .to eq('hidden')
   end
+
   it 'renders the hidden label input field (the text value of the currently chosen option)' do
     expect(subject.css("div.#{wrapper_class} input##{base_name}_label")).to be_present
     expect(subject.css("div.#{wrapper_class} input##{base_name}_label").attr('type').value)
       .to eq('hidden')
   end
+
   it 'renders the display label text' do
     expect(subject.css("div.#{wrapper_class} label[for=\"#{base_name}\"]")).to be_present
     expect(subject.css("div.#{wrapper_class} label[for=\"#{base_name}\"]").text).to eq(label_text)
@@ -203,6 +213,7 @@ shared_examples_for 'ComboBox::DbLookupComponent with double-API call enabled' d
     # The actual API URL used will feature the full protocol/port URI, so we test for inclusion only:
     expect(subject.css("div.#{wrapper_class}").attr('data-lookup-api-url-value').value).to include(api_url)
   end
+
   it 'includes the associated API-2 URL value' do
     expect(subject.css("div.#{wrapper_class}").attr('data-lookup-api-url2-value')).to be_present
     expect(subject.css("div.#{wrapper_class}").attr('data-lookup-api-url2-value').value)

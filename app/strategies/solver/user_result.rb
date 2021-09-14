@@ -26,7 +26,7 @@ module Solver
 
       id = value_from_req(key: 'user_result_id', nested: 'user_result', sub_key: 'id')
       # Priority #1
-      return GogglesDb::UserResult.find_by_id(id) if id.to_i.positive?
+      return GogglesDb::UserResult.find_by(id: id) if id.to_i.positive?
 
       # Priority #2
       solve_bindings
@@ -81,7 +81,7 @@ module Solver
         event_type_id: Solver::Factory.for('EventType', root_key?('event_type') ? req : req['user_result']),
 
         # Optional fields:
-        event_date: value_from_req(key: 'event_date', nested: 'user_result', sub_key: 'event_date') || Date.today.to_s,
+        event_date: value_from_req(key: 'event_date', nested: 'user_result', sub_key: 'event_date') || Time.zone.today.to_s,
         reaction_time: value_from_req(key: 'user_result_reaction_time', nested: 'user_result', sub_key: 'reaction_time') || 0.0,
         minutes: value_from_req(key: 'user_result_minutes', nested: 'user_result', sub_key: 'minutes') || 0,
         seconds: value_from_req(key: 'user_result_seconds', nested: 'user_result', sub_key: 'seconds') || 0,

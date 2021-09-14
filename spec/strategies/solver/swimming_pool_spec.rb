@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Solver::SwimmingPool, type: :strategy do
   context 'before #solve!,' do
-    it_behaves_like('Solver strategy, bindings, finder & creator, before #solve!', 'SwimmingPool', Solver::SwimmingPool)
+    it_behaves_like('Solver strategy, bindings, finder & creator, before #solve!', 'SwimmingPool', described_class)
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -14,6 +14,7 @@ RSpec.describe Solver::SwimmingPool, type: :strategy do
   #
   context 'with EMPTY #req data,' do
     let(:fixture_req) { {} }
+
     it_behaves_like('Solver strategy, NO bindings, UNSOLVABLE req, after #solve!', 'SwimmingPool')
   end
 
@@ -22,6 +23,7 @@ RSpec.describe Solver::SwimmingPool, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ root lv.),' do
     let(:fixture_req) { { 'swimming_pool_id' => -1 } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'SwimmingPool')
   end
 
@@ -30,6 +32,7 @@ RSpec.describe Solver::SwimmingPool, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ sub-entity lv.),' do
     let(:fixture_req) { { 'swimming_pool' => { 'id' => -1 } } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'SwimmingPool')
   end
   #-- -------------------------------------------------------------------------
@@ -43,14 +46,16 @@ RSpec.describe Solver::SwimmingPool, type: :strategy do
     # VALID data: EXISTING ID
     #
     context "with valid & solved #req data (valid @ depth #{index})," do
-      let(:fixture_row) { GogglesDb::SwimmingPool.first(50).sample }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         solver = Solver::Factory.for('SwimmingPool', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { GogglesDb::SwimmingPool.first(50).sample }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, bindings, solvable req, after #solve!', GogglesDb::SwimmingPool)
     end
   end
@@ -134,26 +139,31 @@ RSpec.describe Solver::SwimmingPool, type: :strategy do
     # VALID data: EXISTING row data
     #
     context "with solvable #req data (valid @ depth #{index / 2}, var. #{index % 2})," do
-      let(:fixture_row) { GogglesDb::SwimmingPool.first(50).sample }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         solver = Solver::Factory.for('SwimmingPool', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { GogglesDb::SwimmingPool.first(50).sample }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::SwimmingPool)
 
       describe '#entity' do
         it 'has the expected name' do
           expect(subject.entity.name).to eq(fixture_row.name)
         end
+
         it 'has the expected nick_name' do
           expect(subject.entity.nick_name).to eq(fixture_row.nick_name)
         end
+
         it 'has the expected city_id' do
           expect(subject.entity.city_id).to eq(fixture_row.city_id)
         end
+
         it 'has the expected pool_type' do
           expect(subject.entity.pool_type_id).to eq(fixture_row.pool_type_id)
         end
@@ -166,6 +176,12 @@ RSpec.describe Solver::SwimmingPool, type: :strategy do
     # VALID data: NEW row data
     #
     context "with solvable NEW #req data (valid @ depth #{index})," do
+      subject do
+        solver = Solver::Factory.for('SwimmingPool', fixture_req)
+        solver.solve!
+        solver
+      end
+
       let(:fixture_row) do
         new_row = FactoryBot.build(
           :swimming_pool,
@@ -183,23 +199,21 @@ RSpec.describe Solver::SwimmingPool, type: :strategy do
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { false }
 
-      subject do
-        solver = Solver::Factory.for('SwimmingPool', fixture_req)
-        solver.solve!
-        solver
-      end
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::SwimmingPool)
 
       describe '#entity' do
         it 'has the expected name' do
           expect(subject.entity.name).to eq(fixture_row.name)
         end
+
         it 'has the expected nick_name' do
           expect(subject.entity.nick_name).to eq(fixture_row.nick_name)
         end
+
         it 'has the expected city_id' do
           expect(subject.entity.city_id).to eq(fixture_row.city_id)
         end
+
         it 'has the expected pool_type' do
           expect(subject.entity.pool_type_id).to eq(fixture_row.pool_type_id)
         end

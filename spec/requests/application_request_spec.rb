@@ -7,7 +7,7 @@ RSpec.describe ApplicationController, type: :request do
   [nil, :it, :en, :invalid].each do |locale_sym|
     context "when setting the locale parameter as '#{locale_sym}'," do
       describe 'GET /' do
-        before(:each) { get(root_path, params: { locale: locale_sym }) }
+        before { get(root_path, params: { locale: locale_sym }) }
 
         it 'returns http success' do
           expect(response).to have_http_status(:success)

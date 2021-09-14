@@ -26,7 +26,7 @@ module Solver
 
       id = value_from_req(key: 'user_workshop_id', nested: 'user_workshop', sub_key: 'id')
       # Priority #1
-      return GogglesDb::UserWorkshop.find_by_id(id) if id.to_i.positive?
+      return GogglesDb::UserWorkshop.find_by(id: id) if id.to_i.positive?
 
       # Priority #2
       solve_bindings
@@ -78,13 +78,13 @@ module Solver
         season_id: Solver::Factory.for('Season', root_key?('season') ? req : req['user_workshop']),
 
         # Fields w/ defaults:
-        header_date: value_from_req(key: 'header_date', nested: 'user_workshop', sub_key: 'header_date') || Date.today.to_s,
+        header_date: value_from_req(key: 'header_date', nested: 'user_workshop', sub_key: 'header_date') || Time.zone.today.to_s,
         edition: value_from_req(key: 'edition', nested: 'user_workshop', sub_key: 'edition') ||
-                 Date.today.year.to_s,
+                 Time.zone.today.year.to_s,
         edition_type_id: Solver::Factory.for('EditionType', root_key?('edition_type') ? req : req['user_workshop']),
         timing_type_id: Solver::Factory.for('TimingType', root_key?('timing_type') ? req : req['user_workshop']),
         header_year: value_from_req(key: 'header_year', nested: 'user_workshop', sub_key: 'header_year') ||
-                     Date.today.year.to_s,
+                     Time.zone.today.year.to_s,
         code: value_from_req(key: 'user_workshop_code', nested: 'user_workshop', sub_key: 'code') ||
               normalize_string_name_into_code(meeting_description),
         confirmed: value_from_req(key: 'confirmed', nested: 'user_workshop', sub_key: 'confirmed') ||

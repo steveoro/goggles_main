@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 29c45fc28daea60815e5b2c04f361615f1a564f7
+  revision: 3c599a7f286f0ba85b504b2150bf4ca88c8cd5ae
   specs:
-    goggles_db (0.3.29)
+    goggles_db (0.3.31)
       acts-as-taggable-on
       acts_as_votable
       carrierwave
@@ -232,7 +232,7 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
-    faraday (1.7.1)
+    faraday (1.7.2)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)

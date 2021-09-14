@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Solver::UserWorkshop, type: :strategy do
   context 'before #solve!,' do
-    it_behaves_like('Solver strategy, bindings, finder & creator, before #solve!', 'UserWorkshop', Solver::UserWorkshop)
+    it_behaves_like('Solver strategy, bindings, finder & creator, before #solve!', 'UserWorkshop', described_class)
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -14,6 +14,7 @@ RSpec.describe Solver::UserWorkshop, type: :strategy do
   #
   context 'with EMPTY #req data,' do
     let(:fixture_req) { {} }
+
     it_behaves_like('Solver strategy, NO bindings, UNSOLVABLE req, after #solve!', 'UserWorkshop')
   end
 
@@ -22,6 +23,7 @@ RSpec.describe Solver::UserWorkshop, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ root lv.),' do
     let(:fixture_req) { { 'user_workshop_id' => -1 } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'UserWorkshop')
   end
 
@@ -30,6 +32,7 @@ RSpec.describe Solver::UserWorkshop, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ sub-entity lv.),' do
     let(:fixture_req) { { 'user_workshop' => { 'id' => -1 } } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'UserWorkshop')
   end
   #-- -------------------------------------------------------------------------
@@ -43,15 +46,17 @@ RSpec.describe Solver::UserWorkshop, type: :strategy do
     # VALID data: EXISTING ID
     #
     context "with valid & solved #req data (valid @ depth #{index})," do
-      let(:fixture_row) { FactoryBot.create(:user_workshop) }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         expect(fixture_row).to be_a(GogglesDb::UserWorkshop).and be_valid
         solver = Solver::Factory.for('UserWorkshop', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { FactoryBot.create(:user_workshop) }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::UserWorkshop)
     end
   end
@@ -148,15 +153,17 @@ RSpec.describe Solver::UserWorkshop, type: :strategy do
     # VALID data: EXISTING row data
     #
     context "with solvable #req data (valid w/ layout #{index})," do
-      let(:fixture_row) { FactoryBot.create(:user_workshop) }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         expect(fixture_row).to be_a(GogglesDb::UserWorkshop).and be_valid
         solver = Solver::Factory.for('UserWorkshop', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { FactoryBot.create(:user_workshop) }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::UserWorkshop)
 
       describe '#entity' do
@@ -176,6 +183,13 @@ RSpec.describe Solver::UserWorkshop, type: :strategy do
     # VALID data: NEW row data
     #
     context "with solvable NEW #req data (valid w/ layout #{index})," do
+      subject do
+        expect(fixture_row).to be_a(GogglesDb::UserWorkshop).and be_valid
+        solver = Solver::Factory.for('UserWorkshop', fixture_req)
+        solver.solve!
+        solver
+      end
+
       let(:fixture_row) do
         FactoryBot.build(
           :user_workshop,
@@ -186,12 +200,7 @@ RSpec.describe Solver::UserWorkshop, type: :strategy do
       end
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { false }
-      subject do
-        expect(fixture_row).to be_a(GogglesDb::UserWorkshop).and be_valid
-        solver = Solver::Factory.for('UserWorkshop', fixture_req)
-        solver.solve!
-        solver
-      end
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::UserWorkshop)
 
       describe '#entity' do

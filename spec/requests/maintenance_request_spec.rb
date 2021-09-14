@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'Maintenances', type: :request do
   describe 'GET /maintenance' do
     context 'if the mainenance mode if off' do
-      before(:each) { GogglesDb::AppParameter.maintenance = false }
+      before { GogglesDb::AppParameter.maintenance = false }
 
       it 'redirects to root_path' do
         get(maintenance_path)
@@ -14,7 +14,7 @@ RSpec.describe 'Maintenances', type: :request do
     end
 
     context 'if the mainenance mode if on' do
-      before(:each) { GogglesDb::AppParameter.maintenance = true }
+      before { GogglesDb::AppParameter.maintenance = true }
 
       it 'returns http success' do
         get(maintenance_path)

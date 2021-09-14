@@ -15,10 +15,12 @@ RSpec.describe Switch::XorComponent, type: :component do
       node = fragment.at_css('.switch')
       expect(node).to be_present
     end
+
     it "has the composed 'xor-<target1>-<target2>' as main ID" do
       node = fragment.at("#xor-#{fixture_target1}-#{fixture_target2}")
       expect(node).to be_present
     end
+
     it "includes both the 'slider' & 'xor' classes at the same level" do
       node = fragment.at("#xor-#{fixture_target1}-#{fixture_target2}")
       expect(node).to be_present
@@ -30,6 +32,7 @@ RSpec.describe Switch::XorComponent, type: :component do
       expect(node).to be_present
       expect(node.text).to include(fixture_label1)
     end
+
     it 'renders the label2 text' do
       node = fragment.at("##{fixture_target2}-span-label")
       expect(node).to be_present
@@ -55,7 +58,8 @@ RSpec.describe Switch::XorComponent, type: :component do
         )
       )
     end
-    before(:each) { expect(fragment).to be_present }
+
+    before { expect(fragment).to be_present }
 
     it_behaves_like('Switch::XorComponent core rendering')
 
@@ -65,6 +69,7 @@ RSpec.describe Switch::XorComponent, type: :component do
       expect(node['type']).to eq('hidden')
       expect(node['data-switch-target']).to eq('selector')
     end
+
     it 'uses the specified custom CSS classes on the widget' do
       node = fragment.at("#xor-#{fixture_target1}-#{fixture_target2}")
       expect(node).to be_present
@@ -83,7 +88,8 @@ RSpec.describe Switch::XorComponent, type: :component do
         )
       )
     end
-    before(:each) { expect(fragment).to be_present }
+
+    before { expect(fragment).to be_present }
 
     it_behaves_like('Switch::XorComponent core rendering')
 

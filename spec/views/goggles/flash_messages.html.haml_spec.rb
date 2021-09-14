@@ -7,7 +7,7 @@ RSpec.describe 'goggles/_flash_messages.html.haml', type: :view do
 
   FlashAlertComponent::SUPPORTED_SYMS.each do |flash_sym|
     context "when a flash[:#{flash_sym}] message is set," do
-      before(:each) do
+      before do
         expect(test_message).to be_a(String).and be_present
         flash[flash_sym] = test_message
         render

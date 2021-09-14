@@ -26,7 +26,7 @@ module Solver
 
       id = value_from_req(key: 'meeting_id', nested: 'meeting', sub_key: 'id')
       # Priority #1
-      return GogglesDb::Meeting.find_by_id(id) if id.to_i.positive?
+      return GogglesDb::Meeting.find_by(id: id) if id.to_i.positive?
 
       # Priority #2
       solve_bindings
@@ -73,17 +73,17 @@ module Solver
       @bindings = {
         description: meeting_description,
         season_id: Solver::Factory.for('Season', root_key?('season') ? req : req['meeting']),
-        header_date: value_from_req(key: 'header_date', nested: 'meeting', sub_key: 'header_date') || Date.today.to_s,
+        header_date: value_from_req(key: 'header_date', nested: 'meeting', sub_key: 'header_date') || Time.zone.today.to_s,
 
         # Fields w/ defaults:
         edition: value_from_req(key: 'edition', nested: 'meeting', sub_key: 'edition') ||
-                 Date.today.year.to_s,
+                 Time.zone.today.year.to_s,
         edition_type_id: Solver::Factory.for('EditionType', root_key?('edition_type') ? req : req['meeting']) ||
                          GogglesDb::EditionType::YEARLY_ID,
         timing_type_id: Solver::Factory.for('TimingType', root_key?('timing_type') ? req : req['meeting']) ||
                         GogglesDb::TimingType::SEMIAUTO_ID,
         header_year: value_from_req(key: 'header_year', nested: 'meeting', sub_key: 'header_year') ||
-                     Date.today.year.to_s,
+                     Time.zone.today.year.to_s,
         code: value_from_req(key: 'meeting_code', nested: 'meeting', sub_key: 'code') ||
               normalize_string_name_into_code(meeting_description),
         confirmed: value_from_req(key: 'confirmed', nested: 'meeting', sub_key: 'confirmed') ||

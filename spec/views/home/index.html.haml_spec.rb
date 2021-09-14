@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'home/index.html.haml', type: :view do
-  before(:each) do
+  before do
     assign(:app_settings_row, GogglesDb::AppParameter.versioning_row)
     render
   end

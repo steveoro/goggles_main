@@ -134,7 +134,7 @@ module IqRequest
       user_id = request_hash.fetch('user_id', nil) ||
                 request_hash.fetch('user_lap', nil)&.fetch('user_result', nil)&.fetch('user_id', nil) ||
                 request_hash.fetch('lap', nil)&.fetch('meeting_individual_result', nil)&.fetch('user_id', nil)
-      instance = IqRequest::ChronoRecParamAdapter.new(GogglesDb::User.find_by_id(user_id), {})
+      instance = IqRequest::ChronoRecParamAdapter.new(GogglesDb::User.find_by(id: user_id), {})
       instance.request_hash = request_hash
       instance
     end
@@ -197,7 +197,7 @@ module IqRequest
           @request_hash[root_key][key] = rec_data_hash[key] if rec_data_hash.key?(key)
         end
       end
-      return unless @rec_data.present?
+      return if @rec_data.blank?
 
       REC_DETAIL_PARAMS.each { |key| @rec_data[key] = rec_data_hash[key] if rec_data_hash.key?(key) }
     end
@@ -221,7 +221,7 @@ module IqRequest
           @request_hash[root_key][result_parent_key][key] = rec_data_hash[key] if rec_data_hash.key?(key)
         end
       end
-      return unless @rec_data.present?
+      return if @rec_data.blank?
 
       REC_DETAIL_PARAMS.each { |key| @rec_data[key] = rec_data_hash[key] if rec_data_hash.key?(key) }
     end
@@ -234,7 +234,7 @@ module IqRequest
     def header_year
       return @request_hash['header_year'] if @request_hash.present?
       return @params['header_year'] if @params['header_year'].present?
-      return Date.today.year unless @params['event_date'].present?
+      return Time.zone.today.year if @params['event_date'].blank?
 
       year = /\d{4}/.match(@params['event_date'].to_s).values_at(0).first.to_i
       month = begin

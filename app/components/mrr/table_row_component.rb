@@ -39,7 +39,7 @@ module MRR
 
     # Relay name; gives precedence to the Relay code, if present
     def relay_name
-      @mrr.relay_code.present? ? @mrr.relay_code : @mrr.team.editable_name
+      @mrr.relay_code.presence || @mrr.team.editable_name
     end
 
     # Result score; gives precedence to the standard scoring system, if used

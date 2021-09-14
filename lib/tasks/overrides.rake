@@ -23,7 +23,7 @@ Rake.application.remove_task 'db:test:prepare'
 namespace :db do
   namespace :test do
     desc 'NO-OP task: not needed for this project (always safe to run, shouldn\'t affect the DB dump)'
-    task :prepare do |_t|
+    task prepare: :environment do |_t|
       # (Rewrite the task to *not* do anything you don't want)
       puts 'Nothing to prepare, moving on...'
     end

@@ -7,7 +7,7 @@ RSpec.describe FlashAlertComponent, type: :component do
   let(:text_title) { [FFaker::Company.bs, nil].sample }
 
   # Force domain creation:
-  before(:each) do
+  before do
     expect(text_body).to be_present
     expect(text_title).to be_present.or be_nil
   end
@@ -40,6 +40,7 @@ RSpec.describe FlashAlertComponent, type: :component do
 
   context 'when using an unsupported symbol,' do
     subject { render_inline(described_class.new(symbol: :not_in_list, body: text_body)).to_html }
+
     it_behaves_like('any subject that renders nothing')
   end
 
@@ -49,6 +50,7 @@ RSpec.describe FlashAlertComponent, type: :component do
         described_class.new(symbol: FlashAlertComponent::SUPPORTED_SYMS.sample, body: '')
       ).to_html
     end
+
     it_behaves_like('any subject that renders nothing')
   end
 end

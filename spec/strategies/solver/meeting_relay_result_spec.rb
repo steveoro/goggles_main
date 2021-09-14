@@ -6,7 +6,7 @@ RSpec.describe Solver::MeetingRelayResult, type: :strategy do
   context 'before #solve!,' do
     it_behaves_like(
       'Solver strategy, bindings, finder & creator, before #solve!',
-      'MeetingRelayResult', Solver::MeetingRelayResult
+      'MeetingRelayResult', described_class
     )
   end
   #-- -------------------------------------------------------------------------
@@ -17,6 +17,7 @@ RSpec.describe Solver::MeetingRelayResult, type: :strategy do
   #
   context 'with EMPTY #req data,' do
     let(:fixture_req) { {} }
+
     it_behaves_like('Solver strategy, NO bindings, UNSOLVABLE req, after #solve!', 'MeetingRelayResult')
   end
 
@@ -25,6 +26,7 @@ RSpec.describe Solver::MeetingRelayResult, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ root lv.),' do
     let(:fixture_req) { { 'meeting_relay_result_id' => -1 } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'MeetingRelayResult')
   end
 
@@ -33,6 +35,7 @@ RSpec.describe Solver::MeetingRelayResult, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ sub-entity lv.),' do
     let(:fixture_req) { { 'meeting_relay_result' => { 'id' => -1 } } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'MeetingRelayResult')
   end
   #-- -------------------------------------------------------------------------
@@ -46,20 +49,22 @@ RSpec.describe Solver::MeetingRelayResult, type: :strategy do
     # VALID data: EXISTING ID
     #
     context "with valid & solved #req data (valid @ depth #{index})," do
-      let(:fixture_row) do
-        # Choose valid domain data only (TODO: data fix is required)
-        GogglesDb::MeetingRelayResult.where("relay_code != ''")
-                                     .where('team_affiliation_id is not null')
-                                     .first(200).sample
-      end
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         expect(fixture_row).to be_a(GogglesDb::MeetingRelayResult).and be_valid
         solver = Solver::Factory.for('MeetingRelayResult', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) do
+        # Choose valid domain data only (TODO: data fix is required)
+        GogglesDb::MeetingRelayResult.where("relay_code != ''")
+                                     .where.not(team_affiliation_id: nil)
+                                     .first(200).sample
+      end
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::MeetingRelayResult)
     end
   end
@@ -141,20 +146,22 @@ RSpec.describe Solver::MeetingRelayResult, type: :strategy do
     # VALID data: EXISTING row data
     #
     context "with solvable #req data (valid w/ layout #{index})," do
-      let(:fixture_row) do
-        # Choose valid domain data only (TODO: data fix is required)
-        GogglesDb::MeetingRelayResult.where("relay_code != ''")
-                                     .where('team_affiliation_id is not null')
-                                     .first(200).sample
-      end
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         expect(fixture_row).to be_a(GogglesDb::MeetingRelayResult).and be_valid
         solver = Solver::Factory.for('MeetingRelayResult', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) do
+        # Choose valid domain data only (TODO: data fix is required)
+        GogglesDb::MeetingRelayResult.where("relay_code != ''")
+                                     .where.not(team_affiliation_id: nil)
+                                     .first(200).sample
+      end
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::MeetingRelayResult)
 
       describe '#entity' do
@@ -174,6 +181,13 @@ RSpec.describe Solver::MeetingRelayResult, type: :strategy do
     # VALID data: NEW row data
     #
     context "with solvable NEW #req data (valid w/ layout #{index})," do
+      subject do
+        expect(fixture_row).to be_a(GogglesDb::MeetingRelayResult).and be_valid
+        solver = Solver::Factory.for('MeetingRelayResult', fixture_req)
+        solver.solve!
+        solver
+      end
+
       let(:fixture_row) do
         badge = FactoryBot.create(:badge)
         FactoryBot.build(
@@ -186,12 +200,7 @@ RSpec.describe Solver::MeetingRelayResult, type: :strategy do
       end
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { false }
-      subject do
-        expect(fixture_row).to be_a(GogglesDb::MeetingRelayResult).and be_valid
-        solver = Solver::Factory.for('MeetingRelayResult', fixture_req)
-        solver.solve!
-        solver
-      end
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::MeetingRelayResult)
 
       describe '#entity' do

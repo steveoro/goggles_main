@@ -6,7 +6,7 @@ require GogglesDb::Engine.root.join('spec', 'support', 'shared_method_existance_
 RSpec.describe IqRequest::ChronoRecParamAdapter do
   # Domain definition:
   let(:current_user) { GogglesDb::User.first(50).sample }
-  let(:base_date) { Date.today }
+  let(:base_date) { Time.zone.today }
   let(:event_date) { base_date.to_s }
   let(:fixture_swimmer) { GogglesDb::Swimmer.first(150).sample }
   let(:fixture_pool) { GogglesDb::SwimmingPool.first(50).sample }
@@ -23,7 +23,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       'user_workshop_label' => 'CSI at home 2021 - test',
       'swimming_pool_label' => fixture_pool.name,
       'swimming_pool_id' => fixture_pool.id.to_s,
-      'event_date' => Date.today.to_s,
+      'event_date' => Time.zone.today.to_s,
       'event_type_label' => fixture_event.code,
       'event_type_id' => fixture_event.id.to_s,
       'pool_type_id' => fixture_pool.pool_type_id.to_s,
@@ -76,7 +76,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
     }.to_json
   end
 
-  before(:each) do
+  before do
     expect(current_user).to be_a(GogglesDb::User).and be_valid
     expect(fixture_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
     expect(fixture_pool).to be_a(GogglesDb::SwimmingPool).and be_valid
@@ -91,7 +91,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
   # REQUIRES: subject
   shared_examples_for 'a valid ChronoRecParamAdapter instance' do
     it 'is a ChronoRecParamAdapter instance' do
-      expect(subject).to be_a(IqRequest::ChronoRecParamAdapter)
+      expect(subject).to be_a(described_class)
     end
 
     it_behaves_like(
@@ -127,6 +127,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       it 'raises an ArgumentError for an invalid source object' do
         expect { described_class.new(current_user, nil) }.to raise_error(ArgumentError)
       end
+
       it 'raises an ArgumentError for an invalid current user' do
         expect { described_class.new(nil, {}) }.to raise_error(ArgumentError)
       end
@@ -138,24 +139,30 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       it_behaves_like('a valid ChronoRecParamAdapter instance')
 
       describe '#params' do
-        let(:example_params_hash) { { 'rec_type' => Switch::XorComponent::TYPE_TARGET1 } }
         subject { described_class.new(current_user, example_params_hash) }
+
+        let(:example_params_hash) { { 'rec_type' => Switch::XorComponent::TYPE_TARGET1 } }
+
         it 'is an Hash' do
           expect(subject.params).to be_an(Hash)
         end
+
         it 'is the params_hash specified in the constructor' do
           expect(subject.params).to eq(example_params_hash)
         end
       end
 
       context 'when #rec_type is set to TYPE_TARGET1 (meeting) in the params_hash,' do
-        let(:example_params_hash) { { 'rec_type' => Switch::XorComponent::TYPE_TARGET1 } }
         subject { described_class.new(current_user, example_params_hash) }
+
+        let(:example_params_hash) { { 'rec_type' => Switch::XorComponent::TYPE_TARGET1 } }
+
         describe '#target_entity' do
           it 'is Lap' do
             expect(subject.target_entity).to eq('Lap')
           end
         end
+
         describe '#result_parent_key' do
           it 'is meeting_individual_result' do
             expect(subject.result_parent_key).to eq('meeting_individual_result')
@@ -164,13 +171,16 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       end
 
       context 'when #rec_type is set to TYPE_TARGET2 (workshop) in the params_hash,' do
-        let(:example_params_hash) { { 'rec_type' => Switch::XorComponent::TYPE_TARGET2 } }
         subject { described_class.new(current_user, example_params_hash) }
+
+        let(:example_params_hash) { { 'rec_type' => Switch::XorComponent::TYPE_TARGET2 } }
+
         describe '#target_entity' do
           it 'is UserLap' do
             expect(subject.target_entity).to eq('UserLap')
           end
         end
+
         describe '#result_parent_key' do
           it 'is user_result' do
             expect(subject.result_parent_key).to eq('user_result')
@@ -179,13 +189,16 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       end
 
       context 'when #rec_type is not set at all,' do
-        let(:example_params_hash) { { 'anything_else' => 0 } }
         subject { described_class.new(current_user, example_params_hash) }
+
+        let(:example_params_hash) { { 'anything_else' => 0 } }
+
         describe '#target_entity' do
           it 'defaults to Lap' do
             expect(subject.target_entity).to eq('Lap')
           end
         end
+
         describe '#result_parent_key' do
           it 'defaults to meeting_individual_result' do
             expect(subject.result_parent_key).to eq('meeting_individual_result')
@@ -194,18 +207,22 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       end
 
       describe '#to_request_hash' do
+        subject { described_class.new(current_user, example_params_hash) }
+
         let(:example_params_hash) do
           {
             'rec_type' => [Switch::XorComponent::TYPE_TARGET1, Switch::XorComponent::TYPE_TARGET2].sample
           }
         end
-        subject { described_class.new(current_user, example_params_hash) }
+
         it 'is an Hash' do
           expect(subject.to_request_hash).to be_an(Hash)
         end
+
         it 'includes the target_entity' do
           expect(subject.to_request_hash).to have_key('target_entity')
         end
+
         it 'includes the root_key' do
           expect(subject.to_request_hash).to have_key(subject.root_key)
         end
@@ -215,9 +232,11 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
 
       describe '#chrono_swimmer_label' do
         subject { described_class.new(current_user, fixture_params) }
+
         it 'is an String' do
           expect(subject.chrono_swimmer_label).to be_a(String).and be_present
         end
+
         it 'includes both the swimmer_label & the category_type_label' do
           expect(subject.chrono_swimmer_label).to include(subject.params.fetch('swimmer_label', nil))
             .and include(subject.params.fetch('category_type_label', nil))
@@ -226,9 +245,11 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
 
       describe '#chrono_event_label' do
         subject { described_class.new(current_user, fixture_params) }
+
         it 'is an String' do
           expect(subject.chrono_event_label).to be_a(String).and be_present
         end
+
         it 'includes both the event_date & the event_type_label' do
           expect(subject.chrono_event_label).to include(subject.params.fetch('event_date', nil))
             .and include(subject.params.fetch('event_type_label', nil))
@@ -237,9 +258,11 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
 
       describe '#chrono_event_container_label' do
         subject { described_class.new(current_user, fixture_params) }
+
         it 'is an String' do
           expect(subject.chrono_event_container_label).to be_a(String).and be_present
         end
+
         it 'includes the meeting_label or the workshop_label (which one is defined first)' do
           expect(subject.chrono_event_container_label).to include(subject.params.fetch('meeting_label', nil))
             .or include(subject.params.fetch('user_workshop_label', nil))
@@ -248,9 +271,11 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
 
       describe '#chrono_swimming_pool_label' do
         subject { described_class.new(current_user, fixture_params) }
+
         it 'is an String' do
           expect(subject.chrono_swimming_pool_label).to be_a(String).and be_present
         end
+
         it 'includes the meeting_label or the workshop_label (which one is defined first)' do
           expect(subject.chrono_swimming_pool_label).to include(subject.params.fetch('swimming_pool_label', nil))
         end
@@ -260,9 +285,10 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
 
       describe '#header_year' do
         context 'when it is set in the source object,' do
-          let(:expected_result) { "#{Date.today.year - 2}..#{Date.today.year}" }
-          let(:source_params) { { 'header_year' => expected_result } }
           subject { described_class.new(current_user, source_params) }
+
+          let(:expected_result) { "#{Time.zone.today.year - 2}..#{Time.zone.today.year}" }
+          let(:source_params) { { 'header_year' => expected_result } }
 
           it 'equals the specified value' do
             expect(subject.header_year).to eq(expected_result)
@@ -270,8 +296,9 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
         end
 
         context 'when event_date is set but header_year is not,' do
-          let(:source_params) { { 'event_date' => event_date } }
           subject { described_class.new(current_user, source_params) }
+
+          let(:source_params) { { 'event_date' => event_date } }
 
           it 'includes the year of the specified date' do
             expect(subject.header_year).to include(base_date.year.to_s)
@@ -294,6 +321,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
   describe 'self.from_request_data' do
     context 'with an invalid parameter,' do
       let(:fixture_request) { 'not a valid JSON string' }
+
       it 'raises an JSON parse error' do
         expect { described_class.from_request_data(fixture_request) }.to raise_error(ActiveSupport::JSON.parse_error)
       end
@@ -301,6 +329,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
 
     context 'with valid JSON hash that does not contain a valid user_id,' do
       let(:fixture_request) { { 'target_entity' => 'Lap' }.to_json }
+
       it 'raises an Argument error' do
         expect { described_class.from_request_data(fixture_request) }.to raise_error(ArgumentError)
       end
@@ -308,11 +337,13 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
 
     %w[UserLap Lap].each do |target_entity|
       context "with a valid JSON hash (for a '#{target_entity}' target)," do
+        subject { described_class.from_request_data(request_hash.to_json) }
+
         let(:request_hash) { { 'target_entity' => target_entity, 'user_id' => 1 } }
-        before(:each) do
+
+        before do
           expect(request_hash['target_entity']).to eq(target_entity)
         end
-        subject { described_class.from_request_data(request_hash.to_json) }
 
         it_behaves_like('a valid ChronoRecParamAdapter instance')
 
@@ -321,31 +352,37 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
             expect(subject.params).to be_empty
           end
         end
+
         describe '#target_entity' do
           it 'is the target_entity set in the request' do
             expect(subject.target_entity).to eq(request_hash['target_entity'])
           end
         end
+
         describe '#root_request_hash' do
           it 'is nil if the root_key is not present is the source request' do
             expect(subject.root_request_hash).to be nil
           end
         end
+
         describe '#rec_type_meeting?' do
           it 'is true for a Lap target_entity and false for UserLap' do
             expect(subject.rec_type_meeting?).to eq(target_entity == 'Lap')
           end
         end
+
         describe '#rec_type_workshop?' do
           it 'is true for a UserLap target_entity and false for Lap' do
             expect(subject.rec_type_workshop?).to eq(target_entity == 'UserLap')
           end
         end
+
         describe '#to_request_hash' do
           it 'is the source request' do
             expect(subject.to_request_hash).to eq(request_hash)
           end
         end
+
         describe '#header_year' do
           it 'is nil if the header_year is not present is the source request' do
             expect(subject.header_year).to be nil
@@ -361,6 +398,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
     it 'has a nil #request_hash' do
       expect(subject.request_hash).to be nil
     end
+
     it 'updates or overwrites #rec_data with the timing data specified into rec_data_hash' do
       # Changes in result: rec_data will have the new specified values (including any missing keys)
       rec_data_hash.each do |key, value|
@@ -374,7 +412,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
     context 'when no #rec_data or #request_hash are set,' do
       subject { described_class.new(current_user, {}) }
 
-      before(:each) do
+      before do
         expect(subject.rec_data).to be_an(Hash).and be_empty
         expect(subject.request_hash).to be nil
         # Run the update method:
@@ -391,7 +429,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
     context 'when #request_hash is set (by self.from_request_data),' do
       subject { described_class.from_request_data(recdetail_min_request_data) }
 
-      before(:each) do
+      before do
         expect(subject.rec_data).to be_an(Hash).and be_empty
         expect(subject.request_hash).to be_an(Hash).and be_present
         expect(subject.request_hash['lap']).to be_an(Hash).and be_present
@@ -415,7 +453,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
     context 'when #rec_data is set by the constructor,' do
       subject { described_class.new(current_user, fixture_params, fixture_rec_data) }
 
-      before(:each) do
+      before do
         expect(subject.request_hash).to be nil
         expect(subject.rec_data).to be_an(Hash).and be_present
         # Domain check:
@@ -439,7 +477,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
     context 'when no #rec_data or #request_hash are set,' do
       subject { described_class.new(current_user, {}) }
 
-      before(:each) do
+      before do
         expect(subject.rec_data).to be_an(Hash).and be_empty
         expect(subject.request_hash).to be nil
         # Run the update method:
@@ -456,7 +494,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
     context 'when #request_hash is set (by self.from_request_data),' do
       subject { described_class.from_request_data(recdetail_min_request_data) }
 
-      before(:each) do
+      before do
         expect(subject.rec_data).to be_an(Hash).and be_empty
         # Domain check:
         expect(subject.request_hash).to be_an(Hash).and be_present
@@ -484,7 +522,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
     context 'when #rec_data is set by the constructor,' do
       subject { described_class.new(current_user, fixture_params, fixture_rec_data) }
 
-      before(:each) do
+      before do
         expect(subject.request_hash).to be nil
         expect(subject.rec_data).to be_an(Hash).and be_present
         # Domain check:

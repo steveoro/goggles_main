@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Solver::UserResult, type: :strategy do
   context 'before #solve!,' do
-    it_behaves_like('Solver strategy, bindings, finder & creator, before #solve!', 'UserResult', Solver::UserResult)
+    it_behaves_like('Solver strategy, bindings, finder & creator, before #solve!', 'UserResult', described_class)
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -14,6 +14,7 @@ RSpec.describe Solver::UserResult, type: :strategy do
   #
   context 'with EMPTY #req data,' do
     let(:fixture_req) { {} }
+
     it_behaves_like('Solver strategy, NO bindings, UNSOLVABLE req, after #solve!', 'UserResult')
   end
 
@@ -22,6 +23,7 @@ RSpec.describe Solver::UserResult, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ root lv.),' do
     let(:fixture_req) { { 'user_result_id' => -1 } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'UserResult')
   end
 
@@ -30,6 +32,7 @@ RSpec.describe Solver::UserResult, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ sub-entity lv.),' do
     let(:fixture_req) { { 'user_result' => { 'id' => -1 } } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'UserResult')
   end
   #-- -------------------------------------------------------------------------
@@ -43,15 +46,17 @@ RSpec.describe Solver::UserResult, type: :strategy do
     # VALID data: EXISTING ID
     #
     context "with valid & solved #req data (valid @ depth #{index})," do
-      let(:fixture_row) { FactoryBot.create(:user_result) }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         expect(fixture_row).to be_a(GogglesDb::UserResult).and be_valid
         solver = Solver::Factory.for('UserResult', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { FactoryBot.create(:user_result) }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::UserResult)
     end
   end
@@ -137,18 +142,21 @@ RSpec.describe Solver::UserResult, type: :strategy do
     # VALID data: EXISTING row data
     #
     context "with solvable #req data (valid w/ layout #{index})," do
-      let(:fixture_row) { FactoryBot.create(:user_result) }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
-      before(:each) do
-        expect(fixture_row).to be_a(GogglesDb::UserResult).and be_valid
-      end
       subject do
         solver = Solver::Factory.for('UserResult', fixture_req)
         solver.solve!
         expect(solver).to be_solved
         solver
       end
+
+      let(:fixture_row) { FactoryBot.create(:user_result) }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
+      before do
+        expect(fixture_row).to be_a(GogglesDb::UserResult).and be_valid
+      end
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::UserResult)
 
       describe '#entity' do
@@ -169,6 +177,13 @@ RSpec.describe Solver::UserResult, type: :strategy do
     # VALID data: NEW row data
     #
     context "with solvable NEW #req data (valid w/ layout #{index})," do
+      subject do
+        expect(fixture_row).to be_a(GogglesDb::UserResult).and be_valid
+        solver = Solver::Factory.for('UserResult', fixture_req)
+        solver.solve!
+        solver
+      end
+
       let(:fixture_row) do
         FactoryBot.build(
           :user_result,
@@ -183,12 +198,7 @@ RSpec.describe Solver::UserResult, type: :strategy do
       end
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { false }
-      subject do
-        expect(fixture_row).to be_a(GogglesDb::UserResult).and be_valid
-        solver = Solver::Factory.for('UserResult', fixture_req)
-        solver.solve!
-        solver
-      end
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::UserResult)
 
       describe '#entity' do

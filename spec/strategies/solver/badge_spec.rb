@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Solver::Badge, type: :strategy do
   context 'before #solve!,' do
-    it_behaves_like('Solver strategy, bindings, finder & creator, before #solve!', 'Badge', Solver::Badge)
+    it_behaves_like('Solver strategy, bindings, finder & creator, before #solve!', 'Badge', described_class)
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -14,6 +14,7 @@ RSpec.describe Solver::Badge, type: :strategy do
   #
   context 'with EMPTY #req data,' do
     let(:fixture_req) { {} }
+
     it_behaves_like('Solver strategy, NO bindings, UNSOLVABLE req, after #solve!', 'Badge')
   end
 
@@ -22,6 +23,7 @@ RSpec.describe Solver::Badge, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ root lv.),' do
     let(:fixture_req) { { 'badge_id' => -1 } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'Badge')
   end
 
@@ -30,6 +32,7 @@ RSpec.describe Solver::Badge, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ sub-entity lv.),' do
     let(:fixture_req) { { 'badge' => { 'id' => -1 } } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'Badge')
   end
   #-- -------------------------------------------------------------------------
@@ -43,14 +46,16 @@ RSpec.describe Solver::Badge, type: :strategy do
     # VALID data: EXISTING ID
     #
     context "with valid & solved #req data (valid @ depth #{index})," do
-      let(:fixture_row) { GogglesDb::Badge.first(150).sample }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         solver = Solver::Factory.for('Badge', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { GogglesDb::Badge.first(150).sample }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, bindings, solvable req, after #solve!', GogglesDb::Badge)
     end
   end
@@ -116,33 +121,40 @@ RSpec.describe Solver::Badge, type: :strategy do
     # VALID data: EXISTING row data
     #
     context "with solvable #req data (valid @ depth #{index})," do
-      let(:fixture_row) { GogglesDb::Badge.first(150).sample }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         expect(fixture_row).to be_a(GogglesDb::Badge).and be_valid
         solver = Solver::Factory.for('Badge', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { GogglesDb::Badge.first(150).sample }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, bindings, solvable req, after #solve!', GogglesDb::Badge)
 
       describe '#entity' do
         it 'has the expected category_type_id' do
           expect(subject.entity.category_type_id).to eq(fixture_row.category_type_id)
         end
+
         it 'has the expected team_affiliation_id' do
           expect(subject.entity.team_affiliation_id).to eq(fixture_row.team_affiliation_id)
         end
+
         it 'has the expected team_id' do
           expect(subject.entity.team_id).to eq(fixture_row.team_id)
         end
+
         it 'has the expected swimmer_id' do
           expect(subject.entity.swimmer_id).to eq(fixture_row.swimmer_id)
         end
+
         it 'has the expected season_id' do
           expect(subject.entity.season_id).to eq(fixture_row.season_id)
         end
+
         it 'has the expected entry_time_type_id' do
           expect(subject.entity.entry_time_type_id).to eq(fixture_row.entry_time_type_id)
         end
@@ -155,6 +167,13 @@ RSpec.describe Solver::Badge, type: :strategy do
     # VALID data: NEW row data
     #
     context "with solvable NEW #req data (valid @ depth #{index})," do
+      subject do
+        expect(fixture_row).to be_a(GogglesDb::Badge).and be_valid
+        solver = Solver::Factory.for('Badge', fixture_req)
+        solver.solve!
+        solver
+      end
+
       let(:fixture_row) do
         FactoryBot.build(
           :badge,
@@ -167,12 +186,7 @@ RSpec.describe Solver::Badge, type: :strategy do
       end
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { false } # (disable ID check)
-      subject do
-        expect(fixture_row).to be_a(GogglesDb::Badge).and be_valid
-        solver = Solver::Factory.for('Badge', fixture_req)
-        solver.solve!
-        solver
-      end
+
       it_behaves_like('Solver strategy, bindings, solvable req, after #solve!', GogglesDb::Badge)
 
       describe '#entity' do

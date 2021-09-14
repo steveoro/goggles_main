@@ -40,7 +40,7 @@
             .form-group
               .field
                 = label_tag(:event_date, t('chrono.selector.event_date'))
-                = date_field_tag(:event_date, cookies[:event_date] || Date.today, required: true,
+                = date_field_tag(:event_date, cookies[:event_date] || Time.zone.today, required: true,
                                  autofocus: true, class: 'form-control')
 
           = render(ComboBox::DbLookupComponent.new(nil, t('meetings.event'), 'event_type',

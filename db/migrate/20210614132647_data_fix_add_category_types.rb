@@ -4,7 +4,7 @@ require 'goggles_db/version'
 
 class DataFixAddCategoryTypes < ActiveRecord::Migration[6.0]
   def self.up
-    puts "\r\n--> Adding category types for new seasons..."
+    Rails.logger.debug "\r\n--> Adding category types for new seasons..."
     [
       { src_id: 191, dest_id: 201 },
       { src_id: 192, dest_id: 202 },
@@ -17,7 +17,7 @@ class DataFixAddCategoryTypes < ActiveRecord::Migration[6.0]
         GogglesDb::Season.find(params[:src_id]),
         GogglesDb::Season.find(params[:dest_id])
       )
-      $stdout.write("\033[1;33;32m.\033[0m") # Progress display
+      Rails.logger.debug("\033[1;33;32m.\033[0m") # Progress display
     end
 
     # --- Update DB structure versioning:
@@ -25,7 +25,7 @@ class DataFixAddCategoryTypes < ActiveRecord::Migration[6.0]
       GogglesDb::AppParameter::FULL_VERSION_FIELDNAME => GogglesDb::Version::FULL,
       GogglesDb::AppParameter::DB_VERSION_FIELDNAME => GogglesDb::Version::DB
     )
-    puts "\r\nDone."
+    Rails.logger.debug "\r\nDone."
   end
 
   def self.down

@@ -12,22 +12,24 @@ RSpec.describe 'Searches', type: :request do
     end
 
     context 'with a query parameter matching no results' do
-      before(:each) { get(search_smart_path, xhr: true, params: { q: 'NOMATCH!' }) }
+      before { get(search_smart_path, xhr: true, params: { q: 'NOMATCH!' }) }
 
       it 'returns http success' do
         expect(response).to have_http_status(:success)
       end
+
       it 'sets a flash alert about the empty results' do
         expect(flash[:alert]).to eq(I18n.t('search_view.no_results'))
       end
     end
 
     context 'with a query parameter matching some results' do
-      before(:each) { get(search_smart_path, xhr: true, params: { q: 'Steve' }) }
+      before { get(search_smart_path, xhr: true, params: { q: 'Steve' }) }
 
       it 'returns http success' do
         expect(response).to have_http_status(:success)
       end
+
       it 'sets a flash info message' do
         expect(flash[:info]).to be_present
       end
@@ -53,14 +55,16 @@ RSpec.describe 'Searches', type: :request do
       end
 
       context 'with a query parameter matching no results' do
-        before(:each) { get(search_smart_path, params: { raw: 1, q: 'NOMATCH!' }) }
+        before { get(search_smart_path, params: { raw: 1, q: 'NOMATCH!' }) }
+
         it 'returns http success' do
           expect(response).to have_http_status(:success)
         end
       end
 
       context 'with a query parameter matching some results' do
-        before(:each) { get(search_smart_path, params: { raw: 1, q: 'Steve' }) }
+        before { get(search_smart_path, params: { raw: 1, q: 'Steve' }) }
+
         it 'returns http success' do
           expect(response).to have_http_status(:success)
         end

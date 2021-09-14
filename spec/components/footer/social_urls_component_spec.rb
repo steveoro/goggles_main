@@ -10,22 +10,25 @@ RSpec.describe Footer::SocialUrlsComponent, type: :component do
     it 'renders the Facebook URL link' do
       expect(subject.at_css('#social-fb-link')).to be_present
     end
+
     it 'renders the Linkedin URL link' do
       expect(subject.at_css('#social-linkedin-link')).to be_present
     end
+
     it 'renders the Twitter URL link' do
       expect(subject.at_css('#social-twitter-link')).to be_present
     end
   end
 
   context 'when no social media URLs are defined in the settings,' do
-    before(:each) do
+    subject { render_inline(described_class.new).to_html }
+
+    before do
       # Clear the social media URLs settings:
       settings_row = GogglesDb::AppParameter.versioning_row.settings(:social_urls)
       settings_row.facebook = settings_row.linkedin = settings_row.twitter = nil
       settings_row.save!
     end
-    subject { render_inline(described_class.new).to_html }
 
     it_behaves_like('any subject that renders nothing')
   end

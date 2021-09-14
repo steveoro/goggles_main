@@ -21,7 +21,7 @@
     .field
       = label_tag("#{@base_name}_year_of_birth", t('swimmers.age_class'))
       = number_field_tag("#{@base_name}_year_of_birth", @default_row&.year_of_birth, min: 1910,
-                         max: Date.today.year, required: @required, autofocus: true, class: 'form-control')
+                         max: Time.zone.today.year, required: @required, autofocus: true, class: 'form-control')
 .col-4
   .form-group
     .field

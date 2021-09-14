@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Solver::City, type: :strategy do
   context 'before #solve!,' do
-    it_behaves_like('Solver strategy, bindings, finder & creator, before #solve!', 'City', Solver::City)
+    it_behaves_like('Solver strategy, bindings, finder & creator, before #solve!', 'City', described_class)
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -14,6 +14,7 @@ RSpec.describe Solver::City, type: :strategy do
   #
   context 'with EMPTY #req data,' do
     let(:fixture_req) { {} }
+
     it_behaves_like('Solver strategy, NO bindings, UNSOLVABLE req, after #solve!', 'City')
   end
 
@@ -22,6 +23,7 @@ RSpec.describe Solver::City, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ root lv.),' do
     let(:fixture_req) { { 'city_id' => -1 } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'City')
   end
 
@@ -30,6 +32,7 @@ RSpec.describe Solver::City, type: :strategy do
   #
   context 'with INVALID #req data (non-existing id @ sub-entity lv.),' do
     let(:fixture_req) { { 'city' => { 'id' => -1 } } }
+
     it_behaves_like('Solver strategy, bindings, UNSOLVABLE req, after #solve!', 'City')
   end
   #-- -------------------------------------------------------------------------
@@ -43,14 +46,16 @@ RSpec.describe Solver::City, type: :strategy do
     # VALID data: EXISTING ID
     #
     context "with valid & solved #req data (valid @ depth #{index})," do
-      let(:fixture_row) { GogglesDb::City.first(50).sample }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         solver = Solver::Factory.for('City', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { GogglesDb::City.first(50).sample }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, bindings, solvable req, after #solve!', GogglesDb::City)
     end
   end
@@ -79,20 +84,23 @@ RSpec.describe Solver::City, type: :strategy do
     # VALID data: EXISTING row data
     #
     context "with solvable #req data (valid @ depth #{index})," do
-      let(:fixture_row) { GogglesDb::City.first(50).sample }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { fixture_row.id }
       subject do
         solver = Solver::Factory.for('City', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { GogglesDb::City.first(50).sample }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { fixture_row.id }
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::City)
 
       describe '#entity' do
         it 'has the expected name' do
           expect(subject.entity.name).to eq(fixture_row.name)
         end
+
         it 'has the expected country_code' do
           expect(subject.entity.country_code).to eq(fixture_row.country_code)
         end
@@ -105,20 +113,23 @@ RSpec.describe Solver::City, type: :strategy do
     # VALID data: NEW row data
     #
     context "with solvable NEW #req data (valid @ depth #{index})," do
-      let(:fixture_row) { FactoryBot.build(:city) }
-      let(:fixture_req) { req.call(fixture_row) }
-      let(:expected_id) { false }
       subject do
         solver = Solver::Factory.for('City', fixture_req)
         solver.solve!
         solver
       end
+
+      let(:fixture_row) { FactoryBot.build(:city) }
+      let(:fixture_req) { req.call(fixture_row) }
+      let(:expected_id) { false }
+
       it_behaves_like('Solver strategy, OPTIONAL bindings, solvable req, after #solve!', GogglesDb::City)
 
       describe '#entity' do
         it 'has the expected name' do
           expect(subject.entity.name).to eq(fixture_row.name)
         end
+
         it 'has the expected country_code' do
           expect(subject.entity.country_code).to eq(fixture_row.country_code)
         end

@@ -12,7 +12,7 @@ RSpec.describe 'Lookups', type: :request do
     end
 
     context 'for a logged-in user' do
-      before(:each) do
+      before do
         user = GogglesDb::User.first(50).sample
         sign_in(user)
       end
@@ -23,11 +23,12 @@ RSpec.describe 'Lookups', type: :request do
           { first_name: 'Paul', year_of_birth: '' },
           { first_name: '', last_name: 'Smith' }
         ].each do |sub_params|
-          before(:each) { put(lookup_matching_swimmers_path, params: { user: sub_params }) }
+          before { put(lookup_matching_swimmers_path, params: { user: sub_params }) }
 
           it 'is successful' do
             expect(response).to be_successful
           end
+
           it 'responds with an empty body' do
             expect(response.body).to be_empty
           end
@@ -35,7 +36,7 @@ RSpec.describe 'Lookups', type: :request do
       end
 
       context 'with valid parameters,' do
-        before(:each) do
+        before do
           put(
             lookup_matching_swimmers_path,
             params: { user: { first_name: '', last_name: 'Smith', year_of_birth: '' } }
@@ -45,6 +46,7 @@ RSpec.describe 'Lookups', type: :request do
         it 'is successful' do
           expect(response).to be_successful
         end
+
         it 'returns the matching swimmers as select options' do
           matches = GogglesDb::User.new(last_name: 'Smith').matching_swimmers
           expect(matches.count).to be_positive

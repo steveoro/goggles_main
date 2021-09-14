@@ -27,7 +27,7 @@ class ChronoController < ApplicationController
     @last_chosen_swimming_pool = last_chosen_swimming_pool
     @last_chosen_team = last_chosen_team
     @last_chosen_city = last_chosen_city
-    @seasons = GogglesDb::Season.includes(:season_type).in_range(Date.today - 1.year, Date.today + 3.months)
+    @seasons = GogglesDb::Season.includes(:season_type).in_range(Time.zone.today - 1.year, Time.zone.today + 3.months)
     @pool_types = GogglesDb::PoolType.all
     @event_types = GogglesDb::EventType.all_eventable
     @category_types = GogglesDb::Season.for_season_type(GogglesDb::SeasonType.mas_fin)
@@ -78,7 +78,7 @@ class ChronoController < ApplicationController
   def delete
     # DEBUG
     logger.debug("\r\n\r\n#{delete_params.inspect}\r\n")
-    queue = GogglesDb::ImportQueue.find_by_id(delete_params['id'])
+    queue = GogglesDb::ImportQueue.find_by(id: delete_params['id'])
 
     if queue.present?
       queue.sibling_rows
@@ -132,7 +132,7 @@ class ChronoController < ApplicationController
   # Validator for /delete; redirects to /index if the row doesn't exist and doesn't belong to this user.
   def validate_delete_params
     return if delete_params['id'].present? &&
-              GogglesDb::ImportQueue.for_user(current_user).where(id: delete_params['id']).exists?
+              GogglesDb::ImportQueue.for_user(current_user).exists?(id: delete_params['id'])
 
     flash[:error] = I18n.t('chrono.messages.error.delete_invalid_parameters')
     redirect_to(chrono_index_path)
@@ -184,7 +184,7 @@ class ChronoController < ApplicationController
 
   # Returns the last chosen Swimmer from the cookies or the default one besed on the current user.
   def last_chosen_swimmer
-    return GogglesDb::Swimmer.find_by_id(cookies[:swimmer_id]) if cookies[:swimmer_id].to_i.positive?
+    return GogglesDb::Swimmer.find_by(id: cookies[:swimmer_id]) if cookies[:swimmer_id].to_i.positive?
 
     if cookies[:swimmer_complete_name].present?
       return GogglesDb::Swimmer.new(
@@ -201,7 +201,7 @@ class ChronoController < ApplicationController
   def last_chosen_swimming_pool
     return nil unless cookies[:swimming_pool_id].to_i.positive? || cookies[:swimming_pool_name].present?
 
-    GogglesDb::SwimmingPool.find_by_id(cookies[:swimming_pool_id]) ||
+    GogglesDb::SwimmingPool.find_by(id: cookies[:swimming_pool_id]) ||
       GogglesDb::SwimmingPool.new(
         name: cookies[:swimming_pool_name],
         pool_type_id: cookies[:pool_type_id]
@@ -212,7 +212,7 @@ class ChronoController < ApplicationController
   def last_chosen_team
     return nil unless cookies[:team_id].to_i.positive? || cookies[:team_name].present? || cookies[:team_label].present?
 
-    GogglesDb::Team.find_by_id(cookies[:team_id]) ||
+    GogglesDb::Team.find_by(id: cookies[:team_id]) ||
       GogglesDb::Team.new(
         name: cookies[:team_name] || cookies[:team_label],
         editable_name: cookies[:team_name]
@@ -223,7 +223,7 @@ class ChronoController < ApplicationController
   def last_chosen_city
     return nil unless cookies[:city_id].to_i.positive? || cookies[:city_name].present? || cookies[:city_label].present?
 
-    GogglesDb::City.find_by_id(cookies[:city_id]) ||
+    GogglesDb::City.find_by(id: cookies[:city_id]) ||
       GogglesDb::City.new(
         name: cookies[:city_name] || cookies[:city_label],
         area: cookies[:city_area],
@@ -233,7 +233,7 @@ class ChronoController < ApplicationController
 
   # Returns the last recored timing data, minus the order (which is not used in the actual result).
   def overall_result_timing(laps_list)
-    return {} unless laps_list.present?
+    return {} if laps_list.blank?
     return laps_list if laps_list.is_a?(Hash)
 
     laps_list.last.reject { |key| key == 'order' }

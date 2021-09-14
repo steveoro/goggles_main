@@ -23,7 +23,7 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
   #++
 
   context 'for an anonymous user,' do
-    before(:each) { render }
+    before { render }
 
     it_behaves_like('main_navbar generic features')
 
@@ -31,6 +31,7 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
       expect(rendered).to include(new_user_session_path)
       expect(rendered).to include(ERB::Util.html_escape(I18n.t('home.log_in')))
     end
+
     it 'shows the sign-up link' do
       expect(rendered).to include(new_user_registration_path)
       expect(rendered).to include(ERB::Util.html_escape(I18n.t('home.sign_up')))
@@ -40,7 +41,7 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
   #++
 
   context 'for a logged-in user,' do
-    before(:each) do
+    before do
       user = GogglesDb::User.first(50).sample
       # [Steve A.] Stub Devise controller helper method before rendering because
       #            view specs do not have the @controller variable set.

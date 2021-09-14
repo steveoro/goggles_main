@@ -52,7 +52,7 @@ RSpec.describe 'Users::OmniauthCallbacks', type: :request do
     )
   end
 
-  before(:each) do
+  before do
     expect(existing_user).to be_a(GogglesDb::User).and be_valid
 
     # Use :default key to prepare default AuthHash response (individual provider keys can still
@@ -84,7 +84,7 @@ RSpec.describe 'Users::OmniauthCallbacks', type: :request do
     # [Steve, 20210806] ('google_oauth2' removed for the time being)
     %i[facebook].each do |provider|
       context "returning valid credentials for an existing, validated user (#{provider})," do
-        before(:each) do
+        before do
           OmniAuth.config.mock_auth[provider] = valid_auth(
             provider.to_s,
             (GogglesDb::User.last.id + 1).to_s,
@@ -108,13 +108,14 @@ RSpec.describe 'Users::OmniauthCallbacks', type: :request do
           end
         end
         # (Read the previous note ^^^)
+
         xit 'sets the flash to the notice msg for a successful authentication' do
           expect(flash[:notice]).to eq(I18n.t('devise.omniauth_callbacks.success', kind: provider.to_s.titleize))
         end
       end
 
       context "returning valid credentials for a new user (#{provider})," do
-        before(:each) do
+        before do
           OmniAuth.config.mock_auth[provider] = valid_auth(
             provider.to_s,
             (GogglesDb::User.last.id + 1).to_s,
@@ -127,6 +128,7 @@ RSpec.describe 'Users::OmniauthCallbacks', type: :request do
             #   post(user_google_oauth2_omniauth_callback_path)
           end
         end
+
         it "redirects to #{provider}/auth/callback" do
           if provider == :facebook
             # [Steve A.] FB config currently "stops gracefully" in the middle of the callback chain probably due to
@@ -140,13 +142,14 @@ RSpec.describe 'Users::OmniauthCallbacks', type: :request do
     end
 
     context 'returning with an OAuth failure,' do
-      before(:each) do
+      before do
         # [Steve, 20210806] (google_oauth2 removed for the time being)
         # OmniAuth.config.mock_auth[:google_oauth2] = nil
         OmniAuth.config.mock_auth[:facebook] = nil
         Rails.application.env_config['omniauth.auth'] = :invalid_credentials
         post(user_facebook_omniauth_callback_path) # (any provider path will suffice)
       end
+
       it 'redirects to the sign-up path' do
         expect(response).to redirect_to(new_user_registration_url)
       end

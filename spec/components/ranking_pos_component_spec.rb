@@ -8,6 +8,7 @@ RSpec.describe RankingPosComponent, type: :component do
   ].each do |ranking_num|
     context "when rank is #{ranking_num}," do
       let(:rendered_result) { render_inline(described_class.new(rank: ranking_num)).to_html }
+
       it_behaves_like('RankingPosComponent rendering a ranking position', ranking_num)
     end
   end

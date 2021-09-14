@@ -11,6 +11,7 @@ RSpec.describe Solver::Factory, type: :strategy do
     context 'for an invalid parameter,' do
       [0, nil, 'NonExistingTarget'].each do |target_argument|
         subject { described_class.for(target_argument, {}) }
+
         it 'raises an ArgumentError' do
           expect { subject }.to raise_error(ArgumentError)
         end

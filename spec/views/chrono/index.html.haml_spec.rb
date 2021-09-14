@@ -11,7 +11,7 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
   let(:hundredths) { (rand * 99).to_i }
   let(:meters) { 50 + (rand * 8).to_i * 50 }
 
-  before(:each) do
+  before do
     expect(current_user).to be_a(GogglesDb::User).and be_valid
     expect(fixture_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
     expect(fixture_event).to be_an(GogglesDb::EventType).and be_valid
@@ -21,24 +21,30 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
     it 'includes the title' do
       expect(subject.css('.main-content h4').text).to include(I18n.t('chrono.index.title'))
     end
+
     it 'includes the queue notice' do
       expect(subject.css('.main-content .container i').text).to include(I18n.t('chrono.index.queue_notice'))
     end
+
     it 'includes the registration notice' do
       expect(subject.css('.main-content .container p').text).to include(I18n.t('chrono.index.registration_notice'))
     end
+
     it 'includes the "new recording" button' do
       expect(subject.css('.main-content .container .btn').text).to include(I18n.t('chrono.buttons.new_recording'))
     end
+
     it 'includes the bottom footer section' do
       expect(rendered).to have_css('section.fixed-bottom#footer')
     end
   end
 
   context 'for a logged-in user, when there are *no* IQ rows for the current_user,' do
+    subject { Nokogiri::HTML.fragment(rendered) }
+
     let(:fixture_row) { FactoryBot.create(:import_queue, user: current_user) }
 
-    before(:each) do
+    before do
       expect(fixture_row).to be_a(GogglesDb::ImportQueue).and be_valid
       @queues = GogglesDb::ImportQueue.for_user(current_user).for_uid('chrono')
       # [Steve A.] Stub Devise controller helper method before rendering because
@@ -48,7 +54,6 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
       allow(view).to receive(:user_signed_in?).and_return(true)
       render
     end
-    subject { Nokogiri::HTML.fragment(rendered) }
 
     it_behaves_like('chrono/index.html.haml common rendering details')
 
@@ -60,6 +65,8 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
   #++
 
   context 'for a logged-in user, when some IQ rows for the current_user are present,' do
+    subject { Nokogiri::HTML.fragment(rendered) }
+
     let(:request_data) do
       {
         'target_entity' => 'UserLap',
@@ -82,7 +89,7 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
     end
     let(:fixture_rows) { FactoryBot.create_list(:import_queue, 3, uid: 'chrono', request_data: request_data.to_json) }
 
-    before(:each) do
+    before do
       expect(request_data).to be_an(Hash).and be_present
       expect(fixture_rows).to all be_a(GogglesDb::ImportQueue).and be_valid
       @queues = GogglesDb::ImportQueue.for_user(current_user).for_uid('chrono')
@@ -93,7 +100,6 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
       allow(view).to receive(:user_signed_in?).and_return(true)
       render
     end
-    subject { Nokogiri::HTML.fragment(rendered) }
 
     it_behaves_like('chrono/index.html.haml common rendering details')
 
@@ -101,11 +107,13 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
       expect(subject.css('.main-content .container .row.border').count)
         .to eq(@queues.count)
     end
+
     it 'includes the list of IQ decorated rows' do
       GogglesDb::ImportQueueDecorator.decorate_collection(@queues).each do |queue|
         expect(subject.css('.main-content .container .row.border').text).to include(queue.text_label)
       end
     end
+
     it 'includes the delete button for the IQ rows' do
       @queues.each do |queue|
         expect(subject.css(".main-content .container .row.border #frm-delete-row-#{queue.id}")).to be_present
