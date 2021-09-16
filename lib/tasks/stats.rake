@@ -40,7 +40,7 @@ namespace :stats do
       a particular number of days.
 
     Options: [Rails.env=#{Rails.env}]
-             [date=any_iso_date|<#{Time.zone.today}>]
+             [date=any_iso_date|<Time.zone.today>]
              [days=starting_days_from]
 
       - date: any ISO-formatted date to output just the stats for that particular day

@@ -14,3 +14,16 @@ linters:
   ViewLength:
     exclude:
       - 'app/views/goggles/_inline_mailer_styles.html.haml'
+
+  RuboCop:
+    exclude:
+      - "app/components/combo_box/db_lookup_component.html.haml"
+      - "app/views/application_mailer/generic_message.html.haml"
+      - "app/views/devise/registrations/edit.html.haml"
+      - "app/views/home/_contributing.html.haml"
+      - "app/views/home/_faq.html.haml"
+      - "app/views/home/_how_does_it_work.html.haml"
+      - "app/views/home/_legal_terms.html.haml"
+      - "app/views/home/_privacy_policy.html.haml"
+      - "app/views/home/about.html.haml"
+      - "app/views/kaminari/_gap.html.haml"

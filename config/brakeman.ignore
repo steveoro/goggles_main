@@ -3,7 +3,6 @@
     {
       "warning_type": "Cross-Site Scripting",
       "warning_code": 106,
-      "fingerprint": "c8adc1c0caf2c9251d1d8de588fb949070212d0eed5e1580aee88bab2287b772",
       "check_name": "SanitizeMethods",
       "message": "loofah gem 2.10.0 is vulnerable (CVE-2018-8048). Upgrade to 2.2.1",
       "file": "Gemfile.lock",

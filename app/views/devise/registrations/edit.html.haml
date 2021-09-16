@@ -42,7 +42,7 @@
                     %i.form-text.text-muted#name-help
                       = t('users.help_labels.name')
 
-            - if !%w[facebook google].include?(current_user.provider) && current_user.uid.blank?
+            - if %w[facebook google].exclude?(current_user.provider) && current_user.uid.blank?
               .form-row
                 .form-group
                   .field.col-auto

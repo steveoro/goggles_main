@@ -20,9 +20,6 @@
               - if queue.sibling_rows.count.positive?
                 = render(Switch::RotatingComponent.new(target_id: "laps#{queue.id}"))
             .col-2.my-1.text-center
-              -# = button_to('X', chrono_delete_path, id: "frm-delete-row-#{queue.id}", method: :delete,
-              -#             class: 'btn btn-sm btn-outline-danger', params: { id: queue.id },
-              -#             data: { confirm: t('chrono.index.confirm_delete', queue_label: queue.text_label) })
               = button_to(chrono_delete_path(queue.id), { id: "frm-delete-row-#{queue.id}", method: :delete,
                           class: 'btn btn-sm btn-outline-danger',
                           data: { confirm: t('chrono.index.confirm_delete', queue_label: queue.text_label) } }) do
