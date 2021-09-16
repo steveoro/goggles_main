@@ -71,15 +71,38 @@ namespace :status do
     end
   end
 
-  desc 'Outputs the latest 7-day usage stats for all non-API request'
-  task :weekly_stats do
+  desc <<~DESC
+    Outputs the latest 7-day usage stats for all non-API request.
+
+
+    ** Parameter: **
+
+    - days: '[7]' (default) or '[<ANY_NUMBER_OF_DAYS_BACK>]'
+
+
+    ** Usage: **
+
+      > cap <STAGE> status:weekly_stats[30]
+      Returns the last 30-days range of daily stats
+
+    Or simply:
+      > cap <STAGE> status:weekly_stats
+      Outputs last week daily stats.
+
+  DESC
+  task :weekly_stats, :days do |_t, args|
+    days_tot = args[:days] || 7
     puts("\r\n")
     on roles(:app) do
       info('***********************')
       info('**  📈 Weekly stats  **')
       info('***********************')
+      info("Days tot: #{days_tot}")
       puts ["\r\n"] +
-           capture(:docker, "exec #{fetch(:app_service)} sh -c 'bundle exec rails stats:daily days=7'").split("\n")
+           capture(
+             :docker,
+             "exec #{fetch(:app_service)} sh -c 'bundle exec rails stats:daily days=#{days_tot}'"
+           ).split("\n")
     rescue StandardError
       info('Exception raised when connecting to the docker service!')
     end

@@ -7,6 +7,7 @@
 #   - for Goggles framework vers.: 7+
 #   - author: Steve A.
 #
+# rubocop:disable Rails/Date
 #-- ---------------------------------------------------------------------------
 #++
 
@@ -25,8 +26,8 @@ namespace :stats do
   task clear: [:environment] do
     puts '*** stats:clear ***'
     days_up_to = ENV.include?('days') ? ENV['days'].to_i : 7
-    ending_date = Time.zone.today - days_up_to.days
-    puts "- days: #{days_up_to} => Keeping all stats between #{ending_date} .. #{Time.zone.today}"
+    ending_date = Date.today - days_up_to.days
+    puts "- days: #{days_up_to} => Keeping all stats between #{ending_date} .. #{Date.today}"
     old_rows = GogglesDb::APIDailyUse.where('day < ?', ending_date)
     puts "Found #{old_rows.count} old stats rows: clearing that up..."
     old_rows.delete_all
@@ -40,7 +41,7 @@ namespace :stats do
       a particular number of days.
 
     Options: [Rails.env=#{Rails.env}]
-             [date=any_iso_date|<Time.zone.today>]
+             [date=any_iso_date|<Date.today.to_s>]
              [days=starting_days_from]
 
       - date: any ISO-formatted date to output just the stats for that particular day
@@ -55,7 +56,7 @@ namespace :stats do
   DESC
   task daily: [:environment] do |_t|
     days_up_to = ENV.include?('days') ? ENV['days'].to_i : 0
-    date = ENV.include?('date') ? ENV['date'] : Time.zone.today
+    date = ENV.include?('date') ? Date.parse(ENV['date']) : Date.today
 
     # Output header:
     puts format(
@@ -67,7 +68,7 @@ namespace :stats do
     csv_txt = ['Date,users,pages,req./user']
 
     # Output daily status:
-    (date - days_up_to.days..Time.zone.today).each do |curr_date|
+    ((date - days_up_to.days)..Date.today).each do |curr_date|
       sum, count = compute_stats_for(curr_date)
       avg = count.positive? ? sum / count : 0
       csv_txt << "#{curr_date},#{count},#{sum},#{avg}"
@@ -103,3 +104,4 @@ namespace :stats do
   #-- -------------------------------------------------------------------------
   #++
 end
+# rubocop:enable Rails/Date
