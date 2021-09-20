@@ -41,7 +41,7 @@ RSpec.describe SwimmerDecorator, type: :decorator do
       end
     end
 
-    context 'for a given date,' do
+    context 'with a given date,' do
       it 'returns the age of the swimmer during that date\'s year' do
         sample_date = Time.zone.today + (rand * 30 - rand * 15).to_i.years
         expect(subject.swimmer_age(sample_date)).to eq(sample_date.year - model_obj.year_of_birth)
@@ -82,7 +82,7 @@ RSpec.describe SwimmerDecorator, type: :decorator do
   end
 
   describe '#associated_team_ids' do
-    context 'for a swimmer with existing badges,' do
+    context 'with a swimmer with existing badges,' do
       let(:result) { described_class.decorate(swimmer_with_badge).associated_team_ids }
 
       it 'is a non-empty Array' do
@@ -95,7 +95,7 @@ RSpec.describe SwimmerDecorator, type: :decorator do
       end
     end
 
-    context 'for a swimmer without any badge,' do
+    context 'with a swimmer without any badge,' do
       let(:result) { described_class.decorate(new_swimmer).associated_team_ids }
 
       it 'is an empty Array' do
@@ -114,7 +114,7 @@ RSpec.describe SwimmerDecorator, type: :decorator do
       expect(swimmer_with_badge).to be_a(GogglesDb::Swimmer).and be_valid
     end
 
-    context 'for a swimmer with existing badges,' do
+    context 'with a swimmer with existing badges,' do
       let(:decorated_obj) { described_class.decorate(swimmer_with_badge) }
       let(:team_ids) { decorated_obj.associated_team_ids }
       let(:result)   { decorated_obj.link_to_teams }
@@ -138,7 +138,7 @@ RSpec.describe SwimmerDecorator, type: :decorator do
       end
     end
 
-    context 'for a swimmer without any badge,' do
+    context 'with a swimmer without any badge,' do
       let(:result) { described_class.decorate(new_swimmer).link_to_teams }
 
       it 'does not include any list item in the resulting HTML list' do
@@ -150,7 +150,7 @@ RSpec.describe SwimmerDecorator, type: :decorator do
   #++
 
   describe '#last_category_code' do
-    context 'for a swimmer with existing badges,' do
+    context 'with a swimmer with existing badges,' do
       let(:result_code) { described_class.decorate(swimmer_with_badge).last_category_code }
 
       it 'returns a non-empty string category code' do
@@ -166,7 +166,7 @@ RSpec.describe SwimmerDecorator, type: :decorator do
       end
     end
 
-    context 'for a swimmer without any badge,' do
+    context 'with a swimmer without any badge,' do
       let(:result_code) { described_class.decorate(new_swimmer).last_category_code }
 
       it 'returns nil' do
@@ -176,7 +176,7 @@ RSpec.describe SwimmerDecorator, type: :decorator do
   end
 
   describe '#current_fin_category_code' do
-    context 'for a swimmer with at least an existing badge (not necessarily registered to the FIN Championship),' do
+    context 'with a swimmer with at least an existing badge (not necessarily registered to the FIN Championship),' do
       let(:decorated_obj) { described_class.decorate(swimmer_with_badge) }
       let(:result_code) { decorated_obj.current_fin_category_code }
       let(:category_type) { GogglesDb::CategoryType.find_by(code: result_code) }
@@ -190,7 +190,7 @@ RSpec.describe SwimmerDecorator, type: :decorator do
       end
     end
 
-    context 'for a swimmer without any badge,' do
+    context 'with a swimmer without any badge,' do
       let(:decorated_obj) { described_class.decorate(new_swimmer) }
       let(:result_code) { decorated_obj.current_fin_category_code }
       let(:category_type) { GogglesDb::CategoryType.find_by(code: result_code) }

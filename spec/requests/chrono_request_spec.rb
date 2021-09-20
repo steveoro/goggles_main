@@ -4,14 +4,14 @@ require 'rails_helper'
 
 RSpec.describe 'Chronos', type: :request do
   describe 'GET /chrono/index' do
-    context 'for an unlogged user,' do
+    context 'with an unlogged user,' do
       it 'is a redirect to the login path' do
         get(chrono_new_path)
         expect(response).to redirect_to(new_user_session_path)
       end
     end
 
-    context 'for a logged-in user' do
+    context 'with a logged-in user' do
       before do
         user = GogglesDb::User.first(50).sample
         sign_in(user)
@@ -27,14 +27,14 @@ RSpec.describe 'Chronos', type: :request do
   #++
 
   describe 'GET /chrono/new' do
-    context 'for an unlogged user,' do
+    context 'with an unlogged user,' do
       it 'is a redirect to the login path' do
         get(chrono_new_path)
         expect(response).to redirect_to(new_user_session_path)
       end
     end
 
-    context 'for a logged-in user' do
+    context 'with a logged-in user' do
       before do
         user = GogglesDb::User.first(50).sample
         sign_in(user)
@@ -50,14 +50,14 @@ RSpec.describe 'Chronos', type: :request do
   #++
 
   describe 'POST /chrono/rec' do
-    context 'for an unlogged user,' do
+    context 'with an unlogged user,' do
       it 'is a redirect to the login path' do
         post(chrono_rec_path)
         expect(response).to redirect_to(new_user_session_path)
       end
     end
 
-    context 'for a logged-in user' do
+    context 'with a logged-in user' do
       before do
         user = GogglesDb::User.first(50).sample
         sign_in(user)
@@ -94,14 +94,14 @@ RSpec.describe 'Chronos', type: :request do
   #++
 
   describe 'POST /chrono/commit' do
-    context 'for an unlogged user,' do
+    context 'with an unlogged user,' do
       it 'is a redirect to the login path' do
         post(chrono_commit_path)
         expect(response).to redirect_to(new_user_session_path)
       end
     end
 
-    context 'for a logged-in user' do
+    context 'with a logged-in user' do
       let(:fixture_user) { GogglesDb::User.first(50).sample }
 
       before do
@@ -185,14 +185,14 @@ RSpec.describe 'Chronos', type: :request do
   #++
 
   describe 'DELETE /chrono/delete' do
-    context 'for an unlogged user,' do
+    context 'with an unlogged user,' do
       it 'is a redirect to the login path' do
         delete(chrono_delete_path)
         expect(response).to redirect_to(new_user_session_path)
       end
     end
 
-    context 'for a logged-in user' do
+    context 'with a logged-in user' do
       let(:fixture_user) { GogglesDb::User.first(50).sample }
       let(:deletable_row) { FactoryBot.create(:import_queue, user: fixture_user) }
 

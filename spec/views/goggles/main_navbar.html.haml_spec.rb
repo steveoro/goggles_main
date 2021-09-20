@@ -22,7 +22,7 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
   #-- -------------------------------------------------------------------------
   #++
 
-  context 'for an anonymous user,' do
+  context 'with an anonymous user,' do
     before { render }
 
     it_behaves_like('main_navbar generic features')
@@ -40,7 +40,7 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
   #-- -------------------------------------------------------------------------
   #++
 
-  context 'for a logged-in user,' do
+  context 'with a logged-in user,' do
     before do
       user = GogglesDb::User.first(50).sample
       # [Steve A.] Stub Devise controller helper method before rendering because

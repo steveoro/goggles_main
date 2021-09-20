@@ -4,14 +4,14 @@ require 'rails_helper'
 
 RSpec.describe 'Lookups', type: :request do
   describe 'PUT /matching_swimmers' do
-    context 'for an unlogged user' do
+    context 'with an unlogged user' do
       it 'is a redirect to the login path' do
         put(lookup_matching_swimmers_path)
         expect(response).to redirect_to(new_user_session_path)
       end
     end
 
-    context 'for a logged-in user' do
+    context 'with a logged-in user' do
       before do
         user = GogglesDb::User.first(50).sample
         sign_in(user)

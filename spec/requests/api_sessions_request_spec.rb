@@ -4,21 +4,21 @@ require 'rails_helper'
 
 RSpec.describe 'APISessions', type: :request do
   describe 'POST /jwt' do
-    context 'for an unlogged user requesting JSON format' do
+    context 'with an unlogged user requesting JSON format' do
       it 'is a redirect to the login path' do
         post(api_sessions_jwt_path(format: :json))
         expect(response).to be_unauthorized
       end
     end
 
-    context 'for an unlogged user making a non-JSON request' do
+    context 'with an unlogged user making a non-JSON request' do
       it 'is a redirect to the login path' do
         post(api_sessions_jwt_path)
         expect(response).to redirect_to(new_user_session_path)
       end
     end
 
-    context 'for a logged-in user' do
+    context 'with a logged-in user' do
       before do
         user = GogglesDb::User.first(50).sample
         sign_in(user)

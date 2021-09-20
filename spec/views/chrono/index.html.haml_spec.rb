@@ -39,7 +39,7 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
     end
   end
 
-  context 'for a logged-in user, when there are *no* IQ rows for the current_user,' do
+  context 'with a logged-in user, when there are *no* IQ rows for the current_user,' do
     subject { Nokogiri::HTML.fragment(rendered) }
 
     let(:fixture_row) { FactoryBot.create(:import_queue, user: current_user) }
@@ -64,7 +64,7 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
   #-- -------------------------------------------------------------------------
   #++
 
-  context 'for a logged-in user, when some IQ rows for the current_user are present,' do
+  context 'with a logged-in user, when some IQ rows for the current_user are present,' do
     subject { Nokogiri::HTML.fragment(rendered) }
 
     let(:request_data) do

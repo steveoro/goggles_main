@@ -56,7 +56,7 @@ RSpec.describe SwimmingPoolDecorator, type: :decorator do
   end
 
   describe '#link_to_maps_or_name' do
-    context 'for a pool that includes plus_code' do
+    context 'with a pool that includes plus_code' do
       subject { described_class.decorate(model_obj) }
 
       let(:model_obj) { GogglesDb::SwimmingPool.where('plus_code != ""').limit(20).sample }
@@ -65,7 +65,7 @@ RSpec.describe SwimmingPoolDecorator, type: :decorator do
       it_behaves_like('#link_to_maps_or_name rendering successfully the link')
     end
 
-    context 'for a pool that includes maps_uri but not plus_code' do
+    context 'with a pool that includes maps_uri but not plus_code' do
       subject do
         expect(model_obj.maps_uri).to be_present
         model_obj.plus_code = nil
@@ -78,7 +78,7 @@ RSpec.describe SwimmingPoolDecorator, type: :decorator do
       it_behaves_like('#link_to_maps_or_name rendering successfully the link')
     end
 
-    context 'for a pool that includes latitude & longitude but not plus_code or maps_uri' do
+    context 'with a pool that includes latitude & longitude but not plus_code or maps_uri' do
       subject do
         expect(model_obj.plus_code).to be nil
         expect(model_obj.maps_uri).to be nil
@@ -91,7 +91,7 @@ RSpec.describe SwimmingPoolDecorator, type: :decorator do
       it_behaves_like('#link_to_maps_or_name rendering successfully the link')
     end
 
-    context 'for a pool that includes just its city (no address)' do
+    context 'with a pool that includes just its city (no address)' do
       subject do
         expect(model_obj.latitude).to be nil
         expect(model_obj.longitude).to be nil
@@ -107,7 +107,7 @@ RSpec.describe SwimmingPoolDecorator, type: :decorator do
     end
 
     # Both city_id & address missing and no coordinates at all:
-    context 'for a pool for which is known just by the name' do
+    context 'with a pool for which is known just by the name' do
       subject do
         expect(model_obj.latitude).to be nil
         expect(model_obj.longitude).to be nil

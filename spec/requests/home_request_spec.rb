@@ -27,14 +27,14 @@ RSpec.describe 'Homes', type: :request do
   end
 
   describe 'GET /contact_us' do
-    context 'for an unlogged user' do
+    context 'with an unlogged user' do
       it 'is a redirect to the login path' do
         get(home_contact_us_path)
         expect(response).to redirect_to(new_user_session_path)
       end
     end
 
-    context 'for a logged-in user' do
+    context 'with a logged-in user' do
       before { sign_in(fixture_user) }
 
       it 'returns http success' do
@@ -45,14 +45,14 @@ RSpec.describe 'Homes', type: :request do
   end
 
   describe 'POST /contact_us' do
-    context 'for an unlogged user' do
+    context 'with an unlogged user' do
       it 'is a redirect to the login path' do
         post(home_contact_us_path, params: { body: 'Thou shall not send this...' })
         expect(response).to redirect_to(new_user_session_path)
       end
     end
 
-    context 'for a logged-in user' do
+    context 'with a logged-in user' do
       before do
         sign_in(fixture_user)
         # Remove mailer queue remnants from previous possible user confirmation emails:

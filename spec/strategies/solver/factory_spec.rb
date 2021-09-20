@@ -8,7 +8,7 @@ RSpec.describe Solver::Factory, type: :strategy do
   end
 
   describe 'self.for' do
-    context 'for an invalid parameter,' do
+    context 'with an invalid parameter,' do
       [0, nil, 'NonExistingTarget'].each do |target_argument|
         subject { described_class.for(target_argument, {}) }
 
@@ -18,7 +18,7 @@ RSpec.describe Solver::Factory, type: :strategy do
       end
     end
 
-    context 'for a valid parameter,' do
+    context 'with a valid parameter,' do
       [
         ['CategoryType', Solver::CategoryType],
         ['City', Solver::City],

@@ -20,7 +20,7 @@ RSpec.describe SearchDecorator, type: :decorator do
     #-- -----------------------------------------------------------------------
     #++
 
-    context 'for an empty search-results collection' do
+    context 'with an empty search-results collection' do
       subject { described_class.rendering_parameters(results_collection) }
 
       let(:results_collection) { GogglesDb::Swimmer.where(id: -1) }
@@ -36,7 +36,7 @@ RSpec.describe SearchDecorator, type: :decorator do
       end
     end
 
-    context 'for a Swimmer search-results collection' do
+    context 'with a Swimmer search-results collection' do
       subject { described_class.rendering_parameters(results_collection) }
 
       let(:results_collection) { GogglesDb::Swimmer.for_name('Paul').page(1).per(5) }
@@ -49,7 +49,7 @@ RSpec.describe SearchDecorator, type: :decorator do
       it_behaves_like('self.rendering_parameters returning non-empty values', 'swimmer')
     end
 
-    context 'for a Team search-results collection' do
+    context 'with a Team search-results collection' do
       subject { described_class.rendering_parameters(results_collection) }
 
       let(:results_collection) { GogglesDb::Team.for_name('Swimming Club').page(1).per(5) }
@@ -62,7 +62,7 @@ RSpec.describe SearchDecorator, type: :decorator do
       it_behaves_like('self.rendering_parameters returning non-empty values', 'team')
     end
 
-    context 'for a Meeting search-results collection' do
+    context 'with a Meeting search-results collection' do
       subject { described_class.rendering_parameters(results_collection) }
 
       let(:results_collection) { GogglesDb::Meeting.for_name('PROVA').page(1).per(5) }
@@ -75,7 +75,7 @@ RSpec.describe SearchDecorator, type: :decorator do
       it_behaves_like('self.rendering_parameters returning non-empty values', 'meeting')
     end
 
-    context 'for a UserWorkshop search-results collection' do
+    context 'with a UserWorkshop search-results collection' do
       subject { described_class.rendering_parameters(results_collection) }
 
       let(:results_collection) { GogglesDb::UserWorkshop.limit(100).page(1).per(5) }
@@ -88,7 +88,7 @@ RSpec.describe SearchDecorator, type: :decorator do
       it_behaves_like('self.rendering_parameters returning non-empty values', 'user_workshop')
     end
 
-    context 'for a SwimmingPool search-results collection' do
+    context 'with a SwimmingPool search-results collection' do
       subject { described_class.rendering_parameters(results_collection) }
 
       let(:results_collection) { GogglesDb::SwimmingPool.for_name('Comunale').page(1).per(5) }
