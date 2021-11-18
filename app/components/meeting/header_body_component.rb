@@ -42,6 +42,8 @@ module Meeting
 
     private
 
+    # TODO: use meeting.decorate.meeting_date
+
     # Sets the @meeting_date member
     def choose_abstract_meeting_date(meeting)
       if meeting.respond_to?(:meeting_sessions)
@@ -52,6 +54,8 @@ module Meeting
         meeting&.header_date
       end
     end
+
+    # TODO: use meeting.decorate.meeting_pool
 
     # Sets the @swimming_pool member
     # rubocop:disable Metrics/PerceivedComplexity

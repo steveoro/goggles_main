@@ -34,21 +34,6 @@ RSpec.describe SwimmerDecorator, type: :decorator do
 
   it_behaves_like('a paginated model decorated with', described_class)
 
-  describe '#swimmer_age' do
-    context 'with no parameters,' do
-      it 'returns the current age of the swimmer' do
-        expect(subject.swimmer_age).to eq(Time.zone.today.year - model_obj.year_of_birth)
-      end
-    end
-
-    context 'with a given date,' do
-      it 'returns the age of the swimmer during that date\'s year' do
-        sample_date = Time.zone.today + (rand * 30 - rand * 15).to_i.years
-        expect(subject.swimmer_age(sample_date)).to eq(sample_date.year - model_obj.year_of_birth)
-      end
-    end
-  end
-
   describe '#text_label' do
     let(:result) { subject.text_label }
 
@@ -60,8 +45,8 @@ RSpec.describe SwimmerDecorator, type: :decorator do
       expect(result).to include(ERB::Util.html_escape(model_obj.complete_name))
     end
 
-    it 'includes the year_of_birth in between parenthesys' do
-      expect(result).to include("(#{model_obj.year_of_birth})")
+    it 'includes the year_of_birth' do
+      expect(result).to include(model_obj.year_of_birth.to_s)
     end
   end
 
@@ -81,28 +66,28 @@ RSpec.describe SwimmerDecorator, type: :decorator do
     end
   end
 
-  describe '#associated_team_ids' do
-    context 'with a swimmer with existing badges,' do
-      let(:result) { described_class.decorate(swimmer_with_badge).associated_team_ids }
+  # describe '#associated_team_ids' do
+  #   context 'with a swimmer with existing badges,' do
+  #     let(:result) { described_class.decorate(swimmer_with_badge).associated_team_ids }
 
-      it 'is a non-empty Array' do
-        expect(result).to be_an(Array)
-        expect(result.count).to be_positive
-      end
+  #     it 'is a non-empty Array' do
+  #       expect(result).to be_an(Array)
+  #       expect(result.count).to be_positive
+  #     end
 
-      it 'contains only valid associations with Teams' do
-        expect(GogglesDb::Team.where(id: result)).to all be_a(GogglesDb::Team)
-      end
-    end
+  #     it 'contains only valid associations with Teams' do
+  #       expect(GogglesDb::Team.where(id: result)).to all be_a(GogglesDb::Team)
+  #     end
+  #   end
 
-    context 'with a swimmer without any badge,' do
-      let(:result) { described_class.decorate(new_swimmer).associated_team_ids }
+  #   context 'with a swimmer without any badge,' do
+  #     let(:result) { described_class.decorate(new_swimmer).associated_team_ids }
 
-      it 'is an empty Array' do
-        expect(result).to be_an(Array).and be_empty
-      end
-    end
-  end
+  #     it 'is an empty Array' do
+  #       expect(result).to be_an(Array).and be_empty
+  #     end
+  #   end
+  # end
   #-- -------------------------------------------------------------------------
   #++
 
@@ -143,64 +128,6 @@ RSpec.describe SwimmerDecorator, type: :decorator do
 
       it 'does not include any list item in the resulting HTML list' do
         expect(result).not_to include('<li>')
-      end
-    end
-  end
-  #-- -------------------------------------------------------------------------
-  #++
-
-  describe '#last_category_code' do
-    context 'with a swimmer with existing badges,' do
-      let(:result_code) { described_class.decorate(swimmer_with_badge).last_category_code }
-
-      it 'returns a non-empty string category code' do
-        expect(result_code).to be_a(String).and be_present
-      end
-
-      it 'is the category code for the latest associated badge' do
-        latest_badge = GogglesDb::Badge.for_swimmer(swimmer_with_badge)
-                                       .by_season
-                                       .includes(:category_type)
-                                       .last
-        expect(result_code).to eq(latest_badge.category_type.code)
-      end
-    end
-
-    context 'with a swimmer without any badge,' do
-      let(:result_code) { described_class.decorate(new_swimmer).last_category_code }
-
-      it 'returns nil' do
-        expect(result_code).to be_nil
-      end
-    end
-  end
-
-  describe '#current_fin_category_code' do
-    context 'with a swimmer with at least an existing badge (not necessarily registered to the FIN Championship),' do
-      let(:decorated_obj) { described_class.decorate(swimmer_with_badge) }
-      let(:result_code) { decorated_obj.current_fin_category_code }
-      let(:category_type) { GogglesDb::CategoryType.find_by(code: result_code) }
-
-      it 'returns a valid CategoryType code' do
-        expect(category_type).to be_a(GogglesDb::CategoryType).and be_valid
-      end
-
-      it 'returns a category (code) which range covers the swimmer age' do
-        expect(category_type.age_begin..category_type.age_end).to cover(decorated_obj.swimmer_age)
-      end
-    end
-
-    context 'with a swimmer without any badge,' do
-      let(:decorated_obj) { described_class.decorate(new_swimmer) }
-      let(:result_code) { decorated_obj.current_fin_category_code }
-      let(:category_type) { GogglesDb::CategoryType.find_by(code: result_code) }
-
-      it 'returns a valid CategoryType code' do
-        expect(category_type).to be_a(GogglesDb::CategoryType).and be_valid
-      end
-
-      it 'returns a category (code) which range covers the swimmer age' do
-        expect(category_type.age_begin..category_type.age_end).to cover(decorated_obj.swimmer_age)
       end
     end
   end

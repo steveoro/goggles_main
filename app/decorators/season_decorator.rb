@@ -5,25 +5,8 @@
 class SeasonDecorator < Draper::Decorator
   delegate_all
 
-  # Generic Season helper.
-  # Returns the last Season given its specified type; +nil+ otherwise.
-  #
-  # == Params
-  # - season_type_id: the filtering SeasonType id
-  #
-  # == Note
-  # The returned last Season is *not* decorated
-  #
-  # @see GogglesDb::Season, GogglesDb::SeasonType
-  def last_season_by_type(season_type_id)
-    GogglesDb::Season.joins(:season_type).includes(:season_type)
-                     .where('season_types.id': season_type_id)
-                     .by_begin_date
-                     .last
-  end
-
-  # Returns a displayable text label (shorter than the official description).
+  # Returns the default text label describing this object.
   def text_label
-    "#{season_type.short_name} (#{header_year})"
+    object.decorate.display_label
   end
 end

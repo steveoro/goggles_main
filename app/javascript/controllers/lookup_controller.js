@@ -288,6 +288,13 @@ export default class extends Controller {
           if (row.label) {
             return { id: row.id, text: row.label }
           }
+          // New decorators support (long = "display_", standard = "short_"):
+          if (row.display_label) {
+            return { id: row.id, text: row.display_label }
+          }
+          if (row.short_label) {
+            return { id: row.id, text: row.short_label }
+          }
 
           // Any other default case (just id, text):
           return { id: row.id, text: row.text }

@@ -23,15 +23,15 @@
           %tr
             %th{ scope: 'row' }= t('swimmers.birth_year_and_age')
             %td{ id: 'year-of-birth' }
-              #{swimmer.year_of_birth} (~#{swimmer.swimmer_age})
+              #{swimmer.year_of_birth} (~#{swimmer.age})
           %tr
             %th{ scope: 'row' }= t('swimmers.current_category')
             %td{ id: 'curr-cat-code' }
-              #{swimmer.current_fin_category_code} - #{swimmer.gender_type.label}
+              #{swimmer.latest_category_type&.code} - #{swimmer.gender_type.label}
           %tr
             %th{ scope: 'row' }= t('swimmers.radiography.last_registered_category')
             %td{ id: 'last-cat-code' }
-              = swimmer.last_category_code
+              = swimmer.last_category_type_by_badge&.code
           %tr
             %th{ scope: 'row' }= t('swimmers.affiliated_with')
             %td{ id: 'team-links' }

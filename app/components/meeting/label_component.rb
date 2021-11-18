@@ -36,6 +36,8 @@ module Meeting
 
     protected
 
+    # TODO: use @meeting&.decorate&.display_label (|| short_label)
+
     # Prepares the text label
     def meeting_label
       if @meeting&.edition_type&.seasonal? || @meeting&.edition_type&.yearly?

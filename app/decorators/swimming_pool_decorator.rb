@@ -8,15 +8,15 @@ class SwimmingPoolDecorator < Draper::Decorator
   # Add explicit delegation also for methods added to the AR::Relation by Kaminari
   delegate :current_page, :total_pages, :limit_value, :total_count, :offset_value, :last_page?
 
+  # Returns the default text label describing this object.
+  def text_label
+    object.decorate.display_label
+  end
+
   # Returns the link to #show using the name as link label.
   #
   def link_to_full_name
     h.link_to(name, h.swimming_pool_show_path(id: object.id))
-  end
-
-  # Returns the a text label describing this instance.
-  def text_label
-    "#{name} (#{nick_name || city&.name || '?'})"
   end
 
   # Returns either the styled button link to the Google Maps pool location together with

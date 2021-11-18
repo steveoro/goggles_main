@@ -28,7 +28,8 @@
           - if queue.sibling_rows.count.positive?
             %ul.collapse{ id: "laps#{queue.id}" }
               - collection = queue.sibling_rows.includes(:import_queues)
-              - GogglesDb::ImportQueueDecorator.decorate_collection(collection).each do |linked_queue|
+              - decorated = GogglesDb::ImportQueueDecorator.decorate_collection(collection)
+              - decorated.sort { |a, b| a.req_length_in_meters <=> b.req_length_in_meters }.each do |linked_queue|
                 %li.text-left
                   %small= linked_queue.text_label
       - else

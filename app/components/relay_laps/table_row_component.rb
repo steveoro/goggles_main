@@ -3,7 +3,7 @@
 #
 # = RelayLaps components module
 #
-#   - version:  7.01
+#   - version:  7-0.1.00
 #   - author:   Steve A.
 #
 module RelayLaps
@@ -72,8 +72,7 @@ module RelayLaps
     def swimmer_text_label_with_age
       return '' unless swimmer && meeting
 
-      age_at_meeting = meeting.header_date.year - swimmer.year_of_birth
-      "#{swimmer.complete_name} (#{swimmer.year_of_birth} ~ #{age_at_meeting})"
+      "#{swimmer.complete_name} (#{swimmer.year_of_birth} ~ #{swimmer.age(meeting.header_date)})"
     end
   end
 end

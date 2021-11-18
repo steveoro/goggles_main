@@ -18,8 +18,8 @@
             %small= swimmer.link_to_teams(30)
           %td
             %small
-              #{swimmer.year_of_birth} (#{swimmer.swimmer_age})
+              #{swimmer.year_of_birth} (#{swimmer.age})
               %br/
-              #{swimmer.last_category_code} (#{swimmer.current_fin_category_code})
+              #{swimmer.last_category_type_by_badge&.code} (#{swimmer.latest_category_type&.code})
   %br/
   = paginate(swimmers, remote: true)

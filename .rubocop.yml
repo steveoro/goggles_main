@@ -66,6 +66,11 @@ Metrics/PerceivedComplexity:
   Exclude:
     - 'bin/bundle'
 
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
+  Exclude:
+    - 'spec/decorators/iq_request/chrono_rec_param_adapter_spec.rb'
+
 Style/ClassAndModuleChildren:
   Exclude:
   - 'api/**/*'
