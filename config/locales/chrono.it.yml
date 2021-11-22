@@ -25,6 +25,7 @@ it:
         missing_meeting_or_workshop_name: "Devi scegliere o creare un nome di Meeting o di Collegiale per poter fare una registrazione di tempi."
         commit_missing_parameters: "La richiesta di registrazione dati contiene dati o parametri non validi."
         delete_invalid_parameters: "Richiesta di cancellazione non valida: riga dati non trovata."
+        invalid_parameters: "Richiesta non valida: riga dati non trovata."
       confirm_delete: 'Vuoi davvero cancellare questa riga di passaggi?'
       confirm_reset: 'Azzero e ripulisco il Chrono?'
       confirm_post: 'Mando questi tempi a Master-Goggles? Niente da modificare? Tutto a posto?'

@@ -10,7 +10,7 @@ class SwimmerDecorator < Draper::Decorator
 
   # Returns the default text label describing this object.
   def text_label
-    object.decorate.display_label
+    decorated.display_label
   end
 
   # Returns the link to /swimmer/show using the complete name as link label.
@@ -45,4 +45,11 @@ class SwimmerDecorator < Draper::Decorator
   end
   #-- -------------------------------------------------------------------------
   #++
+
+  private
+
+  # Returns the decorated base object instance, memoized.
+  def decorated
+    @decorated ||= GogglesDb::Swimmer.includes(:gender_type).find_by(id: object.id).decorate
+  end
 end

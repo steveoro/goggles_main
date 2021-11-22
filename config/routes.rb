@@ -22,6 +22,7 @@ Rails.application.routes.draw do
 
   get 'chrono', to: 'chrono#index'
   get 'chrono/index'
+  get 'chrono/download/:id', to: 'chrono#download', as: 'chrono_download'
   get 'chrono/new'
   post 'chrono/rec'
   post 'chrono/commit'

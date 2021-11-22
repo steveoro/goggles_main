@@ -26,6 +26,73 @@ RSpec.describe 'Chronos', type: :request do
   #-- -------------------------------------------------------------------------
   #++
 
+  describe 'GET /chrono/download/:id' do
+    let(:fixture_user) { GogglesDb::User.first(50).sample }
+    let(:fixture_row) do
+      master_row = FactoryBot.create(
+        :import_queue,
+        user: fixture_user,
+        request_data: {
+          'target_entity': 'Lap',
+          'lap': {
+            'label': "01'26\"59",
+            'order': 4,
+            'length_in_meters': 100,
+            'minutes_from_start': 1,
+            'seconds_from_start': 26,
+            'hundredths_from_start': 59
+          }.to_json
+        }
+      )
+      FactoryBot.create_list(:import_queue, 3, user: fixture_user, import_queue: master_row)
+      expect(GogglesDb::ImportQueue.count).to be >= 4
+      master_row
+    end
+
+    context 'with an unlogged user,' do
+      it 'is a redirect to the login path' do
+        get(chrono_download_path(fixture_row.id))
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'with a logged-in user' do
+      before do
+        expect(fixture_user).to be_a(GogglesDb::User).and be_valid
+        expect(fixture_row).to be_a(GogglesDb::ImportQueue).and be_valid
+        sign_in(fixture_user)
+      end
+
+      context 'with an invalid :id parameter,' do
+        before { get(chrono_download_path(id: -1)) }
+
+        it 'redirects to /chrono/index' do
+          expect(response).to redirect_to(chrono_index_path)
+        end
+
+        it 'sets a flash error message about the wrong/missing parameter' do
+          expect(flash[:error]).to eq(I18n.t('chrono.messages.error.invalid_parameters'))
+        end
+      end
+
+      context 'with a valid :id parameter,' do
+        before { get(chrono_download_path(id: fixture_row.id)) }
+
+        it 'downloads a JSON text data file' do
+          expect(response.headers['Content-Type']).to eq('text/json')
+          expect(response.headers['Content-Disposition']).to include('attachment')
+        end
+
+        it 'sends a data file containing the JSON request data of the chosen rows' do
+          # Limiting just to the first row to be quick::
+          expect(response.body).to be_present && include(fixture_row.request_data)
+        end
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
   describe 'GET /chrono/new' do
     context 'with an unlogged user,' do
       it 'is a redirect to the login path' do
@@ -111,8 +178,8 @@ RSpec.describe 'Chronos', type: :request do
 
       context 'without some of the required parameters,' do
         [
-          { header: { 'target_entity' => 'Lap' }.to_json },
-          { payload: { order: 1, minutes: 0, seconds: 45, hundredths: 10 }.to_json }
+          { json_header: { 'target_entity' => 'Lap' }.to_json },
+          { json_payload: { order: 1, minutes: 0, seconds: 45, hundredths: 10 }.to_json }
         ].each do |partial_params|
           before { post(chrono_commit_path, params: partial_params) }
 
@@ -129,8 +196,8 @@ RSpec.describe 'Chronos', type: :request do
       context 'with some invalid timing commit parameters,' do
         let(:invalid_request_params) do
           {
-            header: { 'target_entity' => 'Lap' }.to_json,
-            payload: { order: 1 }.to_json
+            json_header: { 'target_entity' => 'Lap' }.to_json,
+            json_payload: { order: 1 }.to_json
           }
         end
 
@@ -165,8 +232,8 @@ RSpec.describe 'Chronos', type: :request do
           post(
             chrono_commit_path,
             params: {
-              header: min_request_header.to_json,
-              payload: { order: 1, minutes: 0, seconds: 45, hundredths: 10 }.to_json
+              json_header: min_request_header.to_json,
+              json_payload: { order: 1, minutes: 0, seconds: 45, hundredths: 10 }.to_json
             }
           )
         end

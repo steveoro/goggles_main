@@ -9,12 +9,42 @@ class ChronoController < ApplicationController
   before_action :authenticate_user!
   before_action :validate_rec_params, only: :rec
   before_action :validate_commit_params, only: :commit
+  before_action :validate_download_params, only: :download
   before_action :validate_delete_params, only: :delete
 
   # [GET] Lists the queue of pending lap registrations by the current_user
   def index
     # Retrieve only the master request, ignore the siblings (with UID: 'chrono-SEQ-IDX')
     @queues = GogglesDb::ImportQueue.for_user(current_user).for_uid('chrono')
+  end
+
+  # [GET] Download ImportQueues request as a JSON file.
+  #
+  # == Params:
+  # - id: the master row to be downloaded; all siblings will be downloaded as well
+  #
+  # == Returns:
+  # A text JSON data file containing the requested ImportQueue rows as an
+  # array of JSON objects.
+  def download
+    # DEBUG
+    # logger.debug("\r\n\r\n#{download_params.inspect}\r\n")
+    queue = GogglesDb::ImportQueue.find_by(id: download_params['id'])
+
+    if queue.present?
+      rows = queue.sibling_rows.or(GogglesDb::ImportQueue.where(id: queue.id)).includes(:import_queues)
+      decorated = GogglesDb::ImportQueueDecorator.decorate_collection(rows)
+      sorted_stringified = decorated.sort { |a, b| a.req_length_in_meters <=> b.req_length_in_meters }
+                                    .map(&:request_data)
+                                    .join(', ')
+      send_data(
+        "[#{sorted_stringified}]",
+        type: 'text/json',
+        filename: "chrono-#{DateTime.now.strftime('%Y%m%d.%H%M%S')}.json"
+      )
+    else
+      flash[:error] = t('chrono.messages.error.invalid_parameters')
+    end
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -51,12 +81,11 @@ class ChronoController < ApplicationController
   # [POST] Store a new lap-recording micro-transaction
   #
   # == Params:
-  # - header: JSON-ified common header parameters shared among all the detail requests
-  # - payload: JSON array of detail data that will be converted to a list of new micro-transaction requests
+  # - json_payload: JSON array of detail data that will be converted to a list of new micro-transaction requests
   def commit
     # DEBUG
     logger.debug("\r\n\r\n#{params.inspect}\r\n")
-    laps_list = parse_json_payload(commit_params[:payload])
+    laps_list = parse_json_payload(commit_params[:json_payload])
 
     if laps_list.present?
       commit_import_queues(laps_list)
@@ -103,12 +132,17 @@ class ChronoController < ApplicationController
 
   # Strong parameter checking for POST /commit
   def commit_params
-    params.permit(%w[header payload authenticity_token commit])
+    params.permit(%w[json_header json_payload authenticity_token commit])
   end
 
   # Parameter checking for DELETE /delete (only :id shall be used)
   def delete_params
     params.permit(%w[id authenticity_token commit])
+  end
+
+  # Parameter checking for GET /download
+  def download_params
+    params.permit(%w[id authenticity_token commit format])
   end
 
   # Minimalistic /rec parameter validator. Checks that the user selected or typed-in new names
@@ -123,7 +157,7 @@ class ChronoController < ApplicationController
 
   # Validates presence of required /commit parameters. Redirects to /new otherwise.
   def validate_commit_params
-    return if commit_params['header'].present? && commit_params['payload'].present?
+    return if commit_params['json_header'].present? && commit_params['json_payload'].present?
 
     flash[:error] = I18n.t('chrono.messages.error.commit_missing_parameters')
     redirect_to(chrono_new_path)
@@ -135,6 +169,15 @@ class ChronoController < ApplicationController
               GogglesDb::ImportQueue.for_user(current_user).exists?(id: delete_params['id'])
 
     flash[:error] = I18n.t('chrono.messages.error.delete_invalid_parameters')
+    redirect_to(chrono_index_path)
+  end
+
+  # Validator for /download; redirects to /index if the row doesn't exist and doesn't belong to this user.
+  def validate_download_params
+    return if download_params['id'].present? &&
+              GogglesDb::ImportQueue.for_user(current_user).exists?(id: download_params['id'])
+
+    flash[:error] = I18n.t('chrono.messages.error.invalid_parameters')
     redirect_to(chrono_index_path)
   end
   #-- -------------------------------------------------------------------------
@@ -244,10 +287,11 @@ class ChronoController < ApplicationController
   # Uses the actual JSONified header string for building the shared request base.
   #
   # == Params:
+  # - json_header: JSON-ified common header parameters shared among all the detail requests
   # - laps_list: the list of Hash data from the actual detail payload
   #
   def commit_import_queues(laps_list)
-    adapter = IqRequest::ChronoRecParamAdapter.from_request_data(commit_params['header'])
+    adapter = IqRequest::ChronoRecParamAdapter.from_request_data(commit_params['json_header'])
     # Update parent result timing using last lap:
     adapter.update_result_data(overall_result_timing(laps_list))
     parent_id = nil

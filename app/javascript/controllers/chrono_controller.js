@@ -45,6 +45,12 @@ const Timing = Backbone.Model.extend({
  * @param {String} 'data-chrono-target': 'btnSave'
  *                 DOM "save" button
  *
+ * @param {String} 'data-chrono-target': 'btnDownloadJSON'
+ *                 DOM "download JSON" button
+ *
+ * @param {String} 'data-chrono-target': 'header'
+ *                 DOM field tag that stores the common JSON data header for all laps
+ *
  * @param {String} 'data-chrono-target': 'payload'
  *                 DOM field tag for storing the data payload as JSON text
  *
@@ -66,7 +72,11 @@ const Timing = Backbone.Model.extend({
  * @author Steve A.
  */
 export default class extends Controller {
-  static targets = ['timer', 'lapsGrid', 'btnSwitch', 'btnLap', 'btnSave', 'payload', 'mainForm']
+  static targets = [
+    'timer', 'lapsGrid',
+    'btnSwitch', 'btnLap', 'btnSave', 'btnDownloadJSON',
+    'header', 'payload', 'mainForm'
+  ]
 
   /**
    * Initialization boilerplate for the TimerElement.
@@ -103,9 +113,10 @@ export default class extends Controller {
      * returns the formatted labelTime string field.
      */
     this.updateLabelTime = function (timing) {
-      console.log('updateLabelTime()')
-      console.log(this)
-      console.log(timing)
+      // DEBUG
+      // console.log('updateLabelTime()')
+      // console.log(this)
+      // console.log(timing)
 
       // Format digit strings:
       // let labelHours = `${timing.hours < 10 ? '0' + timing.hours : timing.hours}` // (unused)
@@ -241,6 +252,7 @@ export default class extends Controller {
       // Disable "save" button:
       if (this.hasBtnSaveTarget) {
         this.btnSaveTarget.setAttribute('disabled', 'true')
+        this.btnDownloadJSONTarget.classList.add('disabled')
       }
     }
   }
@@ -263,6 +275,7 @@ export default class extends Controller {
     // Disable "save" button:
     if (this.hasBtnSaveTarget) {
       this.btnSaveTarget.setAttribute('disabled', 'true')
+      this.btnDownloadJSONTarget.classList.add('disabled')
     }
   }
 
@@ -284,6 +297,7 @@ export default class extends Controller {
     // Enable "save" button:
     if (this.hasBtnSaveTarget) {
       this.btnSaveTarget.removeAttribute('disabled')
+      this.btnDownloadJSONTarget.classList.remove('disabled')
     }
   }
 
@@ -296,10 +310,12 @@ export default class extends Controller {
 
   /**
    * == Save action ==
+   * Prepares an array of stringified JSON detail rows to be set at form payload
+   * and triggers the data submit.
    */
   save (_event) {
     // DEBUG
-    console.log('save() action')
+    // console.log('save() action')
     _event.preventDefault()
 
     if (confirm(this.data.get('post-message')) && this.hasPayloadTarget) {
@@ -326,6 +342,50 @@ export default class extends Controller {
       return true
     }
     return false
+  }
+  // ---------------------------------------------------------------------------
+
+  /**
+   * == Download JSON action ==
+   * Prepares an array of JSON objects and initiates the text data file download.
+   * Assumes 'json_header' contains valid JSON data.
+   */
+  downloadJSON (_event) {
+    // DEBUG
+    // console.log('downloadCsv() action')
+    _event.preventDefault()
+
+    if ((this.grid.collection.length < 1) ||
+      (this.hasHeaderTarget && this.headerTarget.value.toString().length < 1)) {
+      console.log('No data to export: skipping')
+      return false
+    }
+
+    // Prepare payload:
+    const dataPayload = this.grid.collection.map((model) => {
+      var jsonHeader = JSON.parse(this.headerTarget.value)
+      jsonHeader.order = model.attributes.order
+      jsonHeader.label = model.attributes.labelTime
+      jsonHeader.lap.order = model.attributes.order
+      jsonHeader.lap.minutes = 0
+      jsonHeader.lap.seconds = 0
+      jsonHeader.lap.hundredths = 0
+      jsonHeader.lap.minutes_from_start = model.attributes.minutes
+      jsonHeader.lap.seconds_from_start = model.attributes.seconds
+      jsonHeader.lap.hundredths_from_start = model.attributes.hundredths
+      jsonHeader.lap.length_in_meters = model.attributes.meters
+      jsonHeader.lap.label = model.attributes.labelTime
+      return jsonHeader
+    })
+
+    // Post & Save data:
+    const hiddenElement = document.createElement('a')
+    const stringifiedData = JSON.stringify(dataPayload)
+    hiddenElement.href = `data:text/json;charset=utf-8,${encodeURI(stringifiedData)}`
+    hiddenElement.target = '_blank'
+    hiddenElement.download = `chrono_${dataPayload[0].lap.meeting_program.meeting_event.meeting_session.scheduled_date}.json`
+    hiddenElement.click()
+    return true
   }
   // ---------------------------------------------------------------------------
 

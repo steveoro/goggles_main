@@ -51,10 +51,16 @@
 
     .row-fluid.text-center
       = form_tag(chrono_commit_path, id: 'frm-chrono-rec', method: :post, data: { 'chrono-target' => 'mainForm' }) do
-        = hidden_field_tag(:header, @request_header)
-        = hidden_field_tag(:payload, nil, data: { 'chrono-target' => 'payload' })
+        = hidden_field_tag(:json_header, @request_header, data: { 'chrono-target' => 'header' })
+        = hidden_field_tag(:json_payload, nil, data: { 'chrono-target' => 'payload' })
         = submit_tag(t('chrono.buttons.save'), id: 'timer-btn-save', class: 'btn btn-primary',
                      'aria-label' => 'Save', disabled: true, type: 'submit',
                      data: { 'chrono-target' => 'btnSave', action: 'click->chrono#save' })
+        - if GogglesDb::GrantChecker.admin?(current_user)
+          = link_to('#', id: 'btn-download-json', class: 'btn btn-outline-info disabled',
+                    'aria-label' => 'Download JSON', data: { 'chrono-target' => 'btnDownloadJSON',
+                    action: 'click->chrono#downloadJSON' }) do
+            JSON
+            %i.fa.fa-download
 
   .spacer-right

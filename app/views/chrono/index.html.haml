@@ -20,10 +20,16 @@
               - if queue.sibling_rows.count.positive?
                 = render(Switch::RotatingComponent.new(target_id: "laps#{queue.id}"))
             .col-2.my-1.text-center
-              = button_to(chrono_delete_path(queue.id), { id: "frm-delete-row-#{queue.id}", method: :delete,
-                          class: 'btn btn-sm btn-outline-danger',
-                          data: { confirm: t('chrono.index.confirm_delete', queue_label: queue.text_label) } }) do
-                %i.fa.fa-trash-o
+              .row
+                - if GogglesDb::GrantChecker.admin?(current_user)
+                  = link_to(chrono_download_path(id: queue.id), id: 'btn-download-json',
+                            class: 'btn btn-sm btn-outline-info', 'aria-label' => 'Download JSON') do
+                    %i.fa.fa-download
+                  &nbsp;
+                = button_to(chrono_delete_path(queue.id), id: "frm-delete-row-#{queue.id}", method: :delete,
+                            class: 'btn btn-sm btn-outline-danger',
+                            data: { confirm: t('chrono.index.confirm_delete', queue_label: queue.text_label) }) do
+                  %i.fa.fa-trash-o
 
           - if queue.sibling_rows.count.positive?
             %ul.collapse{ id: "laps#{queue.id}" }
