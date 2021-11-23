@@ -52,14 +52,14 @@ RSpec.describe 'chrono/rec.html.haml', type: :view do
     end
 
     it 'renders the hidden header form parameter' do
-      expect(subject.css('#frm-chrono-rec input#header')).to be_present
-      expect(subject.css('#frm-chrono-rec input#header').attr('type').value)
+      expect(subject.css('#frm-chrono-rec input#json_header')).to be_present
+      expect(subject.css('#frm-chrono-rec input#json_header').attr('type').value)
         .to eq('hidden')
     end
 
     it 'renders the hidden payload form parameter' do
-      expect(subject.css('#frm-chrono-rec input#payload')).to be_present
-      expect(subject.css('#frm-chrono-rec input#payload').attr('type').value)
+      expect(subject.css('#frm-chrono-rec input#json_payload')).to be_present
+      expect(subject.css('#frm-chrono-rec input#json_payload').attr('type').value)
         .to eq('hidden')
     end
 

@@ -363,7 +363,7 @@ export default class extends Controller {
 
     // Prepare payload:
     const dataPayload = this.grid.collection.map((model) => {
-      var jsonHeader = JSON.parse(this.headerTarget.value)
+      const jsonHeader = JSON.parse(this.headerTarget.value)
       jsonHeader.order = model.attributes.order
       jsonHeader.label = model.attributes.labelTime
       jsonHeader.lap.order = model.attributes.order

@@ -15,18 +15,18 @@
       - if @queues.count.positive?
         - GogglesDb::ImportQueueDecorator.decorate_collection(@queues).each do |queue|
           .row.border
-            .col.mt-2.text-left
+            .col.mt-2.text-left{ id: "main-req#{queue.id}" }
               %small= queue.text_label
               - if queue.sibling_rows.count.positive?
                 = render(Switch::RotatingComponent.new(target_id: "laps#{queue.id}"))
             .col-2.my-1.text-center
               .row
                 - if GogglesDb::GrantChecker.admin?(current_user)
-                  = link_to(chrono_download_path(id: queue.id), id: 'btn-download-json',
+                  = link_to(chrono_download_path(id: queue.id), id: "btn-download-json-#{queue.id}",
                             class: 'btn btn-sm btn-outline-info', 'aria-label' => 'Download JSON') do
                     %i.fa.fa-download
                   &nbsp;
-                = button_to(chrono_delete_path(queue.id), id: "frm-delete-row-#{queue.id}", method: :delete,
+                = button_to(chrono_delete_path(id: queue.id), id: "frm-delete-row-#{queue.id}", method: :delete,
                             class: 'btn btn-sm btn-outline-danger',
                             data: { confirm: t('chrono.index.confirm_delete', queue_label: queue.text_label) }) do
                   %i.fa.fa-trash-o
@@ -36,7 +36,7 @@
               - collection = queue.sibling_rows.includes(:import_queues)
               - decorated = GogglesDb::ImportQueueDecorator.decorate_collection(collection)
               - decorated.sort { |a, b| a.req_length_in_meters <=> b.req_length_in_meters }.each do |linked_queue|
-                %li.text-left
+                %li.text-left{ id: "lap#{linked_queue.id}" }
                   %small= linked_queue.text_label
       - else
         .row.list-group-item.text-center

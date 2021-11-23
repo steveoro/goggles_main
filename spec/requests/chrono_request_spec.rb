@@ -251,10 +251,10 @@ RSpec.describe 'Chronos', type: :request do
   #-- -------------------------------------------------------------------------
   #++
 
-  describe 'DELETE /chrono/delete' do
+  describe 'DELETE /chrono/delete/:id' do
     context 'with an unlogged user,' do
       it 'is a redirect to the login path' do
-        delete(chrono_delete_path)
+        delete(chrono_delete_path(id: 1))
         expect(response).to redirect_to(new_user_session_path)
       end
     end
@@ -269,20 +269,8 @@ RSpec.describe 'Chronos', type: :request do
         sign_in(fixture_user)
       end
 
-      context 'without an :id parameter,' do
-        before { delete(chrono_delete_path) }
-
-        it 'redirects to /chrono/index' do
-          expect(response).to redirect_to(chrono_index_path)
-        end
-
-        it 'sets a flash error message about the wrong/missing parameter' do
-          expect(flash[:error]).to eq(I18n.t('chrono.messages.error.delete_invalid_parameters'))
-        end
-      end
-
       context 'with an invalid :id parameter,' do
-        before { delete(chrono_delete_path, params: { id: -1 }) }
+        before { delete(chrono_delete_path(id: -1)) }
 
         it 'redirects to /chrono/index' do
           expect(response).to redirect_to(chrono_index_path)
@@ -294,7 +282,7 @@ RSpec.describe 'Chronos', type: :request do
       end
 
       context 'with a valid :id parameter,' do
-        before { delete(chrono_delete_path, params: { id: deletable_row.id }) }
+        before { delete(chrono_delete_path(id: deletable_row.id)) }
 
         it 'redirects to /chrono/index' do
           expect(response).to redirect_to(chrono_index_path)
