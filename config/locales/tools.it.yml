@@ -1,0 +1,12 @@
+it:
+  tools:
+    fin_score:
+      title: 'Calcola punteggio / tempo FIN'
+      timings_from_season: 'Tempi standard da:'
+      compute_note_disclaimer: "Per favore, inserisci numeri interi. Il risultato è comunque approssimato. Nel calcolare il tempo obiettivo, a causa dell'arrotondamento, numeri leggermente diversi daranno lo stesso risultato."
+      compute_score:
+        title: 'Punteggio'
+        button_label: 'Calcola punti'
+      target_timing:
+        title: 'Tempo obiettivo'
+        button_label: 'Calcola tempo'

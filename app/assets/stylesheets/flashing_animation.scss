@@ -2,8 +2,8 @@
  * Blinking/flashing animation styles
  */
 .animated {
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
+  -webkit-animation-duration: 1500ms;
+  animation-duration: 1500ms;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
 }
@@ -21,6 +21,11 @@
 .animated.faster {
   -webkit-animation-duration: 500ms;
   animation-duration: 500ms;
+}
+
+.animated.fastest {
+  -webkit-animation-duration: 250ms;
+  animation-duration: 250ms;
 }
 
 .animated.slow {

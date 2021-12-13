@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'webmock/cucumber'
+
 # Capybara support wrapper module for download-related helper methods.
 # For Chrome-based drivers only.
 #

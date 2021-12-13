@@ -40,23 +40,23 @@ RSpec.describe 'chrono/new.html.haml', type: :view do
         .to eq('hidden')
     end
 
-    it 'renders the Season Select component' do
+    it 'renders the Season select component' do
       expect(subject.css('#frm-chrono-new #season_select')).to be_present
     end
 
-    it 'renders the Meeting Select component' do
+    it 'renders the Meeting select component' do
       expect(subject.css('#frm-chrono-new #meeting_select')).to be_present
     end
 
-    it 'renders the UserWorkshop Select component' do
+    it 'renders the UserWorkshop select component' do
       expect(subject.css('#frm-chrono-new #user_workshop_select')).to be_present
     end
 
-    it 'renders the SwimmingPool Select component' do
+    it 'renders the SwimmingPool select component' do
       expect(subject.css('#frm-chrono-new #swimming_pool_select')).to be_present
     end
 
-    it 'renders the PoolType Select component' do
+    it 'renders the PoolType select component' do
       expect(subject.css('#frm-chrono-new #pool_type_select')).to be_present
     end
 
@@ -64,15 +64,15 @@ RSpec.describe 'chrono/new.html.haml', type: :view do
       expect(subject.css('#frm-chrono-new input#event_date')).to be_present
     end
 
-    it 'renders the EventType Select component' do
+    it 'renders the EventType select component' do
       expect(subject.css('#frm-chrono-new #event_type_select')).to be_present
     end
 
-    it 'renders the Team Select component' do
+    it 'renders the Team select component' do
       expect(subject.css('#frm-chrono-new #team_select')).to be_present
     end
 
-    it 'renders the Swimmer Select component' do
+    it 'renders the Swimmer select component' do
       expect(subject.css('#frm-chrono-new #swimmer_select')).to be_present
     end
 

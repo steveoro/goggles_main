@@ -53,3 +53,7 @@ When('I can see the chrono request details in the JSON file structure') do
     expect(json_data[index_in_sorted_json_data]['lap']['label']).to eq(source_req_json['lap']['label'])
   end
 end
+
+When('I click on the new recording button') do
+  find('#btn-new-chrono').click
+end

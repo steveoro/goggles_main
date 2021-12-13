@@ -1,0 +1,14 @@
+// DEBUG:
+// console.log("<%= escape_javascript(@result.to_json.html_safe) %>")
+$('#loading-indicator').addClass('d-none');
+
+if (<%= @target_type %> == 1) {
+  $('#minutes').val(<%= @result['timing']['minutes'] %>)
+  $('#seconds').val(<%= @result['timing']['seconds'] %>)
+  $('#hundredths').val(<%= @result['timing']['hundredths'] %>)
+  $('.target-time').fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(200)
+}
+else {
+  $('#score').val(<%= @result['score'] %>)
+  $('.target-score').fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(200)
+}

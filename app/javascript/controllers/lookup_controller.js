@@ -594,8 +594,11 @@ export default class extends Controller {
    * Does a bunch domain-specific, quick & dirty update-triggering stuff in other bound widgets,
    * but only if the target DOM IDs are found and mapData contains any one among the following attribute keys:
    *
-   * - year_of_birth => updates #category_type_select
-   * - year_of_birth => updates #category_type_select
+   * - year_of_birth  => updates #category_type_select (ID + label)
+   * - gender_type_id => updates #gender_type_id
+   * - city_id        => updates #city_select
+   * - pool_type_id   => updates #pool_type_select
+   *
    * - (FUTUREDEV: add more here)
    *
    * @param {Object} mapData a Map including all attribute names for the current selection
@@ -615,7 +618,11 @@ export default class extends Controller {
       $('#category_type_select').trigger('change')
       // Programmatically set also any related fields:
       $('#category_type_id').val(valueId)
-      $('#category_type_label').val($('#category_type_select').select2('data')[0].text)
+      // If the API request went trough, update the hidden label with the 'text' property of the Select2 option:
+      const valueLabels = $('#category_type_select').select2('data')
+      if (valueLabels.length > 0) {
+        $('#category_type_label').val(valueLabels[0].text)
+      }
     }
     /*
      * Special case #2:

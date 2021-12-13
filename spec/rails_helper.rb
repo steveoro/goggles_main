@@ -34,6 +34,8 @@ require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 require 'devise' # NOTE: require 'devise' after require 'rspec/rails' (this allows to use devise test helpers)
+require 'webmock/rspec'
+WebMock.disable_net_connect!(allow_localhost: true)
 
 # Add factories directly from core engine:
 require 'factory_bot_rails'

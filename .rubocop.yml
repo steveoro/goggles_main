@@ -66,10 +66,17 @@ Metrics/PerceivedComplexity:
   Exclude:
     - 'bin/bundle'
 
+RSpec/InstanceVariable:
+  AssignmentOnly: true
+  Exclude:
+    - 'spec/views/chrono/index.html.haml_spec.rb'
+    - 'spec/views/tools/fin_score.html.haml_spec.rb'
+
 RSpec/MultipleMemoizedHelpers:
   Max: 10
   Exclude:
     - 'spec/decorators/iq_request/chrono_rec_param_adapter_spec.rb'
+    - 'spec/requests/tools_request_spec.rb'
 
 Style/ClassAndModuleChildren:
   Exclude:

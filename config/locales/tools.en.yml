@@ -1,0 +1,12 @@
+en:
+  tools:
+    fin_score:
+      title: 'Compute FIN score / target timing'
+      timings_from_season: 'Standard timings from:'
+      compute_note_disclaimer: 'Please insert rounded integer numbers. The result is approximated anyway. When getting the target timing, due to rounding, slightly different numbers will yield the same result.'
+      compute_score:
+        title: 'Score'
+        button_label: 'Compute score'
+      target_timing:
+        title: 'Target timing'
+        button_label: 'Compute time'

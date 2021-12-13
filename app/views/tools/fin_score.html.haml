@@ -1,30 +1,78 @@
-- api_req_url = "#{GogglesDb::AppParameter.config.settings(:framework_urls).api}/swimmers.json"
-- selected_text = user_signed_in? ? "#{current_user.description} (#{current_user.year_of_birth})" : nil
-
 .wrapper-body
   .spacer-left
 
   .main-content
-    .row-fluid.m-4
-      #tools-fin-score
-        %h2 Tools > Compute FIN score
-        = form_for(:fin_params, url: tools_compute_fin_score_path, html: { method: :post }) do |f|
-          .form-row{ data: { controller: 'lookup', 'lookup-placeholder-value' => t('lookup.placeholder'),
-            'lookup-api-url-value' => api_req_url } }
-            - if user_signed_in?
-              .form-group
-                .field.col-auto
-                  = f.label(:category_type, 'Swimmer')
-                  %select.select2{ selected: selected_text, data: { 'lookup-target' => 'field' } }
+    .row-fluid#fin-score-title
+      %h4.text-center.pb-3
+        %i.fa.fa-calculator
+        = t('tools.fin_score.title')
 
+    = form_tag(tools_compute_fin_score_path, id: 'frm-fin-score', remote: true, method: :get) do
+      .container.bg-warning.ml-2.pt-3.shadow-box
+        .row
+          .offset-md-2.offset-lg-3
+          = render(ComboBox::DbLookupComponent.new(nil, t('meetings.event'), 'event_type',
+                                                   required: true, values: event_type_options(@event_types)))
+          = render(ComboBox::DbLookupComponent.new(nil, t('meetings.dashboard.pool_type'), 'pool_type',
+                                                   required: true, values: pool_type_options(@pool_types)))
+
+      .container.mt-2
+        .row
+          .col-auto
             .form-group
-              .field.col-auto
-                = f.label(:category_type, 'Category')
-                = f.text_field(:category_type, required: true, autofocus: true,
-                              class: 'form-control', placeholder: 'Category')
+              .field
+                = hidden_field_tag('season_id', @last_fin_season&.id)
+                = label_tag(:season, t('tools.fin_score.timings_from_season'))
+                = text_field_tag(:season, @last_fin_season&.decorate&.display_label, disabled: true,
+                                 class: 'form-control text-muted')
+          = render(ComboBox::DbLookupComponent.new(nil, t('meetings.category'), 'category_type',
+                                                   required: true, values: category_type_options(@category_types)))
+          .col-auto
+            .form-group
+              .field
+                = label_tag(:gender_type_id, t('swimmers.sex'))
+                %b.text-success *
+                = select_tag(:gender_type_id, options_from_collection_for_select(@gender_types, 'id', 'label',
+                             current_user&.swimmer&.gender_type_id || cookies[:gender_type_id]),
+                             required: true, autofocus: true, class: 'form-control',
+                             onsubmit: "$('.target-score').val(''); return true")
 
-          .form-group
-            .mt-2.col-auto.actions
-              = f.submit('Post', class: 'btn btn-primary')
+      .row
+        .col-auto
+          .container.bg-light-blue.ml-2.mt-2.mb-4.py-3.shadow-box
+            .row-fluid
+              .form-group
+                .field
+                  = label_tag(:timing, t('tools.fin_score.target_timing.title'))
+                  .row
+                    .col-auto
+                      = number_field_tag(:minutes, 0, in: 0..99, autofocus: true, class: 'form-control target-time')
+                    .col-auto
+                      = number_field_tag(:seconds, 0, in: 0..59, autofocus: true, class: 'form-control target-time')
+                    .col-auto
+                      = number_field_tag(:hundredths, 0, in: 0..99, autofocus: true, class: 'form-control target-time')
+            .row-fluid.text-center
+              = submit_tag(t('tools.fin_score.compute_score.button_label'), id: 'btn-fin-score',
+                          class: 'btn btn-primary', 'aria-label' => 'Compute score', type: 'submit',
+                          onclick: "$('.target-score').val(''); return true",
+                          onsubmit: "$('#loading-indicator').removeClass('d-none'); return true")
+        .offset-sm-1
+        .col-auto
+          .container.bg-light-blue.ml-2.mt-2.mb-4.py-3.shadow-box
+            .row-fluid
+              .form-group
+                .field
+                  = label_tag(:score, t('tools.fin_score.compute_score.title'))
+                  = number_field_tag(:score, 0, in: 0..9999, autofocus: true, class: 'form-control target-score')
+            .row-fluid.text-center
+              = submit_tag(t('tools.fin_score.target_timing.button_label'), id: 'btn-fin-timing',
+                          class: 'btn btn-primary', 'aria-label' => 'Compute time', type: 'submit',
+                          onclick: "$('.target-time').val(''); return true",
+                          onsubmit: "$('#loading-indicator').removeClass('d-none'); return true")
+
+    .row-fluid.mb-4
+      %small
+        %i.form-text.text-center.text-muted#compute-score-disclaimer
+          = t('tools.fin_score.compute_note_disclaimer')
 
   .spacer-right

@@ -41,5 +41,5 @@ Rails.application.routes.draw do
 
   get 'tools/fin_score'
   # TODO: move the following to a dedicated API endpoint:
-  post 'tools/compute_fin_score', format: :json
+  get 'tools/compute_fin_score', format: :json
 end

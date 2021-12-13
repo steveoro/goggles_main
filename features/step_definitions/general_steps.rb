@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+When('I wait for {int} seconds') do |sleep_time_in_secs|
+  sleep(sleep_time_in_secs)
+end
+
 Then('I debug') do
   # rubocop:disable Lint/Debugger
   save_and_open_page
@@ -25,6 +29,11 @@ Then('I get redirected to {string}') do |string_path|
   step("I am still at the '#{string_path}' path")
 end
 
+# Similar to the above, but simpler (may catch similar URLs given the same common path):
+Given('I am already at the {string} page') do |string_path|
+  expect(current_url).to include(string_path)
+end
+
 Then('a flash {string} message is present') do |i18n_key|
   # [Steve A.] Due to flash modals to disappear automatically after a delay,
   # we won't test visibility but just that the content has been actually rendered
@@ -34,6 +43,11 @@ end
 
 When('I click on {string}') do |string_css|
   find(string_css).click
+end
+
+# Similar to the above, but uses the label instead of the CSS selector:
+When('I click on the {string} button') do |string_label|
+  click_button(string_label)
 end
 
 Then('an error message from the edit form is present') do

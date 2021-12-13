@@ -57,12 +57,6 @@ RSpec/FilePath:
     - 'spec/requests/users/google_oauth_request_spec.rb'
     - 'spec/strategies/solver/integration/user_lap_spec.rb'
 
-# Offense count: 3
-# Configuration parameters: AssignmentOnly.
-RSpec/InstanceVariable:
-  Exclude:
-    - 'spec/views/chrono/index.html.haml_spec.rb'
-
 # Offense count: 121
 RSpec/MultipleExpectations:
   Max: 5

@@ -225,55 +225,6 @@ class ChronoController < ApplicationController
   end
   # rubocop:enable Metrics/AbcSize
 
-  # Returns the last chosen Swimmer from the cookies or the default one besed on the current user.
-  def last_chosen_swimmer
-    return GogglesDb::Swimmer.find_by(id: cookies[:swimmer_id]) if cookies[:swimmer_id].to_i.positive?
-
-    if cookies[:swimmer_complete_name].present?
-      return GogglesDb::Swimmer.new(
-        complete_name: cookies[:swimmer_complete_name],
-        year_of_birth: cookies[:swimmer_year_of_birth],
-        gender_type_id: cookies[:gender_type_id]
-      )
-    end
-
-    current_user.swimmer
-  end
-
-  # Returns the last chosen SwimmingPool values restored from the cookies, or nil.
-  def last_chosen_swimming_pool
-    return nil unless cookies[:swimming_pool_id].to_i.positive? || cookies[:swimming_pool_name].present?
-
-    GogglesDb::SwimmingPool.find_by(id: cookies[:swimming_pool_id]) ||
-      GogglesDb::SwimmingPool.new(
-        name: cookies[:swimming_pool_name],
-        pool_type_id: cookies[:pool_type_id]
-      )
-  end
-
-  # Returns the last chosen Team values restored from the cookies or nil.
-  def last_chosen_team
-    return nil unless cookies[:team_id].to_i.positive? || cookies[:team_name].present? || cookies[:team_label].present?
-
-    GogglesDb::Team.find_by(id: cookies[:team_id]) ||
-      GogglesDb::Team.new(
-        name: cookies[:team_name] || cookies[:team_label],
-        editable_name: cookies[:team_name]
-      )
-  end
-
-  # Returns the last chosen City values restored from the cookies or nil.
-  def last_chosen_city
-    return nil unless cookies[:city_id].to_i.positive? || cookies[:city_name].present? || cookies[:city_label].present?
-
-    GogglesDb::City.find_by(id: cookies[:city_id]) ||
-      GogglesDb::City.new(
-        name: cookies[:city_name] || cookies[:city_label],
-        area: cookies[:city_area],
-        country_code: cookies[:city_country_code]
-      )
-  end
-
   # Returns the last recored timing data, minus the order (which is not used in the actual result).
   def overall_result_timing(laps_list)
     return {} if laps_list.blank?

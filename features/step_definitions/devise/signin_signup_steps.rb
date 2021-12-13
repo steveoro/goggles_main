@@ -105,6 +105,13 @@ Given('I am already signed-in and at the root page') do
   step('the user row is signed-in')
 end
 
+Given('I have an associated swimmer and have already signed-in') do
+  step('I have an associated swimmer on a confirmed account')
+  visit('/users/sign_in')
+  step('I fill the log-in form as the confirmed user')
+  step('the user row is signed-in')
+end
+
 # Assumes @current_user is still loaded and valid
 Then('the account is deleted') do
   expect(GogglesDb::User.exists?(id: @current_user.id)).to be false

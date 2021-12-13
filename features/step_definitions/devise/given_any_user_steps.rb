@@ -63,3 +63,16 @@ Given('I have an available matching swimmer for my user') do
     year_of_birth: @current_user.year_of_birth
   )
 end
+
+# Sets both @current_user & @matching_swimmer
+Given('I have an associated swimmer on a confirmed account') do
+  step('I have a confirmed account')
+  step('I have an available matching swimmer for my user')
+  @current_user.associate_to_swimmer!(@matching_swimmer)
+  @matching_swimmer.reload
+
+  expect(@current_user.confirmed_at).to be_present
+  expect(@current_user.current_sign_in_at).to be nil
+  expect(@current_user.swimmer_id).to eq(@matching_swimmer.id)
+  expect(@matching_swimmer.associated_user_id).to eq(@current_user.id)
+end
