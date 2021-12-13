@@ -43,16 +43,12 @@
           %small= t('chrono.index.no_data_notice')
 
     .container
-      %p
-        %small
-          %i= t('chrono.index.registration_notice')
-
-      .container.mt-4
+      .container.my-4
         .row-fluid.text-center
           = link_to(t('chrono.buttons.new_recording'), chrono_new_path, id: 'btn-new-chrono',
                     class: 'btn btn-primary', 'aria-label' => 'New recording', type: 'button')
-
-    %section.fixed-bottom#footer
-      = render(Footer::MainComponent.new)
+      %p.mb-4
+        %small
+          %i= t('chrono.index.registration_notice')
 
   .spacer-right

@@ -7,8 +7,7 @@ Feature: Compute FIN target score or target timing
   I want to select any kind of event, pool, gender and category types
   And I want to be able to compute its target value given either the resulting score or its timing
 
-  # [Steve, 20211206] commented out because currently *UNSTABLE*
-  #
+  # [Steve, 20211206] *UNSTABLE*/FLAKY
   # - sometimes the stub is detected, sometimes it is not
   # - see features/support/webmock.rb
   # - Using: WebMock 3.14, RestClient 2.1.0, Cucumber 7.0 & Rails 6.0.4
