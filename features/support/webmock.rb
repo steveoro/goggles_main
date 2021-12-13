@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 require 'webmock/cucumber'
-WebMock.disable_net_connect!(allow_localhost: true, net_http_connect_on_start: true)
-puts 'WebMock enabled.'
+WebMock.disable_net_connect!({
+                               allow_localhost: true,
+                               net_http_connect_on_start: true,
+                               allow: 'chromedriver.storage.googleapis.com'
+                             })
+
+puts '==> WebMock enabled <=='
 puts "\r\n[Steve] To prevent external connection errors by webdrivers updates run the dedicated update task periodically:"
 puts "\r\n> RAILS_ENV=test rails webdrivers:chromedriver:update"
 
