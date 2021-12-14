@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'goggles_db/version'
+
 class DropLegacyDataImportTables < ActiveRecord::Migration[6.0]
   def self.up
     drop_table :data_import_badges, if_exists: true
