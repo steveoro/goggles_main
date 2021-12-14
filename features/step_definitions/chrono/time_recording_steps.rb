@@ -47,5 +47,8 @@ When('I click on the timer save button accepting the confirmation request') do
 end
 
 When('I am redirected to the Chrono index page') do
+  sleep(1) && wait_for_ajax
+  # Wait for content to be rendered and then verify path:
+  find('#content', visible: true)
   expect(current_url).to include('/chrono/index')
 end
