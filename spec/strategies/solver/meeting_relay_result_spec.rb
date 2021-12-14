@@ -58,7 +58,7 @@ RSpec.describe Solver::MeetingRelayResult, type: :strategy do
 
       let(:fixture_row) do
         # Choose valid domain data only (TODO: data fix is required)
-        GogglesDb::MeetingRelayResult.where("relay_code != ''")
+        GogglesDb::MeetingRelayResult.where("(relay_code != '') AND (relay_code IS NOT NULL)")
                                      .where.not(team_affiliation_id: nil)
                                      .first(200).sample
       end
@@ -155,7 +155,7 @@ RSpec.describe Solver::MeetingRelayResult, type: :strategy do
 
       let(:fixture_row) do
         # Choose valid domain data only:
-        GogglesDb::MeetingRelayResult.where("relay_code != ''")
+        GogglesDb::MeetingRelayResult.where("(relay_code != '') AND (relay_code IS NOT NULL)")
                                      .first(200).sample
       end
       let(:fixture_req) { req.call(fixture_row) }
