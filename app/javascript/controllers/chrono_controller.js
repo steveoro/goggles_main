@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus'
+import { Controller } from '@hotwired/stimulus'
 import TimerElement from '../src/timer_element'
 import Backbone from 'backbone'
 import Backgrid from 'backgrid'

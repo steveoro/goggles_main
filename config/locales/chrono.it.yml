@@ -9,6 +9,16 @@ it:
       confirm_delete: "Vuoi davvero cancellare dalla coda questa registrazione di tempi? (La registrazione %{queue_label} andrà persa.)"
     new:
       title: 'Nuovo Chrono'
+      btn_next: 'Avanti'
+      btn_prev: 'Indietro'
+      step1: 'Meeting'
+      step2: 'Piscina'
+      step3: 'Evento'
+      step4: 'Atleta'
+      step5: 'Pronti?'
+      notice:
+        ready: 'Pronti per registrare!'
+        missing: 'Mancano alcuni campi obbligatori: per favore torna indietro a controllare.'
     rec:
       title: 'Chrono - Rec'
     selector:

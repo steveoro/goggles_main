@@ -3,64 +3,137 @@
 
   .main-content{ data: { controller: 'switch' } }
     .row-fluid#chrono-new-title
-      %h4.text-center.pb-3
+      %h3.text-center.pb-3
         %i.fa.fa-clock-o
         = t('chrono.new.title')
 
-    = form_tag(chrono_rec_path, id: 'frm-chrono-new', method: :post) do
-      .container.mb-2
-        = render(Switch::XorComponent.new(t('chrono.selector.meeting'), 'meeting',
-                 t('chrono.selector.workshop'), 'workshop', hidden_id: 'rec_type', class: 'round'))
+    .row-fluid
+      = form_tag(chrono_rec_path, id: 'frm-chrono-new', method: :post, onsubmit: 'event.preventDefault()',
+                 data: { controller: 'wizard-form chrono-new-summary', 'wizard-form-target' => 'form' }) do
+        .container
+          .row-fluid
+            .progressbar
+              .progress#progress{ data: { 'wizard-form-target' => 'progress' } }
+              .progress-step.progress-step-active{ 'data-icon': "\uf091", 'data-title': I18n.t('chrono.new.step1') }
+              .progress-step{ 'data-icon': "\uf041", 'data-title': I18n.t('chrono.new.step2') }
+              .progress-step{ 'data-icon': "\uf073", 'data-title': I18n.t('chrono.new.step3') }
+              .progress-step{ 'data-icon': "\uf2c1", 'data-title': I18n.t('chrono.new.step4') }
+              .progress-step{ 'data-icon': "\uf00c", 'data-title': I18n.t('chrono.new.step5') }
 
-      .container.mt-2
-        .row
-          = render(ComboBox::DbLookupComponent.new(nil, t('meetings.season'), 'season',
-                                                   required: true, values: season_options(@seasons)))
+        .step-forms.step-forms-active
+          .container.mb-2.group-inputs
+            = render(Switch::XorComponent.new(t('chrono.selector.meeting'), 'meeting',
+                    t('chrono.selector.workshop'), 'workshop', hidden_id: 'rec_type', class: 'round'))
 
-      .container.bg-light-green.pt-3.shadow-box#meeting{ data: { 'switch-target' => 'area1' } }
-        .row
-          = render(ComboBox::DbLookupComponent.new('meetings', t('chrono.selector.meeting'), 'meeting',
-                                                   free_text: true, use_2_api: true, values: meeting_options))
-      .container.bg-light-blue.pt-3.shadow-box.d-none#workshop{ data: { 'switch-target' => 'area2' } }
-        .row
-          = render(ComboBox::DbLookupComponent.new('user_workshops', t('chrono.selector.workshop'), 'user_workshop',
-                                                   free_text: true, use_2_api: true, values: workshop_options))
-      .container.my-2
-        .row
-          = render(ComboBox::DbSwimmingPoolComponent.new(t('meetings.dashboard.swimming_pool'),
-                                                         'swimming_pool', free_text: true, use_2_api: true,
-                                                         default_row: @last_chosen_swimming_pool))
-          = render(ComboBox::DbLookupComponent.new(nil, t('meetings.dashboard.pool_type'), 'pool_type',
-                                                   required: true, values: pool_type_options(@pool_types)))
-          = render(ComboBox::DbCityComponent.new(required: true, free_text: true, default_row: @last_chosen_city))
+          .container.mt-2.group-inputs
+            .row
+              = render(ComboBox::DbLookupComponent.new(nil, t('meetings.season'), 'season',
+                                                      required: true, values: season_options(@seasons)))
 
-      .container.bg-warning.pt-3.shadow-box
-        .row
-          .col-auto
-            .form-group
-              .field
-                = label_tag(:event_date, t('chrono.selector.event_date'))
-                = date_field_tag(:event_date, cookies[:event_date] || Time.zone.today, required: true,
-                                 autofocus: true, class: 'form-control')
+          .container.bg-light-green.pt-3.shadow-box#meeting{ data: { 'switch-target' => 'area1' } }
+            .row
+              = render(ComboBox::DbLookupComponent.new('meetings', t('chrono.selector.meeting'), 'meeting',
+                                                      free_text: true, use_2_api: true, values: meeting_options))
+          .container.bg-light-blue.pt-3.shadow-box.d-none#workshop{ data: { 'switch-target' => 'area2' } }
+            .row
+              = render(ComboBox::DbLookupComponent.new('user_workshops', t('chrono.selector.workshop'), 'user_workshop',
+                                                      free_text: true, use_2_api: true, values: workshop_options))
+          .container.my-4
+            .row
+              .offset-3.col-6
+                %button.btn.btn-outline-primary.btn-block.btn-next= I18n.t('chrono.new.btn_next')
 
-          = render(ComboBox::DbLookupComponent.new(nil, t('meetings.event'), 'event_type',
-                                                   required: true, values: event_type_options(@event_types)))
+        .step-forms
+          .container.my-2
+            .row
+              = render(ComboBox::DbSwimmingPoolComponent.new(t('meetings.dashboard.swimming_pool'),
+                                                            'swimming_pool', free_text: true, use_2_api: true,
+                                                            default_row: @last_chosen_swimming_pool))
+              = render(ComboBox::DbLookupComponent.new(nil, t('meetings.dashboard.pool_type'), 'pool_type',
+                                                      required: true, values: pool_type_options(@pool_types)))
+              = render(ComboBox::DbCityComponent.new(required: true, free_text: true, default_row: @last_chosen_city))
+          .container.my-4
+            .row
+              .col-6
+                %button.btn.btn-outline-primary.btn-block.btn-prev= I18n.t('chrono.new.btn_prev')
+              .col-6
+                %button.btn.btn-outline-primary.btn-block.btn-next= I18n.t('chrono.new.btn_next')
 
-      .container.mt-2
-        .row
-          -# TODO: use t('teams.team') for Meetings & t('chrono.selector.home_team') for Workshops
-          = render(ComboBox::DbLookupComponent.new('teams', t('teams.team'), 'team', required: true,
-                                                   free_text: true,
-                                                   values: team_options(@last_chosen_team, @last_chosen_swimmer)))
-          = render(ComboBox::DbSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer',
-                                                    free_text: true, default_row: @last_chosen_swimmer))
-          = render(ComboBox::DbLookupComponent.new(nil, t('meetings.category'), 'category_type',
-                                                   required: true, values: category_type_options(@category_types)))
+        .step-forms
+          .container.bg-warning.pt-3.shadow-box
+            .row
+              .col-auto
+                .form-group
+                  .field
+                    = label_tag(:event_date, t('chrono.selector.event_date'))
+                    = date_field_tag(:event_date, cookies[:event_date] || Time.zone.today, required: true,
+                                    autofocus: true, class: 'form-control')
 
-      .container.mt-2.mb-4
-        .row
-          .col-auto
-            = submit_tag(t('chrono.buttons.start_recording'), id: 'btn-rec-chrono', class: 'btn btn-primary',
-                         'aria-label' => 'Save', type: 'submit')
+              = render(ComboBox::DbLookupComponent.new(nil, t('meetings.event'), 'event_type',
+                                                      required: true, values: event_type_options(@event_types)))
+          .container.my-4
+            .row
+              .col-6
+                %button.btn.btn-outline-primary.btn-block.btn-prev= I18n.t('chrono.new.btn_prev')
+              .col-6
+                %button.btn.btn-outline-primary.btn-block.btn-next= I18n.t('chrono.new.btn_next')
+
+        .step-forms
+          .container.mt-2
+            .row
+              -# TODO: use t('teams.team') for Meetings & t('chrono.selector.home_team') for Workshops
+              = render(ComboBox::DbLookupComponent.new('teams', t('teams.team'), 'team', required: true,
+                                                      free_text: true,
+                                                      values: team_options(@last_chosen_team, @last_chosen_swimmer)))
+              = render(ComboBox::DbSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer',
+                                                        free_text: true, default_row: @last_chosen_swimmer))
+              = render(ComboBox::DbLookupComponent.new(nil, t('meetings.category'), 'category_type',
+                                                      required: true, values: category_type_options(@category_types)))
+          .container.my-4
+            .row
+              .col-6
+                %button.btn.btn-outline-primary.btn-block.btn-prev= I18n.t('chrono.new.btn_prev')
+              .col-6
+                %button.btn.btn-outline-primary.btn-block.btn-next{          |
+                  'data-action': 'click->chrono-new-summary#updateSummary' } |
+                  = I18n.t('chrono.new.btn_next')
+
+        .step-forms
+          .container.mt-2.pt-3.shadow-box
+            .row.justify-content-center
+              #required-ready
+                %h6.text-center
+                  %small
+                    %i.text-success.fa.fa-2x.fa-check-circle
+                  &nbsp;
+                  = I18n.t('chrono.new.notice.ready')
+                %br/
+              #required-missing
+                %h6.text-center
+                  %small
+                    %i.text-warning.fa.fa-2x.fa-exclamation-circle
+                  &nbsp;
+                  = I18n.t('chrono.new.notice.missing')
+                %br/
+            .row.pt-4
+              .col-auto
+                %dl.row#chrono-summary
+                  %dt.col-auto
+                    %b= label_tag(:summary_swimmer, '', data: { 'chrono-new-summary-target' => 'swimmer' })
+                  %dt.col-auto
+                    %small= label_tag(:summary_event, '', data: { 'chrono-new-summary-target' => 'event' })
+                  %dt.col-auto
+                    %small= label_tag(:summary_title, '', data: { 'chrono-new-summary-target' => 'title' })
+                  %dd.col-auto
+                    %small= label_tag(:summary_pool, '', data: { 'chrono-new-summary-target' => 'pool' })
+
+          .container.my-4
+            .row
+              .col-6
+                %button.btn.btn-outline-primary.btn-block.btn-prev= I18n.t('chrono.new.btn_prev')
+              .col-6
+                = submit_tag(t('chrono.buttons.start_recording'), id: 'btn-rec-chrono',
+                             class: 'btn btn-primary btn-block', data: { 'chrono-new-summary-target' => 'submit' },
+                             onclick: 'this.form.submit()', 'aria-label': 'Save', type: 'submit')
 
   .spacer-right

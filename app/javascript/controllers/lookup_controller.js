@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus'
+import { Controller } from '@hotwired/stimulus'
 import $ from 'jquery'
 
 require('select2')
@@ -469,8 +469,8 @@ export default class extends Controller {
    */
   setHiddenFieldsValue (baseName, mapData) {
     // DEBUG
-    console.log('setHiddenFieldsValue()')
-    console.log(mapData)
+    // console.log('setHiddenFieldsValue()')
+    // console.log(mapData)
 
     if (baseName && mapData) {
       /*
@@ -505,7 +505,7 @@ export default class extends Controller {
           // widget with pre-fixed list of options):
           if (document.querySelector(`${baseSelector}${key}`)) {
             // DEBUG
-            console.log(`Found DOM field for '${key}': [${baseSelector}${key}] <= ${value}`)
+            // console.log(`Found DOM field for '${key}': [${baseSelector}${key}] <= ${value}`)
             document.querySelector(`${baseSelector}${key}`).value = value
             /*
              * Trigger a sub-entity change for in-bound select2 widgets.

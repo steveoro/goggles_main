@@ -9,6 +9,16 @@ en:
       confirm_delete: "Do you really want to erase from the queue this time recording? (The recording ' %{queue_label}' will be lost.)"
     new:
       title: 'New Chrono'
+      btn_next: 'Next'
+      btn_prev: 'Previous'
+      step1: 'Meeting'
+      step2: 'Pool'
+      step3: 'Event'
+      step4: 'Swimmer'
+      step5: 'Ready?'
+      notice:
+        ready: 'Ready to record!'
+        missing: 'Some required fields are missing: please, go back to check.'
     rec:
       title: 'Chrono - Rec'
     selector:
