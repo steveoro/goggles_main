@@ -1,0 +1,26 @@
+.container.my-2.shadow-box
+  - unless @skip_notice
+    .row.pt-2.justify-content-center
+      #required-ready
+        %h6.text-center.mb-0
+          %small
+            %i.text-success.fa.fa-2x.fa-check-circle
+          &nbsp;
+          = I18n.t('chrono.new.notice.ready')
+      #required-missing
+        %h6.text-center.mb-0
+          %small
+            %i.text-warning.fa.fa-2x.fa-exclamation-circle
+          &nbsp;
+          = I18n.t('chrono.new.notice.missing')
+  .row.pt-2
+    .col-auto
+      %dl.row.mb-0#chrono-summary
+        %dt.col-auto
+          %b= label_tag(:summary_swimmer, @swimmer, class: 'mb-0', data: { 'chrono-new-summary-target' => 'swimmer' })
+        %dt.col-auto
+          %small= label_tag(:summary_event, @event, class: 'mb-0', data: { 'chrono-new-summary-target' => 'event' })
+        %dt.col-auto
+          %small= label_tag(:summary_title, @title, class: 'mb-0', data: { 'chrono-new-summary-target' => 'title' })
+        %dd.col-auto
+          %small= label_tag(:summary_pool, @pool, class: 'mb-0', data: { 'chrono-new-summary-target' => 'pool' })

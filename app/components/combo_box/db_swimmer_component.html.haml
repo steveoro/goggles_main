@@ -13,6 +13,7 @@
       = hidden_field_tag("#{@base_name}_last_name", @default_row&.last_name)
       = label_tag(@base_name, @label)
       %b.text-danger{ id: "#{@base_name}-presence" } *
+      %span.d-none{ id: "#{@base_name}-new" } 🆕
       %select.select2{ id: "#{@base_name}_select", autofocus: true, required: @required,
                        data: { 'lookup-target' => 'field' } }
         = preselected_option

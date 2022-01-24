@@ -25,7 +25,7 @@ When('I see that my associated swimmer is already set as subject') do
 end
 
 When('I type {string} as selection for the {string} pre-filled select field') do |manual_input_label, field_camelcase_name|
-  find("##{field_camelcase_name}_select").select(manual_input_label)
+  find("##{field_camelcase_name}_select", visible: true).select(manual_input_label)
 end
 
 # [Steve A.] This goes beyond simply reproducing user actions because most DbLookup components are based
@@ -36,13 +36,21 @@ When('I type {string} as selection for the {string} Select2 field') do |manual_i
   # Add programmatically a custom Option to the dropdown and pre-select it:
   execute_script("var currOption = new Option(\"#{manual_input_label}\", 0, true, true); $('##{field_camelcase_name}_select').append(currOption).trigger('change');")
   wait_for_ajax
-  # Open the dropdown
-  find("#select2-#{field_camelcase_name}_select-container").click
+  select2_search_box = '.select2-dropdown input.select2-search__field'
+  select2_search_field = "#select2-#{field_camelcase_name}_select-container"
+
+  # Open the dropdown with the Select2 search box:
+  find(select2_search_field).click
   wait_for_ajax
+
   # Select the custom Option:
-  find('.select2-dropdown input.select2-search__field').send_keys(manual_input_label, :enter)
+  expect(page).to have_css(select2_search_box)
+  find(select2_search_box).send_keys(manual_input_label, :enter)
+
   # Close the dropdown (will also clear the search input, but who cares given we're faking it anyway)
-  find("#select2-#{field_camelcase_name}_select-container").click
+  find(select2_search_field).click if page.has_css?(select2_search_box)
+  expect(page).not_to have_css(select2_search_box)
+
   # Fake the hidden input setup made by the component when the API call is successful:
   execute_script("$('##{field_camelcase_name}_label').val('#{manual_input_label}')")
   execute_script("$('##{field_camelcase_name}_id').val(0)")
@@ -62,22 +70,38 @@ When('I see that the current date is already set as the date of the event') do
 end
 
 When('I click on the go to chrono button') do
-  find('#btn-rec-chrono').click
+  # Fake button enabled state, normally validated by Stimulus JS controller (doesn't work here):
+  execute_script("$('#btn-rec-chrono').prop('disabled', false)")
+  wait_for_ajax
+  find('#btn-rec-chrono', visible: true).click
 end
 
 When('I am redirected to the Chrono recording page') do
   expect(current_url).to include('/chrono/rec')
 end
 
-When('I see that the chosen swimmer is shown in the chrono header') do
-  expect(find('#rec-header').text).to include(@current_user.swimmer.complete_name)
+When('I see that the chosen swimmer is shown in the chrono summary') do
+  expect(find('#chrono-summary').text).to include(@current_user.swimmer.complete_name)
     .and include(@current_user.swimmer.year_of_birth.to_s)
 end
 
-When('I see that the current date is shown in the chrono header') do
-  expect(find('#rec-header').text).to include(Time.zone.today.to_s)
+When('I see that the current date is shown in the chrono summary') do
+  expect(find('#chrono-summary').text).to include(Time.zone.today.to_s)
 end
 
-When('I see that {string} is included in the chrono header') do |manual_input_label|
-  expect(find('#rec-header').text).to include(manual_input_label)
+When('I see that {string} is included in the chrono summary') do |manual_input_label|
+  expect(find('#chrono-summary').text).to include(manual_input_label)
+end
+
+When('I click on the {string} button at the end of form step {string}') do |btn_type, step_name|
+  btn = find(".step-forms#step-#{step_name} button.btn.btn-#{btn_type}")
+  expect(btn).to be_visible
+  btn.click
+  sleep(1)
+end
+
+Then('I see that form step {string} is displayed') do |step_name|
+  step_node = find(".step-forms#step-#{step_name}") # auto-wait for the node to be rendered
+  expect(step_node).to be_present
+  find(".step-forms#step-#{step_name}", visible: true)
 end

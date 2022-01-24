@@ -17,17 +17,23 @@ RSpec.describe 'chrono/new.html.haml', type: :view do
       render
     end
 
-    it 'includes the reference to the StimulusJS SwitchController' do
+    it 'includes the reference to the Stimulus Switch controller' do
       expect(subject.css('.main-content').attr('data-controller')).to be_present
       expect(subject.css('.main-content').attr('data-controller').value).to eq('switch')
     end
 
     it 'includes the title' do
-      expect(subject.css('.main-content #chrono-new-title h4').text).to include(I18n.t('chrono.new.title'))
+      expect(subject.css('.main-content #chrono-new-title h3').text).to include(I18n.t('chrono.new.title'))
     end
 
     it 'includes the main form for the parameter selection' do
       expect(subject.css('.main-content #frm-chrono-new')).to be_present
+    end
+
+    it 'includes the reference to the Stimulus controllers WizardForm & ChronoNewSummary' do
+      expect(subject.css('#frm-chrono-new').attr('data-controller')).to be_present
+      expect(subject.css('#frm-chrono-new').attr('data-controller').value).to include('wizard-form')
+        .and include('chrono-new-summary')
     end
 
     it 'renders the XOR switch component' do
@@ -40,48 +46,54 @@ RSpec.describe 'chrono/new.html.haml', type: :view do
         .to eq('hidden')
     end
 
-    it 'renders the Season select component' do
+    it 'includes the Season select component' do
       expect(subject.css('#frm-chrono-new #season_select')).to be_present
     end
 
-    it 'renders the Meeting select component' do
+    it 'includes the Meeting select component' do
       expect(subject.css('#frm-chrono-new #meeting_select')).to be_present
     end
 
-    it 'renders the UserWorkshop select component' do
+    it 'includes the UserWorkshop select component' do
       expect(subject.css('#frm-chrono-new #user_workshop_select')).to be_present
     end
 
-    it 'renders the SwimmingPool select component' do
+    it 'includes the SwimmingPool select component' do
       expect(subject.css('#frm-chrono-new #swimming_pool_select')).to be_present
     end
 
-    it 'renders the PoolType select component' do
+    it 'includes the PoolType select component' do
       expect(subject.css('#frm-chrono-new #pool_type_select')).to be_present
     end
 
-    it 'renders the Event date imput field' do
+    it 'includes the Event date imput field' do
       expect(subject.css('#frm-chrono-new input#event_date')).to be_present
     end
 
-    it 'renders the EventType select component' do
+    it 'includes the EventType select component' do
       expect(subject.css('#frm-chrono-new #event_type_select')).to be_present
     end
 
-    it 'renders the Team select component' do
+    it 'includes the Team select component' do
       expect(subject.css('#frm-chrono-new #team_select')).to be_present
     end
 
-    it 'renders the Swimmer select component' do
+    it 'includes the Swimmer select component' do
       expect(subject.css('#frm-chrono-new #swimmer_select')).to be_present
     end
 
-    it 'renders the CategoryType Select component' do
+    it 'includes the CategoryType Select component' do
       expect(subject.css('#frm-chrono-new #category_type_select')).to be_present
     end
 
-    it 'renders the submit button' do
+    it 'includes the Chrono summary' do
+      expect(subject.css('#frm-chrono-new #chrono-summary')).to be_present
+    end
+
+    it 'includes the submit button and sets it as target for the summary validation' do
       expect(subject.css('#frm-chrono-new .btn#btn-rec-chrono')).to be_present
+      expect(subject.css('#btn-rec-chrono').attr('data-chrono-new-summary-target')).to be_present
+      expect(subject.css('#btn-rec-chrono').attr('data-chrono-new-summary-target').value).to eq('submit')
     end
   end
 end

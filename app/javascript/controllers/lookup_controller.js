@@ -448,6 +448,23 @@ export default class extends Controller {
       }
     }
   }
+
+  /**
+   * Sets the visibility of the span text identified by '#<BASE_NAME>-new'.
+   * @param {String}  baseName base name for the presence indicator.
+   * @param {boolean} visible true/false to toggle the 'd-none' CSS class.
+   */
+  newLedUpdate(baseName, visible) {
+    // DEBUG
+    // console.log(`newLedUpdate('${baseName}', ${visible})`)
+    if (document.querySelector(`#${baseName}-new`)) {
+      if (visible) {
+        $(`#${baseName}-new`).removeClass('d-none')
+      } else {
+        $(`#${baseName}-new`).addClass('d-none')
+      }
+    }
+  }
   // ---------------------------------------------------------------------------
 
   /**
@@ -474,11 +491,13 @@ export default class extends Controller {
 
     if (baseName && mapData) {
       /*
-       * Free-input text case handling:
+       * Free-input text case handling => Input field value is "NEW" or unmatched in database
        * Clear the ID field if it's equal to the label.
        */
       if (mapData.get('id') === mapData.get('label')) {
         mapData.set('id', 0)
+        this.newLedUpdate(baseName, true)
+
         // Peculiar cases:
         // 1. SwimmingPool: clear pre-existing values set by cookies when we're setting new records
         if (baseName.startsWith('swimming_pool') && mapData.get('label')) {
@@ -491,6 +510,9 @@ export default class extends Controller {
         if (baseName.startsWith('swimmer') && mapData.get('label') && document.querySelector(`#${baseName}_complete_name`)) {
           document.querySelector(`#${baseName}_complete_name`).value = mapData.get('label')
         }
+      }
+      else {
+        this.newLedUpdate(baseName, false) // Hide the "new" led/flag if there's a result match
       }
 
       // "Status led" update for the main data input:

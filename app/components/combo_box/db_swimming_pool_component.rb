@@ -3,7 +3,7 @@
 #
 # = ComboBox components module
 #
-#   - version:  7.02
+#   - version:  7.3.40
 #   - author:   Steve A.
 #
 module ComboBox
@@ -31,9 +31,12 @@ module ComboBox
     #   - '<BASE_NAME>'        => ('meeting') Select2 widget name
     #   - '<BASE_NAME>_select' => ('meeting_select') Select2 widget DOM ID
     #
-    #   'base_name' is also used for "#{@base_name}-presence", the DOM node that acts
-    #   as a flag for the hidden fields value presence. Visibility of this "flag" is managed by
-    #   the StimulusJS LookupController.
+    #   'base_name' is also used for:
+    #   - "#{@base_name}-presence", the DOM node that acts as a flag for the hidden fields value presence.
+    #     Visibility of this "flag" is managed by the associated StimulusJS LookupController.
+    #
+    #   - "#{@base_name}-new", the DOM node that acts as a "new" icon in case the db-lookup request doesn't find
+    #     any match; managed (as above) by the associated Stimulus controller.
     #
     #
     # == Supported options & defaults:

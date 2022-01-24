@@ -1,0 +1,5 @@
+.progressbar
+  .progress#progress{ data: { 'wizard-form-target' => 'progress' } }
+  .progress-step.progress-step-active{ 'data-icon': @icons.first, 'data-title': @titles.first }
+  - @titles[1..].each_with_index do |title, index|
+    .progress-step{ 'data-icon': @icons[index + 1], 'data-title': title }

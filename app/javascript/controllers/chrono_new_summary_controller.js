@@ -72,13 +72,12 @@ export default class extends Controller {
    * Sets the event handlers for the associated wizard-form and all the
    * other customized display details.
    */
-  setUp() {
+  setUp () {
     // DEBUG
     // console.log('Setting-up chrono-new-summary...')
     if (!this.hasTitleTarget || !this.hasEventTarget || !this.hasPoolTarget ||
         !this.hasSwimmerTarget || !this.hasSubmitTarget) {
       console.warn('Required target(s) for wizard-form missing: skipping setup.')
-      return
     }
   }
   // ---------------------------------------------------------------------------
@@ -87,9 +86,9 @@ export default class extends Controller {
    * Updates the summary and enables or disables the submit action.
    * @param {Object} event the event from the call.
    */
-  updateSummary(_event) {
+  updateSummary (_event) {
     // DEBUG
-    console.log('updateSummary()')
+    // console.log('updateSummary()')
 
     const meetingLabel = this.getMeetingLabel()
     const eventTypeLabel = document.getElementById('event_type_label') ? document.getElementById('event_type_label').value : ''
@@ -107,8 +106,7 @@ export default class extends Controller {
       this.submitTarget.disabled = false
       document.getElementById('required-ready').classList.remove('d-none')
       document.getElementById('required-missing').classList.add('d-none')
-    }
-    else {
+    } else {
       this.submitTarget.disabled = true
       document.getElementById('required-ready').classList.add('d-none')
       document.getElementById('required-missing').classList.remove('d-none')
@@ -120,11 +118,10 @@ export default class extends Controller {
   /**
    * @returns the String description for the Meeting or Workshop, depending on the switch value.
    */
-  getMeetingLabel() {
+  getMeetingLabel () {
     if (document.getElementById('rec_type').value === '1') {
       return document.getElementById('meeting_label').value
-    }
-    else {
+    } else {
       return document.getElementById('user_workshop_label').value
     }
   }

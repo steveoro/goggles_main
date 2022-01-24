@@ -20,17 +20,21 @@ import { Controller } from '@hotwired/stimulus'
  *                 into several 'form steps', with a single submit action at the end.
  *
  * @param {String} 'data-wizard-form-target': 'progress'
- *                 identifies the associated progress bar.
+ *                 identifies the associated progress bar;
+ *                 doesn't need to be set when using the WizardForm::ProgressBarComponent.
+ *                 (@see 'app/components/wizard_form/progress_bar_component.rb')
  *
  *
  * == Reserved CSS classes ==
+ * Actions are automatically triggered by using the following CSS classes:
+ *
  * - '.progress-step'         => defined on each progress bar step
  * - '.progress-step-active'  => active progress steps only
  * - '.progress-step-check'   => checked progress steps only
  * - '.step-forms'            => defined on each step form
  * - '.step-forms-active'     => active step forms only
- * - '.btn-next'              => defined on each  "next" button
- * - '.btn-prev'              => defined on each  "previous" button
+ * - '.btn-next'              => defined on each "next" button
+ * - '.btn-prev'              => defined on each "previous" button
  *
  *
  * == Values ==
@@ -56,7 +60,7 @@ export default class extends Controller {
    * Sets the event handlers for the associated wizard-form and all the
    * other customized display details.
    */
-  setUp() {
+  setUp () {
     // DEBUG
     // console.log('Setting-up wizard-form...')
     if (!this.hasFormTarget || !this.hasProgressTarget) {
@@ -70,15 +74,15 @@ export default class extends Controller {
       btn.addEventListener('click', () => {
         progressCounter = this.handleBtnProgress(progressCounter, 1)
         return false
-      });
-    });
+      })
+    })
 
     document.querySelectorAll('.btn-prev').forEach((btn) => {
       btn.addEventListener('click', () => {
         progressCounter = this.handleBtnProgress(progressCounter, -1)
         return false
-      });
-    });
+      })
+    })
   }
   // ---------------------------------------------------------------------------
 
@@ -88,7 +92,7 @@ export default class extends Controller {
    * @param {Number} direction the direction for the step value change.
    * @returns the updated progress counter.
    */
-  handleBtnProgress(progressCounter, direction) {
+  handleBtnProgress (progressCounter, direction) {
     // DEBUG
     // console.log(`handleBtnNext(${progressCounter})`)
     progressCounter = progressCounter + direction
@@ -103,7 +107,7 @@ export default class extends Controller {
    * depending on the current progress counter.
    * @param {Number} progressCounter the current step counter.
    */
-  updateFormSteps(progressCounter) {
+  updateFormSteps (progressCounter) {
     const formSteps = document.querySelectorAll('.step-forms')
 
     formSteps.forEach((formStep) => {
@@ -120,15 +124,14 @@ export default class extends Controller {
    * depending on the current progress counter.
    * @param {Number} progressCounter the current step counter.
    */
-  updateProgressBar(progressCounter) {
+  updateProgressBar (progressCounter) {
     const progress = this.progressTarget
     const progressSteps = document.querySelectorAll('.progress-step')
 
     progressSteps.forEach((progressStep, idx) => {
       if (idx < progressCounter + 1) {
         progressStep.classList.add('progress-step-active')
-      }
-      else {
+      } else {
         progressStep.classList.remove('progress-step-active')
       }
     })
@@ -136,30 +139,13 @@ export default class extends Controller {
     progressSteps.forEach((progressStep, idx) => {
       if (idx < progressCounter) {
         progressStep.classList.add('progress-step-check')
-      }
-      else {
+      } else {
         progressStep.classList.remove('progress-step-check')
       }
     })
 
     const progressActive = document.querySelectorAll('.progress-step-active')
     progress.style.width = ((progressActive.length - 1) / (progressSteps.length - 1)) * 100 + '%'
-  }
-  // ---------------------------------------------------------------------------
-
-  /*
-  TODO:
-  => Make a separate controller for last 'next' button, handling the summary fill-in, specific
-     for this for usage of the wizard. Leave this controller as generic as possible.
-  */
-
-  /**
-   * @returns the String description for the Meeting/Workshop, depending on the switch value.
-   */
-  getMeetingLabel() {
-    if (this.hasDescriptionTarget && this.hasFirstTarget && this.hasLastTarget) {
-      this.descriptionTarget.value.value = `${this.firstTarget.value} ${this.lastTarget.value}`
-    }
   }
   // ---------------------------------------------------------------------------
 }

@@ -12,18 +12,27 @@ Feature: Chrono time recording setup
     When I click on the new recording button
     Then I am redirected to the Chrono setup page
     When I select 'workshop' as the event container type
-    And I see that my associated swimmer is already set as subject
-    When I type 'MASTER CSI 2021' as selection for the 'season' pre-filled select field
+    And I type 'MASTER CSI 2021' as selection for the 'season' pre-filled select field
     And I type '2° Trial CSI RE' as selection for the 'user_workshop' Select2 field
-    And I type 'Comunale Ferretti' as selection for the 'swimming_pool' Select2 field
+    Then I click on the 'next' button at the end of form step '1'
+    And I see that form step '2' is displayed
+    When I type 'Comunale Ferretti' as selection for the 'swimming_pool' Select2 field
     And I type '25 M' as selection for the 'pool_type' pre-filled select field
     And I type 'Reggio Emilia' as selection for the 'city' Select2 field
     And I type 'Reggio Emilia' as free input for the 'city_area' field
     And I see that 'IT' is already set as 'city_country_code' field
-    And I see that the current date is already set as the date of the event
+    Then I click on the 'next' button at the end of form step '2'
+    And I see that form step '3' is displayed
+    When I see that the current date is already set as the date of the event
     And I type '100 DO' as selection for the 'event_type' Select2 field
+    Then I click on the 'next' button at the end of form step '3'
+    And I see that form step '4' is displayed
+    When I see that my associated swimmer is already set as subject
     And I type 'CSI Ober Ferrari' as selection for the 'team' Select2 field
     And I type 'M35' as selection for the 'category_type' Select2 field
+    Then I click on the 'next' button at the end of form step '4'
+    And I see that form step '5' is displayed
+    When I see that the chosen swimmer is shown in the chrono summary
     And I click on the go to chrono button
     Then I am redirected to the Chrono recording page
 

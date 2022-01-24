@@ -9,15 +9,9 @@
         %i.fa.fa-clock-o
         = t('chrono.rec.title')
 
-    %dl.row#rec-header
-      %dt.col-auto
-        %b= label_tag(:swimmer, @adapter&.chrono_swimmer_label)
-      %dt.col-auto
-        %small= label_tag(:event, @adapter&.chrono_event_label)
-      %dt.col-auto
-        %small= label_tag(:title, @adapter&.chrono_event_container_label)
-      %dd.col-auto
-        %small= label_tag(:pool, @adapter&.chrono_swimming_pool_label)
+    = render(WizardForm::ChronoSummaryComponent.new(swimmer: @adapter&.chrono_swimmer_label,
+             event: @adapter&.chrono_event_label, title: @adapter&.chrono_event_container_label,
+             pool: @adapter&.chrono_swimming_pool_label, skip_notice: true))
 
     .row-fluid
       #timer-container

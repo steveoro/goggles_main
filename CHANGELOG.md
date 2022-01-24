@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.3.40** [Steve A.] updated Stimulus to v3; added wizard-form for /chrono/new with overall summary & crude validation; added "new" flag icon to DbLookupComponents
 - **0.3.39** [Steve A.] re-synch w/ DB structure 1.95.3; added /fin_score compute feature; additional specs for all /chrono endpoints
 - **0.3.29** [Steve A.] upgrade to Rails 6.0.4.1 due to security fixes
 - **0.3.20** [Steve A.] re-synch w/ DB structure 1.92.3 (data clean-up)

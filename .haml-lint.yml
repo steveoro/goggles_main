@@ -6,6 +6,7 @@ linters:
     max: 120
     exclude:
       - 'app/views/devise/registrations/edit.html.haml'
+      - 'app/views/chrono/new.html.haml'
 
   IdNames:
     exclude:
@@ -14,6 +15,7 @@ linters:
   ViewLength:
     exclude:
       - 'app/views/goggles/_inline_mailer_styles.html.haml'
+      - 'app/views/chrono/new.html.haml'
 
   RuboCop:
     exclude:

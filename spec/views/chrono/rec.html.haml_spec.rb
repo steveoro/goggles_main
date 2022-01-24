@@ -18,8 +18,8 @@ RSpec.describe 'chrono/rec.html.haml', type: :view do
       expect(subject.css('.main-content #chrono-rec-title h4').text).to include(I18n.t('chrono.rec.title'))
     end
 
-    it 'includes the header' do
-      expect(subject.css('.main-content #rec-header')).to be_present
+    it 'includes the header summary' do
+      expect(subject.css('.main-content #chrono-summary')).to be_present
     end
 
     it 'includes the timer with its reference to the ChronoController' do
