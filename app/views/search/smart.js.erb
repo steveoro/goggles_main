@@ -8,8 +8,8 @@ document.querySelector('#flash-messages-container').innerHTML = "<%=
 %>";
 
 // Show & auto-hide all alerts & modals after a while:
-$('.alert').alert().fadeTo(500, 1).delay(2500).slideUp(250, function () {
-  $('.alert').alert('close')
+$('.flash-alert.alert').alert().fadeTo(500, 1).delay(2500).slideUp(250, function () {
+  $('.flash-alert.alert').alert('close')
 })
 $('[data-toggle="modal"]').modal().delay(2000).slideUp(250, function () {
   $('[data-toggle="modal"]')

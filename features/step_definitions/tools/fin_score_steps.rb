@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+When('I am at the FIN score & time calculator page') do
+  expect(page).to have_current_path(tools_fin_score_path, ignore_query: true)
+end
+
 When('I select {string}, {string}, {string} and {string} as FIN score parameters') do |event_type, pool_type, category_type, gender_type|
   # Select the Select2 widget value & then set also its corresponding hidden field (non-interactable by Selenium)
   find('#event_type_select').select(event_type)

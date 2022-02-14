@@ -297,6 +297,42 @@ end
 # - subject
 # REQUIRES/ASSUMES:
 # - 'fixture_req': scoped request for the target entity, must be already set
+# - 'target_name': un-namespaced target entity name (i.e.: 'GenderType', without 'GogglesDb::')
+# - 'exp_entity': expected #entity.class
+# - 'default_id_value': default ID value for the target entity in case the solver is unsolvable
+shared_examples_for 'Solver strategy, NO bindings, UNSOLVABLE req but with DEFAULT VALUE, after #solve!' do |target_name, exp_entity, default_id_value|
+  subject do
+    solver = Solver::Factory.for(target_name, fixture_req, default_id_value)
+    solver.solve!
+    solver
+  end
+
+  it_behaves_like('unsolved or solved Solver strategy (NO bindings)')
+  it_behaves_like('solved Solver strategy (#solved? & #entity)', exp_entity)
+
+  describe '#error_messages' do
+    it 'is empty' do
+      expect(subject.error_messages).to be_empty
+    end
+  end
+
+  describe '#solve_issues' do
+    it 'is an empty Hash' do
+      expect(subject.solve_issues).to be_an(Hash).and be_empty
+    end
+  end
+
+  describe '#entity' do
+    it 'has the expected ID' do
+      expect(subject.entity.id).to eq(default_id_value)
+    end
+  end
+end
+
+# REDEFINES:
+# - subject
+# REQUIRES/ASSUMES:
+# - 'fixture_req': scoped request for the target entity, must be already set
 # - 'expected_id': expected #entity.id, must be already set; use +nil+ or +false+ to disable the check if the ID is unknown
 # - 'target_name': un-namespaced target entity name (i.e.: 'GenderType', without 'GogglesDb::')
 # - 'exp_entity': expected #entity.class
@@ -323,7 +359,7 @@ shared_examples_for 'Solver strategy, NO bindings, solvable req, after #solve!' 
   end
 
   describe '#entity' do
-    it 'has expected ID' do
+    it 'has the expected ID' do
       expect(subject.entity.id).to eq(expected_id) if expected_id
     end
   end

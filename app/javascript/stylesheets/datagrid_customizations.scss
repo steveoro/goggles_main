@@ -1,0 +1,33 @@
+/**
+      === DATAGRID customizations ===
+*/
+th.ordered, td.ordered {
+    background-color: #cebca630;
+}
+
+th.ordered.asc a.asc {
+    font-weight: bold;
+    color: #eab000;
+}
+
+th.ordered.desc a.desc {
+    font-weight: bold;
+    color: #eab000;
+}
+
+.table thead tr th {
+    font-size: 0.8rem;
+    font-weight: normal;
+}
+
+#data-grid .datagrid-actions {
+  padding: 0px;
+  text-align: center !important;
+}
+
+#data-grid td.team_name, #data-grid td.meeting_date {
+  font-size: 0.75rem;
+}
+#data-grid td.meeting_name {
+  font-size: 0.90rem;
+}

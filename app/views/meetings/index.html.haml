@@ -1,0 +1,31 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content#top-of-page
+    %section#my-past-meetings-title
+      %h4.text-center= t('home.my.past_title')
+      .text-center#back-to-dashboard
+        = link_to(@swimmer.decorate.display_label, home_dashboard_path)
+        %sup
+          %i.fa.fa-info-circle{ onclick: "$(this).tooltip('toggle')",
+                                data: 'tooltip', title: t('home.my.go_to_dashboard_tooltip') }
+    %section.container#data-grid
+      = datagrid_form_for(@grid, method: :get, url: meetings_path)
+
+      .row.my-2
+        .col-auto
+          #filter-show-btn= render(Grid::FilterShowButtonComponent.new)
+        .col
+          #pagination-top= paginate(@grid.assets)
+        .col-auto
+          %small
+            = t('datagrid.total')
+            = page_entries_info(@grid.assets, entry_name: t('datagrid.rows'))
+
+      = datagrid_table(@grid, html: { class: 'table table-hover table-sm' })
+      #pagination-bottom= paginate(@grid.assets)
+
+    %section.text-center.fixed-bottom#footer
+      &nbsp;
+
+  .spacer-right

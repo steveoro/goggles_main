@@ -36,3 +36,13 @@ Then('a flash alert is shown about the empty results') do
   flash_content = find('.flash-body')
   expect(flash_content.text).to eq(I18n.t('search_view.no_results'))
 end
+
+Then('I click on the first {string} result to browse to its detail page') do |model_downcase_name|
+  results_node = find("##{model_downcase_name.gsub('_', '-')}-results")
+  expect(results_node.text).not_to be_empty
+  within(results_node) do
+    find('table tbody tr td a', visible: true).click
+  end
+  wait_for_ajax(5) && sleep(1)
+  find('.main-content#top-of-page', visible: true)
+end

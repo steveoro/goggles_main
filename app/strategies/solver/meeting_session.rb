@@ -8,7 +8,7 @@ module Solver
   #
   # = MeetingSession solver strategy object
   #
-  #   - version:  7.3.07
+  #   - version:  7-0.3.41
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::MeetingSession.
@@ -77,9 +77,14 @@ module Solver
         scheduled_date: value_from_req(key: 'scheduled_date', nested: 'meeting_session', sub_key: 'scheduled_date'),
         description: value_from_req(key: 'meeting_session_description', nested: 'meeting_session', sub_key: 'description') ||
                      "#{I18n.t('activerecord.models.goggles_db/meeting_session')} #{Time.zone.today}",
+
         # Truly optional fields:
         swimming_pool_id: Solver::Factory.for('SwimmingPool', root_key?('swimming_pool') ? req : req['meeting_session']),
-        day_part_type_id: Solver::Factory.for('DayPartType', root_key?('day_part_type') ? req : req['meeting_session'])
+        day_part_type_id: Solver::Factory.for(
+          'DayPartType',
+          root_key?('day_part_type') ? req : req['meeting_session'],
+          Time.zone.now.hour <= 12 ? GogglesDb::DayPartType::MORNING_ID : GogglesDb::DayPartType::AFTERNOON_ID
+        )
       }
     end
 

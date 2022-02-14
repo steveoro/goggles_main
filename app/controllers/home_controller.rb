@@ -7,7 +7,7 @@ require 'version'
 # Main landing actions.
 #
 class HomeController < ApplicationController
-  before_action :authenticate_user!, only: %i[contact_us]
+  before_action :authenticate_user!, only: %i[contact_us dashboard]
 
   # [GET] Main landing page default action.
   # Includes the "smart" search box.
@@ -28,6 +28,15 @@ class HomeController < ApplicationController
     enqueue_contact_message
     flash[:info] = I18n.t('contact_us.message_sent')
     redirect_to root_path and return
+  end
+
+  # [GET] Current users's '#dashboard' page.
+  # Requires authentication.
+  def dashboard
+    @swimmer = current_user.swimmer # (can be nil)
+    # Can we show the management buttons?
+    # (Further affiliation filtering will happen after the user selects the reservations actions)
+    @current_user_is_manager = GogglesDb::ManagedAffiliation.exists?(user_id: current_user.id)
   end
 
   private

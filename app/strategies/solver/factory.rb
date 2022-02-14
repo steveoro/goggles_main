@@ -10,7 +10,7 @@ module Solver
   #
   # = Solver singleton factory
   #
-  #   - version:  7.02.18
+  #   - version:  7-0.3.41
   #   - author:   Steve A.
   #
   # Allows to create strategy objects for solving ("creating") new required
@@ -31,21 +31,32 @@ module Solver
     # instance can be safely validated & saved.
     #
     # == Params:
+    # - target_entity_name: simplified string name of the model class to be solved (without any namespace).
     # - req: Hash of request attributes typically parsed from the JSON request data stored
     #        in an ImportQueue row
+    # - default: possible default value used only in case the solver strategy resolves to nil (defaults to +nil+)
     #
-    # === Notes:
+    # === Support notes:
+    # No update, no deletion, only retrieval & creation.
+    #
     # Quite implicitly, "solving" ImportQueues is all about finding or creating ("importing")
-    # new objects; definitely, not *deleting* them.
+    # new objects; definitely, not *deleting* or *updating* them.
     #
-    # In case an ImportQueue resolves to an already existing object, editing it is currently
-    # considered a *conflict* and needs a manual resolution.
-    # (There should be an Admin app front-end to manage this kind of issues.)
-    # In a few cases, the conflict can be resolved automatically by giving priority to
-    # the object that has similar data but with more solved bindings in it. (TODO)
+    # In other words, depending on the implementation of each finder (tipically, a WHERE clause of some kind),
+    # the solver may return a row having the same required base bindings but slightly different values from
+    # all the other (unrequired) request attributes.
+    #
+    # In a few cases, the finder may yield a +nil+ to issue a conflict that can then be manually resolved
+    # by using the Admin2 front-end or even be resolved automatically by giving priority to the object that
+    # has similar data but with more solved bindings in it.
+    # (In the #init_bindings implementation, using root_key?(<BINDING_NAME>) may be useful to determine if
+    # the request has data at the root level or in a nested hash.)
+    #
+    # In some specific cases (currently only for Lookup entities), the solver may return directly the default
+    # value specified (as +default+ param) in case the finder strategy yields nothing.
     #
     # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
-    def self.for(target_entity_name, req)
+    def self.for(target_entity_name, req, default = nil)
       case target_entity_name
       when 'Badge'
         Badge.new(req: req)
@@ -60,7 +71,7 @@ module Solver
            'EditionType', 'EntryTimeType', 'EventType', 'GenderType',
            'HeatType',
            'PoolType', 'SeasonType', 'StrokeType', 'TimingType'
-        LookupEntity.new(req: req, target_name: target_entity_name)
+        LookupEntity.new(req: req, target_name: target_entity_name, default: default)
 
       when 'MeetingEvent'
         MeetingEvent.new(req: req)

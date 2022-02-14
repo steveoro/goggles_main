@@ -1,5 +1,7 @@
 it:
   teams:
+    errors:
+      no_team: Devi selezionare una squadra partendo o dai risultati ricerca o seguendo il link sul nome squadra.
     team: Squadra
     teams: Squadre
     city: "Città"
@@ -7,3 +9,12 @@ it:
     dashboard:
       title: Squadra
       subtitle: Radiografia
+      current_swimmers: Nuotatori correnti
+      all_meetings: Tutti i meeting
+      all_workshops: Tutti i collegiali
+      season: Stagione
+    swimmer_list:
+      note: L'elenco dei nuotatori raccoglie tutti gli ultimi tesseramenti trovati per ciascun tipo diverso di campionato disponibile.
+      latest_memberships: Ultimi tesseramenti
+      latest_memberships_note: Gli ultimi tesseramenti sono riferiti esclusivamente alla squadra selezionata (%{team_name}).
+      current: attuale

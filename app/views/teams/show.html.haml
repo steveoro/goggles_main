@@ -1,54 +1,69 @@
-- team = TeamDecorator.decorate(@team)
 .wrapper-body
   .spacer-left
 
-  .main-content
-    #team-show-title
+  .main-content#top-of-page
+    %section#team-show-title
       %h4.text-center.pb-3
-        %i.fa.fa-map-marker
+        %i.fa.fa-group
         = t('teams.dashboard.title')
         &nbsp;
         %small
           %i.text-muted= t('teams.dashboard.subtitle')
-    #team-show-details
+
+    %section.container#team-show-details
       %table.table.table-striped.table-sm
         %thead
           %tr
-            %td{ scope: 'row', class: 'bg-info text-light' }
+            %td{ scope: 'row', class: 'bg-success text-light' }
               = t('activerecord.attributes.goggles_db/team.name')
             %td{ id: 'full-name' }
-              %b= team.editable_name || team.name
+              %b= @team.editable_name || @team.name
         %tbody
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.address')
             %td{ id: 'address' }
-              = [team.address.to_s, team&.city&.name.to_s].compact.join(', ')
+              = [@team.address.to_s, @team&.city&.name.to_s].compact.join(', ')
           %tr
             %th{ scope: 'row' }
               = t('activerecord.attributes.goggles_db/team.home_page_url')
             %td{ id: 'homepage' }
-              = team.home_page_url
-          %tr
-            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.contact_name')
-            %td{ id: 'contact-name' }
-              = team.contact_name
-          %tr
-            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.phone_mobile')
-            %td{ id: 'phone-mobile' }
-              = team.phone_mobile
-          %tr
-            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.phone_number')
-            %td{ id: 'phone-number' }
-              = team.phone_number
-          %tr
-            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.fax_number')
-            %td{ id: 'fax-number' }
-              = team.fax_number
-          %tr
-            %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.e_mail')
-            %td{ id: 'e-mail' }
-              = team.e_mail
+              = @team.home_page_url
+          - if current_user && GogglesDb::GrantChecker.crud?(current_user, 'Team')
+            %tr
+              %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.contact_name')
+              %td{ id: 'contact-name' }
+                = @team.contact_name
+            %tr
+              %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.phone_mobile')
+              %td{ id: 'phone-mobile' }
+                = @team.phone_mobile
+            %tr
+              %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.phone_number')
+              %td{ id: 'phone-number' }
+                = @team.phone_number
+            %tr
+              %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.fax_number')
+              %td{ id: 'fax-number' }
+                = @team.fax_number
+            %tr
+              %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/team.e_mail')
+              %td{ id: 'e-mail' }
+                = @team.e_mail
 
-          -# STATS: *** WIP ***
+    %section.container#team-buttons
+      .row-fluid.my-2
+        %a.my-1.btn.btn-outline-secondary{ href: team_current_swimmers_path(@team) }
+          %i.fa.fa-users
+          = t('teams.dashboard.current_swimmers')
+        %a.my-1.btn.btn-outline-secondary.disabled{ href: '#' }
+          %i.fa.fa-trophy
+          = t('teams.dashboard.all_meetings')
+        %a.my-1.btn.btn-outline-secondary.disabled{ href: '#' }
+          %i.fa.fa-group
+          = t('teams.dashboard.all_workshops')
+
+    %section.container#team-stats
+      .row-fluid.my-2
+        STATS - TODO
 
   .spacer-right

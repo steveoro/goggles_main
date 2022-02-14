@@ -1,0 +1,27 @@
+en:
+  datagrid:
+    filters:
+      xboolean:
+        "yes": "✅"
+        "no": "❌"
+    table:
+      order:
+        asc: "<i class='fa fa fa-arrow-up'></i>"
+        desc: "<i class='fa fa fa-arrow-down'></i>"
+    total: "Tot."
+    rows: "rows"
+    form:
+      search: "Search"
+      reset: "Reset"
+    no_results: "No results"
+    csv_export:
+      btn_tooltip: "Download all data rows from the current page as a single CSV file"
+    edit_modal:
+      edit_title: "Edit row"
+      create_title: "Create new row"
+      close_btn: "Close"
+      save_btn: "Save"
+      save_changes_msg: "Are you sure you want to save the changes?"
+      edit_ok: "Changes have been successfully saved."
+      edit_failed: "Save action failed: %{error}"
+      create_ok: "New row created! (ID: %{id})"

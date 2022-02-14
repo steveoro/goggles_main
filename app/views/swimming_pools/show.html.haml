@@ -2,7 +2,7 @@
 .wrapper-body
   .spacer-left
 
-  .main-content
+  .main-content#top-of-page
     #swimming-pool-show-title
       %h4.text-center.pb-3
         %i.fa.fa-map-marker
@@ -54,27 +54,27 @@
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.multiple_pools')
             %td{ id: 'multiple-pools' }
-              = Icon::CheckMarkComponent.new(value: pool.multiple_pools?)
+              = render(Icon::CheckMarkComponent.new(value: pool.multiple_pools?))
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.garden')
             %td{ id: 'garden-presence' }
-              = Icon::CheckMarkComponent.new(value: pool.garden?)
+              = render(Icon::CheckMarkComponent.new(value: pool.garden?))
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.bar')
             %td{ id: 'bar-presence' }
-              = Icon::CheckMarkComponent.new(value: pool.bar?)
+              = render(Icon::CheckMarkComponent.new(value: pool.bar?))
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.restaurant')
             %td{ id: 'restaurant-presence' }
-              = Icon::CheckMarkComponent.new(value: pool.restaurant?)
+              = render(Icon::CheckMarkComponent.new(value: pool.restaurant?))
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.gym')
             %td{ id: 'gym-presence' }
-              = Icon::CheckMarkComponent.new(value: pool.gym?)
+              = render(Icon::CheckMarkComponent.new(value: pool.gym?))
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.child_area')
             %td{ id: 'children-area-presence' }
-              = Icon::CheckMarkComponent.new(value: pool.child_area?)
+              = render(Icon::CheckMarkComponent.new(value: pool.child_area?))
 
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.locker_cabinet_type')

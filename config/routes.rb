@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   get 'home/about'
   get 'home/contact_us'
   post 'home/contact_us'
+  get 'home/dashboard'
 
   get 'chrono', to: 'chrono#index'
   get 'chrono/index'
@@ -33,11 +34,17 @@ Rails.application.routes.draw do
   get 'maintenance', to: 'maintenance#index'
   get 'search/smart'
 
+  resources :meetings, only: %i[index]
   get 'meetings/show/:id',        to: 'meetings#show',        as: 'meeting_show'
+
   get 'swimming_pools/show/:id',  to: 'swimming_pools#show',  as: 'swimming_pool_show'
   get 'swimmers/show/:id',        to: 'swimmers#show',        as: 'swimmer_show'
-  get 'teams/show/:id',           to: 'teams#show',           as: 'team_show'
-  get 'user_workshops/show/:id',  to: 'user_workshops#show',  as: 'user_workshop_show'
+
+  get 'teams/show/:id',             to: 'teams#show',             as: 'team_show'
+  get 'teams/current_swimmers/:id', to: 'teams#current_swimmers', as: 'team_current_swimmers'
+
+  resources :user_workshops, only: %i[index]
+  get 'user_workshops/show/:id', to: 'user_workshops#show', as: 'user_workshop_show'
 
   get 'tools/fin_score'
   # TODO: move the following to a dedicated API endpoint:

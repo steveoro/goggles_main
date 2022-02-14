@@ -8,7 +8,7 @@ module Solver
   #
   # = Meeting solver strategy object
   #
-  #   - version:  7.3.07
+  #   - version:  7-0.3.41
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::Meeting.
@@ -78,10 +78,16 @@ module Solver
         # Fields w/ defaults:
         edition: value_from_req(key: 'edition', nested: 'meeting', sub_key: 'edition') ||
                  Time.zone.today.year.to_s,
-        edition_type_id: Solver::Factory.for('EditionType', root_key?('edition_type') ? req : req['meeting']) ||
-                         GogglesDb::EditionType::YEARLY_ID,
-        timing_type_id: Solver::Factory.for('TimingType', root_key?('timing_type') ? req : req['meeting']) ||
-                        GogglesDb::TimingType::SEMIAUTO_ID,
+        edition_type_id: Solver::Factory.for(
+          'EditionType',
+          root_key?('edition_type') ? req : req['meeting'],
+          GogglesDb::EditionType::YEARLY_ID
+        ),
+        timing_type_id: Solver::Factory.for(
+          'TimingType',
+          root_key?('timing_type') ? req : req['meeting'],
+          GogglesDb::TimingType::SEMIAUTO_ID
+        ),
         header_year: value_from_req(key: 'header_year', nested: 'meeting', sub_key: 'header_year') ||
                      Time.zone.today.year.to_s,
         code: value_from_req(key: 'meeting_code', nested: 'meeting', sub_key: 'code') ||

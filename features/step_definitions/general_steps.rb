@@ -33,6 +33,7 @@ end
 Given('I am already at the {string} page') do |string_path|
   expect(current_url).to include(string_path)
 end
+# -----------------------------------------------------------------------------
 
 Then('a flash {string} message is present') do |i18n_key|
   # [Steve A.] Due to flash modals to disappear automatically after a delay,
@@ -40,6 +41,7 @@ Then('a flash {string} message is present') do |i18n_key|
   flash_content = find('.flash-body')
   expect(flash_content.text).to eq(I18n.t(i18n_key))
 end
+# -----------------------------------------------------------------------------
 
 When('I click on {string}') do |string_css|
   find(string_css).click
@@ -54,6 +56,7 @@ Then('an error message from the edit form is present') do
   error_title = find('#error_explanation h5')
   expect(error_title.text).to be_present
 end
+# -----------------------------------------------------------------------------
 
 # Click on OK/Yes
 When('I click on {string} accepting the confirmation request') do |string_css|
@@ -68,3 +71,18 @@ When('I click on {string} rejecting the confirmation request') do |string_css|
     find(string_css).click
   end
 end
+# -----------------------------------------------------------------------------
+
+Then('I see the link to go back to the dashboard') do
+  find("#back-to-dashboard a[href='#{home_dashboard_path}']", visible: true)
+end
+
+# Generic step for data grids with pagination and filtering
+Then('I see the index grid list with filtering and pagination controls') do
+  find('section#data-grid form')
+  find('section#data-grid #filter-show-btn')
+  find('section#data-grid #pagination-top')
+  find('section#data-grid table')
+  find('section#data-grid #pagination-bottom')
+end
+# -----------------------------------------------------------------------------

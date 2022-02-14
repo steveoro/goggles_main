@@ -1,5 +1,7 @@
 en:
   teams:
+    errors:
+      no_team: You must select a team starting from the search results or following the team name link.
     team: Team
     teams: Teams
     city: City
@@ -7,3 +9,12 @@ en:
     dashboard:
       title: Team
       subtitle: Radiography
+      current_swimmers: Current swimmers
+      all_meetings: All meetings
+      all_workshops: All workshops
+      season: Season
+    swimmer_list:
+      note: The list of swimmers collects all the latest registrations for each different season type available.
+      latest_memberships: Latest memberships
+      latest_memberships_note: The latest memberships are collected only from the currently selected team (%{team_name}).
+      current: current

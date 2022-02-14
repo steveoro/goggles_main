@@ -11,6 +11,7 @@ en:
     sex: "Sex"
     age_class: "Class"
     age_class_and_category: "Age class/Cat."
+    latest_badge: Latest badge
     current_category: "Current category"
     search_result_item: 'item'
     go_to_dashboard: "Go to the dashboard page for this athlete ('Radiography')"

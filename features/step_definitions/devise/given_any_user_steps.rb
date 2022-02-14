@@ -76,3 +76,68 @@ Given('I have an associated swimmer on a confirmed account') do
   expect(@current_user.swimmer_id).to eq(@matching_swimmer.id)
   expect(@matching_swimmer.associated_user_id).to eq(@current_user.id)
 end
+
+# Sets @current_user & @matching_swimmer using existing ManagedAffiliations
+Given('I have an associated swimmer on a confirmed team manager account') do
+  managed_aff = GogglesDb::ManagedAffiliation.last(50).sample
+  @current_user = managed_aff.manager
+  @current_user.confirmed_at = Time.zone.now if @current_user.confirmed_at.blank?
+  # This is needed when the user comes from the test seed and its password may be already encrypted:
+  @current_user.password = 'Password123!' # force usage of test password for easier login
+  @current_user.save!
+  if @current_user.swimmer.present?
+    @matching_swimmer = @current_user.swimmer
+  else
+    @matching_swimmer = FactoryBot.create(
+      :swimmer,
+      first_name: @current_user.first_name,
+      last_name: @current_user.last_name,
+      complete_name: @current_user.description,
+      year_of_birth: @current_user.year_of_birth
+    )
+    @current_user.associate_to_swimmer!(@matching_swimmer)
+    @matching_swimmer.reload
+  end
+
+  expect(managed_aff.team).to be_valid
+  expect(managed_aff.season).to be_valid
+  expect(@current_user.confirmed_at).to be_present
+  expect(@current_user.swimmer_id).to eq(@matching_swimmer.id)
+  expect(@matching_swimmer.associated_user_id).to eq(@current_user.id)
+end
+
+# Designed for Meetings
+# Sets both @current_user & @matching_swimmer
+Given('I have a confirmed account with associated swimmer and existing MIRs') do
+  @matching_swimmer = GogglesDb::MeetingIndividualResult.includes(swimmer: [:associated_user])
+                                                        .joins(swimmer: [:associated_user])
+                                                        .select(:swimmer_id)
+                                                        .distinct.map(&:swimmer)
+                                                        .uniq.sample
+  @current_user = @matching_swimmer.associated_user
+  @current_user.confirmed_at = Time.zone.now if @current_user.confirmed_at.blank?
+  # This is needed when the user comes from the test seed and its password may be already encrypted:
+  @current_user.password = 'Password123!' # force usage of test password for easier login
+  @current_user.save!
+
+  expect(@current_user.confirmed_at).to be_present
+  expect(@current_user.swimmer_id).to eq(@matching_swimmer.id)
+end
+
+# Designed for UserWorkshops
+# Sets both @current_user & @matching_swimmer
+Given('I have a confirmed account with associated swimmer and existing user results') do
+  @matching_swimmer = GogglesDb::UserResult.includes(swimmer: [:associated_user])
+                                           .joins(swimmer: [:associated_user])
+                                           .select(:swimmer_id)
+                                           .distinct.map(&:swimmer)
+                                           .uniq.sample
+  @current_user = @matching_swimmer.associated_user
+  @current_user.confirmed_at = Time.zone.now if @current_user.confirmed_at.blank?
+  # This is needed when the user comes from the test seed and its password may be already encrypted:
+  @current_user.password = 'Password123!' # force usage of test password for easier login
+  @current_user.save!
+
+  expect(@current_user.confirmed_at).to be_present
+  expect(@current_user.swimmer_id).to eq(@matching_swimmer.id)
+end

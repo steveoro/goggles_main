@@ -31,6 +31,7 @@ gem 'webpacker'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'browser' # detect request.variant type depending on request.user_agent
 gem 'daemons'
+gem 'datagrid'
 gem 'delayed_job_active_record'
 gem 'devise'
 gem 'devise-i18n'

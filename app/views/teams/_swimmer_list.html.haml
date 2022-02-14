@@ -1,0 +1,31 @@
+#swimmers-list
+  %h5.mx-1
+    = t('helpers.page_entries_info.one_page.display_entries.other',
+        entry_name: 'user', count: swimmers.count).html_safe
+
+  %table.table.table-striped.table-hover.table-condensed.table-sm
+    %thead.bg-primary.text-light
+      %tr.text-center
+        %td
+          %b= t('swimmers.swimmer')
+        %td{ colspan: 2 }
+          %b= t('swimmers.affiliated_with')
+        %td
+          = t('teams.swimmer_list.latest_memberships')
+    %tbody
+      - SwimmerDecorator.decorate_collection(swimmers).each do |swimmer|
+        %tr
+          %td.swimmer-name
+            %b= swimmer.link_to_full_name
+          %td.swimmer-teams{ colspan: 2 }
+            %small= swimmer.link_to_teams(60)
+          %td.swimmer-badges
+            - latest_badges.includes(season: [:federation_type]).where(swimmer_id: swimmer.id).each do |badge|
+              %span.badge.badge-secondary.badge-pill
+                = badge.season.decorate.short_label
+            %br/
+            %small
+              #{swimmer.year_of_birth} (#{swimmer.age}),
+              #{swimmer.last_category_type_by_badge&.code}
+              (#{t('teams.swimmer_list.current')}: #{swimmer.latest_category_type&.code})
+  %br/

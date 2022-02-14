@@ -48,6 +48,7 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
       #            Also, sign-in the user using the included integration test helpers:
       sign_in(user)
       allow(view).to receive(:user_signed_in?).and_return(true)
+      allow(view).to receive(:current_user).and_return(user)
       render
     end
 
@@ -57,5 +58,7 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
       expect(rendered).to include(destroy_user_session_path)
       expect(rendered).to include(ERB::Util.html_escape(I18n.t('home.log_out')))
     end
+
+    it 'it shows a link to the dashboard'
   end
 end

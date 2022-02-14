@@ -37,10 +37,10 @@ class SearchController < ApplicationController
       return
     end
 
-    # TODO: add manually the team of the swimmer
-    # TODO: add manually the latest 5 meetings for the of the 1st 2 swimmer matches
-    # TODO: add manually the latest 5 meetings for the team of the 1st 2 swimmer matches
-    # TODO: add manually the typical pool for the team of the 1st 2 swimmer matches
+    # TODO: add manually the team of the 1st swimmer match?
+    # TODO: add manually the latest 5 meetings for the of the 1st swimmer match?
+    # TODO: add manually the latest 5 meetings for the team of the 1st swimmer match?
+    # TODO: add manually the typical pool for the team of the 1st swimmer match?
     prepare_swimmer_search_results
     prepare_team_search_results
     prepare_meeting_search_results

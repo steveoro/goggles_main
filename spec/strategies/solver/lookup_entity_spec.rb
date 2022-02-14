@@ -32,6 +32,18 @@ RSpec.describe Solver::LookupEntity, type: :strategy do
       end
 
       #
+      # INVALID data: empty request but w/ DEFAULT value
+      #
+      context 'with EMPTY #req data BUT a default value,' do
+        let(:fixture_req) { {} }
+
+        it_behaves_like(
+          'Solver strategy, NO bindings, UNSOLVABLE req but with DEFAULT VALUE, after #solve!',
+          target_name, GogglesDb.module_eval(target_name), 1 # (quick way to have a valid default value for any target entity)
+        )
+      end
+
+      #
       # INVALID data: BAD ID, @ root
       #
       context 'with INVALID #req data (non-existing id @ root lv.),' do

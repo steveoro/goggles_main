@@ -98,9 +98,19 @@ When('I fill the registration form as an existing user') do
   find('#signup-btn').click
 end
 
+# Uses @current_user
+Given('I sign-in with my existing account') do
+  visit('/users/sign_in')
+  wait_for_ajax && sleep(2)
+  find('#login-box', visible: true) # wait for rendering ("visit" doesn't)
+  step('I fill the log-in form as the confirmed user')
+  step('the user row is signed-in')
+end
+
 Given('I am already signed-in and at the root page') do
   step('I have a confirmed account')
   visit('/users/sign_in')
+  find('#login-box', visible: true) # wait for rendering ("visit" doesn't)
   step('I fill the log-in form as the confirmed user')
   step('the user row is signed-in')
 end
@@ -108,6 +118,15 @@ end
 Given('I have an associated swimmer and have already signed-in') do
   step('I have an associated swimmer on a confirmed account')
   visit('/users/sign_in')
+  find('#login-box', visible: true) # wait for rendering ("visit" doesn't)
+  step('I fill the log-in form as the confirmed user')
+  step('the user row is signed-in')
+end
+
+Given('I have an associated swimmer on team manager account and have already signed-in') do
+  step('I have an associated swimmer on a confirmed team manager account')
+  visit('/users/sign_in')
+  find('#login-box', visible: true) # wait for rendering ("visit" doesn't)
   step('I fill the log-in form as the confirmed user')
   step('the user row is signed-in')
 end

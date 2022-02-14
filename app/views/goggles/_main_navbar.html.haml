@@ -14,11 +14,14 @@
         %li.nav-item.active
           %a.nav-link{ href: edit_user_registration_path }
             %span
-              = t('home.account')
+              = t('home.account_with_name', user_name: current_user&.name)
               - if current_user&.avatar_url.present?
                 = image_tag(current_user.avatar_url, class: 'round-avatar')
               - else
                 %i.fa.fa.fa-cog
+        %li.nav-item
+          %a.nav-link{ href: home_dashboard_path }
+            = t('home.my.dashboard_title')
       %li.nav-item.dropdown
         %a.nav-link.dropdown-toggle#navbar-dropdown{ 'aria-expanded' => 'false',
                                                      'aria-haspopup' => 'true',
@@ -27,9 +30,11 @@
           = t('home.commands')
         .dropdown-menu{ 'aria-labelledby' => 'navbar-dropdown' }
           %a.dropdown-item{ href: tools_fin_score_path }= t('home.compute_fin_score')
+          %a.dropdown-item{ href: home_dashboard_path }= t('home.my.dashboard_title')
           .dropdown-divider
-          %a.dropdown-item{ href: '#' }= t('home.my_meetings')
-          %a.dropdown-item{ href: '#' }= t('home.my_dashboard')
+          %a.dropdown-item{ href: meetings_path }= t('home.my.past_title')
+          %a.dropdown-item{ href: '#' }= t('home.my.future_title')
+          %a.dropdown-item{ href: user_workshops_path }= t('home.my.workshops_title')
       %li.nav-item
         %a.nav-link.disabled{ 'aria-disabled' => 'true', href: '#', tabindex: '-1' } &nbsp;
       .dropdown-divider

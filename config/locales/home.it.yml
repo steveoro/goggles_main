@@ -4,9 +4,10 @@ it:
     or: 'oppure'
     sign_up: 'Registrati'
     log_out: "Esci"
-    account: 'Account'
+    account: 'Profilo'
+    account_with_name: "Profilo (%{user_name})"
     please_wait: 'Attendi...'
-    copyright_notice: "(c) 2013-2021, FASAR Software, S. Alloro, M. Ligabue"
+    copyright_notice: "(c) 2013-2022, FASAR Software, S. Alloro, M. Ligabue"
     about_us: "Chi siamo"
     about_this: "Cos'è Goggles?"
     main_contact_email: "fasar.software@email.it"
@@ -17,8 +18,23 @@ it:
     current: '(attuale)'
     commands: 'comandi'
     compute_fin_score: 'calcola punteggio FIN'
-    my_meetings: 'i miei Meeting'
-    my_dashboard: 'la mia Dashboard'
+    my:
+      go_to_dashboard_tooltip: vai alla tua Dashboard
+      dashboard_title: la mia Dashboard
+      past_title: i miei Meeting passati
+      future_title: i miei Meeting futuri
+      workshops_title: i miei Collegiali
+      associate_to_a_swimmer: "%{user_name} identificati come nuotatore (se presente) e aggiorna il tuo profilo"
+      errors:
+        no_associated_swimmer: "Il tuo utente non è ancora associato a nessun nuotatore."
+    dashboard:
+      past_btn: Meeting passati
+      future_btn: Meeting futuri
+      workshops_btn: Collegiali
+      radiography_btn: Radiografia
+      stats_btn: Statistiche
+      plan_meeting_btn: pianifica Meeting
+      team_reservation_btn: prenotazioni Squadra
 
   about:
     go_back: "< Torna alla pagina principale"

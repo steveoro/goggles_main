@@ -65,6 +65,12 @@ RSpec.describe WizardForm::ProgressBarComponent, type: :component do
     let(:fixture_titles) { steps_tot.times.map { FFaker::Lorem.word } }
     let(:fixture_icons) { steps_tot.times.map { |i| (i + 1).to_s } }
 
+    before do
+      expect(steps_tot).to be_positive
+      expect(fixture_titles.length).to eq(steps_tot)
+      expect(fixture_icons.length).to eq(steps_tot)
+    end
+
     it_behaves_like('ProgressBarComponent minimal default rendering')
 
     it 'renders as many progress steps as the specified titles (or icons)' do

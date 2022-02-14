@@ -5,8 +5,9 @@ en:
     sign_up: "Sign up"
     log_out: "Log out"
     account: 'Account'
+    account_with_name: "Account (%{user_name})"
     please_wait: 'Wait...'
-    copyright_notice: "(c) 2013-2021, FASAR Software, S. Alloro, M. Ligabue"
+    copyright_notice: "(c) 2013-2022, FASAR Software, S. Alloro, M. Ligabue"
     about_us: "About us"
     about_this: "What's Goggles?"
     main_contact_email: "fasar.software@email.it"
@@ -17,8 +18,23 @@ en:
     current: '(current)'
     commands: 'commands'
     compute_fin_score: 'compute FIN score'
-    my_meetings: 'my Meetings'
-    my_dashboard: 'my Dashboard'
+    my:
+      go_to_dashboard_tooltip: go to your Dashboard
+      dashboard_title: my Dashboard
+      past_title: my attended Meetings
+      future_title: my future Meetings
+      workshops_title: my Workshops
+      associate_to_a_swimmer: "%{user_name} identify as a swimmer (if enlisted) and update your account"
+      errors:
+        no_associated_swimmer: "Your user does not have an associated swimmer."
+    dashboard:
+      past_btn: past Meetings
+      future_btn: future Meetings
+      workshops_btn: Workshops
+      radiography_btn: Radiography
+      stats_btn: Stats
+      plan_meeting_btn: plan Meeting
+      team_reservation_btn: Team reservations
 
   about:
     go_back: "< Go back to the homepage"

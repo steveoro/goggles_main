@@ -97,12 +97,17 @@ RSpec.describe IqSolverService, type: :service do
   context 'when given a solvable row (FINDER),' do
     subject { described_class.new }
 
+    let(:fixture_swimmer) { GogglesDb::Swimmer.first(150).sample }
+
     let(:solvable_row) do
       FactoryBot.create(
         :import_queue,
         request_data: {
           'target_entity' => 'Swimmer',
-          'swimmer' => { 'id' => GogglesDb::Swimmer.select(:id).first(150).sample.id }
+          'swimmer' => {
+            'complete_name' => fixture_swimmer.complete_name,
+            'year_of_birth' => fixture_swimmer.year_of_birth
+          }
         }.to_json
       )
     end

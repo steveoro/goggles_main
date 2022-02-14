@@ -16,7 +16,7 @@ class SwimmerDecorator < Draper::Decorator
   # Returns the link to /swimmer/show using the complete name as link label.
   #
   def link_to_full_name
-    h.link_to(complete_name, h.swimmer_show_path(id: object.id))
+    h.link_to(text_label, h.swimmer_show_path(id: object.id))
     # [Steve, 20210208] Adding a tooltip here doesn't give a good UX for the moment:
     # data: { toggle: 'tooltip', title: I18n.t('swimmers.go_to_dashboard') }
   end

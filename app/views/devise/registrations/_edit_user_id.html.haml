@@ -1,4 +1,4 @@
-%h5.mt-2= t('users.swimmer_binding.title')
+%h5.mt-2#swimmer-binding= t('users.swimmer_binding.title')
 %small
   %i.form-text.text-muted.mb-1#swimmer-binding-help
     = t('users.help_labels.swimmer_binding')
@@ -9,8 +9,8 @@
                  else
                    GogglesDb::Swimmer.none
                  end
-    select_options = options_for_select(collection.map { |swimmer| [swimmer.text_label, swimmer.id] } +
-                                        [['- - -', nil]],
+    select_options = options_for_select([['- - -', nil]] +
+                                        collection.map { |swimmer| [swimmer.text_label, swimmer.id] },
                                         current_user&.swimmer_id)
     shared_change_callbacks = 'change->user-name#updateDescription ' \
                               'change->unsaved-changes#formIsChanged ' \

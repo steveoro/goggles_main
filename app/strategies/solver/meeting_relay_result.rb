@@ -8,7 +8,7 @@ module Solver
   #
   # = MeetingRelayResult solver strategy object
   #
-  #   - version:  7.3.07
+  #   - version:  7-0.3.41
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::MeetingRelayResult.
@@ -117,8 +117,9 @@ module Solver
 
         entry_time_type_id: Solver::Factory.for(
           'EntryTimeType',
-          root_key?('entry_time_type') ? req : req['meeting_relay_result']
-        ) || GogglesDb::EntryTimeType::LAST_RACE_ID,
+          root_key?('entry_time_type') ? req : req['meeting_relay_result'],
+          GogglesDb::EntryTimeType::LAST_RACE_ID
+        ),
         disqualification_code_type_id: Solver::Factory.for(
           'DisqualificationCodeType',
           root_key?('disqualification_code_type') ? req : req['disqualification_code_type']

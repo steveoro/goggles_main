@@ -11,6 +11,7 @@ it:
     sex: "Sesso"
     age_class: "Classe"
     age_class_and_category: "Classe/Cat."
+    latest_badge: Ultimo badge
     current_category: Categoria attuale
     search_result_item: item
     go_to_dashboard: "Vai alla pagina dettagli per questo atleta ('Radiografia')"

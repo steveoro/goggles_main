@@ -1,0 +1,31 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content#top-of-page
+    - deco_team = @team.decorate
+    %section#team-swimmers-title
+      %h4.text-center= t('teams.dashboard.current_swimmers')
+      .text-center#back-to-dashboard
+        = link_to(deco_team.short_label, team_show_path(@team))
+        %sup
+          %i.fa.fa-info-circle{ onclick: "$(this).tooltip('toggle')",
+                                data: 'tooltip', title: t('teams.go_to_dashboard') }
+    %section.container#data-grid
+      .container
+        .alert.alert-info.alert-dismissible.fade.show{ role: 'alert' }
+          %button.close{ 'aria-label' => 'Close', 'data-dismiss' => 'alert', type: 'button' }
+            %span{ 'aria-hidden' => 'true' } ×
+          %small
+            %i= t('teams.swimmer_list.note')
+          %hr/
+          %small
+            %i= t('teams.swimmer_list.latest_memberships_note', team_name: deco_team.editable_name)
+
+      .row.my-2
+        = render(partial: 'swimmer_list', locals: { swimmers: @swimmers, latest_badges: @latest_badges })
+
+    %section.text-center.fixed-bottom#footer
+      = link_to('#top-of-page', { data: { turbolinks: false } }) do
+        %i.fa.fa-arrow-up
+
+  .spacer-right

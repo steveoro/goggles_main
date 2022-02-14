@@ -7,9 +7,6 @@ RSpec.describe 'Homes', type: :request do
 
   before { expect(fixture_user).to be_a(GogglesDb::User).and be_valid }
 
-  #-- -------------------------------------------------------------------------
-  #++
-
   let(:fixture_user) { GogglesDb::User.first(50).sample }
 
   describe 'GET /index' do
@@ -18,6 +15,8 @@ RSpec.describe 'Homes', type: :request do
       expect(response).to have_http_status(:success)
     end
   end
+  #-- -------------------------------------------------------------------------
+  #++
 
   describe 'GET /about' do
     it 'returns http success' do
@@ -25,6 +24,8 @@ RSpec.describe 'Homes', type: :request do
       expect(response).to have_http_status(:success)
     end
   end
+  #-- -------------------------------------------------------------------------
+  #++
 
   describe 'GET /contact_us' do
     context 'with an unlogged user' do
@@ -43,6 +44,8 @@ RSpec.describe 'Homes', type: :request do
       end
     end
   end
+  #-- -------------------------------------------------------------------------
+  #++
 
   describe 'POST /contact_us' do
     context 'with an unlogged user' do
@@ -105,6 +108,29 @@ RSpec.describe 'Homes', type: :request do
           expect { perform_enqueued_jobs }
             .to(change { ActionMailer::Base.deliveries.size }.by(1))
         end
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  describe 'GET /dashboard' do
+    context 'with an unlogged user' do
+      it 'is a redirect to the login path' do
+        get(home_dashboard_path)
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'with a logged-in user without an associated swimmer,' do
+      before do
+        user = FactoryBot.create(:user)
+        sign_in(user)
+      end
+
+      it 'is successful' do
+        get(home_dashboard_path)
+        expect(response).to have_http_status(:success)
       end
     end
   end

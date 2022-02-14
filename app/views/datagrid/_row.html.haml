@@ -1,0 +1,8 @@
+%tr{ class: grid.respond_to?(:row_class) ? grid.row_class(asset).to_s : '' }
+  - grid.html_columns(*options[:columns]).each do |column|
+    - css_classes = datagrid_column_classes(grid, column).to_s
+    - if column.options[:align].present? && column.options[:align] == :center
+      - css_classes << ' text-center'
+    - if column.options[:align].present? && column.options[:align] == :right
+      - css_classes << ' text-right'
+    %td{ class: css_classes }= datagrid_value(grid, column, asset)

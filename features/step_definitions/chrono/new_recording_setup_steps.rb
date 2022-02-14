@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
+When('I am at the Chrono index page') do
+  expect(page).to have_current_path(chrono_path, ignore_query: true)
+end
+
 When('I am redirected to the Chrono setup page') do
-  expect(current_url).to include('/chrono/new')
+  expect(page).to have_current_path(chrono_new_path, ignore_query: true)
 end
 
 Given('I select {string} as the event container type') do |rec_type_label|

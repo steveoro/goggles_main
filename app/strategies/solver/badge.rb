@@ -8,7 +8,7 @@ module Solver
   #
   # = Badge solver strategy object
   #
-  #   - version:  7.3.07
+  #   - version:  7-0.3.41
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::Badge.
@@ -78,8 +78,11 @@ module Solver
         season_id: Solver::Factory.for('Season', root_key?('season') ? req : req['badge']),
 
         # Fields w/ defaults:
-        entry_time_type_id: Solver::Factory.for('EntryTimeType', root_key?('entry_time_type') ? req : req['badge']) ||
-                            GogglesDb::EntryTimeType::LAST_RACE_ID,
+        entry_time_type_id: Solver::Factory.for(
+          'EntryTimeType',
+          root_key?('entry_time_type') ? req : req['badge'],
+          GogglesDb::EntryTimeType::LAST_RACE_ID
+        ),
         number: value_from_req(key: 'badge_number', nested: 'badge', sub_key: 'number') || '?',
         # NOTE: for booleans, we cannot use +true+ as default or the condition will skip any other value found in the request.
         #       (The default is there just to prevent +nil+)

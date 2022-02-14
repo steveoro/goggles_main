@@ -8,7 +8,7 @@ module Solver
   #
   # = MeetingEvent solver strategy object
   #
-  #   - version:  7.3.07
+  #   - version:  7-0.3.41
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::MeetingEvent.
@@ -75,7 +75,11 @@ module Solver
         event_type_id: Solver::Factory.for('EventType', root_key?('event_type') ? req : req['meeting_event']),
 
         # Fields w/ defaults:
-        heat_type_id: Solver::Factory.for('HeatType', root_key?('heat_type') ? req : req['meeting_event']),
+        heat_type_id: Solver::Factory.for(
+          'HeatType',
+          root_key?('heat_type') ? req : req['meeting_event'],
+          GogglesDb::HeatType::FINALS_ID
+        ),
         event_order: value_from_req(key: 'event_order', nested: 'meeting_event', sub_key: 'event_order') || 0,
         # NOTE: the following assumes most of the stored events will be referring to the Italy/Germany/Sweden
         #       time zone (which is still true as of 2021):

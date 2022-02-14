@@ -39,6 +39,6 @@ RSpec.describe Footer::MainComponent, type: :component do
   end
 
   it 'includes the current version' do
-    expect(rendered_footer.text).to include(Version::FULL)
+    expect(rendered_footer.text).to include(Version::SEMANTIC)
   end
 end

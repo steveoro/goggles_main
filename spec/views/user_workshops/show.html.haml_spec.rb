@@ -7,7 +7,7 @@ RSpec.describe 'user_workshops/show.html.haml', type: :view do
   context 'when rendering with valid data,' do
     subject { rendered }
 
-    let(:fixture_row) { GogglesDb::UserWorkshop.first(100).sample }
+    let(:fixture_row) { FactoryBot.create(:workshop_with_results) }
 
     before do
       expect(fixture_row).to be_a(GogglesDb::UserWorkshop).and be_valid
@@ -15,10 +15,8 @@ RSpec.describe 'user_workshops/show.html.haml', type: :view do
       render
     end
 
-    # TODO
-    pending('FINISH me')
-    # it_behaves_like('an AbstractMeeting detail page rendering the meeting description text')
-    # it_behaves_like('an AbstractMeeting detail page rendering main \'header\' details')
-    # it_behaves_like('an AbstractMeeting detail page rendering the collapsed \'more\' details')
+    it_behaves_like('an AbstractMeeting detail page rendering the meeting description text')
+    it_behaves_like('an AbstractMeeting detail page rendering main \'header\' details')
+    it_behaves_like('an AbstractMeeting detail page rendering the collapsed \'more\' details')
   end
 end

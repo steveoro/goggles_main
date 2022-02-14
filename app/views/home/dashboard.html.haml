@@ -1,0 +1,71 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    %section#my-dashboard-title
+      - if @swimmer.present?
+        %h3.text-center
+          %small
+            = @swimmer.complete_name
+      - else
+        = render(FlashAlertComponent.new(symbol: :notice, body: t('home.my.errors.no_associated_swimmer')))
+        %h3.text-center
+          %small
+            = current_user.description
+        .container.text-center.my-4#go-to-edit-swimmer-association
+          = link_to(edit_user_registration_path(anchor: 'swimmer-binding-help'), id: 'associate-swimmer',
+                    method: :get, role: 'button') do
+            = t('home.my.associate_to_a_swimmer', user_name: current_user.name.titleize)
+
+    %section.container#dashboard-btns
+      .row.d-flex.justify-content-around
+        .col.d-flex
+          = link_to(meetings_path, id: 'btn-my-past-meetings', method: :get,
+                    class: 'btn btn-block btn-warning py-2 my-2 align-self-center', role: 'button') do
+            %i.fa.fa-2x.fa-trophy
+            = t('home.dashboard.past_btn')
+        .col.d-flex
+          = link_to('#', id: 'btn-my-future-meetings', method: :get,
+                    class: 'btn btn-block btn-primary py-2 my-2 align-self-center disabled', role: 'button') do
+            %i.fa.fa-2x.fa-star
+            = t('home.dashboard.future_btn')
+        .col.d-flex
+          = link_to(user_workshops_path, id: 'btn-my-workshops', method: :get,
+                    class: 'btn btn-block btn-secondary py-2 my-2 align-self-center', role: 'button') do
+            %i.fa.fa-2x.fa-group
+            %br/
+            = t('home.dashboard.workshops_btn')
+        .col.d-flex
+          - if @swimmer
+            = link_to(swimmer_show_path(@swimmer.id), id: 'btn-my-radiography', method: :get,
+                      class: 'btn btn-block btn-primary py-2 my-2 align-self-center', role: 'button') do
+              = image_tag('radiography_40x40.png')
+              %br/
+              = t('home.dashboard.radiography_btn')
+          - else
+            .btn.btn-block.btn-primary.py-2.my-2.align-self-center.disabled#btn-my-radiography
+              = image_tag('radiography_40x40.png')
+              %br/
+              = t('home.dashboard.radiography_btn')
+        .col.d-flex
+          = link_to('#', id: 'btn-my-stats', method: :get,
+                    class: 'btn btn-block btn-primary py-2 my-2 align-self-center disabled', role: 'button') do
+            %i.fa.fa-2x.fa-line-chart
+            %br/
+            = t('home.dashboard.stats_btn')
+      - if @current_user_is_manager
+        .row.d-flex.justify-content-center
+          .col.d-flex
+            = link_to('#', id: 'btn-plan-meeting', method: :get,
+                      class: 'btn btn-block btn-secondary py-2 my-2 align-self-center disabled', role: 'button') do
+              %i.fa.fa-2x.fa-calendar
+              %br/
+              = t('home.dashboard.plan_meeting_btn')
+          .col.d-flex
+            = link_to('#', id: 'btn-team-reservations', method: :get,
+                      class: 'btn btn-block btn-secondary py-2 my-2 align-self-center disabled', role: 'button') do
+              %i.fa.fa-2x.fa-calendar-check-o
+              %br/
+              = t('home.dashboard.team_reservation_btn')
+
+  .spacer-right

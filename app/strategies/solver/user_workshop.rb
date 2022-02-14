@@ -8,7 +8,7 @@ module Solver
   #
   # = UserWorkshop solver strategy object
   #
-  #   - version:  7.3.07
+  #   - version:  7-0.3.41
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::UserWorkshop.
@@ -78,11 +78,20 @@ module Solver
         season_id: Solver::Factory.for('Season', root_key?('season') ? req : req['user_workshop']),
 
         # Fields w/ defaults:
-        header_date: value_from_req(key: 'header_date', nested: 'user_workshop', sub_key: 'header_date') || Time.zone.today.to_s,
+        header_date: value_from_req(key: 'header_date', nested: 'user_workshop', sub_key: 'header_date') ||
+                     Time.zone.today.to_s,
         edition: value_from_req(key: 'edition', nested: 'user_workshop', sub_key: 'edition') ||
                  Time.zone.today.year.to_s,
-        edition_type_id: Solver::Factory.for('EditionType', root_key?('edition_type') ? req : req['user_workshop']),
-        timing_type_id: Solver::Factory.for('TimingType', root_key?('timing_type') ? req : req['user_workshop']),
+        edition_type_id: Solver::Factory.for(
+          'EditionType',
+          root_key?('edition_type') ? req : req['user_workshop'],
+          GogglesDb::EditionType::YEARLY_ID
+        ),
+        timing_type_id: Solver::Factory.for(
+          'TimingType',
+          root_key?('timing_type') ? req : req['user_workshop'],
+          GogglesDb::TimingType::MANUAL_ID
+        ),
         header_year: value_from_req(key: 'header_year', nested: 'user_workshop', sub_key: 'header_year') ||
                      Time.zone.today.year.to_s,
         code: value_from_req(key: 'user_workshop_code', nested: 'user_workshop', sub_key: 'code') ||
