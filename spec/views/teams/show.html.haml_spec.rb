@@ -25,6 +25,19 @@ RSpec.describe 'teams/show.html.haml', type: :view do
       node = Nokogiri::HTML.fragment(rendered).at_css('td#homepage')
       expect(node).to be_present
     end
+
+    it 'shows the team dashboard buttons section' do
+      node = Nokogiri::HTML.fragment(rendered).at_css('section#team-buttons')
+      expect(node).to be_present
+      expect(node.at_css('a#btn-swimmers')).to be_present
+      expect(node.at_css('a#btn-meetings')).to be_present
+      expect(node.at_css('a#btn-workshops')).to be_present
+    end
+
+    it 'shows the team stats section' do
+      node = Nokogiri::HTML.fragment(rendered).at_css('section#team-stats')
+      expect(node).to be_present
+    end
   end
 
   # Test basic/required content:

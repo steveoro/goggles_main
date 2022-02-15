@@ -44,7 +44,6 @@ class TeamsController < ApplicationController
                                   .where(badges: { team_affiliation_id: @last_affiliations_ids })
                                   .distinct
                                   .order(:complete_name, :year_of_birth)
-    # .page(1).per(100)
 
     # 3. get all badges for each affiliation (used to get a list of badges per swimmer)
     @latest_badges = GogglesDb::Badge.where(team_affiliation_id: @last_affiliations_ids)

@@ -41,6 +41,20 @@ RSpec.describe 'Meetings', type: :request do
         get(meetings_path)
         expect(response).to be_successful
       end
+
+      context 'when filtering data by :meeting_date,' do
+        it 'is successful' do
+          get(meetings_path(meetings_grid: { meeting_date: '2019-12-15' }))
+          expect(response).to be_successful
+        end
+      end
+
+      context 'when filtering data by :meeting_name,' do
+        it 'is successful' do
+          get(meetings_path(meetings_grid: { meeting_name: 'Riccione' }))
+          expect(response).to be_successful
+        end
+      end
     end
   end
   #-- -------------------------------------------------------------------------

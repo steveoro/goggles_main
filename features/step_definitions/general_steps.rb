@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 When('I wait for {int} seconds') do |sleep_time_in_secs|
-  sleep(sleep_time_in_secs)
+  sleep_time_in_secs.times do
+    sleep(1) && wait_for_ajax
+    putc('.')
+  end
 end
 
 Then('I debug') do
@@ -16,12 +19,18 @@ When('I browse to {string}') do |string_path|
   visit(string_path)
 end
 
+# Whenever the current URL requires Devise user authentication and it's not
+# the actual Devise sign-in path, the current_path will remain set to the requested
+# path so that Devise can redirect to the final destination after successful sign-in.
+# Thus in these cases we just check the page contents since we cannot rely on the current_path.
+Then('I get redirected to the sign-in page') do
+  find('#content .main-content #login-box', visible: true)
+end
+
 Then('I am still at the {string} path') do |string_path|
   # Wait for content to be rendered and then verify path:
   find('#content', visible: true)
-  # Extract just the path part:
-  current_local_path = current_url.split(":#{Capybara.current_session.server.port}").last
-  expect(current_local_path).to eq(string_path)
+  expect(current_path).to include(string_path)
 end
 
 # Alias:
@@ -44,7 +53,21 @@ end
 # -----------------------------------------------------------------------------
 
 When('I click on {string}') do |string_css|
-  find(string_css).click
+  find(string_css, visible: true).click
+end
+
+When('I click on {string} waiting {int} seconds') do |string_css, sleep_time_in_secs|
+  link_node = find(string_css, visible: true)
+  link_node.click
+  sleep_time_in_secs.times do
+    sleep(1) && wait_for_ajax
+    putc('.')
+  end
+end
+
+When('I click on {string} waiting for the {string} to be ready') do |string_css, section_css|
+  step("I click on '#{string_css}'")
+  find(section_css, visible: true)
 end
 
 # Similar to the above, but uses the label instead of the CSS selector:

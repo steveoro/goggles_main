@@ -1,5 +1,5 @@
 %nav.navbar.navbar-expand-lg.navbar-light.bg-light
-  %a.navbar-brand{ href: root_path }
+  %a.navbar-brand#link-root{ href: root_path }
     Goggles
 
   %button.navbar-toggler{ 'aria-controls' => 'navbar-content',
@@ -12,7 +12,7 @@
     %ul.navbar-nav.mr-auto
       - if user_signed_in?
         %li.nav-item.active
-          %a.nav-link{ href: edit_user_registration_path }
+          %a.nav-link#link-account{ href: edit_user_registration_path }
             %span
               = t('home.account_with_name', user_name: current_user&.name)
               - if current_user&.avatar_url.present?
@@ -20,7 +20,7 @@
               - else
                 %i.fa.fa.fa-cog
         %li.nav-item
-          %a.nav-link{ href: home_dashboard_path }
+          %a.nav-link#link-dashboard{ href: home_dashboard_path }
             = t('home.my.dashboard_title')
       %li.nav-item.dropdown
         %a.nav-link.dropdown-toggle#navbar-dropdown{ 'aria-expanded' => 'false',
@@ -29,24 +29,21 @@
                                                      href: '#', role: 'button' }
           = t('home.commands')
         .dropdown-menu{ 'aria-labelledby' => 'navbar-dropdown' }
-          %a.dropdown-item{ href: tools_fin_score_path }= t('home.compute_fin_score')
-          %a.dropdown-item{ href: home_dashboard_path }= t('home.my.dashboard_title')
+          %a.dropdown-item#link-compute-score{ href: tools_fin_score_path }= t('home.compute_fin_score')
           .dropdown-divider
-          %a.dropdown-item{ href: meetings_path }= t('home.my.past_title')
-          %a.dropdown-item{ href: '#' }= t('home.my.future_title')
-          %a.dropdown-item{ href: user_workshops_path }= t('home.my.workshops_title')
+          %a.dropdown-item{ href: '#' } MORE FEATURES COMING SOON
       %li.nav-item
         %a.nav-link.disabled{ 'aria-disabled' => 'true', href: '#', tabindex: '-1' } &nbsp;
       .dropdown-divider
-      %li.nav-item= link_to(t('chrono.title'), chrono_index_path, class: 'nav-link')
+      %li.nav-item= link_to(t('chrono.title'), chrono_index_path, id: 'link-chrono', class: 'nav-link')
       - if user_signed_in?
         %li.nav-item= link_to(t('home.log_out'), destroy_user_session_path,
-                              method: :delete, class: 'nav-link')
+                              method: :delete, id: 'link-logout', class: 'nav-link')
       - else
         %li.nav-item= link_to(t('home.log_in'), new_user_session_path,
-                              class: 'nav-link text-primary')
+                              id: 'link-login', class: 'nav-link text-primary')
         %li.nav-item= link_to(t('home.sign_up'), new_user_registration_path,
-                              class: 'nav-link text-success')
+                              id: 'link-signup', class: 'nav-link text-success')
 
 .fixed-top.text-center.mt-2.d-none#loading-indicator
   .spinner-border.text-primary{ role: 'status', 'aria-hidden' => 'true' }

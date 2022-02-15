@@ -4,6 +4,8 @@ require 'rails_helper'
 
 RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
   shared_examples_for 'main_navbar generic features' do
+    let(:navbar_content) { Nokogiri::HTML.fragment(rendered).at_css('#navbar-content ul') }
+
     it 'includes the #loading-indicator (hidden by default)' do
       expect(rendered).to match(/id=['"]loading-indicator['"]/)
       # Parse with Nokogiri & verify that the node is indeed invisible (CSS class 'd-none'):
@@ -11,12 +13,27 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
       expect(node.classes).to include('d-none')
     end
 
-    it 'includes the #navbar-content' do
-      expect(rendered).to match(/id=['"]navbar-content['"]/)
+    it 'includes the clickable app name which redirects to the root_path' do
+      node = Nokogiri::HTML.fragment(rendered).at_css('nav a#link-root')
+      expect(node).to be_present
+      expect(node.attributes['href'].value).to include(root_path)
+      expect(node.text).to include('Goggles')
     end
 
-    it 'includes the clickable app name which redirects to the root_path' do
-      expect(rendered).to include(root_path).and include('Goggles')
+    it 'includes the #navbar-content' do
+      expect(navbar_content).to be_present
+    end
+
+    it 'shows the chrono link in the navbar' do
+      expect(navbar_content.at_css('li a#link-chrono')).to be_present
+      expect(navbar_content.at_css('li a#link-chrono').attributes['href'].value).to include(chrono_index_path)
+      expect(navbar_content.at_css('li a#link-chrono').text).to include(ERB::Util.html_escape(I18n.t('chrono.title')))
+    end
+
+    it 'shows the compute FIN score link in the navbar' do
+      expect(navbar_content.at_css('li a#link-chrono')).to be_present
+      expect(navbar_content.at_css('li a#link-chrono').attributes['href'].value).to include(chrono_index_path)
+      expect(navbar_content.at_css('li a#link-chrono').text).to include(ERB::Util.html_escape(I18n.t('chrono.title')))
     end
   end
   #-- -------------------------------------------------------------------------
@@ -27,14 +44,26 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
 
     it_behaves_like('main_navbar generic features')
 
-    it 'shows the log-in link' do
-      expect(rendered).to include(new_user_session_path)
-      expect(rendered).to include(ERB::Util.html_escape(I18n.t('home.log_in')))
+    it 'shows the log-in link in the navbar' do
+      node = Nokogiri::HTML.fragment(rendered).at_css('#navbar-content ul')
+      expect(node).to be_present
+      expect(node.at_css('li a#link-login')).to be_present
+      expect(node.at_css('li a#link-login').attributes['href'].value).to include(new_user_session_path)
+      expect(node.at_css('li a#link-login').text).to include(ERB::Util.html_escape(I18n.t('home.log_in')))
     end
 
-    it 'shows the sign-up link' do
-      expect(rendered).to include(new_user_registration_path)
-      expect(rendered).to include(ERB::Util.html_escape(I18n.t('home.sign_up')))
+    it 'shows the sign-up link in the navbar' do
+      node = Nokogiri::HTML.fragment(rendered).at_css('#navbar-content ul')
+      expect(node).to be_present
+      expect(node.at_css('li a#link-signup')).to be_present
+      expect(node.at_css('li a#link-signup').attributes['href'].value).to include(new_user_registration_path)
+      expect(node.at_css('li a#link-signup').text).to include(ERB::Util.html_escape(I18n.t('home.sign_up')))
+    end
+
+    it 'does not show the link to the dashboard' do
+      node = Nokogiri::HTML.fragment(rendered).at_css('#navbar-content ul')
+      expect(node).to be_present
+      expect(node.at_css('li a#link-dashboard')).not_to be_present
     end
   end
   #-- -------------------------------------------------------------------------
@@ -54,11 +83,26 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
 
     it_behaves_like('main_navbar generic features')
 
-    it 'shows the log-out link' do
-      expect(rendered).to include(destroy_user_session_path)
-      expect(rendered).to include(ERB::Util.html_escape(I18n.t('home.log_out')))
+    it 'shows the account management link in the navbar' do
+      node = Nokogiri::HTML.fragment(rendered).at_css('#navbar-content ul')
+      expect(node).to be_present
+      expect(node.at_css('li a#link-account')).to be_present
+      expect(node.at_css('li a#link-account').attributes['href'].value).to include(edit_user_registration_path)
     end
 
-    it 'it shows a link to the dashboard'
+    it 'shows the log-out link in the navbar' do
+      node = Nokogiri::HTML.fragment(rendered).at_css('#navbar-content ul')
+      expect(node).to be_present
+      expect(node.at_css('li a#link-logout')).to be_present
+      expect(node.at_css('li a#link-logout').attributes['href'].value).to include(destroy_user_session_path)
+      expect(node.at_css('li a#link-logout').text).to include(ERB::Util.html_escape(I18n.t('home.log_out')))
+    end
+
+    it 'shows the link to the swimmer dashboard' do
+      node = Nokogiri::HTML.fragment(rendered).at_css('#navbar-content ul')
+      expect(node).to be_present
+      expect(node.at_css('li a#link-dashboard')).to be_present
+      expect(node.at_css('li a#link-dashboard').attributes['href'].value).to include(home_dashboard_path)
+    end
   end
 end

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Also reloads @current_user if defined
 Given('I am not signed in') do
   current_driver = Capybara.current_driver
   begin
@@ -8,6 +9,7 @@ Given('I am not signed in') do
   ensure
     Capybara.current_driver = current_driver
   end
+  @current_user&.reload
 end
 
 # Requires a @current_user

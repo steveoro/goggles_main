@@ -41,6 +41,20 @@ RSpec.describe 'UserWorkshops', type: :request do
         get(user_workshops_path)
         expect(response).to be_successful
       end
+
+      context 'when filtering data by :meeting_date,' do
+        it 'is successful' do
+          get(meetings_path(meetings_grid: { workshop_date: '2021-06-15' }))
+          expect(response).to be_successful
+        end
+      end
+
+      context 'when filtering data by :meeting_name,' do
+        it 'is successful' do
+          get(meetings_path(meetings_grid: { workshop_name: 'CSI' }))
+          expect(response).to be_successful
+        end
+      end
     end
   end
   #-- -------------------------------------------------------------------------

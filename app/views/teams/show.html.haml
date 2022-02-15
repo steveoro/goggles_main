@@ -52,13 +52,13 @@
 
     %section.container#team-buttons
       .row-fluid.my-2
-        %a.my-1.btn.btn-outline-secondary{ href: team_current_swimmers_path(@team) }
+        %a.my-1.btn.btn-outline-secondary#btn-swimmers{ href: team_current_swimmers_path(@team) }
           %i.fa.fa-users
           = t('teams.dashboard.current_swimmers')
-        %a.my-1.btn.btn-outline-secondary.disabled{ href: '#' }
+        %a.my-1.btn.btn-outline-secondary.disabled#btn-meetings{ href: '#' }
           %i.fa.fa-trophy
           = t('teams.dashboard.all_meetings')
-        %a.my-1.btn.btn-outline-secondary.disabled{ href: '#' }
+        %a.my-1.btn.btn-outline-secondary.disabled#btn-workshops{ href: '#' }
           %i.fa.fa-group
           = t('teams.dashboard.all_workshops')
 
