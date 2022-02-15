@@ -194,9 +194,9 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
 
     it_behaves_like(
       'search result table showing a matching list page',
-      '#meeting-results table tbody tr',
-      'meeting\/show\?',
-      'Desenzano'
+      '#workshop-results table tbody tr',
+      'user_workshop\/show\?',
+      'Workshop'
     )
     it 'shows the pagination controls' do
       expect(rendered).to include('page-link')
