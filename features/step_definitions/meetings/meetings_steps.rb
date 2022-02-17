@@ -11,11 +11,17 @@ end
 Then('I click on the first row to see the details of the first meeting') do
   first_meeting = find('section#data-grid table tr td.meeting_name a', visible: true)
   first_meeting.click
-  5.times do
-    sleep(1) && wait_for_ajax
+  15.times do
     putc('.')
+    sleep(1) && wait_for_ajax
+    found = begin
+      find('.main-content#top-of-page #meeting-show-title', visible: true)
+    rescue StandardError
+      false
+    end
+    break if found
   end
-  find('.main-content#top-of-page #meeting-show-title', visible: true)
+  find('.main-content#top-of-page #meeting-show-title')
   find('#meeting-show-results table.table thead tr th.mevent-separator', visible: true)
 end
 
