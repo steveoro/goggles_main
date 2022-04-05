@@ -17,8 +17,8 @@ RSpec.describe UserWorkshopDecorator, type: :decorator do
       expect(result).to be_a(String).and be_present
     end
 
-    it 'includes the description' do
-      expect(result).to include(ERB::Util.html_escape(model_obj.description))
+    it 'includes the decorated #display_label' do
+      expect(result).to include(ERB::Util.html_escape(model_obj.decorate.display_label))
     end
 
     it 'includes the path to the detail page' do

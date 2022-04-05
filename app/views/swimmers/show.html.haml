@@ -1,4 +1,3 @@
--# haml-lint:disable ConsecutiveComments
 - swimmer = SwimmerDecorator.decorate(@swimmer)
 .wrapper-body
   .spacer-left
@@ -7,17 +6,14 @@
     #swimmer-show-title
       %h4.text-center.pb-3
         %i.fa.fa-user
-        = t('swimmers.radiography.title')
         &nbsp;
         %small
           %i.text-muted= t('swimmers.radiography.subtitle')
-    #swimmer-show-details
+    %section.container#swimmer-show-details
       %table.table.table-striped.table-sm
         %thead
           %tr
-            %th{ scope: 'row', class: 'bg-primary text-light' }
-              = t('swimmers.name')
-            %td{ id: 'full-name' }
+            %td{ id: 'full-name', scope: 'row', colspan: 2, class: 'bg-primary text-center text-light' }
               %b= swimmer.complete_name
         %tbody
           %tr
@@ -37,60 +33,23 @@
             %td{ id: 'team-links' }
               = swimmer.link_to_teams(100) # limit names to 100 chars
 
-          -# STATS: *** WIP ***
-          -# %tr
-          -#   %th{ scope: 'row' }= t('radiography.meeting_presence')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('radiography.first_attended_meeting')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('radiography.last_attended_meeting')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('swimmers.all_teams')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('swimmers.individual_events_done')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('swimmers.events_attended')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('radiography.total_metres_swam')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('radiography.total_time_swam')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('radiography.total_disqualifications')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('radiography.best_score_ever')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('radiography.worst_score_ever')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('radiography.total_fin_points')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('swimmers.ironmaster')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('swimmers.relay_events_done')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('swimmers.relays_attended')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('swimmers.relay_metres_swam')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('swimmers.relay_time_swam')
-          -#   %td= swimmer.
-          -# %tr
-          -#   %th{ scope: 'row' }= t('swimmers.relay_disqualifications')
-          -#   %td= swimmer.
+    %section.container#swimmer-buttons
+      .row-fluid.my-2
+        %a.my-1.btn.btn-outline-primary#btn-stats{ href: swimmer_history_recap_path(@swimmer) }
+          %i.fa.fa-line-chart
+          = t('home.dashboard.history_btn')
+        %a.my-1.btn.btn-outline-primary#btn-meetings{ href: meetings_for_swimmer_path(@swimmer) }
+          %i.fa.fa-trophy
+          = t('swimmers.radiography.all_meetings')
+        %a.my-1.btn.btn-outline-primary#btn-workshops{ href: user_workshops_for_swimmer_path(@swimmer) }
+          %i.fa.fa-group
+          = t('swimmers.radiography.all_workshops')
+
+    - if @stats.result.present?
+      %section.container.my-2#swimmer-stats
+        .row-fluid
+          %table.table.table-striped.table-sm
+            %tbody
+              = render(partial: 'swimmer_stats', locals: { stat: @stats.result })
 
   .spacer-right

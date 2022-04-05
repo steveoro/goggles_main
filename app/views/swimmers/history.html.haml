@@ -1,0 +1,47 @@
+.wrapper-body
+
+  .main-content#top-of-page
+    %section#swimmer-history-title
+      %h4.text-center.pb-3
+        %i.fa.fa-line-chart{ 'aria-hidden': 'true' }
+        &nbsp;
+        %small
+          %i.text-muted
+            = link_to(swimmer_show_path(@swimmer), id: 'btn-radiography', method: :get, role: 'button') do
+              = t('swimmers.radiography.subtitle')
+            %i.fa.fa-angle-right{ 'aria-hidden': 'true' }
+            = link_to(swimmer_history_recap_path(@swimmer), id: 'btn-history-recap', method: :get, role: 'button') do
+              = t('home.dashboard.history_btn')
+
+    %section.container#swimmer-history-detail
+      .row-fluid.py-1.bg-primary.text-center.text-light
+        %b#swimmer-name= @swimmer.complete_name
+        %i.fa.fa-minus{ 'aria-hidden': 'true' }
+        %b#event-name= @event_type.long_label
+
+      .row-fluid.container#swimmer-detail-chart{ data: { controller: 'chart', 'chart-type-value' => 'line',
+                                                'chart-data1-title-value' => GogglesDb::PoolType.mt_25.label,
+                                                'chart-data2-title-value' => GogglesDb::PoolType.mt_50.label,
+                                                'chart-data1-value' => @chart_data25&.to_json,
+                                                'chart-data2-value' => @chart_data50&.to_json } }
+        %canvas#detail-chart{ data: { 'chart-target' => 'chart' } }
+
+      .row-fluid#data-grid
+        = datagrid_form_for(@grid, method: :get, url: swimmer_history_path(id: @swimmer.id,
+                            event_type_id: @event_type.id))
+
+        .row.my-2#datagrid-ctrls
+          .col-auto
+            #filter-show-btn= render(Grid::FilterShowButtonComponent.new)
+          .col#filter-labels
+            - filter_labels = grid_filter_to_labels('swimmers.history', @grid_filter_params)
+            - if filter_labels.present?
+              %small
+                = t('swimmers.history.filter')
+                &nbsp;
+                %span.text-muted= filter_labels
+          .col-auto#datagrid-total
+            = t('datagrid.total')
+            %b= @grid.assets.count
+            = t('datagrid.rows')
+        = datagrid_table(@grid, html: { class: 'table table-hover table-sm' })

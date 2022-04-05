@@ -17,7 +17,7 @@ RSpec.describe Meeting::LabelComponent, type: :component do
         expect(fixture_row).to be_valid
       end
 
-      it_behaves_like('an AbstractMeeting detail page rendering the meeting description text')
+      it_behaves_like('an AbstractMeeting detail page rendering the meeting condensed_name text')
     end
   end
 

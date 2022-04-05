@@ -13,12 +13,13 @@ class SwimmerDecorator < Draper::Decorator
     decorated.display_label
   end
 
-  # Returns the link to /swimmer/show using the complete name as link label.
+  # Returns the link to /swimmers/show using the complete name as link label.
+  # NOTE: +SwimmerShowLinkComponent+ adds a tooltip to the link.
   #
   def link_to_full_name
+    # [Steve, 20210208] Adding a tooltip here doesn't give a good UX for the moment because
+    # it needs a custom script to toggle the tooltip. (See: SwimmerShowLinkComponent)
     h.link_to(text_label, h.swimmer_show_path(id: object.id))
-    # [Steve, 20210208] Adding a tooltip here doesn't give a good UX for the moment:
-    # data: { toggle: 'tooltip', title: I18n.t('swimmers.go_to_dashboard') }
   end
 
   # Returns a comma-separated string text mapping all the distinct team
@@ -31,17 +32,14 @@ class SwimmerDecorator < Draper::Decorator
   # - max_length: truncate length for names; default: 20 (characters)
   #
   def link_to_teams(max_length = 20)
+    # [Steve, 20210208] Adding a tooltip here doesn't give a good UX for the moment (see note in #link_to_full_name)
     links = associated_teams.map do |team|
       short_name = h.truncate(team.editable_name, length: max_length, separator: ' ')
       h.tag.li(h.link_to(short_name, h.team_show_path(id: team.id)))
-      # [Steve, 20210208] Adding a tooltip here doesn't give a good UX for the moment:
-      # data: { toggle: 'tooltip', title: I18n.t('teams.go_to_dashboard') }
     end
     h.tag.ul(
       links.join("\r\n").html_safe, class: 'p-0 ml-3'
     ).html_safe
-    # TODO: when badge association will be set:
-    # teams ? teams.collect(&:name).uniq.join(', ') : ''
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -50,6 +48,9 @@ class SwimmerDecorator < Draper::Decorator
 
   # Returns the decorated base object instance, memoized.
   def decorated
-    @decorated ||= GogglesDb::Swimmer.includes(:gender_type).find_by(id: object.id).decorate
+    # Force eager loading in case the source object is 'unscoped':
+    @decorated ||= GogglesDb::Swimmer.includes(:gender_type)
+                                     .find_by(id: object.id)
+                                     .decorate
   end
 end

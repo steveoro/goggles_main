@@ -24,16 +24,20 @@ RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
       expect(navbar_content).to be_present
     end
 
-    it 'shows the chrono link in the navbar' do
-      expect(navbar_content.at_css('li a#link-chrono')).to be_present
-      expect(navbar_content.at_css('li a#link-chrono').attributes['href'].value).to include(chrono_index_path)
-      expect(navbar_content.at_css('li a#link-chrono').text).to include(ERB::Util.html_escape(I18n.t('chrono.title')))
+    it 'shows the chrono command in the navbar' do
+      expect(navbar_content.at_css('a#link-chrono')).to be_present
+      expect(navbar_content.at_css('a#link-chrono').attributes['href'].value).to include(chrono_index_path)
+      expect(
+        navbar_content.at_css('a#link-chrono').text
+      ).to include(ERB::Util.html_escape(I18n.t('chrono.title')))
     end
 
-    it 'shows the compute FIN score link in the navbar' do
-      expect(navbar_content.at_css('li a#link-chrono')).to be_present
-      expect(navbar_content.at_css('li a#link-chrono').attributes['href'].value).to include(chrono_index_path)
-      expect(navbar_content.at_css('li a#link-chrono').text).to include(ERB::Util.html_escape(I18n.t('chrono.title')))
+    it 'shows the compute FIN score command in the navbar' do
+      expect(navbar_content.at_css('a#link-compute-score')).to be_present
+      expect(navbar_content.at_css('a#link-compute-score').attributes['href'].value).to include(tools_fin_score_path)
+      expect(
+        navbar_content.at_css('a#link-compute-score').text
+      ).to include(ERB::Util.html_escape(I18n.t('home.compute_fin_score')))
     end
   end
   #-- -------------------------------------------------------------------------

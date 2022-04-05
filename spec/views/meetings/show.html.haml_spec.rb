@@ -15,7 +15,7 @@ RSpec.describe 'meetings/show.html.haml', type: :view do
       render
     end
 
-    it_behaves_like('an AbstractMeeting detail page rendering the meeting description text')
+    it_behaves_like('an AbstractMeeting detail page rendering the meeting condensed_name text')
     it_behaves_like('an AbstractMeeting detail page rendering main \'header\' details')
     it_behaves_like('an AbstractMeeting detail page rendering the collapsed \'more\' details')
   end

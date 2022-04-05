@@ -82,3 +82,17 @@ a.expand-button.collapsed:visited:after
   content: '🔽';
   text-decoration: none;
 }
+// ----------------------------------------------------------------------------
+
+/**
+      === DATAGRID customizations ===
+*/
+#data-grid td.rank,
+#data-grid td.pool_type,
+#data-grid td.meeting_date {
+  text-align: center;
+}
+
+#data-grid td.timing {
+  text-align: right;
+}

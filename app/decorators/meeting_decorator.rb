@@ -18,8 +18,6 @@ class MeetingDecorator < Draper::Decorator
 
   # Returns the decorated base object instance, memoized.
   def decorated
-    @decorated ||= GogglesDb::Meeting.includes(:edition_type, :meeting_sessions, :meeting_individual_results, season: [:season_type])
-                                     .find_by(id: object.id)
-                                     .decorate
+    @decorated ||= object.decorate
   end
 end

@@ -5,7 +5,7 @@
 class UserWorkshopsController < ApplicationController
   before_action :authenticate_user!, only: [:index]
 
-  # GET /user_workshops
+  # GET /user_workshops/:id
   # Shows "My attended Workshops" grid.
   # Selects all the workshops created or attended by the current user,
   # Requires authentication & a valid associated swimmer.
@@ -16,17 +16,52 @@ class UserWorkshopsController < ApplicationController
       redirect_to(root_path) && return
     end
 
-    # FIXME: update [DB] gem for eager-loaded associations; current workaround:
-    @swimmer = GogglesDb::Swimmer.includes(:gender_type).find_by(id: current_user.swimmer_id) if current_user.swimmer
-    @grid = UserWorkshopsGrid.new(grid_params) do |scope|
+    @swimmer = current_user.swimmer
+    @grid = UserWorkshopsGrid.new(grid_filter_params) do |scope|
       scope.where('(user_workshops.user_id = ?) OR (user_results.swimmer_id = ?)', current_user.id, @swimmer.id)
            .page(index_params[:page]).per(20)
     end
   end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  # GET /user_workshops/for_swimmer/:id
+  # Displays all attended Workshops for a swimmer using a grid.
+  # Requires an existing swimmer.
+  #
+  # == Params
+  # - :id => Swimmer ID, required
+  def for_swimmer
+    unless GogglesDb::Swimmer.exists?(id: user_workshop_params[:id])
+      flash[:warning] = I18n.t('search_view.errors.invalid_request')
+      redirect_to(root_path) && return
+    end
+
+    @swimmer = GogglesDb::Swimmer.find_by(id: user_workshop_params[:id])
+    @grid = UserWorkshopsGrid.new(grid_filter_params) { |scope| scope.for_swimmer(@swimmer).page(index_params[:page]).per(20) }
+  end
+
+  # GET /user_workshops/for_team/:id
+  # Displays all attended Workshops for a team using a grid.
+  # Requires an existing team.
+  #
+  # == Params
+  # - :id => Team ID, required
+  def for_team
+    unless GogglesDb::Team.exists?(id: user_workshop_params[:id])
+      flash[:warning] = I18n.t('search_view.errors.invalid_request')
+      redirect_to(root_path) && return
+    end
+
+    @team = GogglesDb::Team.find_by(id: user_workshop_params[:id])
+    @grid = UserWorkshopsGrid.new(grid_filter_params) { |scope| scope.for_team(@team).page(index_params[:page]).per(20) }
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 
   # Show the details page
   # == Params
-  # - :id, required
+  # - :id => Workshop ID, required
   def show
     @user_workshop = GogglesDb::UserWorkshop.where(id: user_workshop_params[:id]).first
     if @user_workshop.nil?
@@ -37,12 +72,14 @@ class UserWorkshopsController < ApplicationController
     @user_workshop_events = @user_workshop.event_types.uniq
     @user_workshop_results = @user_workshop.user_results.includes(:event_type)
   end
+  #-- -------------------------------------------------------------------------
+  #++
 
   protected
 
   # Strong parameters checking
   def user_workshop_params
-    params.permit(:id)
+    params.permit(:id, :page, :per_page)
   end
 
   # /index action strong parameters checking
@@ -51,8 +88,12 @@ class UserWorkshopsController < ApplicationController
   end
 
   # Grid filtering strong parameters checking
-  def grid_params
-    params.fetch(:user_workshops_grid, {})
-          .permit(:descending, :order, :header_date, :meeting_name)
+  # (NOTE: member variable is needed by the view)
+  def grid_filter_params
+    @grid_filter_params = params.fetch(:user_workshops_grid, {})
+                                .permit(:descending, :order, :workshop_date, :workshop_name)
+    # Set default ordering for the datagrid:
+    @grid_filter_params.merge(order: :workshop_date) unless @grid_filter_params.key?(:order)
+    @grid_filter_params
   end
 end

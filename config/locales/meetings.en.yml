@@ -13,3 +13,9 @@ en:
       reference: Reference
       swimming_pool: Swimming pool
       pool_type: Pool type
+      pool_type_short: Pool
+      filter: 'Filter:'
+      params:
+        meeting_date_label: 'From date'
+        meeting_date: 'From date: %{value}'
+        meeting_name: 'Name: %{value}'

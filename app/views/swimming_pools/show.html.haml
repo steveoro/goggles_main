@@ -6,7 +6,6 @@
     #swimming-pool-show-title
       %h4.text-center.pb-3
         %i.fa.fa-map-marker
-        = t('swimming_pools.dashboard.title')
         &nbsp;
         %small
           %i.text-muted= t('swimming_pools.dashboard.subtitle')
@@ -14,15 +13,15 @@
       %table.table.table-striped.table-sm
         %thead
           %tr
-            %td{ scope: 'row', class: 'bg-info text-light' }
-              = t('activerecord.attributes.goggles_db/swimming_pool.name')
-            %td{ id: 'full-name' }
-              %b= pool.link_to_maps_or_name
+            %td{ id: 'full-name', scope: 'row', colspan: 2, class: 'bg-info text-center text-light' }
+              %b= pool.text_label
         %tbody
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.address')
             %td{ id: 'address' }
               = [pool.address, pool.city&.name].compact.join(', ')
+              &nbsp;
+              = pool.link_to_maps_or_name
           %tr
             %th{ scope: 'row' }= t('activerecord.attributes.goggles_db/swimming_pool.nick_name')
             %td{ id: 'nick-name' }

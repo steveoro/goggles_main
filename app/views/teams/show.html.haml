@@ -5,7 +5,6 @@
     %section#team-show-title
       %h4.text-center.pb-3
         %i.fa.fa-group
-        = t('teams.dashboard.title')
         &nbsp;
         %small
           %i.text-muted= t('teams.dashboard.subtitle')
@@ -14,9 +13,7 @@
       %table.table.table-striped.table-sm
         %thead
           %tr
-            %td{ scope: 'row', class: 'bg-success text-light' }
-              = t('activerecord.attributes.goggles_db/team.name')
-            %td{ id: 'full-name' }
+            %td{ id: 'full-name', scope: 'row', colspan: 2, class: 'bg-success text-center text-light' }
               %b= @team.editable_name || @team.name
         %tbody
           %tr
@@ -52,18 +49,22 @@
 
     %section.container#team-buttons
       .row-fluid.my-2
-        %a.my-1.btn.btn-outline-secondary#btn-swimmers{ href: team_current_swimmers_path(@team) }
+        %a.my-1.btn.btn-outline-primary#btn-swimmers{ href: team_current_swimmers_path(@team) }
           %i.fa.fa-users
           = t('teams.dashboard.current_swimmers')
-        %a.my-1.btn.btn-outline-secondary.disabled#btn-meetings{ href: '#' }
+        %a.my-1.btn.btn-outline-primary#btn-meetings{ href: meetings_for_team_path(@team) }
           %i.fa.fa-trophy
           = t('teams.dashboard.all_meetings')
-        %a.my-1.btn.btn-outline-secondary.disabled#btn-workshops{ href: '#' }
+        %a.my-1.btn.btn-outline-primary#btn-workshops{ href: user_workshops_for_team_path(@team) }
           %i.fa.fa-group
           = t('teams.dashboard.all_workshops')
 
-    %section.container#team-stats
-      .row-fluid.my-2
-        STATS - TODO
+    - if @stats.results.any?
+      %section.container.my-2#team-stats
+        .row-fluid
+          %table.table.table-striped.table-sm
+            %tbody
+              - @stats.results.each do |stat|
+                = render(partial: 'fed_stats', locals: { stat: stat })
 
   .spacer-right

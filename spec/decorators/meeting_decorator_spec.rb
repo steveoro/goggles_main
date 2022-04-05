@@ -6,7 +6,7 @@ require 'support/shared_decorator_examples'
 RSpec.describe MeetingDecorator, type: :decorator do
   subject { described_class.decorate(model_obj) }
 
-  let(:model_obj) { GogglesDb::Meeting.limit(14).sample }
+  let(:model_obj) { GogglesDb::Meeting.limit(50).sample }
 
   it_behaves_like('a paginated model decorated with', described_class)
 
@@ -17,8 +17,8 @@ RSpec.describe MeetingDecorator, type: :decorator do
       expect(result).to be_a(String).and be_present
     end
 
-    it 'includes the description' do
-      expect(result).to include(ERB::Util.html_escape(model_obj.description))
+    it 'includes the decorated #display_label' do
+      expect(result).to include(ERB::Util.html_escape(model_obj.decorate.display_label))
     end
 
     it 'includes the path to the detail page' do

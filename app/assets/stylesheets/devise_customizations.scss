@@ -1,14 +1,20 @@
 .bg-light-blue {
-  background-color: #d8ecff;
+  background-color: #a9d6ff;
+}
+.bg-light-cyan {
+  background-color: #dbeeff;
+}
+.bg-light-cyan2 {
+  background-color: #e5f1fd;
 }
 .bg-light-green {
-  background-color: #e8ffee;
+  background-color: #b7e2bb;
 }
 .bg-light-yellow {
-  background-color: #feffd6;
+  background-color: #fdffa0;
 }
 .bg-light-red {
-  background-color: #ffa1a1;
+  background-color: #eca2a2;
 }
 
 .shadow-box {
@@ -20,4 +26,11 @@
   border-radius: 12px;
   height: 24px;
   width: 24px;
+}
+
+.fixed-size-48x48 {
+  height: 48px;
+  width: 48px;
+  min-height: 48px;
+  min-width: 48px;
 }

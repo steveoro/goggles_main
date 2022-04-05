@@ -1,0 +1,12 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content#top-of-page
+    %section#all-meetings-title
+      %h4.text-center#back-to-swimmer-show
+        = render(Title::SwimmerShowLinkComponent.new(swimmer: @swimmer))
+      .text-center
+        %i= t('swimmers.radiography.all_meetings')
+    = render(partial: 'meeting_grid', locals: { grid: @grid, grid_filter_params: @grid_filter_params })
+
+  .spacer-right

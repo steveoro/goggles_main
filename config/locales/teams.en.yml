@@ -13,6 +13,11 @@ en:
       all_meetings: All meetings
       all_workshops: All workshops
       season: Season
+      affiliations_count: Tot. Championships
+      meetings_count: Total Meetings
+      max_updated_at: Last updated
+      first_meeting: First registered Meeting
+      last_meeting: Last registered Meeting
     swimmer_list:
       note: The list of swimmers collects all the latest registrations for each different season type available.
       latest_memberships: Latest memberships

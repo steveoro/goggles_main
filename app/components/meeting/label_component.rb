@@ -3,7 +3,7 @@
 #
 # = Meeting components module
 #
-#   - version:  7.3.05
+#   - version:  7-0.3.50
 #   - author:   Steve A.
 #
 module Meeting
@@ -12,7 +12,9 @@ module Meeting
   #
   # => Suitable for *any* AbstractMeeting <=
   #
-  # Renders the correct title of a Meeting
+  # Renders the correct title of a Meeting (not a link).
+  # Mainly used to abstract away the logic of the decorated title of any meeting
+  # or workshop.
   #
   class LabelComponent < ViewComponent::Base
     # Creates a new ViewComponent
@@ -31,30 +33,14 @@ module Meeting
 
     # Inline rendering
     def call
-      meeting_label
+      decorated&.display_label
     end
 
-    protected
+    private
 
-    # TODO: use @meeting&.decorate&.display_label (|| short_label)
-
-    # Prepares the text label
-    def meeting_label
-      if @meeting&.edition_type&.seasonal? || @meeting&.edition_type&.yearly?
-        edition_title_text
-      else
-        default_title_text
-      end
-    end
-
-    # Memoized default title text for generic meetings
-    def default_title_text
-      @default_title_text ||= "#{@meeting&.edition_label} #{@meeting&.description}"
-    end
-
-    # Memoized title text for seasonal/yearly meetings
-    def edition_title_text
-      @edition_title_text ||= "#{@meeting&.description} #{@meeting&.edition_label}"
+    # Returns the decorated base object instance, memoized.
+    def decorated
+      @decorated ||= @meeting&.decorate
     end
   end
 end

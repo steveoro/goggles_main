@@ -4,12 +4,12 @@ require 'rails_helper'
 require 'support/shared_request_examples'
 
 RSpec.describe 'SwimmingPools', type: :request do
-  describe 'GET /show' do
+  describe 'GET /show/:id' do
     context 'with a valid row id' do
-      let(:fixture_row) { GogglesDb::SwimmingPool.first(50).sample }
+      let(:swimming_pool_id) { GogglesDb::SwimmingPool.first(100).pluck(:id).sample }
 
       it 'returns http success' do
-        get(swimming_pool_show_path(fixture_row.id))
+        get(swimming_pool_show_path(swimming_pool_id))
         expect(response).to have_http_status(:success)
       end
     end

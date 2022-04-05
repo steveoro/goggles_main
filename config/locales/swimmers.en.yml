@@ -20,20 +20,29 @@ en:
       subtitle: Radiography
       last_registered_category: Last registered category
       meeting_presence: Meeting presence
-      first_attended_meeting: First attended Meeting
-      last_attended_meeting: Last attended Meeting
-      individual_events_done: Individual events done
+      first_meeting: First attended Meeting
+      last_meeting: Last attended Meeting
       events_attended: Registered events
       total_metres_swam: Total metres swam
       total_time_swam: Total time swam
-      total_disqualifications: Total Disqualifications
+      ind_disqualifications: Indiv. Disqualifications
       no_disqualifications: "None !!"
       best_score_ever: Best Score ever
       worst_score_ever: Worst Score ever (not null)
       total_fin_points: Overall FIN score
       ironmaster: Completed Ironmasters
-      relay_events_done: Relay events done
       relays_attended: Relay events attended
       relay_metres_swam: Total relay meters swam
       relay_time_swam: Total time in relay events
       relay_disqualifications: Relay disqualifications
+      all_meetings: All meetings
+      all_workshops: All workshops
+    history:
+      filter: 'Filter:'
+      params:
+        meeting_date_label: 'From date'
+        meeting_date: 'From date: %{value}'
+        meeting_name: 'Name: %{value}'
+        pool_type: 'Pool'
+        ascending: '↗'
+        descending: '↘'

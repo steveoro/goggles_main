@@ -28,11 +28,11 @@ it:
       errors:
         no_associated_swimmer: "Il tuo utente non è ancora associato a nessun nuotatore."
     dashboard:
-      past_btn: Meeting passati
-      future_btn: Meeting futuri
+      past_btn: Meeting
+      future_btn: Da fare
       workshops_btn: Collegiali
       radiography_btn: Radiografia
-      stats_btn: Statistiche
+      history_btn: Storia
       plan_meeting_btn: pianifica Meeting
       team_reservation_btn: prenotazioni Squadra
 

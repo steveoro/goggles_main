@@ -119,8 +119,8 @@ RSpec.describe SwimmingPoolDecorator, type: :decorator do
       let(:model_obj) { FactoryBot.build(:swimming_pool, city_id: nil, address: nil) }
       let(:result) { subject.link_to_maps_or_name }
 
-      it 'returns just the name string' do
-        expect(result).to eq(model_obj.name)
+      it 'returns the name string' do
+        expect(result).to eq(model_obj.decorate.short_label)
       end
     end
   end

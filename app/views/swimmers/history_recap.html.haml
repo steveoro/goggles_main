@@ -1,0 +1,63 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content#top-of-page
+    %section#swimmer-history-recap-title
+      %h4.text-center.pb-3
+        %i.fa.fa-line-chart{ 'aria-hidden': 'true' }
+        &nbsp;
+        %small
+          %i.text-muted
+            = link_to(swimmer_show_path(@swimmer), id: 'btn-radiography', method: :get, role: 'button') do
+              = t('swimmers.radiography.subtitle')
+            %i.fa.fa-angle-right{ 'aria-hidden': 'true' }
+            = t('home.dashboard.history_btn')
+
+
+    %section.container#swimmer-history-recap
+      .row-fluid.py-1.bg-primary.text-center.text-light
+        %b#swimmer-name= @swimmer.complete_name
+
+      .row-fluid.w-75.container#swimmer-recap-chart{ data: { controller: 'chart',
+                                                    'chart-data1-value' => @chart_data25&.to_json,
+                                                    'chart-data2-value' => @chart_data50&.to_json } }
+        %canvas#recap-chart{ data: { 'chart-target' => 'chart' } }
+
+      .row-fluid
+        %table.table.table-striped.table-sm
+          %thead
+            %tr.text-right.bg-info.text-light{ scope: 'row' }
+              %th
+                = I18n.t('meetings.event')
+              %th
+                = GogglesDb::PoolType.mt_25.label
+              %th
+                = GogglesDb::PoolType.mt_50.label
+              %th
+                = I18n.t('datagrid.total')
+              %th.text-center
+                = '%'
+          %tbody
+            - @event_type_list.each do |hash|
+              %tr.event-types{ scope: 'row' }
+                %td.history-link.text-right.mx-auto
+                  = link_to(swimmer_history_path(id: @swimmer.id, event_type_id: hash[:id])) do
+                    = hash[:label]
+                %td.count-25.text-right.mx-auto
+                  = hash[:count25]
+                %td.count-50.text-right.mx-auto
+                  = hash[:count50]
+                %td.count.text-right.mx-auto
+                  = hash[:count]
+                %td.percentage.text-right.mx-auto
+                  = format('%0.2f', hash[:count].to_f / @event_total * 100.0)
+            %tr.bg-info.text-light#overall-totals{ scope: 'row' }
+              %td.total-25.text-right.mx-auto{ colspan: 2 }
+                %b= @event25_total
+              %td.total-50.text-right.mx-auto
+                %b= @event50_total
+              %td.grand-total.text-right.mx-auto
+                %b= @event_total
+              %td.text-right.mx-auto
+
+  .spacer-right

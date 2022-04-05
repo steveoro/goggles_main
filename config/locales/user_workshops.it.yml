@@ -13,3 +13,7 @@ it:
       reference: Riferimento
       swimming_pool: Piscina
       pool_type: Tipo vasca
+      params:
+        workshop_date_label: 'Dalla data'
+        workshop_date: 'Dalla data: %{value}'
+        workshop_name: 'Nome: ~%{value}'

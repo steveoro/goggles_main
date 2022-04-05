@@ -21,50 +21,59 @@
       .row.d-flex.justify-content-around
         .col.d-flex
           = link_to(meetings_path, id: 'btn-my-past-meetings', method: :get,
-                    class: 'btn btn-block btn-warning py-2 my-2 align-self-center', role: 'button') do
-            %i.fa.fa-2x.fa-trophy
+                    class: 'btn btn-block btn-warning py-2 my-2 align-vertical-center', role: 'button') do
+            %i.fixed-size-48x48.fa.fa-3x.fa-trophy
+            %br/
             = t('home.dashboard.past_btn')
         .col.d-flex
           = link_to('#', id: 'btn-my-future-meetings', method: :get,
-                    class: 'btn btn-block btn-primary py-2 my-2 align-self-center disabled', role: 'button') do
-            %i.fa.fa-2x.fa-star
+                    class: 'btn btn-block btn-primary py-2 my-2 align-self-vertical disabled', role: 'button') do
+            %i.fixed-size-48x48.fa.fa-3x.fa-calendar
+            %br/
             = t('home.dashboard.future_btn')
         .col.d-flex
           = link_to(user_workshops_path, id: 'btn-my-workshops', method: :get,
-                    class: 'btn btn-block btn-secondary py-2 my-2 align-self-center', role: 'button') do
-            %i.fa.fa-2x.fa-group
+                    class: 'btn btn-block btn-secondary py-2 my-2 align-vertical-center', role: 'button') do
+            %i.fixed-size-48x48.fa.fa-3x.fa-group
             %br/
-            = t('home.dashboard.workshops_btn')
+            %span.align-baseline
+              = t('home.dashboard.workshops_btn')
         .col.d-flex
           - if @swimmer
             = link_to(swimmer_show_path(@swimmer.id), id: 'btn-my-radiography', method: :get,
-                      class: 'btn btn-block btn-primary py-2 my-2 align-self-center', role: 'button') do
-              = image_tag('radiography_40x40.png')
+                      class: 'btn btn-block btn-primary py-2 my-2 align-vertical-center', role: 'button') do
+              = image_tag('radiography_40x40.png', class: 'fixed-size-48x48')
               %br/
               = t('home.dashboard.radiography_btn')
           - else
-            .btn.btn-block.btn-primary.py-2.my-2.align-self-center.disabled#btn-my-radiography
-              = image_tag('radiography_40x40.png')
+            .btn.btn-block.btn-primary.py-2.my-2.align-vertical-center.disabled#btn-my-radiography
+              = image_tag('radiography_40x40.png', class: 'fixed-size-48x48')
               %br/
               = t('home.dashboard.radiography_btn')
         .col.d-flex
-          = link_to('#', id: 'btn-my-stats', method: :get,
-                    class: 'btn btn-block btn-primary py-2 my-2 align-self-center disabled', role: 'button') do
-            %i.fa.fa-2x.fa-line-chart
-            %br/
-            = t('home.dashboard.stats_btn')
+          - if @swimmer
+            = link_to(swimmer_history_recap_path(@swimmer.id), id: 'btn-my-stats', method: :get,
+                      class: 'btn btn-block btn-primary py-2 my-2 align-vertical-center', role: 'button') do
+              %i.fixed-size-48x48.fa.fa-3x.fa-line-chart
+              %br/
+              = t('home.dashboard.history_btn')
+          - else
+            .btn.btn-block.btn-primary.py-2.my-2.align-vertical-center.disabled#btn-my-stats
+              %i.fixed-size-48x48.fa.fa-3x.fa-line-chart
+              %br/
+              = t('home.dashboard.history_btn')
       - if @current_user_is_manager
         .row.d-flex.justify-content-center
           .col.d-flex
             = link_to('#', id: 'btn-plan-meeting', method: :get,
-                      class: 'btn btn-block btn-secondary py-2 my-2 align-self-center disabled', role: 'button') do
-              %i.fa.fa-2x.fa-calendar
+                      class: 'btn btn-block btn-secondary py-2 my-2 align-vertical-center disabled', role: 'button') do
+              %i.fixed-size-48x48.fa.fa-3x.fa-calendar
               %br/
               = t('home.dashboard.plan_meeting_btn')
           .col.d-flex
             = link_to('#', id: 'btn-team-reservations', method: :get,
-                      class: 'btn btn-block btn-secondary py-2 my-2 align-self-center disabled', role: 'button') do
-              %i.fa.fa-2x.fa-calendar-check-o
+                      class: 'btn btn-block btn-secondary py-2 my-2 align-vertical-center disabled', role: 'button') do
+              %i.fixed-size-48x48.fa.fa-3x.fa-calendar-check-o
               %br/
               = t('home.dashboard.team_reservation_btn')
 

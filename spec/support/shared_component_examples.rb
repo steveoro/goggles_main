@@ -51,12 +51,14 @@ end
 # - subject.......: either, the result from #render_inline (renders a Nokogiri::HTML.fragment),
 #                   or the rendered HTML (from calling render on a view)
 # - fixture_row...: a Meeting instance
-shared_examples_for 'an AbstractMeeting detail page rendering the meeting description text' do
+shared_examples_for 'an AbstractMeeting detail page rendering the meeting condensed_name text' do
   let(:parsed_node) { Nokogiri::HTML.fragment(subject) }
 
   it 'shows the description with its edition label' do
     expect(parsed_node).to be_present
-    expect(parsed_node.text).to include(fixture_row.description).and include(fixture_row.edition_label)
+    expect(parsed_node.text)
+      .to include(fixture_row.decorate.display_label)
+      .and include(fixture_row.edition_label)
   end
 end
 

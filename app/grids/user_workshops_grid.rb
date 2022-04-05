@@ -7,15 +7,16 @@
 class UserWorkshopsGrid < BaseGrid
   # Returns the default scope for the grid. (#assets is the filtered version of it)
   scope do
-    GogglesDb::UserWorkshop.includes(:edition_type, :user_results, season: [:season_type])
-                           .joins(:edition_type, :user_results, season: [:season_type])
+    GogglesDb::UserWorkshop.includes(:user_results)
+                           .joins(:user_results)
                            .distinct
                            .by_date(:desc)
   end
 
-  filter(:workshop_date, :date, header: I18n.t('user_workshops.header_date')) do |value, scope|
+  filter(:workshop_date, :date, header: I18n.t('user_workshops.dashboard.params.workshop_date_label'),
+                                input_options: { maxlength: 10, placeholder: 'YYYY-MM-DD' }) do |value, scope|
     scope.includes(season: [:season_type])
-         .where(header_date: value)
+         .where('header_date >= ?', value)
   end
 
   filter(:workshop_name, :string, header: I18n.t('user_workshops.workshop')) do |value, scope|

@@ -10,13 +10,13 @@ class SwimmingPoolDecorator < Draper::Decorator
 
   # Returns the default text label describing this object.
   def text_label
-    object.decorate.display_label
+    decorated.short_label
   end
 
   # Returns the link to #show using the name as link label.
   #
   def link_to_full_name
-    h.link_to(name, h.swimming_pool_show_path(id: object.id))
+    h.link_to(decorated.short_label, h.swimming_pool_show_path(id: object.id))
   end
 
   # Returns either the styled button link to the Google Maps pool location together with
@@ -35,7 +35,7 @@ class SwimmingPoolDecorator < Draper::Decorator
     if plus_code.present?
       link_tag_for_maps(plus_code_uri)
 
-    elsif maps_uri
+    elsif maps_uri.present?
       link_tag_for_maps(maps_uri)
 
     elsif latitude.present? && longitude.present?
@@ -45,11 +45,16 @@ class SwimmingPoolDecorator < Draper::Decorator
       link_tag_for_maps(address_search_uri)
 
     else
-      name
+      decorated.short_label
     end
   end
 
   private
+
+  # Returns the decorated base object instance, memoized.
+  def decorated
+    @decorated ||= object.decorate
+  end
 
   # Returns the actual link tag to the specified URI using a maps icon with the pool name
   # == Params

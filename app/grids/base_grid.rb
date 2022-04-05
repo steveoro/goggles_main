@@ -15,7 +15,7 @@ class BaseGrid
   }
 
   # Enable forbidden attributes protection
-  # self.forbidden_attributes_protection = true
+  self.forbidden_attributes_protection = true
   #-- -------------------------------------------------------------------------
   #++
 

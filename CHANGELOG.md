@@ -2,6 +2,9 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.3.50** [Steve A.] re-sync with base engine; bump Rails to 6.0.4.7 for security fixes; additional specs
+- **0.3.48** [Steve A.] re-sync with base engine; added: improved user dashboard, stats to /team & /swimmer details, current_swimmers to /teams, meetings & workshops filtered grids to /team & /swimmer, history_recap & history (w/ graphs) to /swimmer + lots of code improvements
+- **0.3.46** [Steve A.] minor bundle security fixes; re-sync with base engine
 - **0.3.43** [Steve A.] added a more versatile wait statement when checking for meeting/show readiness in Cucumber specs to improve test stability
 - **0.3.42** [Steve A.] upgrade to Rails 6.0.4.6 due to security fixes
 - **0.3.41** [Steve A.] updated Stimulus to v3; added wizard-form for /chrono/new with overall summary & crude validation; added "new" flag icon to DbLookupComponents; crude user dashboard & team swimmers list

@@ -1,0 +1,12 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content#top-of-page
+    %section#all-meetings-title
+      %h4.text-center#back-to-team-show
+        = render(Title::TeamShowLinkComponent.new(team: @team))
+      .text-center
+        %i= t('teams.dashboard.all_meetings')
+    = render(partial: 'meeting_grid', locals: { grid: @grid, grid_filter_params: @grid_filter_params })
+
+  .spacer-right

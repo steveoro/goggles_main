@@ -21,7 +21,7 @@ const Timing = Backbone.Model.extend({
 // -----------------------------------------------------------------------------
 
 /**
- * = StimulusJS Search-browse/swipe controller =
+ * = StimulusJS Chrono controller =
  *
  * Uses the TimerElement class to manage Lap timing measurements.
  *

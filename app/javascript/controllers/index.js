@@ -4,25 +4,19 @@
 
 import { application } from './application'
 
+import ChartController from './chart_controller.js'
 import ChronoController from './chrono_controller.js'
-
 import ChronoNewSummaryController from './chrono_new_summary_controller.js'
-
 import LookupController from './lookup_controller.js'
-
 import PopoverController from './popover_controller.js'
-
 import RemotePartialController from './remote_partial_controller.js'
-
 import SearchController from './search_controller.js'
-
 import SwitchController from './switch_controller.js'
-
 import UnsavedChangesController from './unsaved_changes_controller.js'
-
 import UserNameController from './user_name_controller.js'
-
 import WizardFormController from './wizard_form_controller.js'
+
+application.register('chart', ChartController)
 application.register('chrono', ChronoController)
 application.register('chrono-new-summary', ChronoNewSummaryController)
 application.register('lookup', LookupController)

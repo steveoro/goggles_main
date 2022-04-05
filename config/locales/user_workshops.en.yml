@@ -13,3 +13,7 @@ en:
       reference: Reference
       swimming_pool: Swimming pool
       pool_type: Pool type
+      params:
+        workshop_date_label: 'From date'
+        workshop_date: 'From date: %{value}'
+        workshop_name: 'Name: %{value}'

@@ -13,6 +13,11 @@ it:
       all_meetings: Tutti i meeting
       all_workshops: Tutti i collegiali
       season: Stagione
+      affiliations_count: Campionati totali
+      meetings_count: Meeting registrati
+      max_updated_at: Aggiornato al
+      first_meeting: Primo Meeting registrato
+      last_meeting: Ultimo Meeting registrato
     swimmer_list:
       note: L'elenco dei nuotatori raccoglie tutti gli ultimi tesseramenti trovati per ciascun tipo diverso di campionato disponibile.
       latest_memberships: Ultimi tesseramenti

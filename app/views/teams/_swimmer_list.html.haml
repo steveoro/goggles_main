@@ -20,8 +20,9 @@
           %td.swimmer-teams{ colspan: 2 }
             %small= swimmer.link_to_teams(60)
           %td.swimmer-badges
-            - latest_badges.includes(season: [:federation_type]).where(swimmer_id: swimmer.id).each do |badge|
-              %span.badge.badge-secondary.badge-pill
+            - badge = badges.for_swimmer(swimmer).each do |badge|
+              - badge_css = badge.team_affiliation_id == team_affiliation.id ? 'badge-success' : 'badge-secondary'
+              %span.badge.badge-pill{ class: badge_css }
                 = badge.season.decorate.short_label
             %br/
             %small

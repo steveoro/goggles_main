@@ -31,7 +31,10 @@ RSpec.describe 'Meetings', type: :request do
 
     context 'with a logged-in user associated to a swimmer,' do
       before do
-        user = GogglesDb::User.first(2).sample
+        user = GogglesDb::User.includes(swimmer: [:gender_type])
+                              .joins(swimmer: [:gender_type])
+                              .first(50)
+                              .sample
         expect(user).to be_a(GogglesDb::User).and be_valid
         expect(user.swimmer).to be_a(GogglesDb::Swimmer).and be_valid
         sign_in(user)
@@ -60,18 +63,56 @@ RSpec.describe 'Meetings', type: :request do
   #-- -------------------------------------------------------------------------
   #++
 
-  describe 'GET /show' do
+  describe 'GET /show/:id' do
     context 'with a valid row id' do
-      let(:fixture_row) { GogglesDb::Meeting.first(50).sample }
+      let(:meeting_id) { GogglesDb::Meeting.first(100).pluck(:id).sample }
 
       it 'returns http success' do
-        get(meeting_show_path(fixture_row.id))
+        get(meeting_show_path(meeting_id))
         expect(response).to have_http_status(:success)
       end
     end
 
     context 'with an invalid row id' do
       before { get(meeting_show_path(-1)) }
+
+      it_behaves_like('invalid row id GET request')
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  describe 'GET /for_swimmer/:id' do
+    context 'with a valid row id' do
+      let(:swimmer_id) { GogglesDb::Swimmer.first(100).pluck(:id).sample }
+
+      it 'returns http success' do
+        get(meetings_for_swimmer_path(swimmer_id))
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context 'with an invalid row id' do
+      before { get(meetings_for_swimmer_path(-1)) }
+
+      it_behaves_like('invalid row id GET request')
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  describe 'GET /for_team/:id' do
+    context 'with a valid row id' do
+      let(:team_id) { GogglesDb::Team.first(100).pluck(:id).sample }
+
+      it 'returns http success' do
+        get(meetings_for_swimmer_path(team_id))
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context 'with an invalid row id' do
+      before { get(meetings_for_team_path(-1)) }
 
       it_behaves_like('invalid row id GET request')
     end

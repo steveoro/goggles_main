@@ -12,14 +12,16 @@ RSpec.describe 'meetings/index.html.haml', type: :view do
     before do
       expect(current_user).to be_a(GogglesDb::User).and be_valid
       expect(current_user.swimmer).to be_a(GogglesDb::Swimmer).and be_valid
+
       sign_in(current_user)
       allow(view).to receive(:user_signed_in?).and_return(true)
+      allow(view).to receive(:current_user).and_return(current_user)
       assign(:swimmer, current_user.swimmer)
       grid = MeetingsGrid.new do |scope|
-        scope.where('meeting_individual_results.swimmer_id': current_user.swimmer_id)
-             .page(1).per(10)
+        scope.for_swimmer(current_user.swimmer).page(1).per(10)
       end
       assign(:grid, grid)
+
       render
     end
 

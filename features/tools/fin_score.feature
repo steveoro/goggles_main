@@ -7,6 +7,12 @@ Feature: Compute FIN target score or target timing
   I want to select any kind of event, pool, gender and category types
   And I want to be able to compute its target value given either the resulting score or its timing
 
+  Scenario: score calculator command directly accessible from the top menu
+    Given I am not signed in
+    When I browse to '/'
+    And I open the drop-down top menu to see the available commands
+    Then I should see the 'link-compute-score' command
+
   Scenario: using the score calculator requires authentication
     Given I am not signed in
     And I have a confirmed account

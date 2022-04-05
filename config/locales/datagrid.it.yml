@@ -9,7 +9,7 @@ it:
         asc: "<i class='fa fa fa-arrow-up'></i>"
         desc: "<i class='fa fa fa-arrow-down'></i>"
     total: "Tot."
-    rows: "rows"
+    rows: "righe"
     form:
       search: "Cerca"
       reset: "Reset"

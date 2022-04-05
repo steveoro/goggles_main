@@ -12,6 +12,7 @@ RSpec.describe 'user_workshops/index.html.haml', type: :view do
     before do
       expect(current_user).to be_a(GogglesDb::User).and be_valid
       expect(current_user.swimmer).to be_a(GogglesDb::Swimmer).and be_valid
+
       sign_in(current_user)
       allow(view).to receive(:user_signed_in?).and_return(true)
       allow(view).to receive(:current_user).and_return(current_user)
@@ -21,6 +22,7 @@ RSpec.describe 'user_workshops/index.html.haml', type: :view do
              .page(1).per(10)
       end
       assign(:grid, grid)
+
       render
     end
 

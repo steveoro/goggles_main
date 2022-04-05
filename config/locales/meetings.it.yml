@@ -13,3 +13,9 @@ it:
       reference: Riferimento
       swimming_pool: Piscina
       pool_type: Tipo vasca
+      pool_type_short: Vasca
+      filter: 'Filtro:'
+      params:
+        meeting_date_label: 'Dalla data'
+        meeting_date: 'Dalla data: %{value}'
+        meeting_name: 'Nome: ~%{value}'

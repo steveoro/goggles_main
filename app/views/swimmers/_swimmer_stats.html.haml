@@ -1,0 +1,77 @@
+%tr
+  %th{ scope: 'row' }
+    %small= t('swimmers.radiography.meeting_presence')
+  %td{ id: 'meetings-count' }= stat['meetings_count']
+
+- if stat['first_meeting'].present?
+  %tr
+    %td
+      %small= t('swimmers.radiography.first_meeting')
+    %td{ id: 'first-meeting' }= meeting_show_link(stat['first_meeting'])
+- if stat['last_meeting'].present?
+  %tr
+    %td
+      %small= t('swimmers.radiography.last_meeting')
+    %td{ id: 'last-meeting' }= meeting_show_link(stat['last_meeting'])
+
+%tr
+  %th{ scope: 'row' }
+    %small= t('swimmers.radiography.events_attended')
+  %td{ id: 'individual-count' }= stat['individual_count']
+%tr
+  %th{ scope: 'row' }
+    %small= t('swimmers.radiography.total_metres_swam')
+  %td{ id: 'individual-meters' }= stat['individual_meters']
+%tr
+  %th{ scope: 'row' }
+    %small= t('swimmers.radiography.total_time_swam')
+  %td{ id: 'individual-timing' }
+    = Timing.new(hundredths: stat['individual_hundredths'], seconds: stat['individual_seconds'],
+                 minutes: stat['individual_minutes'])
+%tr
+  %th{ scope: 'row' }
+    %small= t('swimmers.radiography.ind_disqualifications')
+  %td{ id: 'individual-dsq-count' }
+    - if stat['individual_disqualified_count'].to_i.positive?
+      = stat['individual_disqualified_count']
+    - else
+      = t('swimmers.radiography.no_disqualifications')
+
+- if stat['max_fin_points'].present?
+  %tr
+    %th{ scope: 'row' }
+      %small= t('swimmers.radiography.best_score_ever')
+    %td{ id: 'max-points' }= stat['max_fin_points']['standard_points']
+- if stat['min_fin_points'].present?
+  %tr
+    %th{ scope: 'row' }
+      %small= t('swimmers.radiography.worst_score_ever')
+    %td{ id: 'min-points' }= stat['min_fin_points']['standard_points']
+
+%tr
+  %th{ scope: 'row' }
+    %small= t('swimmers.radiography.total_fin_points')
+  %td{ id: 'tot-points' }= stat['total_fin_points']
+%tr
+  %th{ scope: 'row' }
+    %small= t('swimmers.radiography.ironmaster')
+  %td{ id: 'ironmasters' }= stat['irons_count']
+
+%tr
+  %th{ scope: 'row' }
+    %small= t('swimmers.radiography.relays_attended')
+  %td{ id: 'relay-count' }= stat['relays_count']
+%tr
+  %th{ scope: 'row' }
+    %small= t('swimmers.radiography.relay_metres_swam')
+  %td{ id: 'relay-meters' }= stat['relay_meters']
+%tr
+  %th{ scope: 'row' }
+    %small= t('swimmers.radiography.relay_time_swam')
+  %td{ id: 'relay-timing' }
+    = Timing.new(hundredths: stat['relay_hundredths'], seconds: stat['relay_seconds'],
+                 minutes: stat['relay_minutes'])
+%tr
+  %th{ scope: 'row' }
+    %small= t('swimmers.radiography.relay_disqualifications')
+  %td{ id: 'relay-dsq-count' }= stat['relay_disqualified_count']

@@ -20,7 +20,7 @@ RSpec.describe IqProcessorJob, type: :job do
         :import_queue,
         request_data: {
           'target_entity' => 'Swimmer',
-          'swimmer' => { 'id' => GogglesDb::Swimmer.select(:id).first(150).sample.id }
+          'swimmer' => { 'id' => GogglesDb::Swimmer.first(150).sample.id }
         }.to_json,
         done: true
       )

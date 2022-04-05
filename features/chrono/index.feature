@@ -8,6 +8,12 @@ Feature: Chrono index
   Also, if I have Admin grants
   I want to be able to download each pending request as a JSON file
 
+  Scenario: chrono command directly accessible from the top menu
+    Given I am not signed in
+    When I browse to '/'
+    And I open the drop-down top menu to see the available commands
+    Then I should see the 'link-chrono' command
+
   Scenario: using chrono requires authentication
     Given I am not signed in
     And I have a confirmed account

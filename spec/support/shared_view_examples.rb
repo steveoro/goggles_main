@@ -2,22 +2,21 @@
 
 # REQUIRES/ASSUMES:
 # - parsed_node...: the Nokogiri::HTML::DocumentFragment object from the rendered view
-shared_examples_for 'AbstractMeeting rendered /index view' do
-  it 'includes the link to go back to the dashboard' do
-    expect(parsed_node.at_css('#back-to-dashboard a')).to be_present
-    expect(parsed_node.at_css('#back-to-dashboard a').attributes['href'].value).to eq(home_dashboard_path)
-  end
-
+shared_examples_for 'MeetingGrid or UserWorkshopGrid datagrid partial with filtering and pagination' do
   it 'includes the datagrid section with the filtering form' do
     expect(parsed_node.at_css('section#data-grid form')).to be_present
   end
 
-  it 'includes the datagrid filtering show button' do
-    expect(parsed_node.at_css('section#data-grid #filter-show-btn button')).to be_present
+  it 'includes the datagrid filtering show button in the top row' do
+    expect(parsed_node.at_css('section#data-grid .row#datagrid-top-row #filter-show-btn button')).to be_present
   end
 
   it 'includes the pagination at the top' do
-    expect(parsed_node.at_css('section#data-grid #pagination-top')).to be_present
+    expect(parsed_node.at_css('section#data-grid .row#datagrid-top-row #pagination-top')).to be_present
+  end
+
+  it 'includes the datagrid total in the top row' do
+    expect(parsed_node.at_css('section#data-grid .row#datagrid-top-row #datagrid-total')).to be_present
   end
 
   it 'includes the datagrid table' do
@@ -27,6 +26,19 @@ shared_examples_for 'AbstractMeeting rendered /index view' do
   it 'includes the pagination at the bottom' do
     expect(parsed_node.at_css('section#data-grid #pagination-bottom')).to be_present
   end
+end
+#-- ---------------------------------------------------------------------------
+#++
+
+# REQUIRES/ASSUMES:
+# - parsed_node...: the Nokogiri::HTML::DocumentFragment object from the rendered view
+shared_examples_for 'AbstractMeeting rendered /index view' do
+  it 'includes the link to go back to the dashboard' do
+    expect(parsed_node.at_css('#back-to-dashboard a')).to be_present
+    expect(parsed_node.at_css('#back-to-dashboard a').attributes['href'].value).to eq(home_dashboard_path)
+  end
+
+  it_behaves_like('MeetingGrid or UserWorkshopGrid datagrid partial with filtering and pagination')
 end
 #-- ---------------------------------------------------------------------------
 #++
@@ -44,9 +56,9 @@ shared_examples_for '/home/dashboard rendered view' do
     expect(parsed_node.at_css('#dashboard-btns a#btn-my-past-meetings').attributes['href'].value).to eq(meetings_path)
   end
 
-  xit "includes the 'my future meetings' link" do
+  it "includes the 'my future meetings' link" do
     expect(parsed_node.at_css('#dashboard-btns a#btn-my-future-meetings')).to be_present
-    expect(parsed_node.at_css('#dashboard-btns a#btn-my-future-meetings').attributes['href'].value).to eq('')
+    expect(parsed_node.at_css('#dashboard-btns a#btn-my-future-meetings').attributes['href'].value).to eq('#')
   end
 
   it "includes the 'my workshops' link" do

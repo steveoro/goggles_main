@@ -2,14 +2,10 @@
   .spacer-left
 
   .main-content#top-of-page
-    - deco_team = @team.decorate
     %section#team-swimmers-title
       %h4.text-center= t('teams.dashboard.current_swimmers')
-      .text-center#back-to-dashboard
-        = link_to(deco_team.short_label, team_show_path(@team))
-        %sup
-          %i.fa.fa-info-circle{ onclick: "$(this).tooltip('toggle')",
-                                data: 'tooltip', title: t('teams.go_to_dashboard') }
+      .text-center#back-to-team-show
+        = render(Title::TeamShowLinkComponent.new(team: @team))
     %section.container#data-grid
       .container
         .alert.alert-info.alert-dismissible.fade.show{ role: 'alert' }
@@ -19,10 +15,20 @@
             %i= t('teams.swimmer_list.note')
           %hr/
           %small
-            %i= t('teams.swimmer_list.latest_memberships_note', team_name: deco_team.editable_name)
+            %i= t('teams.swimmer_list.latest_memberships_note', team_name: @team.editable_name)
 
       .row.my-2
-        = render(partial: 'swimmer_list', locals: { swimmers: @swimmers, latest_badges: @latest_badges })
+        %ul.nav.nav-tabs
+          - @last_affiliations.each do |team_affiliation|
+            - active = @team_affiliation&.id == team_affiliation.id
+            - swimmers_uri = active ? '#' : team_current_swimmers_path(id: team_affiliation.team_id,
+                                            team_affiliation_id: team_affiliation.id)
+            %li.nav-item
+              %a.nav-link{ href: swimmers_uri, class: active ? 'active' : '' }
+                = team_affiliation.season.decorate.short_label
+        - if @team_affiliation.present?
+          = render(partial: 'swimmer_list', locals: { swimmers: @swimmers, team_affiliation: @team_affiliation,
+                   badges: @all_badges_per_type })
 
     %section.text-center.fixed-bottom#footer
       = link_to('#top-of-page', { data: { turbolinks: false } }) do

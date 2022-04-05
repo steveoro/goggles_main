@@ -20,20 +20,29 @@ it:
       subtitle: Radiografia
       last_registered_category: "Ultima cat. registrata"
       meeting_presence: Presenza Meeting
-      first_attended_meeting: Prima gara disputata
-      last_attended_meeting: Ultima gara disputata
-      individual_events_done: Eventi individuali fatti
+      first_meeting: Prima gara disputata
+      last_meeting: Ultima gara disputata
       events_attended: Gare registrate
       total_metres_swam: Metri di gara percorsi
       total_time_swam: Tempo totale di gara
-      total_disqualifications: Squalifiche subite
+      ind_disqualifications: Squalifiche individuali
       no_disqualifications: "Nessuna !!"
       best_score_ever: Miglior punteggio
       worst_score_ever: Peggior punteggio (non nullo)
       total_fin_points: Punteggio FIN score
       ironmaster: Ironmaster completati
-      relay_events_done: Staffette fatte
       relays_attended: Staffette registrate
       relay_metres_swam: Metri totali in staffette
       relay_time_swam: Tempo totale in staffette
       relay_disqualifications: Squalifiche in staffette
+      all_meetings: Tutti i meeting
+      all_workshops: Tutti i collegiali
+    history:
+      filter: 'Filtro:'
+      params:
+        meeting_date_label: 'Dalla data'
+        meeting_date: 'Dalla data: %{value}'
+        meeting_name: 'Nome: %{value}'
+        pool_type: 'Vasca'
+        ascending: '↗'
+        descending: '↘'

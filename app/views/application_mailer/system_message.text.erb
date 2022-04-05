@@ -1,7 +1,7 @@
 <% unless Rails.env.production? %>
-  <%= '+'.ljust(31, '-') << '+' %>
-  <%= '|' << "  #{Rails.env.upcase} Server  ".center(30) << '|' %>
-  <%= '+'.ljust(31, '-') << '+' %>
+  <%= "".center(30, '=') %>
+  <%= "  #{Rails.env.upcase} Server  ".center(30, '=') %>
+  <%= "".center(30, '=') %>
 
 <% end %>
 <% if @user.present? %>

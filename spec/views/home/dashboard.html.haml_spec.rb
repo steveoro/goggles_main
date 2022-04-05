@@ -63,22 +63,27 @@ RSpec.describe 'home/dashboard.html.haml', type: :view do
         expect(parsed_node.at_css('#dashboard-btns a#btn-my-radiography').attributes['href'].value).to eq(swimmer_show_path(id: current_user&.swimmer_id))
       end
 
-      xit "includes the 'swimmer statistics' link" do
+      it "includes the 'swimmer statistics' link" do
         expect(parsed_node.at_css('#dashboard-btns a#btn-my-stats')).to be_present
-        expect(parsed_node.at_css('#dashboard-btns a#btn-my-stats').attributes['href'].value).to eq('')
+        expect(parsed_node.at_css('#dashboard-btns a#btn-my-stats').attributes['href'].value).to eq(
+          swimmer_history_recap_path(current_user.swimmer_id)
+        )
       end
 
       context 'when the current user is also a team manager,' do
-        before { assign(:current_user_is_manager, true) }
-
-        xit "includes the 'plan a meeting' link" do
-          expect(parsed_node.at_css('#dashboard-btns a#btn-plan-meeting')).to be_present
-          expect(parsed_node.at_css('#dashboard-btns a#btn-plan-meeting').attributes['href'].value).to eq('')
+        before do
+          assign(:current_user_is_manager, true)
+          render
         end
 
-        xit "includes the 'team reservation' link" do
+        it "includes the 'plan a meeting' link" do
+          expect(parsed_node.at_css('#dashboard-btns a#btn-plan-meeting')).to be_present
+          expect(parsed_node.at_css('#dashboard-btns a#btn-plan-meeting').attributes['href'].value).to eq('#')
+        end
+
+        it "includes the 'team reservation' link" do
           expect(parsed_node.at_css('#dashboard-btns a#btn-team-reservations')).to be_present
-          expect(parsed_node.at_css('#dashboard-btns a#btn-team-reservations').attributes['href'].value).to eq('')
+          expect(parsed_node.at_css('#dashboard-btns a#btn-team-reservations').attributes['href'].value).to eq('#')
         end
       end
     end

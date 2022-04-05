@@ -21,18 +21,18 @@ en:
     my:
       go_to_dashboard_tooltip: go to your Dashboard
       dashboard_title: my Dashboard
-      past_title: my attended Meetings
+      past_title: my past Meetings
       future_title: my future Meetings
       workshops_title: my Workshops
       associate_to_a_swimmer: "%{user_name} identify as a swimmer (if enlisted) and update your account"
       errors:
         no_associated_swimmer: "Your user does not have an associated swimmer."
     dashboard:
-      past_btn: past Meetings
-      future_btn: future Meetings
+      past_btn: Meetings
+      future_btn: To-do
       workshops_btn: Workshops
       radiography_btn: Radiography
-      stats_btn: Stats
+      history_btn: History
       plan_meeting_btn: plan Meeting
       team_reservation_btn: Team reservations
 

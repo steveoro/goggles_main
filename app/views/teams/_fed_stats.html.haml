@@ -1,0 +1,34 @@
+%tr
+  %td.mt-4{ colspan: 2 }
+    &nbsp;
+%tr
+  %td.bg-light-green.text-center{ colspan: 2 }
+    %span.badge.badge-pill.badge-success
+      %b.federation-name= stat['federation_name']
+%tr
+  %td
+    %small= t('teams.dashboard.affiliations_count')
+  %td
+    %b.affiliations-count= stat['affiliations_count']
+%tr
+  %td
+    %small= t('teams.dashboard.meetings_count')
+  %td
+    %b.meetings-count= stat['meetings_count']
+%tr
+  %td
+    %small= t('teams.dashboard.max_updated_at')
+  %td
+    %i.max-updated-at= stat['max_updated_at']
+
+- if stat['first_meeting'].present?
+  %tr
+    %td
+      %small= t('teams.dashboard.first_meeting')
+    %td.first-meeting= meeting_show_link(stat['first_meeting'])
+
+- if stat['last_meeting'].present?
+  %tr
+    %td
+      %small= t('teams.dashboard.last_meeting')
+    %td.last-meeting= meeting_show_link(stat['last_meeting'])
