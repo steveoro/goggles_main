@@ -6,7 +6,7 @@ class MeetingsController < ApplicationController
   before_action :authenticate_user!, only: [:index]
 
   # GET /meetings/:id
-  # Shows "My attended Meetings" grid.
+  # Shows "My attended Meetings" grid (just for the current user).
   # Requires authentication & a valid associated swimmer.
   #
   def index
@@ -22,7 +22,7 @@ class MeetingsController < ApplicationController
   #++
 
   # GET /meetings/for_swimmer/:id
-  # Displays all attended Meetings for a swimmer using a grid.
+  # Displays all attended Meetings for any swimmer using a grid.
   # Requires an existing swimmer.
   #
   # == Params

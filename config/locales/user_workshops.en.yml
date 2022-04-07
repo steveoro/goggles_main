@@ -16,4 +16,4 @@ en:
       params:
         workshop_date_label: 'From date'
         workshop_date: 'From date: %{value}'
-        workshop_name: 'Name: %{value}'
+        workshop_name: 'Name: ~%{value}'

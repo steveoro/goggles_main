@@ -18,6 +18,9 @@ class UserWorkshopDecorator < Draper::Decorator
 
   # Returns the decorated base object instance, memoized.
   def decorated
-    @decorated ||= object.decorate
+    # object.decorate is missing :season_type from default scope, so we retrieve it manually:
+    @decorated ||= GogglesDb::UserWorkshop.includes(:user, :team, :user_results, season: [:season_type])
+                                          .find_by(id: object.id)
+                                          .decorate
   end
 end

@@ -1,5 +1,5 @@
 %section.container#data-grid
-  = datagrid_form_for(grid, method: :get, url: user_workshops_path)
+  = datagrid_form_for(grid, method: :get, url: request.path)
 
   .row.my-2#datagrid-top-row
     .col-auto

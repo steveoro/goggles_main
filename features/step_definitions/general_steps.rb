@@ -103,9 +103,16 @@ end
 # Generic step for data grids with pagination and filtering
 Then('I see the index grid list with filtering and pagination controls') do
   find('section#data-grid form')
-  find('section#data-grid #filter-show-btn')
+  find('section#data-grid #datagrid-top-row', visible: true)
+  find('section#data-grid #filter-show-btn', visible: true)
   find('section#data-grid #pagination-top')
-  find('section#data-grid table')
+  find('section#data-grid table', visible: true)
   find('section#data-grid #pagination-bottom')
+end
+
+When('I make sure the filtering form for the datagrid is visible') do
+  toggle_btn = find('#filter-show-btn button', visible: true)
+  # Show the filtering form if collapsed:
+  toggle_btn.click unless find('section#data-grid form').visible?
 end
 # -----------------------------------------------------------------------------

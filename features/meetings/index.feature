@@ -22,7 +22,7 @@ Feature: My past meetings index
     Then I get redirected to '/'
     And a flash 'home.my.errors.no_associated_swimmer' message is present
 
-  Scenario: logged-in user with results browsing the index list
+  Scenario: logged-in user with results, browsing and filtering the index list
     Given I have a confirmed account with associated swimmer and existing MIRs
     And I sign-in with my existing account
     When I browse to '/meetings'
@@ -30,5 +30,11 @@ Feature: My past meetings index
     And I see my past meetings title
     And I see the link to go back to the dashboard
     And I see the index grid list with filtering and pagination controls
+
+    Given my associated swimmer is already the chosen swimmer for the meeting list
+    When I filter the meetings list by an earlier date than the first row present on the grid
+    Then I see the applied filter in the top row label and at least the first meeting in the list
+    When I filter the meetings list by a portion of the first name found on the grid
+    Then I see the applied filter in the top row label and at least the first meeting in the list
     When I click on the first row to see the details of the first meeting
     Then I am at the show page for the details of the meeting

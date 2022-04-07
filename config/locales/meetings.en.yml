@@ -18,4 +18,7 @@ en:
       params:
         meeting_date_label: 'From date'
         meeting_date: 'From date: %{value}'
-        meeting_name: 'Name: %{value}'
+        meeting_name: 'Name: ~%{value}'
+        workshop_date_label: 'From date'
+        workshop_date: 'From date: %{value}'
+        workshop_name: 'Name: ~%{value}'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 When('I open the drop-down top menu to see the available commands') do
   find('section#content', visible: true)
   # Handle both large and small screens:

@@ -109,11 +109,15 @@ end
 # Designed for Meetings
 # Sets both @current_user & @matching_swimmer
 Given('I have a confirmed account with associated swimmer and existing MIRs') do
-  @matching_swimmer = GogglesDb::MeetingIndividualResult.includes(swimmer: [:associated_user])
-                                                        .joins(swimmer: [:associated_user])
-                                                        .select(:swimmer_id)
-                                                        .distinct.map(&:swimmer)
-                                                        .uniq.sample
+  # It's faster using 2 queries instead of 1:
+  swimmer_id = GogglesDb::MeetingIndividualResult.includes(swimmer: [:associated_user])
+                                                 .joins(swimmer: [:associated_user])
+                                                 .distinct(:swimmer_id).pluck(:swimmer_id)
+                                                 .first(300).sample
+  @matching_swimmer = GogglesDb::Swimmer.find(swimmer_id)
+  expect(@matching_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
+  expect(@matching_swimmer.associated_user).to be_a(GogglesDb::User).and be_valid
+
   @current_user = @matching_swimmer.associated_user
   @current_user.confirmed_at = Time.zone.now if @current_user.confirmed_at.blank?
   # This is needed when the user comes from the test seed and its password may be already encrypted:
@@ -127,11 +131,16 @@ end
 # Designed for UserWorkshops
 # Sets both @current_user & @matching_swimmer
 Given('I have a confirmed account with associated swimmer and existing user results') do
-  @matching_swimmer = GogglesDb::UserResult.includes(swimmer: [:associated_user])
-                                           .joins(swimmer: [:associated_user])
-                                           .select(:swimmer_id)
-                                           .distinct.map(&:swimmer)
-                                           .uniq.sample
+  expect(GogglesDb::UserResult.count).to be_positive
+  # It's faster using 2 queries instead of 1:
+  swimmer_id = GogglesDb::UserResult.includes(swimmer: [:associated_user])
+                                    .joins(swimmer: [:associated_user])
+                                    .distinct(:swimmer_id).pluck(:swimmer_id)
+                                    .first(300).sample
+  @matching_swimmer = GogglesDb::Swimmer.find(swimmer_id)
+  expect(@matching_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
+  expect(@matching_swimmer.associated_user).to be_a(GogglesDb::User).and be_valid
+
   @current_user = @matching_swimmer.associated_user
   @current_user.confirmed_at = Time.zone.now if @current_user.confirmed_at.blank?
   # This is needed when the user comes from the test seed and its password may be already encrypted:
@@ -140,4 +149,9 @@ Given('I have a confirmed account with associated swimmer and existing user resu
 
   expect(@current_user.confirmed_at).to be_present
   expect(@current_user.swimmer_id).to eq(@matching_swimmer.id)
+end
+
+# Uses @matching_swimmer & sets @chosen_swimmer
+Given('my associated swimmer is already the chosen swimmer for the meeting list') do
+  @chosen_swimmer = @matching_swimmer
 end

@@ -35,12 +35,12 @@ Rails.application.routes.draw do
   get 'maintenance', to: 'maintenance#index'
   get 'search/smart'
 
-  resources :meetings, only: %i[index]
+  get 'meetings',                 to: 'meetings#index',       as: 'meetings'
   get 'meetings/show/:id',        to: 'meetings#show',        as: 'meeting_show'
   get 'meetings/for_swimmer/:id', to: 'meetings#for_swimmer', as: 'meetings_for_swimmer'
   get 'meetings/for_team/:id',    to: 'meetings#for_team',    as: 'meetings_for_team'
 
-  get 'swimming_pools/show/:id',    to: 'swimming_pools#show',    as: 'swimming_pool_show'
+  get 'swimming_pools/show/:id', to: 'swimming_pools#show', as: 'swimming_pool_show'
 
   get 'swimmers/show/:id',          to: 'swimmers#show',          as: 'swimmer_show'
   get 'swimmers/history_recap/:id', to: 'swimmers#history_recap', as: 'swimmer_history_recap'
@@ -49,7 +49,7 @@ Rails.application.routes.draw do
   get 'teams/show/:id',             to: 'teams#show',             as: 'team_show'
   get 'teams/current_swimmers/:id', to: 'teams#current_swimmers', as: 'team_current_swimmers'
 
-  resources :user_workshops, only: %i[index]
+  get 'user_workshops',                 to: 'user_workshops#index',       as: 'user_workshops'
   get 'user_workshops/show/:id',        to: 'user_workshops#show',        as: 'user_workshop_show'
   get 'user_workshops/for_swimmer/:id', to: 'user_workshops#for_swimmer', as: 'user_workshops_for_swimmer'
   get 'user_workshops/for_team/:id',    to: 'user_workshops#for_team',    as: 'user_workshops_for_team'

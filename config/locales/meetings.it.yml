@@ -19,3 +19,6 @@ it:
         meeting_date_label: 'Dalla data'
         meeting_date: 'Dalla data: %{value}'
         meeting_name: 'Nome: ~%{value}'
+        workshop_date_label: 'Dalla data'
+        workshop_date: 'Dalla data: %{value}'
+        workshop_name: 'Nome: ~%{value}'
