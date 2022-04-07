@@ -16,7 +16,7 @@ Feature: Search anything from the root page
       | model_name    | query_string    | min_count |
       | swimmer       | 'Anna'          |         5 |
       | team          | 'Swimming'      |         5 |
-      | meeting       | 'regionale CSI' |         5 |
+      | meeting       | 'regionale'     |         5 |
       | swimming_pool | 'comunale'      |         5 |
 
   Scenario Outline: Successful search with matches but no pagination
