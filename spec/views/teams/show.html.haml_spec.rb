@@ -12,14 +12,14 @@ RSpec.describe 'teams/show.html.haml', type: :view do
     it 'shows the name' do
       node = Nokogiri::HTML.fragment(rendered).at_css('td#full-name')
       expect(node).to be_present
-      expect(node.text).to include(fixture_row.name).or include(fixture_row.editable_name)
+      expect(node.text.strip).to include(fixture_row.name).or include(fixture_row.editable_name)
     end
 
     it 'shows the address' do
       node = Nokogiri::HTML.fragment(rendered).at_css('td#address')
       expect(node).to be_present
-      expect(node.text).to include(fixture_row.address.to_s)
-      expect(node.text).to include(fixture_row.city&.name) if fixture_row.city
+      expect(node.text.strip).to include(fixture_row.address.to_s)
+      expect(node.text.strip).to include(fixture_row.city&.name) if fixture_row.city
     end
 
     it 'shows the home_page_url' do

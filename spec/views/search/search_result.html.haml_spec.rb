@@ -9,7 +9,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
       result_table = Nokogiri::HTML.fragment(rendered).at_css(result_table_css)
       result_table.map do |result_table_row|
         expect(result_table_row.css('td b a').first.attributes['href'].value).to match(base_link_path)
-        expect(result_table_row.css('td b a').first.text).to match(/#{matching_name}/i)
+        expect(result_table_row.css('td b a').first.text.strip).to match(/#{matching_name}/i)
       end
     end
   end

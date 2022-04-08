@@ -28,7 +28,7 @@ RSpec.describe 'user_workshops/index.html.haml', type: :view do
 
     it 'includes the section title' do
       expect(parsed_node.at_css('section#my-workshops-title')).to be_present
-      expect(parsed_node.at_css('section#my-workshops-title h4').text).to eq(I18n.t('home.my.workshops_title'))
+      expect(parsed_node.at_css('section#my-workshops-title h4').text.strip).to eq(I18n.t('home.my.workshops_title'))
     end
 
     it_behaves_like('AbstractMeeting rendered /index view')

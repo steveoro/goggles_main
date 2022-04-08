@@ -82,14 +82,14 @@ RSpec.describe 'swimmers/show.html.haml', type: :view do
         return true if stats_row.result.blank?
 
         expect(section.at_css('td#meetings-count')).to be_present
-        expect(section.at_css('td#meetings-count').text).to eq(stats_row.result['meetings_count'].to_s)
+        expect(section.at_css('td#meetings-count').text.strip).to eq(stats_row.result['meetings_count'].to_s)
       end
 
       it 'shows the link to the first meeting (when available)' do
         return true if stats_row.result.blank? || stats_row.result&.fetch('first_meeting', nil).blank?
 
         expect(section.at_css('td#first-meeting')).to be_present
-        expect(section.at_css('td#first-meeting a').to_html).to eq(
+        expect(section.at_css('td#first-meeting a').to_html.strip).to eq(
           view.meeting_show_link(stats_row.result['first_meeting'])
         )
       end
@@ -98,7 +98,7 @@ RSpec.describe 'swimmers/show.html.haml', type: :view do
         return true if stats_row.result.blank? || stats_row.result&.fetch('last_meeting', nil).blank?
 
         expect(section.at_css('td#last-meeting')).to be_present
-        expect(section.at_css('td#last-meeting a').to_html).to eq(
+        expect(section.at_css('td#last-meeting a').to_html.strip).to eq(
           view.meeting_show_link(stats_row.result['last_meeting'])
         )
       end
@@ -107,21 +107,21 @@ RSpec.describe 'swimmers/show.html.haml', type: :view do
         return true if stats_row.result.blank?
 
         expect(section.at_css('td#individual-count')).to be_present
-        expect(section.at_css('td#individual-count').text).to eq(stats_row.result['individual_count'].to_s)
+        expect(section.at_css('td#individual-count').text.strip).to eq(stats_row.result['individual_count'].to_s)
       end
 
       it 'shows the total distance swam in meters for all the individual events' do
         return true if stats_row.result.blank?
 
         expect(section.at_css('td#individual-meters')).to be_present
-        expect(section.at_css('td#individual-meters').text).to eq(stats_row.result['individual_meters'].to_s)
+        expect(section.at_css('td#individual-meters').text.strip).to eq(stats_row.result['individual_meters'].to_s)
       end
 
       it 'shows the total time swam for all the individual events' do
         return true if stats_row.result.blank?
 
         expect(section.at_css('td#individual-timing')).to be_present
-        expect(section.at_css('td#individual-timing').text).to include(
+        expect(section.at_css('td#individual-timing').text.strip).to include(
           Timing.new(
             hundredths: stats_row.result['individual_hundredths'],
             seconds: stats_row.result['individual_seconds'],
@@ -135,9 +135,9 @@ RSpec.describe 'swimmers/show.html.haml', type: :view do
 
         expect(section.at_css('td#individual-dsq-count')).to be_present
         if stats_row.result['individual_disqualified_count'].to_i.positive?
-          expect(section.at_css('td#individual-dsq-count').text).to eq(stats_row.result['individual_disqualified_count'].to_s)
+          expect(section.at_css('td#individual-dsq-count').text.strip).to eq(stats_row.result['individual_disqualified_count'].to_s)
         else
-          expect(section.at_css('td#individual-dsq-count').text).to include(I18n.t('swimmers.radiography.no_disqualifications'))
+          expect(section.at_css('td#individual-dsq-count').text.strip).to include(I18n.t('swimmers.radiography.no_disqualifications'))
         end
       end
 
@@ -145,49 +145,49 @@ RSpec.describe 'swimmers/show.html.haml', type: :view do
         return true if stats_row.result.blank? || stats_row.result&.fetch('max_fin_points', nil).blank?
 
         expect(section.at_css('td#max-points')).to be_present
-        expect(section.at_css('td#max-points').text).to eq(stats_row.result['max_fin_points']['standard_points'].to_s)
+        expect(section.at_css('td#max-points').text.strip).to eq(stats_row.result['max_fin_points']['standard_points'].to_s)
       end
 
       it 'shows the min scored points (when available)' do
         return true if stats_row.result.blank? || stats_row.result&.fetch('min_fin_points', nil).blank?
 
         expect(section.at_css('td#min-points')).to be_present
-        expect(section.at_css('td#min-points').text).to eq(stats_row.result['min_fin_points']['standard_points'].to_s)
+        expect(section.at_css('td#min-points').text.strip).to eq(stats_row.result['min_fin_points']['standard_points'].to_s)
       end
 
       it 'shows the total scored points' do
         return true if stats_row.result.blank?
 
         expect(section.at_css('td#tot-points')).to be_present
-        expect(section.at_css('td#tot-points').text).to eq(stats_row.result['total_fin_points'].to_s)
+        expect(section.at_css('td#tot-points').text.strip).to eq(stats_row.result['total_fin_points'].to_s)
       end
 
       it 'shows the total IronMaster competitions attended' do
         return true if stats_row.result.blank?
 
         expect(section.at_css('td#ironmasters')).to be_present
-        expect(section.at_css('td#ironmasters').text).to eq(stats_row.result['irons_count'].to_s)
+        expect(section.at_css('td#ironmasters').text.strip).to eq(stats_row.result['irons_count'].to_s)
       end
 
       it 'shows the total relay events attended' do
         return true if stats_row.result.blank?
 
         expect(section.at_css('td#relay-count')).to be_present
-        expect(section.at_css('td#relay-count').text).to eq(stats_row.result['relays_count'].to_s)
+        expect(section.at_css('td#relay-count').text.strip).to eq(stats_row.result['relays_count'].to_s)
       end
 
       it 'shows the total distance swam in meters for all the relay events' do
         return true if stats_row.result.blank?
 
         expect(section.at_css('td#relay-meters')).to be_present
-        expect(section.at_css('td#relay-meters').text).to eq(stats_row.result['relay_meters'].to_s)
+        expect(section.at_css('td#relay-meters').text.strip).to eq(stats_row.result['relay_meters'].to_s)
       end
 
       it 'shows the total time swam for all the relay events' do
         return true if stats_row.result.blank?
 
         expect(section.at_css('td#relay-timing')).to be_present
-        expect(section.at_css('td#relay-timing').text).to include(
+        expect(section.at_css('td#relay-timing').text.strip).to include(
           Timing.new(
             hundredths: stats_row.result['relay_hundredths'],
             seconds: stats_row.result['relay_seconds'],
@@ -200,7 +200,7 @@ RSpec.describe 'swimmers/show.html.haml', type: :view do
         return true if stats_row.result.blank?
 
         expect(section.at_css('td#relay-dsq-count')).to be_present
-        expect(section.at_css('td#relay-dsq-count').text).to eq(stats_row.result['relay_disqualified_count'].to_s)
+        expect(section.at_css('td#relay-dsq-count').text.strip).to eq(stats_row.result['relay_disqualified_count'].to_s)
       end
     end
   end

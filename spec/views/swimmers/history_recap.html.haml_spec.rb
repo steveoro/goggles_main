@@ -123,28 +123,28 @@ RSpec.describe 'swimmers/history_recap.html.haml', type: :view do
       it 'shows that event type count for 25 mt pools' do
         table_rows.css('td.count-25').each_with_index do |node, idx|
           expect(node).to be_present
-          expect(node.text).to include(event_type_list[idx][:count25].to_s)
+          expect(node.text.strip).to include(event_type_list[idx][:count25].to_s)
         end
       end
 
       it 'shows that event type count for 50 mt pools' do
         table_rows.css('td.count-50').each_with_index do |node, idx|
           expect(node).to be_present
-          expect(node.text).to include(event_type_list[idx][:count50].to_s)
+          expect(node.text.strip).to include(event_type_list[idx][:count50].to_s)
         end
       end
 
       it 'shows that event type overall count' do
         table_rows.css('td.count').each_with_index do |node, idx|
           expect(node).to be_present
-          expect(node.text).to include(event_type_list[idx][:count].to_s)
+          expect(node.text.strip).to include(event_type_list[idx][:count].to_s)
         end
       end
 
       it 'shows that event type overall percentage with 2 digits precision' do
         table_rows.css('td.percentage').each_with_index do |node, idx|
           expect(node).to be_present
-          expect(node.text).to include(
+          expect(node.text.strip).to include(
             format('%0.2f', event_type_list[idx][:count].to_f / event_total * 100.0)
           )
         end
@@ -154,7 +154,7 @@ RSpec.describe 'swimmers/history_recap.html.haml', type: :view do
     it 'renders a table row for the overall totals' do
       tot_row = subject.css('section#swimmer-history-recap table tbody tr#overall-totals')
       expect(tot_row).to be_present
-      expect(tot_row.at_css('td.grand-total').text).to include(event_total.to_s)
+      expect(tot_row.at_css('td.grand-total').text.strip).to include(event_total.to_s)
     end
   end
 end
