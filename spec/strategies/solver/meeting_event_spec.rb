@@ -173,7 +173,8 @@ RSpec.describe Solver::MeetingEvent, type: :strategy do
                                                     .sample
                                                     .event_type_id,
           heat_type_id: GogglesDb::HeatType::FINALS_ID,
-          begin_time: DateTime.now.in_time_zone('Europe/Rome').to_s
+          # NOTE: don't use DateTime.now.in_time_zone('Europe/Rome').to_s here since on CI server may yield different results
+          begin_time: Time.zone.now.to_s
         )
       end
       let(:fixture_req) { req.call(fixture_row) }

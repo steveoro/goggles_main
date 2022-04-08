@@ -84,7 +84,8 @@ module Solver
         # NOTE: the following assumes most of the stored events will be referring to the Italy/Germany/Sweden
         #       time zone (which is still true as of 2021):
         begin_time: value_from_req(key: 'begin_time', nested: 'meeting_event', sub_key: 'begin_time') ||
-                    DateTime.now.in_time_zone('Europe/Rome').to_s
+                    Time.zone.now.to_s
+        # NOTE: don't use DateTime.now.in_time_zone('Europe/Rome').to_s here ^^ since on CI server may yield different results
       }
     end
 
