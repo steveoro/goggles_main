@@ -115,4 +115,17 @@ When('I make sure the filtering form for the datagrid is visible') do
   # Show the filtering form if collapsed:
   toggle_btn.click unless find('section#data-grid form').visible?
 end
+
+When('I submit the filters for the datagrid {string} waiting {int} secs tops for it to disappear') do |datagrid_dom_id, sleep_time_in_secs|
+  visible = true
+  find("section#data-grid form.datagrid-form#{datagrid_dom_id} .datagrid-actions input[type=\"submit\"]", visible: true).click
+
+  while sleep_time_in_secs.positive? && visible
+    putc('.')
+    sleep(1) && wait_for_ajax
+    sleep_time_in_secs -= 1
+    visible = find("section#data-grid form.datagrid-form#{datagrid_dom_id}").visible?
+    find("section#data-grid form.datagrid-form#{datagrid_dom_id} .datagrid-actions input[type=\"submit\"]", visible: true).click if visible
+  end
+end
 # -----------------------------------------------------------------------------

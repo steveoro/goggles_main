@@ -34,7 +34,7 @@ end
 #-- ---------------------------------------------------------------------------
 #++
 
-# Sets @search_filter & @filter_type
+# Sets @search_filter & @filter_name
 Then('I filter the workshops list by an earlier date than the first row present on the grid') do
   step('I make sure the filtering form for the datagrid is visible')
   workshop_date = find('section#data-grid table tbody tr td.workshop_date', visible: true).text
@@ -43,10 +43,10 @@ Then('I filter the workshops list by an earlier date than the first row present 
   @search_filter = (Date.parse(workshop_date) - 1.month).to_s
   @filter_name = 'workshop_date'
   fill_in('user_workshops_grid[workshop_date]', with: @search_filter)
-  find('.datagrid-form#new_user_workshops_grid .datagrid-actions input[type="submit"]', visible: true).click
+  step('I submit the filters for the datagrid \'#new_user_workshops_grid\' waiting 10 secs tops for it to disappear')
 end
 
-# Sets @search_filter & @filter_type
+# Sets @search_filter & @filter_name
 Then('I filter the workshops list by a portion of the first name found on the grid') do
   step('I make sure the filtering form for the datagrid is visible')
   node = find('section#data-grid table tbody tr td.workshop_name a', visible: true)
@@ -55,21 +55,26 @@ Then('I filter the workshops list by a portion of the first name found on the gr
   expect(@search_filter).to be_present
   @filter_name = 'workshop_name'
   fill_in('user_workshops_grid[workshop_name]', with: @search_filter)
-  find('.datagrid-form#new_user_workshops_grid .datagrid-actions input[type="submit"]', visible: true).click
+  step('I submit the filters for the datagrid \'#new_user_workshops_grid\' waiting 10 secs tops for it to disappear')
 end
 
-# Uses @search_filter & @filter_type
+# Uses @search_filter & @filter_name
 Then('I see the applied filter in the top row label and at least the first workshop in the list') do
   find('section#data-grid table', visible: true)
   label = find('#datagrid-top-row #filter-labels', visible: true)
-  # Filter value may be compressed in spaces:
-  expect(label.text).to include(@search_filter.split.first) && include(@search_filter.split.last)
 
   case @filter_name
   when 'workshop_date'
+    # Check filter value presence in label:
+    expect(label.text.strip).to include(@search_filter)
+    # Check actual filter value reflected on to the grid:
     workshop_date = find('section#data-grid table tbody tr td.workshop_date', visible: true).text
     expect(Date.parse(workshop_date)).to be >= Date.parse(@search_filter)
   when 'workshop_name'
+    # Check filter value presence in label:
+    # (Value may be "compressed" in spaces: let's check just the beginning and the end)
+    expect(label.text.strip).to include(@search_filter.split.first) && include(@search_filter.split.last)
+    # Check actual filter value reflected on to the grid:
     workshop_name = find('section#data-grid table tbody tr td.workshop_name', visible: true).text
     expect(workshop_name).to include(@search_filter)
   end
