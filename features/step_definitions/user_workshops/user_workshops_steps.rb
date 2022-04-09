@@ -60,7 +60,10 @@ end
 
 # Uses @search_filter & @filter_name
 Then('I see the applied filter in the top row label and at least the first workshop in the list') do
-  find('section#data-grid table', visible: true)
+  sleep(1)
+  # Wait for both the data grid table the first column to be rendered:
+  find('section#data-grid table tbody', visible: true)
+  find('section#data-grid table tbody tr td.workshop_date', visible: true)
   label = find('#datagrid-top-row #filter-labels', visible: true)
 
   case @filter_name
