@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.3.51** [Steve A.] re-sync w/ base engine
 - **0.3.50** [Steve A.] re-sync with base engine; bump Rails to 6.0.4.7 for security fixes; additional specs
 - **0.3.48** [Steve A.] re-sync with base engine; added: improved user dashboard, stats to /team & /swimmer details, current_swimmers to /teams, meetings & workshops filtered grids to /team & /swimmer, history_recap & history (w/ graphs) to /swimmer + lots of code improvements
 - **0.3.46** [Steve A.] minor bundle security fixes; re-sync with base engine
