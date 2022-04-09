@@ -50,7 +50,7 @@ Then('I filter the meetings list by an earlier date than the first row present o
   meeting_date = find('section#data-grid table tbody tr td.meeting_date', visible: true).text
   expect(meeting_date).to be_present
   # Filter by an earlier date (makes the first row always visible, assuming the order isn't changed):
-  @search_filter = (Date.parse(meeting_date) - 1.month).to_s
+  @search_filter = (Date.parse(meeting_date) - 6.months).to_s
   @filter_name = 'meeting_date'
   fill_in('meetings_grid[meeting_date]', with: @search_filter)
   step('I submit the filters for the datagrid \'#new_meetings_grid\' waiting 10 secs tops for it to disappear')
@@ -73,7 +73,7 @@ Then('I see the applied filter in the top row label and at least the first meeti
   sleep(1)
   # Wait for both the data grid table the first column to be rendered:
   find('section#data-grid table tbody', visible: true)
-  find('section#data-grid table tbody tr td.meeting_date', visible: true)
+  find('section#data-grid table tbody tr', visible: true)
   label = find('#datagrid-top-row #filter-labels', visible: true)
 
   case @filter_name
