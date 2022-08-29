@@ -33,6 +33,10 @@ class HistoryGrid < BaseGrid
     scope.where('meetings.header_date >= ?', value)
   end
 
+  filter(:meeting_name, :string, header: I18n.t('meetings.meeting')) do |value, scope|
+    scope.where('MATCH(meetings.description, meetings.code) AGAINST(?)', value)
+  end
+
   # Customizes row background color
   def row_class(row)
     'bg-light-cyan2' if row&.pool_type&.id == GogglesDb::PoolType::MT_25_ID

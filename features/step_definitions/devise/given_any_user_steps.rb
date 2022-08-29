@@ -21,6 +21,15 @@ Given('I have a locked account') do
   expect(@current_user.current_sign_in_at).to be nil
 end
 
+# Sets @current_user with Admin grants (any entity)
+Given('I have a confirmed account with admin grants') do
+  @current_user = FactoryBot.create(:user, current_sign_in_at: nil)
+  FactoryBot.create(:admin_grant, user: @current_user, entity: nil)
+  expect(@current_user.confirmed_at).to be_present
+  expect(@current_user.current_sign_in_at).to be nil
+  expect(GogglesDb::GrantChecker.admin?(@current_user)).to be true
+end
+
 Given('I am a new user') do
   @new_user = FactoryBot.build(:user)
   expect(@new_user).to be_a(GogglesDb::User).and be_valid

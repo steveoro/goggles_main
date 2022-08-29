@@ -10,6 +10,12 @@ class ApplicationController < ActionController::Base
   before_action :app_settings_row, :set_locale, :detect_device_variant, :check_maintenance_mode, :update_stats
   before_action :configure_devise_permitted_parameters, if: :devise_controller?
 
+  # Catch-all redirect in case of 404s
+  def redirect_missing
+    flash[:error] = I18n.t('search_view.errors.invalid_request')
+    redirect_to(root_path)
+  end
+
   protected
 
   # Memoize base app settings

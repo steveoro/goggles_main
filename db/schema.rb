@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_28_183111) do
+ActiveRecord::Schema.define(version: 2022_08_23_131256) do
 
   create_table "achievement_rows", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "lock_version", default: 0
@@ -43,6 +43,27 @@ ActiveRecord::Schema.define(version: 2021_07_28_183111) do
     t.string "code", limit: 10
     t.integer "user_id"
     t.index ["code"], name: "index_achievements_on_code", unique: true
+  end
+
+  create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.bigint "byte_size", null: false
+    t.string "checksum", null: false
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
   create_table "admin_grants", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -195,6 +216,38 @@ ActiveRecord::Schema.define(version: 2021_07_28_183111) do
     t.index ["stroke_type_id"], name: "fk_base_movements_stroke_types"
   end
 
+  create_table "calendars", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "lock_version", default: 0
+    t.string "scheduled_date"
+    t.string "meeting_name"
+    t.string "meeting_place"
+    t.string "manifest_code"
+    t.string "startlist_code"
+    t.string "results_code"
+    t.string "meeting_code"
+    t.integer "season_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "year", limit: 4
+    t.string "month", limit: 20
+    t.string "results_link"
+    t.string "startlist_link"
+    t.string "manifest_link"
+    t.text "manifest"
+    t.text "name_import_text"
+    t.text "organization_import_text"
+    t.text "place_import_text"
+    t.text "dates_import_text"
+    t.text "program_import_text"
+    t.integer "meeting_id"
+    t.boolean "read_only", default: false, null: false
+    t.boolean "cancelled", default: false
+    t.index ["cancelled"], name: "index_calendars_on_cancelled"
+    t.index ["meeting_code"], name: "index_calendars_on_meeting_code"
+    t.index ["meeting_id"], name: "index_calendars_on_meeting_id"
+    t.index ["season_id"], name: "index_calendars_on_season_id"
+  end
+
   create_table "category_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "lock_version", default: 0
     t.string "code", limit: 7
@@ -264,527 +317,6 @@ ActiveRecord::Schema.define(version: 2021_07_28_183111) do
     t.index ["season_id", "rank"], name: "rank_x_season"
     t.index ["season_id", "team_id"], name: "teams_x_season"
     t.index ["team_id"], name: "fk_computed_season_rankings_teams"
-  end
-
-  create_table "data_import_badges", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "data_import_session_id"
-    t.bigint "conflicting_id", default: 0
-    t.string "import_text"
-    t.string "number", limit: 40
-    t.integer "data_import_swimmer_id"
-    t.integer "data_import_team_id"
-    t.integer "data_import_season_id"
-    t.integer "swimmer_id"
-    t.integer "team_id"
-    t.integer "season_id"
-    t.integer "category_type_id"
-    t.integer "entry_time_type_id"
-    t.integer "team_affiliation_id"
-    t.index ["category_type_id"], name: "idx_di_badges_category_type"
-    t.index ["data_import_season_id"], name: "idx_di_badges_di_season"
-    t.index ["data_import_session_id"], name: "idx_di_badges_di_session"
-    t.index ["data_import_swimmer_id"], name: "idx_di_badges_di_swimmer"
-    t.index ["data_import_team_id"], name: "idx_di_badges_di_team"
-    t.index ["entry_time_type_id"], name: "idx_di_badges_entry_time_type"
-    t.index ["number"], name: "index_data_import_badges_on_number"
-    t.index ["season_id"], name: "idx_di_badges_season"
-    t.index ["swimmer_id"], name: "idx_di_badges_swimmer"
-    t.index ["team_affiliation_id"], name: "idx_di_badges_team_affiliation"
-    t.index ["team_id"], name: "idx_di_badges_team"
-  end
-
-  create_table "data_import_cities", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "data_import_session_id"
-    t.bigint "conflicting_id", default: 0
-    t.string "import_text"
-    t.string "name", limit: 50
-    t.string "zip", limit: 6
-    t.string "area", limit: 50
-    t.string "country", limit: 50
-    t.string "country_code", limit: 10
-    t.index ["data_import_session_id"], name: "idx_di_cities_di_session"
-    t.index ["name"], name: "index_data_import_cities_on_name"
-    t.index ["zip"], name: "index_data_import_cities_on_zip"
-  end
-
-  create_table "data_import_laps", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "data_import_session_id"
-    t.integer "conflicting_id", limit: 3, default: 0
-    t.string "import_text", null: false
-    t.decimal "reaction_time", precision: 5, scale: 2
-    t.integer "minutes", limit: 3
-    t.integer "seconds", limit: 2
-    t.integer "hundreds", limit: 2
-    t.integer "stroke_cycles", limit: 3
-    t.integer "underwater_seconds", limit: 2
-    t.integer "underwater_hundreds", limit: 2
-    t.integer "underwater_kicks", limit: 2
-    t.integer "breath_cycles", limit: 3
-    t.integer "position", limit: 3
-    t.integer "minutes_from_start", limit: 3
-    t.integer "seconds_from_start", limit: 2
-    t.integer "hundreds_from_start", limit: 2
-    t.boolean "native_from_start", default: false
-    t.integer "length_in_meters"
-    t.integer "data_import_meeting_program_id"
-    t.integer "data_import_meeting_individual_result_id"
-    t.integer "data_import_meeting_entry_id"
-    t.integer "data_import_swimmer_id"
-    t.integer "data_import_team_id"
-    t.integer "meeting_program_id"
-    t.integer "meeting_individual_result_id"
-    t.integer "meeting_entry_id"
-    t.integer "swimmer_id"
-    t.integer "team_id"
-    t.index ["data_import_meeting_entry_id"], name: "idx_di_passages_di_meeting_entry"
-    t.index ["data_import_meeting_individual_result_id"], name: "idx_di_passages_di_meeting_individual_result"
-    t.index ["data_import_meeting_program_id"], name: "idx_di_passages_di_meeting_program"
-    t.index ["data_import_session_id"], name: "idx_di_passages_di_session"
-    t.index ["data_import_swimmer_id"], name: "idx_di_passages_di_swimmer"
-    t.index ["data_import_team_id"], name: "idx_di_passages_di_team"
-    t.index ["length_in_meters"], name: "index_data_import_laps_on_length_in_meters"
-    t.index ["meeting_entry_id"], name: "idx_di_passages_meeting_entry"
-    t.index ["meeting_individual_result_id"], name: "idx_di_passages_meeting_individual_result"
-    t.index ["meeting_program_id"], name: "idx_di_passages_meeting_program"
-    t.index ["swimmer_id"], name: "idx_di_passages_swimmer"
-    t.index ["team_id"], name: "idx_di_passages_team"
-  end
-
-  create_table "data_import_meeting_entries", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "data_import_session_id"
-    t.bigint "conflicting_id", default: 0
-    t.string "import_text"
-    t.string "athlete_name", limit: 100
-    t.string "team_name", limit: 60
-    t.string "athlete_badge_number", limit: 40
-    t.string "team_badge_number", limit: 40
-    t.integer "year_of_birth", default: 1900
-    t.integer "minutes", limit: 3
-    t.integer "seconds", limit: 2
-    t.integer "hundreds", limit: 2
-    t.boolean "is_no_time", default: false
-    t.integer "start_list_number"
-    t.integer "lane_number", limit: 2
-    t.integer "heat_number"
-    t.integer "heat_arrival_order", limit: 2
-    t.integer "data_import_meeting_program_id"
-    t.integer "data_import_swimmer_id"
-    t.integer "data_import_team_id"
-    t.integer "data_import_badge_id"
-    t.integer "meeting_program_id"
-    t.integer "swimmer_id"
-    t.integer "team_id"
-    t.integer "team_affiliation_id"
-    t.integer "badge_id"
-    t.integer "entry_time_type_id"
-    t.index ["badge_id"], name: "idx_di_meeting_entries_badge"
-    t.index ["data_import_badge_id"], name: "idx_di_meeting_entries_di_badge"
-    t.index ["data_import_meeting_program_id"], name: "idx_di_meeting_entries_di_meeting_program"
-    t.index ["data_import_session_id"], name: "idx_di_meeting_entries_di_session"
-    t.index ["data_import_swimmer_id"], name: "idx_di_meeting_entries_di_swimmer"
-    t.index ["data_import_team_id"], name: "idx_di_meeting_entries_di_team"
-    t.index ["entry_time_type_id"], name: "idx_di_meeting_entries_entry_time_type"
-    t.index ["meeting_program_id"], name: "idx_di_meeting_entries_meeting_program"
-    t.index ["swimmer_id"], name: "idx_di_meeting_entries_swimmer"
-    t.index ["team_affiliation_id"], name: "idx_di_meeting_entries_team_affiliation"
-    t.index ["team_id"], name: "idx_di_meeting_entries_team"
-  end
-
-  create_table "data_import_meeting_individual_results", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "data_import_session_id"
-    t.bigint "conflicting_id", default: 0
-    t.string "import_text"
-    t.string "athlete_name", limit: 100
-    t.string "team_name", limit: 60
-    t.string "athlete_badge_number", limit: 40
-    t.string "team_badge_number", limit: 40
-    t.integer "year_of_birth", default: 1900
-    t.integer "rank", default: 0
-    t.boolean "play_off", default: false
-    t.boolean "out_of_race", default: false
-    t.boolean "disqualified", default: false
-    t.decimal "standard_points", precision: 10, scale: 2, default: "0.0"
-    t.decimal "meeting_individual_points", precision: 10, scale: 2, default: "0.0"
-    t.integer "minutes", limit: 3, default: 0
-    t.integer "seconds", limit: 2, default: 0
-    t.integer "hundreds", limit: 2, default: 0
-    t.integer "data_import_meeting_program_id"
-    t.integer "meeting_program_id"
-    t.integer "data_import_swimmer_id"
-    t.integer "data_import_team_id"
-    t.integer "data_import_badge_id"
-    t.integer "swimmer_id"
-    t.integer "team_id"
-    t.integer "badge_id"
-    t.integer "disqualification_code_type_id"
-    t.decimal "goggle_cup_points", precision: 10, scale: 2, default: "0.0"
-    t.decimal "reaction_time", precision: 5, scale: 2, default: "0.0"
-    t.decimal "team_points", precision: 10, scale: 2, default: "0.0"
-    t.integer "team_affiliation_id"
-    t.index ["badge_id"], name: "idx_di_mir_badge"
-    t.index ["data_import_badge_id"], name: "idx_di_mir_di_badge"
-    t.index ["data_import_meeting_program_id"], name: "idx_di_mir_di_meeting_program"
-    t.index ["data_import_session_id"], name: "idx_di_mir_di_session"
-    t.index ["data_import_swimmer_id"], name: "idx_di_mir_di_swimmer"
-    t.index ["data_import_team_id"], name: "idx_di_mir_di_team"
-    t.index ["disqualification_code_type_id"], name: "idx_di_mir_disqualification_code_type"
-    t.index ["meeting_program_id"], name: "idx_di_mir_meeting_program"
-    t.index ["swimmer_id"], name: "idx_di_mir_swimmer"
-    t.index ["team_affiliation_id"], name: "idx_di_mir_team_affiliation"
-    t.index ["team_id"], name: "idx_di_mir_team"
-  end
-
-  create_table "data_import_meeting_programs", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "data_import_session_id"
-    t.bigint "conflicting_id", default: 0
-    t.string "import_text"
-    t.integer "event_order", limit: 3, default: 0
-    t.time "begin_time"
-    t.integer "data_import_meeting_session_id"
-    t.integer "meeting_session_id"
-    t.integer "event_type_id"
-    t.integer "category_type_id"
-    t.integer "gender_type_id"
-    t.integer "minutes", limit: 3, default: 0
-    t.integer "seconds", limit: 2, default: 0
-    t.integer "hundreds", limit: 2, default: 0
-    t.boolean "out_of_race", default: false
-    t.integer "heat_type_id"
-    t.integer "time_standard_id"
-    t.index ["data_import_meeting_session_id"], name: "idx_di_meeting_programs_di_meeting_session"
-    t.index ["data_import_session_id"], name: "idx_di_meeting_programs_di_session"
-    t.index ["heat_type_id"], name: "idx_di_meeting_programs_heat_type"
-    t.index ["meeting_session_id", "category_type_id"], name: "meeting_category_type"
-    t.index ["meeting_session_id", "event_order"], name: "meeting_order"
-    t.index ["meeting_session_id", "event_type_id"], name: "meeting_event_type"
-    t.index ["meeting_session_id", "gender_type_id"], name: "meeting_gender_type"
-    t.index ["time_standard_id"], name: "idx_di_meeting_programs_time_standard"
-  end
-
-  create_table "data_import_meeting_relay_results", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "data_import_session_id"
-    t.bigint "conflicting_id", default: 0
-    t.string "import_text"
-    t.integer "rank", default: 0
-    t.boolean "play_off", default: false
-    t.boolean "out_of_race", default: false
-    t.boolean "disqualified", default: false
-    t.decimal "standard_points", precision: 10, scale: 2, default: "0.0"
-    t.decimal "meeting_points", precision: 10, scale: 2, default: "0.0"
-    t.integer "minutes", limit: 3, default: 0
-    t.integer "seconds", limit: 2, default: 0
-    t.integer "hundreds", limit: 2, default: 0
-    t.integer "data_import_team_id"
-    t.integer "team_id"
-    t.integer "data_import_meeting_program_id"
-    t.integer "meeting_program_id"
-    t.integer "disqualification_code_type_id"
-    t.string "relay_header", limit: 60, default: ""
-    t.decimal "reaction_time", precision: 5, scale: 2, default: "0.0"
-    t.integer "entry_minutes", limit: 3
-    t.integer "entry_seconds", limit: 2
-    t.integer "entry_hundreds", limit: 2
-    t.integer "team_affiliation_id"
-    t.integer "entry_time_type_id"
-    t.index ["data_import_meeting_program_id"], name: "idx_di_mrr_di_meeting_program"
-    t.index ["data_import_session_id"], name: "idx_di_mrr_di_session"
-    t.index ["data_import_team_id"], name: "idx_di_mrr_di_team"
-    t.index ["disqualification_code_type_id"], name: "idx_di_mrr_disqualification_code_type"
-    t.index ["entry_time_type_id"], name: "idx_di_mrr_entry_time_type"
-    t.index ["meeting_program_id"], name: "idx_di_mrr_meeting_program"
-    t.index ["team_affiliation_id"], name: "idx_di_mrr_team_affiliation"
-    t.index ["team_id"], name: "idx_di_mrr_team"
-  end
-
-  create_table "data_import_meeting_relay_swimmers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "data_import_session_id"
-    t.integer "conflicting_id", limit: 3, default: 0
-    t.string "import_text", null: false
-    t.decimal "reaction_time", precision: 5, scale: 2
-    t.integer "minutes", limit: 3
-    t.integer "seconds", limit: 2
-    t.integer "hundreds", limit: 2
-    t.integer "relay_order", limit: 3, default: 0
-    t.integer "data_import_swimmer_id"
-    t.integer "data_import_team_id"
-    t.integer "data_import_badge_id"
-    t.integer "swimmer_id"
-    t.integer "badge_id"
-    t.integer "stroke_type_id"
-    t.integer "meeting_relay_result_id"
-    t.integer "data_import_meeting_relay_result_id"
-    t.integer "team_id"
-    t.index ["badge_id"], name: "idx_di_meeting_relay_swimmers_badge"
-    t.index ["data_import_badge_id"], name: "idx_di_meeting_relay_swimmers_di_badge"
-    t.index ["data_import_meeting_relay_result_id"], name: "idx_di_meeting_relay_swimmers_di_meeting_relay_result"
-    t.index ["data_import_session_id"], name: "idx_di_meeting_relay_swimmers_di_session"
-    t.index ["data_import_swimmer_id"], name: "idx_di_meeting_relay_swimmers_di_swimmer"
-    t.index ["data_import_team_id"], name: "idx_di_meeting_relay_swimmers_di_team"
-    t.index ["meeting_relay_result_id"], name: "idx_di_meeting_relay_swimmers_meeting_relay_result"
-    t.index ["stroke_type_id"], name: "idx_di_meeting_relay_swimmers_stroke_type"
-    t.index ["swimmer_id"], name: "idx_di_meeting_relay_swimmers_swimmer"
-    t.index ["team_id"], name: "idx_di_meeting_relay_swimmers_team"
-  end
-
-  create_table "data_import_meeting_sessions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "data_import_session_id"
-    t.bigint "conflicting_id", default: 0
-    t.string "import_text"
-    t.integer "session_order", limit: 2, default: 0
-    t.date "scheduled_date"
-    t.time "warm_up_time"
-    t.time "begin_time"
-    t.text "notes"
-    t.integer "data_import_meeting_id"
-    t.integer "meeting_id"
-    t.integer "swimming_pool_id"
-    t.string "description", limit: 100
-    t.integer "day_part_type_id"
-    t.index ["data_import_meeting_id"], name: "idx_di_meeting_sessions_di_meeting"
-    t.index ["data_import_session_id"], name: "idx_di_meeting_sessions_di_session"
-    t.index ["day_part_type_id"], name: "idx_di_meeting_sessions_day_part_type"
-    t.index ["meeting_id"], name: "idx_di_meeting_sessions_meeting"
-    t.index ["scheduled_date"], name: "index_data_import_meeting_sessions_on_scheduled_date"
-    t.index ["swimming_pool_id"], name: "idx_di_meeting_sessions_swimming_pool"
-  end
-
-  create_table "data_import_meeting_team_scores", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "data_import_session_id"
-    t.bigint "conflicting_id", default: 0
-    t.string "import_text"
-    t.decimal "sum_individual_points", precision: 10, scale: 2, default: "0.0"
-    t.decimal "sum_relay_points", precision: 10, scale: 2, default: "0.0"
-    t.integer "data_import_team_id"
-    t.integer "data_import_meeting_id"
-    t.integer "team_id"
-    t.integer "meeting_id"
-    t.integer "rank", default: 0
-    t.decimal "sum_team_points", precision: 10, scale: 2, default: "0.0"
-    t.decimal "meeting_individual_points", precision: 10, scale: 2, default: "0.0"
-    t.decimal "meeting_relay_points", precision: 10, scale: 2, default: "0.0"
-    t.decimal "meeting_team_points", precision: 10, scale: 2, default: "0.0"
-    t.decimal "season_individual_points", precision: 10, scale: 2, default: "0.0"
-    t.decimal "season_relay_points", precision: 10, scale: 2, default: "0.0"
-    t.decimal "season_team_points", precision: 10, scale: 2, default: "0.0"
-    t.integer "season_id"
-    t.integer "team_affiliation_id"
-    t.index ["data_import_meeting_id"], name: "idx_di_meeting_team_scores_di_meeting"
-    t.index ["data_import_session_id"], name: "idx_di_meeting_team_scores_di_session"
-    t.index ["data_import_team_id"], name: "idx_di_meeting_team_scores_di_team"
-    t.index ["meeting_id"], name: "idx_di_meeting_team_scores_meeting"
-    t.index ["season_id"], name: "idx_di_meeting_team_scores_season"
-    t.index ["team_affiliation_id"], name: "idx_di_meeting_team_scores_team_affiliation"
-    t.index ["team_id"], name: "idx_di_meeting_team_scores_team"
-  end
-
-  create_table "data_import_meetings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "data_import_session_id"
-    t.bigint "conflicting_id", default: 0
-    t.string "import_text"
-    t.string "description", limit: 100
-    t.date "entry_deadline"
-    t.boolean "warm_up_pool", default: false
-    t.boolean "allows_under_25", default: false
-    t.string "reference_phone", limit: 40
-    t.string "reference_e_mail", limit: 50
-    t.string "reference_name", limit: 50
-    t.text "notes"
-    t.string "tag", limit: 20
-    t.boolean "manifest", default: false
-    t.boolean "startlist", default: false
-    t.boolean "results_acquired", default: false
-    t.integer "max_individual_events", limit: 1, default: 2
-    t.string "configuration_file", limit: 50
-    t.integer "edition", limit: 3, default: 0
-    t.integer "data_import_season_id"
-    t.integer "season_id"
-    t.date "header_date"
-    t.string "code", limit: 50
-    t.string "header_year", limit: 9
-    t.integer "max_individual_events_per_session", limit: 2, default: 2
-    t.boolean "off_season", default: false
-    t.integer "edition_type_id"
-    t.integer "timing_type_id"
-    t.integer "individual_score_computation_type_id"
-    t.integer "relay_score_computation_type_id"
-    t.integer "team_score_computation_type_id"
-    t.integer "meeting_score_computation_type_id"
-    t.index ["code", "edition"], name: "idx_di_meetings_code"
-    t.index ["data_import_season_id"], name: "idx_di_meetings_di_season"
-    t.index ["data_import_session_id"], name: "idx_di_meetings_di_session"
-    t.index ["edition_type_id"], name: "idx_di_meetings_edition_type"
-    t.index ["entry_deadline"], name: "index_data_import_meetings_on_entry_deadline"
-    t.index ["header_date"], name: "idx_di_meetings_header_date"
-    t.index ["season_id"], name: "idx_di_meetings_season"
-    t.index ["timing_type_id"], name: "idx_di_meetings_timing_type"
-  end
-
-  create_table "data_import_seasons", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "data_import_session_id"
-    t.bigint "conflicting_id", default: 0
-    t.string "import_text"
-    t.string "description", limit: 100
-    t.date "begin_date"
-    t.date "end_date"
-    t.integer "season_type_id"
-    t.string "header_year", limit: 9
-    t.integer "edition", limit: 3, default: 0
-    t.integer "edition_type_id"
-    t.integer "timing_type_id"
-    t.index ["begin_date"], name: "index_data_import_seasons_on_begin_date"
-    t.index ["data_import_session_id"], name: "idx_di_seasons_di_session"
-    t.index ["edition_type_id"], name: "idx_di_seasons_edition_type"
-    t.index ["season_type_id"], name: "idx_di_seasons_season_type"
-    t.index ["timing_type_id"], name: "idx_di_seasons_timing_type"
-  end
-
-  create_table "data_import_sessions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "file_name"
-    t.text "source_data", size: :medium
-    t.integer "phase"
-    t.integer "total_data_rows"
-    t.string "file_format"
-    t.text "phase_1_log", size: :medium
-    t.text "phase_2_log"
-    t.text "phase_3_log", size: :medium
-    t.integer "data_import_season_id"
-    t.integer "season_id"
-    t.integer "user_id"
-    t.text "sql_diff"
-    t.integer "log_verbosity", default: 0
-    t.index ["data_import_season_id"], name: "idx_di_sessions_di_season"
-    t.index ["season_id"], name: "idx_di_sessions_season"
-    t.index ["user_id"], name: "user_id"
-  end
-
-  create_table "data_import_swimmer_aliases", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "complete_name", limit: 100
-    t.integer "swimmer_id"
-    t.index ["swimmer_id", "complete_name"], name: "idx_swimmer_id_complete_name", unique: true
-  end
-
-  create_table "data_import_swimmer_analysis_results", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "data_import_session_id"
-    t.text "analysis_log_text", size: :medium
-    t.text "sql_text", size: :medium
-    t.string "searched_swimmer_name", limit: 100
-    t.integer "chosen_swimmer_id"
-    t.string "match_name", limit: 60
-    t.decimal "match_score", precision: 10, scale: 4, default: "0.0"
-    t.string "best_match_name", limit: 60
-    t.decimal "best_match_score", precision: 10, scale: 4, default: "0.0"
-    t.integer "desired_year_of_birth", default: 1900
-    t.bigint "desired_gender_type_id"
-    t.integer "max_year_of_birth"
-    t.integer "category_type_id"
-    t.index ["category_type_id"], name: "idx_di_swimmer_analysis_results_category_type"
-    t.index ["data_import_session_id", "searched_swimmer_name", "desired_year_of_birth", "desired_gender_type_id"], name: "idx_di_session_swimmer_name", unique: true
-    t.index ["desired_gender_type_id"], name: "idx_di_swimmer_gender_type"
-  end
-
-  create_table "data_import_swimmers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "data_import_session_id"
-    t.bigint "conflicting_id", default: 0
-    t.string "import_text"
-    t.string "last_name"
-    t.string "first_name"
-    t.integer "year_of_birth", default: 1900
-    t.integer "gender_type_id"
-    t.string "complete_name", limit: 100
-    t.index ["complete_name"], name: "index_data_import_swimmers_on_complete_name"
-    t.index ["data_import_session_id"], name: "idx_di_swimmers_di_session"
-    t.index ["gender_type_id"], name: "idx_di_swimmers_gender_type"
-    t.index ["last_name", "first_name"], name: "full_name"
-  end
-
-  create_table "data_import_team_aliases", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "name", limit: 60
-    t.integer "team_id"
-    t.index ["team_id", "name"], name: "idx_team_id_name", unique: true
-  end
-
-  create_table "data_import_team_analysis_results", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "data_import_session_id"
-    t.text "analysis_log_text", size: :medium
-    t.text "sql_text"
-    t.string "searched_team_name", limit: 60
-    t.integer "desired_season_id"
-    t.integer "chosen_team_id"
-    t.string "team_match_name", limit: 60
-    t.decimal "team_match_score", precision: 10, scale: 4, default: "0.0"
-    t.string "best_match_name", limit: 60
-    t.decimal "best_match_score", precision: 10, scale: 4, default: "0.0"
-    t.index ["data_import_session_id", "searched_team_name", "desired_season_id"], name: "idx_di_session_name_and_season", unique: true
-  end
-
-  create_table "data_import_teams", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "data_import_session_id"
-    t.bigint "conflicting_id", default: 0
-    t.string "import_text"
-    t.string "name", limit: 60
-    t.string "badge_number", limit: 40
-    t.integer "data_import_city_id"
-    t.integer "city_id"
-    t.index ["city_id"], name: "city_id"
-    t.index ["data_import_city_id"], name: "data_import_city_id"
-    t.index ["data_import_session_id"], name: "idx_di_teams_di_session"
-    t.index ["name"], name: "index_data_import_teams_on_name"
   end
 
   create_table "day_part_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -922,36 +454,6 @@ ActiveRecord::Schema.define(version: 2021_07_28_183111) do
     t.index ["code"], name: "index_federation_types_on_code", unique: true
   end
 
-  create_table "fin_calendars", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.string "calendar_date"
-    t.string "calendar_name"
-    t.string "calendar_place"
-    t.string "fin_manifest_code"
-    t.string "fin_startlist_code"
-    t.string "fin_results_code"
-    t.string "goggles_meeting_code"
-    t.integer "season_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "calendar_year", limit: 4
-    t.string "calendar_month", limit: 20
-    t.string "results_link"
-    t.string "startlist_link"
-    t.string "manifest_link"
-    t.text "manifest"
-    t.text "name_import_text"
-    t.text "organization_import_text"
-    t.text "place_import_text"
-    t.text "dates_import_text"
-    t.text "program_import_text"
-    t.integer "meeting_id"
-    t.boolean "do_not_update", default: false, null: false
-    t.index ["goggles_meeting_code"], name: "index_fin_calendars_on_goggles_meeting_code"
-    t.index ["meeting_id"], name: "index_fin_calendars_on_meeting_id"
-    t.index ["season_id"], name: "index_fin_calendars_on_season_id"
-  end
-
   create_table "friendships", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "friendable_id"
     t.integer "friend_id"
@@ -1057,6 +559,8 @@ ActiveRecord::Schema.define(version: 2021_07_28_183111) do
     t.string "bindings_left_list"
     t.text "error_messages"
     t.integer "import_queue_id"
+    t.boolean "batch_sql", default: false
+    t.index ["batch_sql"], name: "index_import_queues_on_batch_sql"
     t.index ["done"], name: "index_import_queues_on_done"
     t.index ["import_queue_id"], name: "index_import_queues_on_import_queue_id"
     t.index ["user_id", "uid"], name: "index_import_queues_on_user_id_and_uid"
@@ -1268,13 +772,13 @@ ActiveRecord::Schema.define(version: 2021_07_28_183111) do
     t.time "begin_time"
     t.integer "meeting_event_id"
     t.integer "pool_type_id"
-    t.integer "time_standard_id"
+    t.integer "standard_timing_id"
     t.index ["category_type_id"], name: "meeting_category_type"
     t.index ["event_order"], name: "meeting_order"
     t.index ["gender_type_id"], name: "meeting_gender_type"
     t.index ["meeting_event_id"], name: "fk_meeting_programs_meeting_events"
     t.index ["pool_type_id"], name: "fk_meeting_programs_pool_types"
-    t.index ["time_standard_id"], name: "fk_meeting_programs_time_standards"
+    t.index ["standard_timing_id"], name: "fk_meeting_programs_time_standards"
   end
 
   create_table "meeting_relay_reservations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1358,9 +862,11 @@ ActiveRecord::Schema.define(version: 2021_07_28_183111) do
     t.boolean "confirmed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "payed", default: false, null: false
     t.index ["badge_id"], name: "index_meeting_reservations_on_badge_id"
     t.index ["meeting_id", "badge_id"], name: "idx_unique_reservation", unique: true
     t.index ["meeting_id"], name: "index_meeting_reservations_on_meeting_id"
+    t.index ["payed"], name: "index_meeting_reservations_on_payed"
     t.index ["swimmer_id"], name: "index_meeting_reservations_on_swimmer_id"
     t.index ["team_id"], name: "index_meeting_reservations_on_team_id"
     t.index ["user_id"], name: "index_meeting_reservations_on_user_id"
@@ -1697,6 +1203,14 @@ ActiveRecord::Schema.define(version: 2021_07_28_183111) do
     t.index ["eventable"], name: "idx_is_eventable"
   end
 
+  create_table "swimmer_aliases", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "lock_version", default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "complete_name", limit: 100
+    t.integer "swimmer_id"
+  end
+
   create_table "swimmer_level_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "lock_version", default: 0
     t.datetime "created_at"
@@ -1843,6 +1357,15 @@ ActiveRecord::Schema.define(version: 2021_07_28_183111) do
     t.index ["number"], name: "index_team_affiliations_on_number"
     t.index ["season_id", "team_id"], name: "uk_team_affiliations_seasons_teams", unique: true
     t.index ["team_id"], name: "fk_team_affiliations_teams"
+  end
+
+  create_table "team_aliases", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "lock_version", default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "name", limit: 60
+    t.integer "team_id"
+    t.index ["team_id", "name"], name: "idx_team_id_name", unique: true
   end
 
   create_table "team_lap_templates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -2005,10 +1528,12 @@ ActiveRecord::Schema.define(version: 2021_07_28_183111) do
     t.integer "event_type_id"
     t.bigint "user_workshop_id", null: false
     t.bigint "swimming_pool_id"
+    t.bigint "standard_timing_id"
     t.index ["category_type_id"], name: "fk_user_results_category_types"
     t.index ["disqualification_code_type_id"], name: "idx_user_results_disqualification_code_type"
     t.index ["event_type_id"], name: "fk_user_results_event_types"
     t.index ["pool_type_id"], name: "fk_user_results_pool_types"
+    t.index ["standard_timing_id"], name: "index_user_results_on_standard_timing_id"
     t.index ["swimmer_id"], name: "fk_user_results_swimmers"
     t.index ["swimming_pool_id"], name: "index_user_results_on_swimming_pool_id"
     t.index ["user_id"], name: "fk_rails_e406f4db18"
@@ -2179,6 +1704,7 @@ ActiveRecord::Schema.define(version: 2021_07_28_183111) do
     t.index ["voter_id", "voter_type"], name: "index_votes_on_voter_id_and_voter_type"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "laps", "meeting_individual_results"
   add_foreign_key "laps", "swimmers"
   add_foreign_key "laps", "teams"

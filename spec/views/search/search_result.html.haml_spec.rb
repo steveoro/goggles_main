@@ -49,7 +49,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
   # Test content without pagination:
   context 'when searching for a swimmer name with a few (<= 5) positive matches,' do
     before do
-      swimmers = GogglesDb::Swimmer.for_name('John').page(1).per(5)
+      swimmers = GogglesDb::Swimmer.for_name('Alloro').page(1).per(5)
       expect(swimmers.total_count).to be <= 5
       render(
         partial: 'search_results',
@@ -67,7 +67,7 @@ RSpec.describe 'search/_search_results.html.haml', type: :view do
       'search result table showing a matching list page',
       '#swimmer-results table tbody tr',
       'swimmer\/show\?',
-      'John'
+      'Alloro'
     )
     it 'doesn\'t show the pagination controls' do
       expect(rendered).not_to include('page-link')

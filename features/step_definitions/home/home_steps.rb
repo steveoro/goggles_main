@@ -64,3 +64,10 @@ Then('I see the button {string} {string}') do |button_id, status|
   end
 end
 # -----------------------------------------------------------------------------
+
+Then('I can see the main Jobs web UI page') do
+  expect(page).to have_css('h1')
+  expect(find('h1')).to have_content('Jobs')
+  expect(find('table thead tr').text).to include('ID') && include('Status') && include('Queue') && include('Actions')
+end
+# -----------------------------------------------------------------------------

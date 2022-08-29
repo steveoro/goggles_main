@@ -20,6 +20,15 @@ th.ordered.desc a.desc {
     font-weight: normal;
 }
 
+#data-grid td.rank,
+#data-grid td.pool_type,
+#data-grid td.meeting_date {
+  text-align: center;
+}
+
+#data-grid td.timing {
+  text-align: right;
+}
 #data-grid .datagrid-actions {
   padding: 0px;
   text-align: center !important;

@@ -10,8 +10,12 @@ Rails.application.routes.draw do
                      }
   root to: 'home#index'
 
-  # Mounting and usage of the Engine:
+  # Mounting and usage of the Core Engine:
   mount GogglesDb::Engine => '/'
+  # Job UI:
+  authenticated :user, ->(user) { GogglesDb::GrantChecker.admin?(user) } do
+    mount Delayed::Web::Engine, at: '/jobs'
+  end
 
   post 'api_sessions/jwt', format: :json
   get 'users/google_oauth/continue'
@@ -57,5 +61,8 @@ Rails.application.routes.draw do
   get 'tools/fin_score'
   # TODO: move the following to a dedicated API endpoint:
   get 'tools/compute_fin_score', format: :json
+
+  # Catch-all redirect in case of 404s
+  get '*path', to: 'application#redirect_missing'
 end
 # rubocop:enable Metrics/BlockLength

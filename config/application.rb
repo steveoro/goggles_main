@@ -10,6 +10,7 @@ Bundler.require(*Rails.groups)
 
 module GogglesMain
   class Application < Rails::Application
+    config.assets.precompile << 'delayed/web/application.css'
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 

@@ -8,7 +8,15 @@ RSpec.describe 'meetings/for_team.html.haml', type: :view do
     subject(:parsed_node) { Nokogiri::HTML.fragment(rendered) }
 
     let(:current_user) { GogglesDb::User.first(50).sample }
-    let(:fixture_row) { GogglesDb::Team.first(150).sample }
+    # We have to make sure the chosen team does have a meeting otherwise the
+    # decorator for the label will throw an error:
+    let(:team_id_with_meetings) do
+      GogglesDb::MeetingIndividualResult.includes(:team).select(:team_id)
+                                        .distinct(:team_id).first(500)
+                                        .pluck(:team_id)
+                                        .sample
+    end
+    let(:fixture_row) { GogglesDb::Team.find(team_id_with_meetings) }
     let(:fixture_params) { { id: fixture_row.id } }
 
     before do

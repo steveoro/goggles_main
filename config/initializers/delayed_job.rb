@@ -2,8 +2,8 @@
 
 # Delayed::Worker.destroy_failed_jobs = true # default: true
 Delayed::Worker.sleep_delay = 60 # idle time before next polling when the queue is empty
-Delayed::Worker.max_attempts = 5 # default: 25
-Delayed::Worker.max_run_time = 5.minutes
+Delayed::Worker.max_attempts = 3 # default: 25
+Delayed::Worker.max_run_time = 30.minutes
 Delayed::Worker.read_ahead = 5 # default: read 5 jobs ahead when fetching work
 Delayed::Worker.default_queue_name = 'default'
 # Delayed::Worker.priority = 0 # default: 0 for all enqueued works

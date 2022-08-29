@@ -23,6 +23,7 @@ services:
       - '9081:8081'
     restart: always
     volumes:
+      - "~/Projects/goggles_deploy/storage.staging:/app/storage"
       - "~/Projects/goggles_deploy/db.staging:/var/lib/mysql"
       - "~/Projects/goggles_deploy/backups:/app/db/dump"
       - "~/Projects/goggles_deploy/log.staging/api:/app/log"
@@ -43,6 +44,7 @@ services:
       - '9080:8080'
     restart: always
     volumes:
+      - "~/Projects/goggles_deploy/storage.staging:/app/storage"
       - "~/Projects/goggles_deploy/db.staging:/var/lib/mysql"
       - "~/Projects/goggles_deploy/backups:/app/db/dump"
       - "~/Projects/goggles_deploy/log.staging:/app/log"

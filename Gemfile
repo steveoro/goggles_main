@@ -34,6 +34,7 @@ gem 'browser' # detect request.variant type depending on request.user_agent
 gem 'daemons'
 gem 'datagrid'
 gem 'delayed_job_active_record'
+gem 'delayed-web'
 gem 'devise'
 gem 'devise-i18n'
 # Inherited data factories from DB engine, published also on production/staging

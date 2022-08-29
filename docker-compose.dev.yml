@@ -23,6 +23,7 @@ services:
       - '8081:8081'
     restart: always
     volumes:
+      - "~/Projects/goggles_deploy/storage.prod:/app/storage"
       - "~/Projects/goggles_deploy/db.prod:/var/lib/mysql"
       - "~/Projects/goggles_deploy/backups:/app/db/dump"
       - "~/Projects/goggles_deploy/log.prod/api:/app/log"

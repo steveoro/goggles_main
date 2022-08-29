@@ -33,6 +33,9 @@
           = link_to("🔢 #{t('home.compute_fin_score')}", tools_fin_score_path, id: 'link-compute-score',
                     class: 'dropdown-item')
           .dropdown-divider
+          - if GogglesDb::GrantChecker.admin?(current_user)
+            = link_to('🛠 DelayedJob web UI', '/jobs', id: 'link-jobs', class: 'dropdown-item')
+            .dropdown-divider
           %a.dropdown-item{ href: '#' } MORE FEATURES COMING SOON
       %li.nav-item
         %a.nav-link.disabled{ 'aria-disabled' => 'true', href: '#', tabindex: '-1' } &nbsp;

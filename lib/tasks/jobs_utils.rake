@@ -37,13 +37,18 @@ namespace :jobs do
   #++
 
   desc <<~DESC
-    Spawns a new IqProcessorJob that will end immediately if import_queues is empty.
+    Spawns all the different types of required ImportProcessorJobs which will end
+    immediately if their corresponding target queue types do not have any rows in it.
+
+    This "one-shot" behaviour is mandatory for this task because it's supposed
+    to be run periodically by an external cron job (typically every few minutes).
 
     Options: [Rails.env=#{Rails.env}]
   DESC
   task(iq_processor_spawn: [:environment]) do
-    puts "\r\n\t*** Spawning IqProcessorJob ***"
-    IqProcessorJob.perform_later
+    puts "\r\n\t*** Spawning ImportProcessorJob ***"
+    Delayed::Job.enqueue(ImportProcessorJob.new('iq'))
+    Delayed::Job.enqueue(ImportProcessorJob.new('sql'))
     puts 'Done.'
   end
 end
