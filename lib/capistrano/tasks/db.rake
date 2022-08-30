@@ -96,6 +96,51 @@ namespace :db do
   #++
 
   desc <<~DESC
+    Runs remotely the 'db:rebuild' task for the specified deploy stage.
+
+    The 'db:rebuild' rake task recreates from scratch the target DB, named as the stage,
+    using the current dump stored inside the remote 'db/dump' folder (a compressed DB dump file
+    conveniently named after the running Rails environment).
+    These dumps can be easily created with the counterpart 'db:dump' task.
+
+    On the remote host, the 'db/dump' folder is usually mapped onto the '/backups' directory.
+    A dump file name override can also be set.
+
+
+    ** Usage: **
+
+      > cap <STAGE> db:rebuild
+
+      Run the remote task, restoring the whole DB from 'backups/<STAGE>.sql.bz2'
+
+    Or:
+      > cap <STAGE> db:rebuild[from=<BASE_FILENAME>]
+
+      Same as above, but uses the remote dump file named 'db/dump/<BASE_FILENAME>.sql.bz2'.
+      (Only the 'from' option is supported: the destination will always be tied to the stage name)
+
+  DESC
+  task :rebuild, :action do |_t, args|
+    display_common_header
+    action, name_override = args[:action].to_s.split('=')
+    file_name = name_override || fetch(:stage)
+    puts "- Dump file....: #{file_name}"
+
+    on roles(:app) do
+      if action.to_s.empty?
+        info('Running remote db:rebuild...')
+        execute(:docker, "exec #{fetch(:app_service)} sh -c 'bundle exec rails db:rebuild'")
+
+      elsif action == 'from'
+        info("Running remote db:rebuild using the 'from' option...")
+        execute(:docker, "exec #{fetch(:app_service)} sh -c 'bundle exec rails db:rebuild from=#{name_override}'")
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  desc <<~DESC
     Loops on all the '.sql' files found in a specified directory, uploads and executes them in
     alphabetical order on the remote host, one by one, using the corresponding <STAGE> database.
 
