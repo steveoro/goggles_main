@@ -15,9 +15,14 @@ end
 # Requires a @current_user
 When('I fill the log-in form as the confirmed user') do
   expect(@current_user).to be_a(GogglesDb::User).and be_valid
+  wait_for_ajax && sleep(2)
+  find('#login-box', visible: true) # wait for rendering ("visit" doesn't)
   fill_in('user_email', with: @current_user.email)
   fill_in('user_password', with: @current_user.password)
-  find('#login-btn').click
+  btn = find('#login-btn', visible: true)
+  page.scroll_to(btn) # force the button into the center of the viewport
+  wait_for_ajax && sleep(0.5)
+  btn.click
 end
 
 # Requires a @current_user
@@ -29,9 +34,14 @@ end
 # Requires a @new_user
 When('I fill the log-in form as a new user') do
   expect(@new_user).to be_a(GogglesDb::User)
+  wait_for_ajax && sleep(2)
+  find('#login-box', visible: true) # wait for rendering ("visit" doesn't)
   fill_in('user_email', with: @new_user.email)
   fill_in('user_password', with: @new_user.password)
-  find('#login-btn').click
+  btn = find('#login-btn', visible: true)
+  page.scroll_to(btn) # force the button into the center of the viewport
+  wait_for_ajax && sleep(0.5)
+  btn.click
 end
 
 Then('an unsuccessful login flash message is present') do
@@ -52,6 +62,8 @@ end
 # Prepares & sets a new @current_user
 When('I fill the registration form as a new user') do
   @current_user = FactoryBot.build(:user)
+  wait_for_ajax && sleep(2)
+  find('#signup-box', visible: true) # wait for rendering ("visit" doesn't)
   fill_in('user_email', with: @current_user.email)
   fill_in('user_name', with: @current_user.name)
   fill_in('user_password', with: 'Password123!')
@@ -59,7 +71,10 @@ When('I fill the registration form as a new user') do
   fill_in('user_first_name', with: @current_user.first_name)
   fill_in('user_last_name', with: @current_user.last_name)
   fill_in('user_year_of_birth', with: @current_user.year_of_birth)
-  find('#signup-btn').click
+  btn = find('#signup-btn', visible: true)
+  page.scroll_to(btn) # force the button into the center of the viewport
+  wait_for_ajax && sleep(0.5)
+  btn.click
 end
 
 # Assumes @current_user has been previously built or set
@@ -90,6 +105,8 @@ end
 # Prepares & sets a new @current_user
 When('I fill the registration form as an existing user') do
   @current_user = GogglesDb::User.first(50).sample
+  wait_for_ajax && sleep(2)
+  find('#signup-box', visible: true) # wait for rendering ("visit" doesn't)
   fill_in('user_email', with: @current_user.email)
   fill_in('user_name', with: @current_user.name)
   fill_in('user_password', with: 'Password123!')
@@ -97,14 +114,15 @@ When('I fill the registration form as an existing user') do
   fill_in('user_first_name', with: @current_user.first_name)
   fill_in('user_last_name', with: @current_user.last_name)
   fill_in('user_year_of_birth', with: @current_user.year_of_birth)
-  find('#signup-btn').click
+  btn = find('#signup-btn', visible: true)
+  page.scroll_to(btn) # force the button into the center of the viewport
+  wait_for_ajax && sleep(0.5)
+  btn.click
 end
 
 # Uses @current_user
 Given('I sign-in with my existing account') do
   visit('/users/sign_in')
-  wait_for_ajax && sleep(2)
-  find('#login-box', visible: true) # wait for rendering ("visit" doesn't)
   step('I fill the log-in form as the confirmed user')
   step('the user row is signed-in')
 end
@@ -112,7 +130,6 @@ end
 Given('I am already signed-in and at the root page') do
   step('I have a confirmed account')
   visit('/users/sign_in')
-  find('#login-box', visible: true) # wait for rendering ("visit" doesn't)
   step('I fill the log-in form as the confirmed user')
   step('the user row is signed-in')
 end
@@ -120,7 +137,6 @@ end
 Given('I have an associated swimmer and have already signed-in') do
   step('I have an associated swimmer on a confirmed account')
   visit('/users/sign_in')
-  find('#login-box', visible: true) # wait for rendering ("visit" doesn't)
   step('I fill the log-in form as the confirmed user')
   step('the user row is signed-in')
 end
@@ -128,7 +144,6 @@ end
 Given('I have an associated swimmer on team manager account and have already signed-in') do
   step('I have an associated swimmer on a confirmed team manager account')
   visit('/users/sign_in')
-  find('#login-box', visible: true) # wait for rendering ("visit" doesn't)
   step('I fill the log-in form as the confirmed user')
   step('the user row is signed-in')
 end
