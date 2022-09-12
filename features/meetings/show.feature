@@ -10,6 +10,6 @@ Feature: Show meeting details
     And there are more than 5 meetings matching my query 'Riccione'
     When I browse to '/'
     And I search for 'Riccione'
-    Then the 'meeting' search results are displayed, all matching 'Riccione|CAMPIONATI ITALIANI|CAMPIONATI NAZIONALI'
+    Then the 'meeting' search results are displayed, all matching 'Riccione|ITALIANI|NAZIONALI'
     When I click on the first 'meeting' result to browse to its detail page
     Then I am at the show page for the details of the meeting
