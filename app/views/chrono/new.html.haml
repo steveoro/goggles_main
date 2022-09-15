@@ -66,6 +66,14 @@
 
               = render(ComboBox::DbLookupComponent.new(nil, t('meetings.event'), 'event_type',
                                                       required: true, values: event_type_options(@event_types)))
+              .col-auto
+                .form-group
+                  .field
+                    = label_tag(:lap_type, t('chrono.new.lap.label'))
+                    = select_tag(:lap_type, options_for_select({ 25 => 1, 50 => 2, 100 => 4 },
+                                 @last_chosen_swimming_pool&.pool_type_id), required: true, autofocus: true,
+                                class: 'form-control')
+                    %i.text-muted= t('chrono.new.lap.unit')
           .container.my-4
             .row
               .col-6

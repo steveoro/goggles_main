@@ -16,6 +16,9 @@ en:
       step3: 'Event'
       step4: 'Swimmer'
       step5: 'Ready?'
+      lap:
+        label: 'Lap length'
+        unit: 'meters'
       notice:
         ready: 'Ready to record!'
         missing: 'Some required fields are missing: please, go back to check.'

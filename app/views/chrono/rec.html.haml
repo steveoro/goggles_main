@@ -3,7 +3,8 @@
 
   .main-content{ data: { controller: 'chrono', 'chrono-delete-message' => t('chrono.messages.confirm_delete'),
                  'chrono-reset-message' => t('chrono.messages.confirm_reset'),
-                 'chrono-post-message' => t('chrono.messages.confirm_post') } }
+                 'chrono-post-message' => t('chrono.messages.confirm_post'),
+                 'chrono-lap-length' => @adapter&.chrono_lap_type_length } }
     .row-fluid#chrono-rec-title
       %h4.text-center.pb-3
         %i.fa.fa-clock-o

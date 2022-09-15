@@ -86,6 +86,8 @@ module IqRequest
       swimming_pool_city_id swimming_pool_pool_type_id
       pool_type_id pool_type_label
       event_type_id event_type_label
+      lap_type
+
       swimmer_id swimmer_label swimmer_complete_name swimmer_first_name swimmer_last_name
       swimmer_year_of_birth swimmer_gender_type_id gender_type_id
       team_id team_label team_name team_editable_name team_city_id
@@ -281,6 +283,11 @@ module IqRequest
     # Returns the display label for the Swimming pool in which the time recording takes place
     def chrono_swimming_pool_label
       @params&.fetch('swimming_pool_label', nil)
+    end
+
+    # Helper that returns just the pool length in meters, provided the 'pool_type_id' param has been set.
+    def chrono_lap_type_length
+      @params&.fetch('lap_type', 2).to_i * 25 # default: 50 meters
     end
     #-- -----------------------------------------------------------------------
     #++

@@ -64,6 +64,7 @@ const Timing = Backbone.Model.extend({
  * @param {String} 'data-chrono-delete-message' => confirmation message shown before delete
  * @param {String} 'data-chrono-post-message'   => confirmation message shown before post/save
  * @param {String} 'data-chrono-reset-message'  => confirmation message shown before reset
+ * @param {String} 'data-chrono-lap-length'     => lap length in meters
  *
  *
  * == Assumptions:
@@ -438,13 +439,14 @@ export default class extends Controller {
 
     // Add a new lap row:
     if (this.hasLapsGridTarget) {
+      var lengthInMt = parseInt(this.data.get('lap-length')) || 50
       const lapTimeModel = new Timing({
         order: timing.order,
         hours: timing.hours,
         minutes: timing.minutes,
         seconds: timing.seconds,
         hundredths: timing.hundredths,
-        meters: timing.order * 25, // Use a default minimum step, since the recordings can be user-edited
+        meters: timing.order * lengthInMt,
         labelTime: this.updateLabelTime(timing),
         gridRef: this.grid
       })

@@ -16,6 +16,9 @@ it:
       step3: 'Evento'
       step4: 'Atleta'
       step5: 'Pronti?'
+      lap:
+        label: 'Passaggio (Lap)'
+        unit: 'metri'
       notice:
         ready: 'Pronti per registrare!'
         missing: 'Mancano alcuni campi obbligatori: per favore torna indietro a controllare.'
