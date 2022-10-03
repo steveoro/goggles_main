@@ -93,12 +93,12 @@ RSpec.describe ImportProcessorJob, type: :job do
     end
 
     # Allow errors to bubble up in the job hierachy so that DelayedJob can handle them properly:
-    it 'raises an ActiveRecord::StatementInvalid error but, nevertheless, flags the row as deletable' do
+    it 'raises a Runtime error but nevertheless flags the row as deletable' do
       # NOTE: here we can test this because the throwing of the error makes the flow
       # jump back immediately to RSpec before the actual changes either take place or gets
       # rolled back at the end of the example.
       before_count = GogglesDb::ImportQueue.deletable.count
-      expect { described_class.perform_now }.to raise_error(ActiveRecord::StatementInvalid)
+      expect { described_class.perform_now }.to raise_error(RuntimeError)
       after_count = GogglesDb::ImportQueue.deletable.count
       expect(before_count).to be < after_count
     end

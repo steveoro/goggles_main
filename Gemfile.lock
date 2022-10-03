@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 61e21e567d6361ba3d4b341d0baca0a0f63b9753
+  revision: 0f857aa2f7431426ec037a183a7afd55a12405c6
   specs:
-    goggles_db (0.4.09)
+    goggles_db (0.4.10)
       acts-as-taggable-on
       acts_as_votable
       cities
@@ -229,7 +229,7 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
-    faraday (2.5.2)
+    faraday (2.6.0)
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (3.0.0)

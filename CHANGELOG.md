@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.4.10** [Steve A.] resync w/ base engine: forced UTF-8 encoding for downloaded script files in ImportQueues
 - **0.4.09** [Steve A.] added selectable lap length in crono/new; resync w/ base engine: using proper download method for attachments in ImportQueue
 - **0.4.07** [Steve A.] resync w/ base engine;
 - **0.4.06** [Steve A.] slightly improved API endpoints with more useful default ordering for most; resync w/ base engine

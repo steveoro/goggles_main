@@ -3,7 +3,7 @@
 # = ImportProcessorJob
 #
 #   - author......: Steve A.
-#   - last updated: 20210610
+#   - last updated: 20221003
 #
 #  Calls the either the ImportQueue solver service or the SQL batch
 #  executor depending on the parameter set within the job creation.
@@ -32,7 +32,7 @@ class ImportProcessorJob < ApplicationJob
   #
   # (Meaning: "Delayed::Job.enqueue(job)" instead of "job_class.perform_later")
   def error(job, exception)
-    Delayed::Worker.logger.error("[DelayedJob] #{job.class} error: #{exception.msg}")
+    Delayed::Worker.logger.error("\r\n[DelayedJob] #{job.class}\r\nException: #{exception.inspect}")
   end
 
   # Performs the Job by executing a dedicated service object on each
@@ -63,18 +63,64 @@ class ImportProcessorJob < ApplicationJob
         iq_row.delete
       end
       GogglesDb::ImportQueue.with_batch_sql.each do |iq_row|
-        # Mark the row as done (& deletable) even before execution. We don't want any huge files to
-        # stick around even if the query has wrong syntax:
-        iq_row.update(done: true)
-        batch_sql = iq_row.data_file_contents
-        next if batch_sql.blank?
-
-        # Use the connection pool so that we may return the disposed connection afterwards:
-        ActiveRecord::Base.connection_pool.with_connection do |con|
-          con.exec_query(batch_sql)
-        end
+        exec_sql(iq_row)
       end
       GogglesDb::AppParameter.maintenance = false
     end
+  end
+
+  # Downloads the data file from the specified ImportQueue and runs it as an external
+  # batch SQL file using the MySQL client execution parameter through the shell.
+  # Marks as solved the specified ImportQueue row.
+  def exec_sql(iq_row)
+    # Mark the row as done (& deletable) even before execution. We don't want any huge files to
+    # stick around in the queue even if the query has the wrong syntax:
+    iq_row.update(done: true)
+    batch_sql = iq_row.data_file_contents
+    return if batch_sql.blank?
+
+    # == NOTE: we can't use a simple connection.execute() anymore due to how
+    # the modern mysql2 driver implements paranoid security limits that
+    # basically disable multi-statement raw SQL execution, even if wrapped into
+    # a single transaction.
+    # So, the external client shell file execution is the only way to go from now on.
+
+    # Export the batch data file contents to an external file:
+    orig_filename = iq_row.data_file.filename.to_s
+    sql_file_name = Rails.root.join('db', 'dump', orig_filename)
+    File.open(sql_file_name, 'w+') { |f| f.puts(batch_sql) }
+
+    # Setup MySQL params from Rails config:
+    db_name, db_user, db_pwd, db_host = from_database_config
+
+    # Run the batch SQL file and then consume it:
+    logger.info("\r\nExecuting '#{orig_filename}' on #{db_name}...")
+    cmd = "mysql --host=#{db_host} --user=#{db_user} --password=\"#{db_pwd}\" --database=#{db_name} --execute=\"\\. #{sql_file_name}\""
+    _stdout_str, stderr_str, _status = Open3.capture3(cmd)
+
+    logger.info("Cleaning temp file '#{sql_file_name}'...")
+    FileUtils.rm(sql_file_name)
+    logger.info('SQL OK.') && return if stderr_str.blank?
+
+    logger.error("Execution FAILED:\r\n#{stderr_str}")
+    raise stderr_str
+  end
+
+  private
+
+  # Returns, straight from the Rails configuration, the following array composed with
+  # the main 4 string connection values:
+  # - database name
+  # - user name
+  # - password
+  # - host
+  def from_database_config
+    rails_config = Rails.configuration
+    [
+      rails_config.database_configuration[Rails.env]['database'],
+      rails_config.database_configuration[Rails.env]['username'],
+      rails_config.database_configuration[Rails.env]['password'],
+      rails_config.database_configuration[Rails.env]['host']
+    ]
   end
 end
