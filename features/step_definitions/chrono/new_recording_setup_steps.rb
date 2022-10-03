@@ -99,6 +99,9 @@ end
 
 When('I click on the {string} button at the end of form step {string}') do |btn_type, step_name|
   btn = find(".step-forms#step-#{step_name} button.btn.btn-#{btn_type}")
+  # Scroll down so that the button is fully clickable even on short displays:
+  execute_script('window.scrollTo(0,1000)')
+  wait_for_ajax
   expect(btn).to be_visible
   btn.click
   sleep(1)
