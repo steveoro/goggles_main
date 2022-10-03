@@ -1,21 +1,26 @@
 {
   "ignored_warnings": [
     {
-      "warning_type": "Cross-Site Scripting",
-      "warning_code": 106,
-      "check_name": "SanitizeMethods",
-      "message": "loofah gem 2.10.0 is vulnerable (CVE-2018-8048). Upgrade to 2.2.1",
-      "file": "Gemfile.lock",
-      "line": 356,
-      "link": "https://github.com/flavorjones/loofah/issues/144",
-      "code": null,
+      "warning_type": "Command Injection",
+      "warning_code": 14,
+      "fingerprint": "883308c8e3451751c4feca26291ca9e18fa4014aa94efb652c0fbeae5daa1f35",
+      "check_name": "Execute",
+      "message": "Possible command injection",
+      "file": "app/jobs/import_processor_job.rb",
+      "line": 99,
+      "link": "https://brakemanscanner.org/docs/warning_types/command_injection/",
+      "code": "Open3.capture3(\"mysql --host=#{db_host} --user=#{db_user} --password=\\\"#{db_pwd}\\\" --database=#{db_name} --execute=\\\"\\\\. #{Rails.root.join(\"db\", \"dump\", iq_row.data_file.filename.to_s)}\\\"\")",
       "render_path": null,
-      "location": null,
-      "user_input": null,
+      "location": {
+        "type": "method",
+        "class": "ImportProcessorJob",
+        "method": "exec_sql"
+      },
+      "user_input": "db_host",
       "confidence": "Medium",
       "note": ""
     }
   ],
-  "updated": "2021-06-14 19:37:37 +0200",
-  "brakeman_version": "5.0.0"
+  "updated": "2022-10-03 20:39:52 +0200",
+  "brakeman_version": "5.1.1"
 }
