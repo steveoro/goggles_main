@@ -20,6 +20,8 @@ Rails.application.routes.draw do
   post 'api_sessions/jwt', format: :json
   get 'users/google_oauth/continue'
 
+  get 'calendars/season/:id', to: 'calendars#season', as: 'calendars_season'
+
   get 'home/index'
   get 'home/about'
   get 'home/contact_us'
