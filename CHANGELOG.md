@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.4.20** [Steve A.] priority for maps URL in SwimmingPool decorator; resync w/ base engine: some security updates; increased duration of JWTs to 10 hours; removed unconfirmed new user access possibility; added a default scope for Team
 - **0.4.10** [Steve A.] resync w/ base engine: forced UTF-8 encoding for downloaded script files in ImportQueues
 - **0.4.09** [Steve A.] added selectable lap length in crono/new; resync w/ base engine: using proper download method for attachments in ImportQueue
 - **0.4.07** [Steve A.] resync w/ base engine;

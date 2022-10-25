@@ -43,6 +43,7 @@ bower.json
 /config/master.key
 /config/credentials/*.key
 config/database.yml
+/config/database.yml
 /config/deploy.rb
 /config/deploy/*
 # Other sensible files:

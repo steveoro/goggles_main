@@ -23,8 +23,8 @@ class SwimmingPoolDecorator < Draper::Decorator
   # its name or just its plain text name if no location query fields are available.
   #
   # == Location query strategy:
-  # - Default.......: use "Plus code" for coordinate
-  # - Fallback #1...: use maps_uri
+  # - Default.......: use maps_uri
+  # - Fallback #1...: use "Plus code" for coordinate
   # - Fallback #2...: use latitude & longitude (no plus_code or maps_uri available)
   # - Fallback #3...: make a search link based on swimming pool name, city name and/or address (no coordinates at all)
   # - Fallback #4...: plain text name (no link when no city or no coordinates or no address are given)
@@ -32,11 +32,11 @@ class SwimmingPoolDecorator < Draper::Decorator
   # @see https://maps.google.com/pluscodes/
   #
   def link_to_maps_or_name
-    if plus_code.present?
-      link_tag_for_maps(plus_code_uri)
-
-    elsif maps_uri.present?
+    if maps_uri.present?
       link_tag_for_maps(maps_uri)
+
+    elsif plus_code.present?
+      link_tag_for_maps(plus_code_uri)
 
     elsif latitude.present? && longitude.present?
       link_tag_for_maps(lat_long_search_uri)
@@ -68,7 +68,9 @@ class SwimmingPoolDecorator < Draper::Decorator
 
   # Returns the URI for Google Maps using the "plus codes" syntax
   def plus_code_uri
-    "https://plus.codes/#{plus_code}"
+    return "https://plus.codes/#{plus_code}" if plus_code.to_s.length > 8
+
+    "https://plus.codes/#{plus_code},#{city&.name},#{city&.country}"
   end
 
   # Returns the URI for Google Maps using the "search by latitude & longitude" syntax
