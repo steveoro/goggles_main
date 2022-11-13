@@ -86,9 +86,19 @@ Given('I have an associated swimmer on a confirmed account') do
   expect(@matching_swimmer.associated_user_id).to eq(@current_user.id)
 end
 
-# Sets @current_user & @matching_swimmer using existing ManagedAffiliations
+# Sets:
+# - @current_user
+# - @matching_swimmer
+# - @last_seasons_ids => list of valid Season IDs considered as "manageable"
 Given('I have an associated swimmer on a confirmed team manager account') do
-  managed_aff = GogglesDb::ManagedAffiliation.last(50).sample
+  # WIP/NOTE: *substitute* the following after we'll be done with old data-import testing,
+  #           following what's written at app/controllers/application_controller.rb:44
+  @last_seasons_ids = [182]
+
+  managed_aff = FactoryBot.create(
+    :managed_affiliation,
+    team_affiliation: FactoryBot.create(:team_affiliation, season: GogglesDb::Season.find(@last_seasons_ids.sample))
+  )
   @current_user = managed_aff.manager
   @current_user.confirmed_at = Time.zone.now if @current_user.confirmed_at.blank?
   # This is needed when the user comes from the test seed and its password may be already encrypted:
