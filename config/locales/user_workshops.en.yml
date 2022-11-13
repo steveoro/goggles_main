@@ -6,6 +6,7 @@ en:
     workshop: Workshop
     workshops: Workshops
     header_date: Date
+    how_to_msg: "You can create a new Workshop or add a new timing result to an existing one by using the Chrono feature to record private events between you and your friends (even when not in the same venue: what matters is that the other participants add their results to the same event)"
     go_to_dashboard: "Go to the details & results page for this workshop"
     dashboard:
       title: Workshop

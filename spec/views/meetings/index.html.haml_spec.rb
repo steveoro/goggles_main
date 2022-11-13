@@ -27,7 +27,12 @@ RSpec.describe 'meetings/index.html.haml', type: :view do
 
     it 'includes the section title' do
       expect(parsed_node.at_css('section#my-past-meetings-title')).to be_present
-      expect(parsed_node.at_css('section#my-past-meetings-title h4').text.strip).to eq(I18n.t('home.my.past_title'))
+      expect(parsed_node.at_css('section#my-past-meetings-title h4').text.strip).to include(I18n.t('home.my.past_title'))
+    end
+
+    it 'includes the link to go to the details page of the swimmer ("show page", a.k.a. "swimmer dashboard")' do
+      expect(parsed_node.at_css('#back-to-dashboard a')).to be_present
+      expect(parsed_node.at_css('#back-to-dashboard a').attributes['href'].value).to eq(swimmer_show_path(id: current_user.swimmer_id))
     end
 
     it_behaves_like('AbstractMeeting rendered /index view')

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Lookups', type: :request do
+RSpec.describe LookupController, type: :request do
   describe 'PUT /matching_swimmers' do
     context 'with an unlogged user' do
       it 'is a redirect to the login path' do

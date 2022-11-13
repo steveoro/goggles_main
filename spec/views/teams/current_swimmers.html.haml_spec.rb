@@ -2,22 +2,21 @@
 
 require 'rails_helper'
 
-# TODO: fix this
 RSpec.describe 'teams/current_swimmers.html.haml', type: :view do
   # Test basic/required content:
   context 'when rendering with valid data and a valid user logged-in,' do
     subject(:parsed_node) { Nokogiri::HTML.fragment(rendered) }
 
     let(:current_user) { GogglesDb::User.first(50).sample }
-    let(:fixture_team) { GogglesDb::Team.includes(:team_affiliations).joins(:team_affiliations).first(5).sample }
+    let(:fixture_row) { GogglesDb::Team.includes(:team_affiliations).joins(:team_affiliations).first(5).sample }
     let(:last_affiliations) do
       [
         GogglesDb::TeamAffiliation.includes(:team, season: :season_type).joins(:team, season: :season_type)
-                                  .where(team_id: fixture_team.id, seasons: { season_type_id: GogglesDb::SeasonType.mas_csi.id })
+                                  .where(team_id: fixture_row.id, seasons: { season_type_id: GogglesDb::SeasonType.mas_csi.id })
                                   .order(:begin_date)
                                   .last,
         GogglesDb::TeamAffiliation.includes(:team, season: :season_type).joins(:team, season: :season_type)
-                                  .where(team_id: fixture_team.id, seasons: { season_type_id: GogglesDb::SeasonType.mas_fin.id })
+                                  .where(team_id: fixture_row.id, seasons: { season_type_id: GogglesDb::SeasonType.mas_fin.id })
                                   .order(:begin_date)
                                   .last
       ].compact
@@ -32,12 +31,12 @@ RSpec.describe 'teams/current_swimmers.html.haml', type: :view do
       expect(current_user).to be_a(GogglesDb::User).and be_valid
       sign_in(current_user)
 
-      expect(fixture_team).to be_a(GogglesDb::Team).and be_valid
+      expect(fixture_row).to be_a(GogglesDb::Team).and be_valid
       expect(last_affiliations.count).to be_positive
       expect(all_badges_per_type.count).to be_positive
       expect(fixture_swimmers.count).to be_positive
       expect(team_affiliation).to be_a(GogglesDb::TeamAffiliation).and be_valid
-      assign(:team, fixture_team)
+      assign(:team, fixture_row)
       assign(:last_affiliations, last_affiliations)
       assign(:team_affiliation, team_affiliation)
       assign(:all_badges_per_type, all_badges_per_type)
@@ -48,7 +47,14 @@ RSpec.describe 'teams/current_swimmers.html.haml', type: :view do
 
     it 'includes the section title' do
       expect(parsed_node.at_css('section#team-swimmers-title')).to be_present
-      expect(parsed_node.at_css('section#team-swimmers-title h4').text).to eq(I18n.t('teams.dashboard.current_swimmers'))
+      expect(parsed_node.at_css('section#team-swimmers-title h4').text).to include(I18n.t('teams.dashboard.current_swimmers'))
+    end
+
+    it 'includes the link to go back to the team details page ("show team", a.k.a. "team dashboard")' do
+      expect(parsed_node.at_css('#back-to-dashboard a')).to be_present
+      expect(
+        parsed_node.at_css('#back-to-dashboard a').attributes['href'].value
+      ).to eq(team_show_path(id: fixture_row.id))
     end
 
     it 'includes the link to go to the top of the page in the footer section' do

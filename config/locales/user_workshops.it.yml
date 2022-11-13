@@ -6,6 +6,7 @@ it:
     workshop: Collegiale
     workshops: Collegiali
     header_date: Data
+    how_to_msg: "Puoi creare un nuovo Collegiale o aggiungergli un nuovo risultato usando la funzione Chrono per registrare eventi privati fra te e i tuoi amici (anche se non nello stesso impianto: l'importante è che anche gli altri partecipanti aggiungano i risultati allo stesso evento)"
     go_to_dashboard: "Vai alla pagina dettagli & risultati per questo collegiale"
     dashboard:
       title: Collegiale

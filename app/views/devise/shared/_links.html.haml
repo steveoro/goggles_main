@@ -7,9 +7,10 @@
     %br/
   - if devise_mapping.omniauthable?
     = google_sign_in_button(class: 'btn btn-primary my-1', proceed_to: users_google_oauth_continue_url) do
-      = t('.sign_in_with_provider', provider: 'Google')
-      %span.px-1
-      %i.fa.fa.fa-google
+      %span#google-login-btn
+        = t('.sign_in_with_provider', provider: 'Google')
+        %span.px-1
+        %i.fa.fa.fa-google
     - resource_class.omniauth_providers.each do |provider|
       = link_to(omniauth_authorize_path(resource_name, provider),
                 type: 'button', method: :post, class: 'btn btn-primary my-1', id: "#{provider}-login-btn",

@@ -1,8 +1,38 @@
+- visible_columns = grid.html_columns(*options[:columns])
+- has_calendar = visible_columns.map(&:name).include?(:calendar_date)
 %tr{ class: grid.respond_to?(:row_class) ? grid.row_class(asset).to_s : '' }
-  - grid.html_columns(*options[:columns]).each do |column|
-    - css_classes = datagrid_column_classes(grid, column).to_s
-    - if column.options[:align].present? && column.options[:align] == :center
-      - css_classes << ' text-center'
-    - if column.options[:align].present? && column.options[:align] == :right
-      - css_classes << ' text-right'
-    %td{ class: css_classes }= datagrid_value(grid, column, asset)
+  - visible_columns.each do |column|
+    - if column.name == :star
+      - row_id = asset.respond_to?(:meeting_id) ? asset.meeting_id : asset.id
+      %td.text-center
+        %span{ id: "user-star-#{row_id}" }
+          = render(Grid::RowStarComponent.new(asset_row: asset, current_user: current_user))
+        - if grid.class.respond_to?(:managed_teams) && grid.class.managed_teams.present?
+          &nbsp;
+          %span{ id: "team-star-#{row_id}" }
+            = render(Grid::TeamStarButtonComponent.new(asset_row: asset, current_user: current_user,
+                     user_teams: grid.class.managed_teams))
+    - else
+      - css_classes = datagrid_column_classes(grid, column).to_s
+      - if column.options[:align].present? && column.options[:align] == :center
+        - css_classes << ' text-center'
+      - if column.options[:align].present? && column.options[:align] == :right
+        - css_classes << ' text-right'
+      %td{ class: css_classes }= datagrid_value(grid, column, asset)
+
+-# Add a custom row when dealing with Calendars' confirmed meetings and events
+- if has_calendar && asset.respond_to?(:meeting) && asset.meeting && !asset.meeting.cancelled
+  %tr
+    - visible_columns.each do |column|
+      -# Start the custom cell in another row, corresponding to another certain column:
+      - if column.name == :calendar_name
+        %td.event-list
+          - event_list = asset.meeting.decorate.event_type_list.map(&:label)
+          - if event_list.size > 12 # slice long lists of events
+            = event_list.slice(0...event_list.size / 2).join(', ')
+            %br/
+            = event_list.slice(event_list.size / 2...event_list.size).join(', ')
+          - else
+            = event_list.join(', ')
+      - else
+        %td

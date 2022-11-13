@@ -13,6 +13,16 @@
   font-family: 'Saira Stencil One';
 }
 
+.cancelled-row {
+  transform: rotate(356deg) translate(150%, -30%);
+  transform-origin: center;
+  text-align: center;
+  opacity: 0.5;
+  font-size: 1.3em;
+  color: #F00;
+  text-transform: uppercase;
+  font-family: 'Saira Stencil One';
+}
 /**
       === Timer LEDs ===
  */
@@ -84,3 +94,9 @@ a.expand-button.collapsed:visited:after
 }
 // ----------------------------------------------------------------------------
 
+/**
+      === Map styles ===
+ */
+#leaflet-map {
+  height: 500px;
+}

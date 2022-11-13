@@ -3,10 +3,24 @@
 
   .main-content#top-of-page
     %section#all-meetings-title
-      %h4.text-center#back-to-swimmer-show
-        = render(Title::SwimmerShowLinkComponent.new(swimmer: @swimmer))
-      .text-center
-        %i= t('swimmers.radiography.all_workshops')
+      %h4.text-center
+        %small
+          = render(Title::SwimmerShowLinkComponent.new(swimmer: @swimmer))
+          %i.text-muted
+            &nbsp;
+            %i.fa.fa-angle-right{ 'aria-hidden': 'true' }
+            &nbsp;
+            %span.text-dark
+              %i.fa.fa-group{ 'aria-hidden': 'true' }
+              = t('swimmers.radiography.all_workshops')
+
+      .container
+        .alert.alert-info.alert-dismissible.fade.show{ role: 'alert' }
+          %button.close{ 'aria-label' => 'Close', 'data-dismiss' => 'alert', type: 'button' }
+            %span{ 'aria-hidden' => 'true' } ×
+          %small
+            %i= t('user_workshops.how_to_msg')
+
     = render(partial: 'user_workshop_grid', locals: { grid: @grid, grid_filter_params: @grid_filter_params })
 
   .spacer-right

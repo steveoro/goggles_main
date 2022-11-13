@@ -1,0 +1,24 @@
+en:
+  calendars:
+    dashboard:
+      title: Calendar
+      params:
+        meeting_name: 'Name: ~%{value}'
+      starred_title: "Tagged as 'Starred'"
+      starred_list: "List"
+      starred_map: "Map"
+    grid:
+      star:
+        title: "To-do?"
+      place:
+        title: "Venue"
+    tagging:
+      team:
+        title: "📆 Tag as 'registerable' for the team:"
+        already_tagged_by: "Already tagged by:"
+        toggle_label: "Toggle 'registerable'"
+      tooltip:
+        generic: "Toggle this meeting as interesting for your personal calendar (⭐) or for your Team's (📆, if available)"
+        error_please_reload: 'An error as occurred during tagging: please reload the page'
+        by_user: "Toggle this meeting as interesting for your personal calendar"
+        by_team: "Toggle this meeting as interesting for the team calendar; choose team from the dropdown list"

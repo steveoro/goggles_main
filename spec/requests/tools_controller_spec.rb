@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Tools', type: :request do
+RSpec.describe ToolsController, type: :request do
   describe 'GET /fin_score' do
     context 'with an unlogged user' do
       it 'is a redirect to the login path' do

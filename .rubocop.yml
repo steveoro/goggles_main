@@ -80,7 +80,7 @@ RSpec/MultipleMemoizedHelpers:
   Max: 10
   Exclude:
     - 'spec/decorators/iq_request/chrono_rec_param_adapter_spec.rb'
-    - 'spec/requests/tools_request_spec.rb'
+    - 'spec/requests/tools_controller_spec.rb'
 
 Style/ClassAndModuleChildren:
   Exclude:

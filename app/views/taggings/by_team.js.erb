@@ -1,0 +1,13 @@
+<% if flash[:error] %>
+ alert('<%= escape_javascript(flash[:error]) %>' );
+<% end %>
+$("#team-star-<%= @meeting.id %>")
+    .html('<%= escape_javascript(
+            render(
+                Grid::TeamStarButtonComponent.new(asset_row: @meeting,
+                    current_user: current_user,
+                    user_teams: @managed_teams,
+                    saved_ok: @saved_ok
+                )
+            )
+          ) %>');

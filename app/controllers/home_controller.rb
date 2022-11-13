@@ -8,6 +8,7 @@ require 'version'
 #
 class HomeController < ApplicationController
   before_action :authenticate_user!, only: %i[contact_us dashboard]
+  before_action :prepare_last_seasons, only: :dashboard
 
   # [GET] Main landing page default action.
   # Includes the "smart" search box.
@@ -34,9 +35,6 @@ class HomeController < ApplicationController
   # Requires authentication.
   def dashboard
     @swimmer = current_user.swimmer # (can be nil)
-    # Can we show the management buttons?
-    # (Further affiliation filtering will happen after the user selects the reservations actions)
-    @current_user_is_manager = GogglesDb::ManagedAffiliation.exists?(user_id: current_user.id)
   end
 
   private

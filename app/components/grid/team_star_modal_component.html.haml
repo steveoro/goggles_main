@@ -1,0 +1,29 @@
+.modal.fade#team-star-modal{ 'aria-hidden' => 'true', role: 'dialog', tabindex: '-1',
+                             'aria-labelledby' => 'modal title' }
+  .modal-dialog.modal-md{ role: 'document' }
+    = form_tag(taggings_by_team_path, id: 'frm-team-star', method: :post, remote: true) do
+      = hidden_field_tag('meeting_id', 0)
+      .modal-content
+        .modal-header
+          %h5.modal-title#team-star-modal-title
+            = t('calendars.tagging.team.title')
+          %button.close{ 'aria-label' => 'Close', 'data-dismiss' => 'modal' }
+            %span{ 'aria-hidden' => 'true' } &times;
+
+        .modal-body#team-star-modal-body
+          .row-fluid.text-center
+            = select_tag('team_id', options_from_collection_for_select(@user_teams, 'id', 'editable_name'),
+                         required: true, autofocus: true, class: 'form-control')
+          .row-fluid.mt-2
+            %small
+              %i= t('calendars.tagging.team.already_tagged_by')
+              #already-tagged-for
+
+        .modal-footer
+          .container
+            .row.justify-content-center
+              %button.btn.btn-sm.btn-outline-primary#btn-team-star-submit{ type: 'submit', 'aria-label' => 'Save',
+                  onclick: "$('#team-star-modal').modal('hide')" }
+                %span
+                  %i.fa.fa-calendar-o
+                  = t('calendars.tagging.team.toggle_label')

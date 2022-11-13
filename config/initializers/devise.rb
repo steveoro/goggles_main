@@ -6,7 +6,7 @@
 # ===========================================================================================
 
 require 'omniauth-facebook'
-# require 'omniauth-google-oauth2'
+# require 'omniauth-google-oauth2' => subseeded by google_sign_in gem (see https://github.com/basecamp/google_sign_in)
 # require 'omniauth-twitter'
 
 # Assuming you have not yet modified this file, each configuration option below
@@ -152,7 +152,7 @@ Devise.setup do |config|
   # without confirming their account.
   # Default is 0.days, meaning the user cannot access the website without
   # confirming their account.
-  # config.allow_unconfirmed_access_for = 1.day
+  config.allow_unconfirmed_access_for = 0.days
 
   # A period that the user is allowed to confirm their account before their
   # token becomes invalid. For example, if set to 3.days, the user can confirm

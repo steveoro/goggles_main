@@ -97,7 +97,7 @@ end
 # -----------------------------------------------------------------------------
 
 Then('I see the link to go back to the dashboard') do
-  find("#back-to-dashboard a[href='#{home_dashboard_path}']", visible: true)
+  find("a#back-to-parent[href='#{home_dashboard_path}']", visible: true)
 end
 
 # Generic step for data grids with pagination and filtering

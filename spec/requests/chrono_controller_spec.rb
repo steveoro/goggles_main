@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Chronos', type: :request do
+RSpec.describe ChronoController, type: :request do
   describe 'GET /chrono/index' do
     context 'with an unlogged user,' do
       it 'is a redirect to the login path' do

@@ -3,9 +3,17 @@
 
   .main-content#top-of-page
     %section#team-swimmers-title
-      %h4.text-center= t('teams.dashboard.current_swimmers')
-      .text-center#back-to-team-show
-        = render(Title::TeamShowLinkComponent.new(team: @team))
+      %h4.text-center
+        %small
+          = render(Title::TeamShowLinkComponent.new(team: @team))
+          %i.text-muted
+            &nbsp;
+            %i.fa.fa-angle-right{ 'aria-hidden': 'true' }
+            &nbsp;
+            %span.text-dark
+              %i.fa.fa-group{ 'aria-hidden': 'true' }
+              = t('teams.dashboard.current_swimmers')
+
     %section.container#data-grid
       .container
         .alert.alert-info.alert-dismissible.fade.show{ role: 'alert' }

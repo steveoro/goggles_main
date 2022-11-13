@@ -1,0 +1,24 @@
+it:
+  calendars:
+    dashboard:
+      title: Calendario
+      params:
+        meeting_name: 'Nome: ~%{value}'
+      starred_title: "Tag: 'Da Fare'"
+      starred_list: "Elenco"
+      starred_map: "Mappa"
+    grid:
+      star:
+        title: "Da fare?"
+      place:
+        title: "Impianto"
+    tagging:
+      team:
+        title: "📆 Tagga come 'prenotabile' per la squadra:"
+        already_tagged_by: "Già 'prenotabile' per:"
+        toggle_label: "Commuta 'prenotabile'"
+      tooltip:
+        generic: "Commuta questo meeting come interessante per il tuo calendario personale (⭐) oppure per quello di squadra (📆, se disponibile)"
+        error_please_reload: 'Si è verificato un errore durante il tag: ricarica la pagina per favore'
+        by_user: "Commuta questo meeting come interessante per il tuo calendario personale"
+        by_team: "Commuta questo meeting come interessante o 'prenotabile' per il calendario di squarda"

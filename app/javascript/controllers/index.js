@@ -8,6 +8,7 @@ import ChartController from './chart_controller.js'
 import ChronoController from './chrono_controller.js'
 import ChronoNewSummaryController from './chrono_new_summary_controller.js'
 import LookupController from './lookup_controller.js'
+import MapController from './map_controller.js'
 import PopoverController from './popover_controller.js'
 import RemotePartialController from './remote_partial_controller.js'
 import SearchController from './search_controller.js'
@@ -20,6 +21,7 @@ application.register('chart', ChartController)
 application.register('chrono', ChronoController)
 application.register('chrono-new-summary', ChronoNewSummaryController)
 application.register('lookup', LookupController)
+application.register('map', MapController)
 application.register('popover', PopoverController)
 application.register('remote-partial', RemotePartialController)
 application.register('search', SearchController)

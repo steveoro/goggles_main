@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'support/shared_request_examples'
 
-RSpec.describe 'SwimmingPools', type: :request do
+RSpec.describe SwimmingPoolsController, type: :request do
   describe 'GET /show/:id' do
     context 'with a valid row id' do
       let(:swimming_pool_id) { GogglesDb::SwimmingPool.first(100).pluck(:id).sample }

@@ -5,18 +5,21 @@ Feature: New user sign-up
   I want to be able to sign-up into the application
   Using direct account creation or a 3-rd party OAuth plugin
 
-  Scenario: Successful direct sign-up
+  Scenario: Successful direct sign-up requires email confirmation
     Given I am not signed in
     When I browse to '/users/sign_up'
     And I fill the registration form as a new user
     Then the user account is persisted
     And the account is not yet confirmed
-    And the user row is signed-in
     And I get redirected to '/'
-    And a flash 'devise.registrations.signed_up' message is present
+    And a flash 'devise.registrations.signed_up_but_unconfirmed' message is present
+    When I browse to '/users/sign_in'
+    And I fill the log-in form as the new user
+    Then I am still at the '/users/sign_in' path
+    And a flash 'devise.failure.unconfirmed' message is present
 
   @omniauth
-  Scenario Outline: Successful OAuth sign-up
+  Scenario Outline: Successful OAuth sign-up does not require email confirmation
     Given I am not signed in
     And I have valid '<provider_sym>' credentials but no local account
     When I browse to '/users/sign_in'

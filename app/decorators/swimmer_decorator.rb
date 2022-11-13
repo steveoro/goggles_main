@@ -44,8 +44,6 @@ class SwimmerDecorator < Draper::Decorator
   #-- -------------------------------------------------------------------------
   #++
 
-  private
-
   # Returns the decorated base object instance, memoized.
   def decorated
     # Force eager loading in case the source object is 'unscoped':

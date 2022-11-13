@@ -3,9 +3,11 @@
 
   .main-content#top-of-page
     %section#my-past-meetings-title
-      %h4.text-center= t('home.my.past_title')
-      .text-center#back-to-dashboard
-        = render(Title::UserDashboardLinkComponent.new(user: current_user))
+      = render(Title::BreadCrumbLinkComponent.new(title: t('home.my.past_title'),
+               css_icon: 'trophy', parent_title: t('home.my.dashboard_name'),
+               parent_link: home_dashboard_path))
+      .text-center= render(Title::SwimmerShowLinkComponent.new(swimmer: @swimmer))
+
     = render(partial: 'meeting_grid', locals: { grid: @grid, grid_filter_params: @grid_filter_params })
 
   .spacer-right

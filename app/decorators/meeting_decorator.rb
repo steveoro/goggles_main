@@ -14,8 +14,6 @@ class MeetingDecorator < Draper::Decorator
     h.link_to(decorated.display_label, h.meeting_show_path(id: object.id))
   end
 
-  private
-
   # Returns the decorated base object instance, memoized.
   def decorated
     # object.decorate is missing :season_type from default scope, so we retrieve it manually:

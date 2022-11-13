@@ -23,7 +23,6 @@ Capybara.configure do |config|
   # Capybara.default_selector = :xpath
   # config.default_selector = :xpath
 end
-# Capybara.save_path = 'tmp'
 
 firefox_options = Selenium::WebDriver::Firefox::Options.new
 firefox_options.args << '--headless'

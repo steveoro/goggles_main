@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'support/shared_request_examples'
 
-RSpec.describe 'Swimmers', type: :request do
+RSpec.describe SwimmersController, type: :request do
   let(:fixture_row_id) { GogglesDb::Swimmer.first(100).pluck(:id).sample }
 
   describe 'GET /show/:id' do

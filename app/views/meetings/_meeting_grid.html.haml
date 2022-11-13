@@ -4,7 +4,6 @@
   .row.my-2#datagrid-top-row
     .col-auto
       #filter-show-btn= render(Grid::FilterShowButtonComponent.new)
-    .col
       - filter_labels = grid_filter_to_labels('meetings.dashboard', grid_filter_params)
       - if filter_labels.present?
         %small#filter-labels

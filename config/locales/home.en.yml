@@ -21,6 +21,7 @@ en:
     my:
       go_to_dashboard_tooltip: go to your Dashboard
       dashboard_title: my Dashboard
+      dashboard_name: Dashboard
       past_title: my past Meetings
       future_title: my future Meetings
       workshops_title: my Workshops
@@ -28,12 +29,12 @@ en:
       errors:
         no_associated_swimmer: "Your user does not have an associated swimmer."
     dashboard:
-      past_btn: Meetings
-      future_btn: To-do
+      past_btn: Past Meetings
+      future_btn: Future Meetings
       workshops_btn: Workshops
       radiography_btn: Radiography
       history_btn: History
-      plan_meeting_btn: plan Meeting
+      plan_meeting_btn: "Calendar: plan Meeting"
       team_reservation_btn: Team reservations
 
   about:

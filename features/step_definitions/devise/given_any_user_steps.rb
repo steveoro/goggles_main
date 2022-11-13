@@ -30,9 +30,10 @@ Given('I have a confirmed account with admin grants') do
   expect(GogglesDb::GrantChecker.admin?(@current_user)).to be true
 end
 
+# Sets @current_user to an unsaved but valid user instance
 Given('I am a new user') do
-  @new_user = FactoryBot.build(:user)
-  expect(@new_user).to be_a(GogglesDb::User).and be_valid
+  @current_user = FactoryBot.build(:user)
+  expect(@current_user).to be_a(GogglesDb::User).and be_valid
 end
 
 # Uses @current_user
@@ -51,10 +52,9 @@ Given('I have an existing account but I don\'t have credentials for {string} sig
   step("I don't have valid credentials for '#{provider_name}' sign-in")
 end
 
-# Uses @new_user; sets a new @current_user
+# Uses @current_user
 Given('I have valid {string} credentials but no local account') do |provider_name|
   step('I am a new user')
-  @current_user = @new_user
   @auth_hash = valid_auth(provider_name.downcase, (GogglesDb::User.last.id + 1).to_s, @current_user)
   OmniAuth.config.mock_auth[provider_name.downcase.to_sym] = @auth_hash
   Rails.application.env_config['omniauth.auth'] = @auth_hash
@@ -121,8 +121,9 @@ Given('I have a confirmed account with associated swimmer and existing MIRs') do
   # It's faster using 2 queries instead of 1:
   swimmer_id = GogglesDb::MeetingIndividualResult.includes(swimmer: [:associated_user])
                                                  .joins(swimmer: [:associated_user])
-                                                 .distinct(:swimmer_id).pluck(:swimmer_id)
-                                                 .first(300).sample
+                                                 .distinct(:swimmer_id).first(300)
+                                                 .pluck(:swimmer_id)
+                                                 .sample
   @matching_swimmer = GogglesDb::Swimmer.find(swimmer_id)
   expect(@matching_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
   expect(@matching_swimmer.associated_user).to be_a(GogglesDb::User).and be_valid

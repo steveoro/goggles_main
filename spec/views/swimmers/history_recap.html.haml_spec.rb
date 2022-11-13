@@ -74,11 +74,11 @@ RSpec.describe 'swimmers/history_recap.html.haml', type: :view do
       render
     end
 
-    it 'shows the history recap section title with a link to go back to the swimmer radiography' do
+    it 'shows the history recap section title with a link to go back to the swimmer radiography (a.k.a. \'swimmer dashboard\')' do
       node = subject.at_css('section#swimmer-history-recap-title')
       expect(node).to be_present
-      expect(node.at_css('h4 a#btn-radiography')).to be_present
-      expect(node.at_css('h4 a#btn-radiography').attributes['href'].value).to eq(swimmer_show_path(fixture_row))
+      expect(node.at_css('h4 a#back-to-parent')).to be_present
+      expect(node.at_css('h4 a#back-to-parent').attributes['href'].value).to eq(swimmer_show_path(fixture_row))
     end
 
     it 'includes the swimmer complete name inside the history recap section' do

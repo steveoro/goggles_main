@@ -37,11 +37,11 @@ Feature: My Dashboard
     Examples:
       | button_id                | css_status |
       | 'btn-my-past-meetings'   | ''         |
-      | 'btn-my-future-meetings' | 'disabled' |
+      | 'btn-my-future-meetings' | ''         |
       | 'btn-my-workshops'       | ''         |
       | 'btn-my-radiography'     | 'disabled' |
       | 'btn-my-stats'           | 'disabled' |
-      | 'btn-plan-meeting'       | 'missing'  |
+      | 'btn-plan-meeting'       | ''         |
       | 'btn-team-reservations'  | 'missing'  |
 
   Scenario: logged-in user with associated swimmer browsing the dashboard
@@ -52,11 +52,11 @@ Feature: My Dashboard
     Examples:
       | button_id                | css_status |
       | 'btn-my-past-meetings'   | ''         |
-      | 'btn-my-future-meetings' | 'disabled' |
+      | 'btn-my-future-meetings' | ''         |
       | 'btn-my-workshops'       | ''         |
       | 'btn-my-radiography'     | ''         |
       | 'btn-my-stats'           | ''         |
-      | 'btn-plan-meeting'       | 'missing'  |
+      | 'btn-plan-meeting'       | ''         |
       | 'btn-team-reservations'  | 'missing'  |
 
   Scenario: logged-in user with associated swimmer and team manager grants browsing the dashboard
@@ -67,9 +67,9 @@ Feature: My Dashboard
     Examples:
       | button_id                | css_status |
       | 'btn-my-past-meetings'   | ''         |
-      | 'btn-my-future-meetings' | 'disabled' |
+      | 'btn-my-future-meetings' | ''         |
       | 'btn-my-workshops'       | ''         |
       | 'btn-my-radiography'     | ''         |
       | 'btn-my-stats'           | ''         |
-      | 'btn-plan-meeting'       | 'disabled' |
+      | 'btn-plan-meeting'       | ''         |
       | 'btn-team-reservations'  | 'disabled' |

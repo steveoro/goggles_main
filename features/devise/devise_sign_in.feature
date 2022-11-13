@@ -27,13 +27,21 @@ Feature: Existing user sign-in
       | provider_sym  | provider_name |
       | facebook      | Facebook      |
 
-  Scenario: Failing direct sign-in
+  Scenario: Failing direct sign-in: wrong credentials
     Given I am not signed in
     And I am a new user
     When I browse to '/users/sign_in'
-    And I fill the log-in form as a new user
+    And I fill the log-in form as the new user
     Then I am still at the '/users/sign_in' path
     And an unsuccessful login flash message is present
+
+  Scenario: Failing direct sign-in: unconfirmed account
+    Given I am not signed in
+    And I have an unconfirmed account
+    When I browse to '/users/sign_in'
+    And I fill the log-in form as my user
+    Then I am still at the '/users/sign_in' path
+    And a flash 'devise.failure.unconfirmed' message is present
 
   @omniauth
   Scenario: Failing OAuth sign-in

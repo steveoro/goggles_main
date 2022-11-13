@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Maintenances', type: :request do
+RSpec.describe MaintenanceController, type: :request do
   describe 'GET /maintenance' do
     context 'if the mainenance mode if off' do
       before { GogglesDb::AppParameter.maintenance = false }

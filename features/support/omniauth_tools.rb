@@ -8,6 +8,13 @@
 
 # === Notes on usage ===
 #
+# ===> DO NOT USE for Google-sign-in: <===
+# The google_sign_in gem (see https://github.com/basecamp/google_sign_in) does not have any
+# support for test mode and won't work with OmniAuth.config.mock_auth (it doesn't have any
+# bindings with Devise/OmniAuth).
+#
+# Use this helper only for Devise/OmniAuth callback testing.
+#
 # With test_mode on, a request to /auth/provider will redirect immediately
 # to /auth/provider/callback returning the AuthHash for that provider:
 # OmniAuth.config.test_mode = true

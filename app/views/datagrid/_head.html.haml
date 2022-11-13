@@ -2,4 +2,10 @@
   - grid.html_columns(*options[:columns]).each do |column|
     %th{ class: datagrid_column_classes(grid, column).to_s }
       = column.header
+      - if column.options[:description]
+        %sup
+          %i.fa.fa-info-circle{ onclick: "$(this).tooltip('toggle')",
+                                data: 'tooltip',
+                                title: column.options[:description] }
+
       = datagrid_order_for(grid, column, options) if column.supports_order? && options[:order]

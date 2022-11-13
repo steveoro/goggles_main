@@ -21,6 +21,7 @@ it:
     my:
       go_to_dashboard_tooltip: vai alla tua Dashboard
       dashboard_title: la mia Dashboard
+      dashboard_name: Dashboard
       past_title: i miei Meeting passati
       future_title: i miei Meeting futuri
       workshops_title: i miei Collegiali
@@ -28,12 +29,12 @@ it:
       errors:
         no_associated_swimmer: "Il tuo utente non è ancora associato a nessun nuotatore."
     dashboard:
-      past_btn: Meeting
-      future_btn: Da fare
+      past_btn: Meeting passati
+      future_btn: Meeting futuri
       workshops_btn: Collegiali
       radiography_btn: Radiografia
       history_btn: Storia
-      plan_meeting_btn: pianifica Meeting
+      plan_meeting_btn: "Calendario: pianifica Meeting"
       team_reservation_btn: prenotazioni Squadra
 
   about:

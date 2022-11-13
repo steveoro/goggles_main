@@ -3,16 +3,9 @@
 
   .main-content#top-of-page
     %section#swimmer-history-recap-title
-      %h4.text-center.pb-3
-        %i.fa.fa-line-chart{ 'aria-hidden': 'true' }
-        &nbsp;
-        %small
-          %i.text-muted
-            = link_to(swimmer_show_path(@swimmer), id: 'btn-radiography', method: :get, role: 'button') do
-              = t('swimmers.radiography.subtitle')
-            %i.fa.fa-angle-right{ 'aria-hidden': 'true' }
-            = t('home.dashboard.history_btn')
-
+      = render(Title::BreadCrumbLinkComponent.new(title: t('home.dashboard.history_btn'),
+               css_icon: 'line-chart', parent_title: t('swimmers.radiography.subtitle'),
+               parent_link: swimmer_show_path(@swimmer)))
 
     %section.container#swimmer-history-recap
       .row-fluid.py-1.bg-primary.text-center.text-light

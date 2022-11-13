@@ -78,7 +78,7 @@ RSpec.describe 'home/dashboard.html.haml', type: :view do
 
         it "includes the 'plan a meeting' link" do
           expect(parsed_node.at_css('#dashboard-btns a#btn-plan-meeting')).to be_present
-          expect(parsed_node.at_css('#dashboard-btns a#btn-plan-meeting').attributes['href'].value).to eq('#')
+          expect(parsed_node.at_css('#dashboard-btns a#btn-plan-meeting').attributes['href'].value).to eq(calendars_current_path)
         end
 
         it "includes the 'team reservation' link" do

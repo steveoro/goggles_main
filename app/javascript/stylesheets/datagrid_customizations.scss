@@ -37,6 +37,18 @@ th.ordered.desc a.desc {
 #data-grid td.team_name, #data-grid td.meeting_date {
   font-size: 0.75rem;
 }
-#data-grid td.meeting_name {
+
+#data-grid td.calendar_date {
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+#data-grid td.meeting_name, #data-grid td.calendar_name {
   font-size: 0.90rem;
+}
+
+#data-grid td.event-list {
+  font-size: 0.65rem;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }

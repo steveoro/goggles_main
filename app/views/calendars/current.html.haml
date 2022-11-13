@@ -1,0 +1,14 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content#top-of-page
+    %section#current-calendars-title
+      = render(Title::BreadCrumbLinkComponent.new(title: t('calendars.dashboard.title'),
+               css_icon: 'calendar', parent_title: t('home.my.dashboard_name'),
+               parent_link: home_dashboard_path))
+
+    = render(partial: 'calendar_grid',
+             locals: { grid: @grid, user_teams: @managed_teams, filterable: true,
+                       grid_filter_params: @grid_filter_params })
+
+  .spacer-right

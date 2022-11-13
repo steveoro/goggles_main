@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'support/shared_request_examples'
 
-RSpec.describe 'Teams', type: :request do
+RSpec.describe TeamsController, type: :request do
   let(:fixture_row_id) { GogglesDb::Team.first(100).pluck(:id).sample }
 
   describe 'GET /show/:id' do

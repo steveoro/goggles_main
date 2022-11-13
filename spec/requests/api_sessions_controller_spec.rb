@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'APISessions', type: :request do
+RSpec.describe APISessionsController, type: :request do
   describe 'POST /jwt' do
     context 'with an unlogged user requesting JSON format' do
       it 'is a redirect to the login path' do

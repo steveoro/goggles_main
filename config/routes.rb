@@ -20,7 +20,9 @@ Rails.application.routes.draw do
   post 'api_sessions/jwt', format: :json
   get 'users/google_oauth/continue'
 
-  get 'calendars/season/:id', to: 'calendars#season', as: 'calendars_season'
+  get 'calendars/current'
+  get 'calendars/starred'
+  get 'calendars/starred_map'
 
   get 'home/index'
   get 'home/about'
@@ -51,6 +53,9 @@ Rails.application.routes.draw do
   get 'swimmers/show/:id',          to: 'swimmers#show',          as: 'swimmer_show'
   get 'swimmers/history_recap/:id', to: 'swimmers#history_recap', as: 'swimmer_history_recap'
   get 'swimmers/:id/history/:event_type_id', to: 'swimmers#history', as: 'swimmer_history'
+
+  post 'taggings/by_user/:meeting_id', to: 'taggings#by_user', as: 'taggings_by_user'
+  post 'taggings/by_team', to: 'taggings#by_team', as: 'taggings_by_team' # (No required parameters by design)
 
   get 'teams/show/:id',             to: 'teams#show',             as: 'team_show'
   get 'teams/current_swimmers/:id', to: 'teams#current_swimmers', as: 'team_current_swimmers'

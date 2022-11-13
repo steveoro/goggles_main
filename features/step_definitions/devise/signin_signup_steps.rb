@@ -31,13 +31,13 @@ Given('the user row is signed-in') do
   expect(@current_user.current_sign_in_at).to be_present
 end
 
-# Requires a @new_user
-When('I fill the log-in form as a new user') do
-  expect(@new_user).to be_a(GogglesDb::User)
+# Requires a @current_user (uses 'current' as synonim of 'new' & 'my')
+When(/I fill the log-in form as (the current|the new|my) user/) do |_user_type|
+  expect(@current_user).to be_a(GogglesDb::User).and be_valid
   wait_for_ajax && sleep(2)
   find('#login-box', visible: true) # wait for rendering ("visit" doesn't)
-  fill_in('user_email', with: @new_user.email)
-  fill_in('user_password', with: @new_user.password)
+  fill_in('user_email', with: @current_user.email)
+  fill_in('user_password', with: 'Password123!')
   btn = find('#login-btn', visible: true)
   page.scroll_to(btn) # force the button into the center of the viewport
   wait_for_ajax && sleep(0.5)

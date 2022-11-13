@@ -25,6 +25,72 @@ class ApplicationController < ActionController::Base
   #-- -------------------------------------------------------------------------
   #++
 
+  # Prepares the arrays for all supported and recent season rows found together with
+  # their corresponding IDs.
+  #
+  # Sets the internal members:
+  # - <tt>@last_seasons</tt>
+  #   Array of all the latest GogglesDb::Season rows found (one per type); an empty array otherwise.
+  #
+  # - <tt>@last_seasons_ids</tt>
+  #   Collection of all the IDs from <tt>@last_seasons</tt>.
+  #
+  # - <tt>@current_user_is_manager</tt>
+  #   +true+ if current user can manage any affiliations belonging to the found <tt>@last_seasons</tt>.
+  #   Further affiliation filtering (by team) should happen after the user selects any actions which
+  #   requires selecting a specific managed team.
+  def prepare_last_seasons
+    @last_seasons = [
+      # WIP: testing latest data imports
+      # ACTUAL: GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin)
+      GogglesDb::Season.find(182)
+    ]
+    @last_seasons_ids = @last_seasons.pluck(:id)
+    # Can we show any related management buttons? (team selection should happen afterwards)
+    @current_user_is_manager = @last_seasons_ids.present? &&
+                               GogglesDb::ManagedAffiliation.includes(:season)
+                                                            .joins(:season)
+                                                            .exists?(user_id: current_user.id, 'seasons.id': @last_seasons_ids)
+  end
+
+  # Prepares the array storing all available Teams for the current user (if any);
+  # defaults to an empty array otherwise.
+  #
+  # Uses @last_seasons_ids.
+  # Sets the internal member:
+  # - <tt>@user_teams</tt> => array of all the GogglesDb::Team rows found for the current_user,
+  #                           (assuming the current user has an associated swimmer)
+  #
+  def prepare_user_teams
+    @user_teams = []
+    return unless @last_seasons_ids.present? && current_user.swimmer
+
+    @user_teams = GogglesDb::Badge.where(season_id: @last_seasons_ids, swimmer_id: current_user.swimmer_id)
+                                  .map(&:team).uniq
+  end
+
+  # Similarly to #prepare_user_teams, this one collects all available and *managed* Teams for the current user (if any)
+  # which have an affiliation belonging to one of the last seasons found.
+  # Defaults to an empty array otherwise.
+  #
+  # Uses @last_seasons_ids & @current_user_is_manager.
+  # Sets the internal member:
+  # - <tt>@managed_teams</tt>
+  #  Array of all unique GogglesDb::Team rows found, managed the current_user and
+  #  belonging to any one of the @last_seasons_ids found.
+  #
+  def prepare_managed_teams
+    @managed_teams = []
+    return unless @current_user_is_manager
+
+    mas = GogglesDb::ManagedAffiliation.includes(:season, team_affiliation: :team)
+                                       .where(user_id: current_user.id, 'seasons.id': @last_seasons_ids)
+
+    @managed_teams = mas.map(&:team).uniq
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
   private
 
   # Sets the current application locale given the :locale request parameter or

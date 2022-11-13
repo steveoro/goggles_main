@@ -7,7 +7,7 @@ require 'rails_helper'
 # We'll just stick to plain route checking for RSpec request examples.
 #
 # rubocop:disable Metrics/BlockLength
-RSpec.describe 'Users::OmniauthCallbacks', type: :request do
+RSpec.describe Users::OmniauthCallbacksController, type: :request do
   let(:existing_user) { GogglesDb::User.first(50).sample }
   let(:new_user) { FactoryBot.build(:user) }
 

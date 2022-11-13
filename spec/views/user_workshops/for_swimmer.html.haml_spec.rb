@@ -30,10 +30,10 @@ RSpec.describe 'user_workshops/for_swimmer.html.haml', type: :view do
       expect(parsed_node.at_css('section#all-meetings-title')).to be_present
     end
 
-    it 'includes the link to go back to the swimmer details page ("show swimmer")' do
-      expect(parsed_node.at_css('#back-to-swimmer-show a')).to be_present
+    it 'includes the link to go back to the swimmer details page ("show swimmer", a.k.a. "swimmer dashboard")' do
+      expect(parsed_node.at_css('#back-to-dashboard a')).to be_present
       expect(
-        parsed_node.at_css('#back-to-swimmer-show a').attributes['href'].value
+        parsed_node.at_css('#back-to-dashboard a').attributes['href'].value
       ).to eq(swimmer_show_path(id: fixture_row.id))
     end
 
