@@ -24,10 +24,12 @@ end
 # path so that Devise can redirect to the final destination after successful sign-in.
 # Thus in these cases we just check the page contents since we cannot rely on the current_path.
 Then('I get redirected to the sign-in page') do
+  sleep(1) && wait_for_ajax
   find('#content .main-content #login-box', visible: true)
 end
 
 Then('I am still at the {string} path') do |string_path|
+  sleep(1) && wait_for_ajax
   # Wait for content to be rendered and then verify path:
   find('#content', visible: true)
   expect(current_path).to include(string_path)
