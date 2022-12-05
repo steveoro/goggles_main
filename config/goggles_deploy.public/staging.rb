@@ -84,7 +84,8 @@ Rails.application.configure do
 
   # Action Mailer default URL, required by Devise:
   config.action_mailer.default_url_options = {
-    host: 'master-goggles.org:444'
+    host: 'master-goggles.org',
+    port: 444
   }
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true

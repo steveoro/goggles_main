@@ -3,6 +3,9 @@ version: '3.7'
 services:
   goggles-db.staging:
     image: mariadb:latest
+    # Set max_allowed_packet to 512M (this should prevent the "MySQL server has gone away"
+    # issue due to timeout when running huge queries)
+    command: --max_allowed_packet=67108864
     container_name: goggles-db.staging
     env_file:
       - .env
@@ -23,6 +26,7 @@ services:
       - '9081:8081'
     restart: always
     volumes:
+      - "~/Projects/goggles_deploy/storage.staging:/app/storage"
       - "~/Projects/goggles_deploy/db.staging:/var/lib/mysql"
       - "~/Projects/goggles_deploy/backups:/app/db/dump"
       - "~/Projects/goggles_deploy/log.staging/api:/app/log"
@@ -41,6 +45,7 @@ services:
     restart: always
     volumes:
       - "~/Projects/goggles_deploy/staging.rb:/app/config/environments/staging.rb"
+      - "~/Projects/goggles_deploy/storage.staging:/app/storage"
       - "~/Projects/goggles_deploy/db.staging:/var/lib/mysql"
       - "~/Projects/goggles_deploy/backups:/app/db/dump"
       - "~/Projects/goggles_deploy/log.staging:/app/log"

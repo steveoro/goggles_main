@@ -1,0 +1,173 @@
+{
+  "target_entity": "Lap",
+  "lap": {
+    "id": null,
+    "meeting_individual_result": {
+      "id": null,
+      "user_id": 1,
+      "meeting_program": {
+        "id": null,
+        "meeting_event": {
+          "id": null,
+          "meeting_session": {
+            "id": null,
+            "meeting": {
+              "id": "0",
+              "description": "18° Trofeo De Akker Team ASI",
+              "code": null,
+              "season": {
+                "id": "192",
+                "description": null,
+                "begin_date": null,
+                "end_date": null,
+                "edition": null,
+                "season_type_id": null,
+                "edition_type_id": null
+              },
+              "header_date": "2021-11-14",
+              "header_year": "2021/2022",
+              "edition": null,
+              "edition_type_id": null,
+              "team": {
+                "id": "1",
+                "label": "CSI NUOTO OBER FERRARI ASD",
+                "name": "CSI NUOTO OBER FERRARI ASD",
+                "editable_name": "CSI NUOTO OBER FERRARI ASD",
+                "city_id": null
+              }
+            },
+            "session_order": null,
+            "scheduled_date": "2021-11-14",
+            "meeting_session_description": null,
+            "day_part_type_id": null,
+            "swimming_pool": {
+              "id": "199",
+              "label": "Stadio Comunale Carmen Longo (bolognastadiocomunalecarmenlongo50)",
+              "name": "Stadio Comunale Carmen Longo",
+              "nick_name": "bolognastadiocomunalecarmenlongo50",
+              "pool_type_id": "2",
+              "city": {
+                "id": "3",
+                "label": "Bologna",
+                "name": "Bologna",
+                "area": "Bologna",
+                "country_code": "IT"
+              }
+            }
+          },
+          "event_type_id": "20"
+        },
+        "pool_type_id": "2",
+        "category_type_id": "1410",
+        "gender_type_id": "1"
+      },
+      "swimmer": {
+        "id": "142",
+        "label": "ALLORO STEFANO (1969)",
+        "first_name": "STEFANO",
+        "last_name": "ALLORO",
+        "complete_name": "ALLORO STEFANO",
+        "year_of_birth": "1969",
+        "gender_type_id": "1"
+      },
+      "team": {
+        "id": "1",
+        "label": "CSI NUOTO OBER FERRARI ASD",
+        "name": "CSI NUOTO OBER FERRARI ASD",
+        "editable_name": "CSI NUOTO OBER FERRARI ASD",
+        "city_id": null
+      },
+      "label": "01'26\"59",
+      "length_in_meters": 100,
+      "minutes": 0,
+      "seconds": 0,
+      "hundredths": 0,
+      "minutes_from_start": 1,
+      "seconds_from_start": 26,
+      "hundredths_from_start": 59
+    },
+    "meeting_program": {
+      "id": null,
+      "meeting_event": {
+        "id": null,
+        "meeting_session": {
+          "id": null,
+          "meeting": {
+            "id": "0",
+            "description": "18° Trofeo De Akker Team ASI",
+            "code": null,
+            "season": {
+              "id": "192",
+              "description": null,
+              "begin_date": null,
+              "end_date": null,
+              "edition": null,
+              "season_type_id": null,
+              "edition_type_id": null
+            },
+            "header_date": "2021-11-14",
+            "header_year": "2021/2022",
+            "edition": null,
+            "edition_type_id": null,
+            "team": {
+              "id": "1",
+              "label": "CSI NUOTO OBER FERRARI ASD",
+              "name": "CSI NUOTO OBER FERRARI ASD",
+              "editable_name": "CSI NUOTO OBER FERRARI ASD",
+              "city_id": null
+            }
+          },
+          "session_order": null,
+          "scheduled_date": "2021-11-14",
+          "meeting_session_description": null,
+          "day_part_type_id": null,
+          "swimming_pool": {
+            "id": "199",
+            "label": "Stadio Comunale Carmen Longo (bolognastadiocomunalecarmenlongo50)",
+            "name": "Stadio Comunale Carmen Longo",
+            "nick_name": "bolognastadiocomunalecarmenlongo50",
+            "pool_type_id": "2",
+            "city": {
+              "id": "3",
+              "label": "Bologna",
+              "name": "Bologna",
+              "area": "Bologna",
+              "country_code": "IT"
+            }
+          }
+        },
+        "event_type_id": "20"
+      },
+      "pool_type_id": "2",
+      "category_type_id": "1410",
+      "gender_type_id": "1"
+    },
+    "swimmer": {
+      "id": "142",
+      "label": "ALLORO STEFANO (1969)",
+      "first_name": "STEFANO",
+      "last_name": "ALLORO",
+      "complete_name": "ALLORO STEFANO",
+      "year_of_birth": "1969",
+      "gender_type_id": "1"
+    },
+    "team": {
+      "id": "1",
+      "label": "CSI NUOTO OBER FERRARI ASD",
+      "name": "CSI NUOTO OBER FERRARI ASD",
+      "editable_name": "CSI NUOTO OBER FERRARI ASD",
+      "city_id": null
+    },
+    "label": "01'26\"59",
+    "order": 4,
+    "length_in_meters": 100,
+    "reaction_time": null,
+    "minutes": 0,
+    "seconds": 0,
+    "hundredths": 0,
+    "position": null,
+    "minutes_from_start": 1,
+    "seconds_from_start": 26,
+    "hundredths_from_start": 59
+  }
+}
