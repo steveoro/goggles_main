@@ -3,7 +3,7 @@
 # = ImportProcessorJob
 #
 #   - author......: Steve A.
-#   - last updated: 20221003
+#   - last updated: 20221205
 #
 #  Calls the either the ImportQueue solver service or the SQL batch
 #  executor depending on the parameter set within the job creation.
@@ -55,8 +55,10 @@ class ImportProcessorJob < ApplicationJob
       end
 
     # Macro-Transaction queue w/ attachment: SQL batch execution
-    else
-      GogglesDb::AppParameter.maintenance = true
+    elsif GogglesDb::ImportQueue.with_batch_sql.exists?
+      # Toggle maintenance only if not already in maintenance:
+      maintenance_was_on = GogglesDb::AppParameter.maintenance?
+      GogglesDb::AppParameter.maintenance = true unless maintenance_was_on
       # Deletion & data file purge:
       GogglesDb::ImportQueue.deletable.each do |iq_row|
         iq_row.data_file.purge
@@ -65,7 +67,8 @@ class ImportProcessorJob < ApplicationJob
       GogglesDb::ImportQueue.with_batch_sql.each do |iq_row|
         exec_sql(iq_row)
       end
-      GogglesDb::AppParameter.maintenance = false
+      # Disable maintenance unless already in maintenance
+      GogglesDb::AppParameter.maintenance = false unless maintenance_was_on
     end
   end
 
