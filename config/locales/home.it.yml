@@ -6,6 +6,7 @@ it:
     log_out: "Esci"
     account: 'Profilo'
     account_with_name: "Profilo (%{user_name})"
+    issues: "Problemi?"
     please_wait: 'Attendi...'
     copyright_notice: "(c) 2013-2022, FASAR Software, S. Alloro, M. Ligabue"
     about_us: "Chi siamo"
@@ -52,7 +53,7 @@ it:
     point_2: "Goggles cerca quindi di stabilire una corrispondenza tra il nome utente e data di nascita coi dati disponibili dei risultati delle gare di nuoto Master (non sempre ci riesce, ma si può comunque cambiare)."
     point_3: "Avere un'associazione tra il proprio utente registrato ed un nuotatore nei risultati non è necessario ed è solo una scorciatoia per visualizzare le proprie statistiche e gli eventi a cui si è partecipato, ma avere un utente registrato ti permetterà anche di vedere le statistiche di tutti i nuotatori e le squadre."
     point_4: "Goggles attualmente è molto \"concentrato\" sulla scena Nuoto Master Italiana - ma nulla impedisce di espanderlo in futuro ad altre realtà. Dal 2013 al 2019, Goggles ha indicizzato risultati di gare di nuoto soprattutto dal Circuito Nazionale FIN Master, dal CSI Master Regionale dell'Emilia Romagna ma, purtroppo, molto poco dei Circuiti UISP Master, LEN Master e FINA Master."
-    point_5: "Anche se i tuoi risultati gara non ci sono, puoi comunque accodarli per la registrazione direttamente tu o il tuo Coach di squadra tramite l'applicazione \"Chrono\" integrata."
+    point_5: "Anche se i tuoi risultati gara non ci sono, puoi comunque accodarli per la registrazione direttamente tu o il tuo Coach di squadra tramite l'applicazione \"Chrono\" integrata o i link per fare modifiche che puoi trovare sparsi in giro fra le pagine dei meeting."
 
   who_we_are:
     title: 'Chi siamo:'
@@ -68,6 +69,8 @@ it:
     title: 'F.A.Q.'
     q_1: "Hey! Dove diamine è finita <i>[inserisci qui la tua feature preferita delle versioni precedenti]</i>? Perchè non riesco a trovarla più?"
     a_1: "Goggles v7+ è stato riscritto quasi completamente e molte delle feature ormai consolidate delle versioni precedenti devono ancora essere sviluppate. Puntiamo a rentrodurre tutto (o quasi), piano piano, prima o poi."
+    q_2: "Vorrei segnalare un problema ma il sistema mi obbliga ad essere registrato e loggato, perchè?"
+    a_2: "C'è tutta una sezione apposta delle F.A.Q. per i problemi da segnalare, ma richiede ovviamente che ogni utente sia identificato e verificato per evitare ogni tipo di spam. <i>(Dopotutto, c'è pur sempre un povero essere umano dall'altra parte a leggere le vostre richieste ed è giusto che il suo tempo prezioso sia ben distribuito.)</i>"
 
   privacy_policy:
     title: "Privacy Policy"
@@ -75,7 +78,7 @@ it:
     point_2: "Il nome completo e l'anno di nascita di un utente registrato servono solo internamente per riconoscere in automatico i nuotatori fra le anagrafiche pubbliche dei risultati gara. (Più semplice: <i>\"se non sappiamo chi sei, non riusciamo a dirti che gare hai fatto fra i risultati che abbiamo\"</i>.)"
     point_3: "<strong>Non utilizziamo cookie analitici</strong> di nessun tipo."
     point_4: "Usiamo solamente i cookies di sessione per salvare certe impostazioni dell'utente corrente."
-    point_5: "<strong>Non tracciamo i nostri utenti</strong>. Alcune funzioni di Master-Goggles, come la <i>\"cartina dei Meeting più vicini\"</i> a te, potrebbero richiedere di attivare la Geo-Localizzazione, ma questo non è strettamente necessario se non si vuole."
+    point_5: "<strong>Non tracciamo i nostri utenti</strong>. Alcune funzioni di Master-Goggles, come la <i>\"Mappa dei Meeting in Calendario\"</i>, potrebbero richiedere di attivare la Geo-Localizzazione per centrare la vista su dove ti trovi, ma questo non è strettamente necessario se non si vuole."
     point_6: "Alcune parti di questo sito sono protette contro i bot tramite hCaptcha e la loro <a href=\"https://hcaptcha.com/privacy\">Privacy Policy</a> e <a href=\"https://hcaptcha.com/terms\">Termini di servizio</a> vanno applicati."
     point_7: "In qualsiasi momento, se hai un utente registrato e vuoi eliminare i dati del tuo utente, basta accedere alle proprie impostazioni e cliccare su <i>'Rimuovi il mio account'</i>. Scorciatoia alle impostazioni:"
 

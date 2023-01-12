@@ -6,6 +6,7 @@ en:
     log_out: "Log out"
     account: 'Account'
     account_with_name: "Account (%{user_name})"
+    issues: "Issues?"
     please_wait: 'Wait...'
     copyright_notice: "(c) 2013-2022, FASAR Software, S. Alloro, M. Ligabue"
     about_us: "About us"
@@ -52,7 +53,7 @@ en:
     point_2: "Goggles then tries to establish a link between the user name & year of birth with the swimmers data from the available Master Swimmers Meeting results (not always successfully, but it can be edited)."
     point_3: "Having a link between the user and a swimmer among the results is not required and it's just a shortcut for displaying easily a dashboard with all the user's stats and the corresponding events, but having a registered user will allow you also to browse through the performance statistics of all other swimmers & teams as well."
     point_4: "Goggles currently is very focused on the Italian Master Swimmer scene - but nothing so far prevents us from expanding it in the future. In between 2013 and 2019, Goggles has indexed almost all swimming result data from the National FIN Master Championship in Italy, as well the Regional CSI Championship for Emilia Romagna, but - sadly - just a handful of results from the UISP Master, the LEN Master and the FINA Master Championships."
-    point_5: "Even if your swimming results aren't here, you, or your Team Coach, can always queue them for registration using the integrated \"Chrono\" app."
+    point_5: "Even if your swimming results aren't here, you, or your Team Coach, can always queue them for registration using the integrated \"Chrono\" app or any of the available edit links you may find scattered around the meeting pages."
 
   who_we_are:
     title: 'Who we are:'
@@ -68,14 +69,16 @@ en:
     title: 'F.A.Q.'
     q_1: "Hey! Where did <i>[insert your favorite legacy feature here]</i> ended up? Why I cannot find that anymore?"
     a_1: "Goggles v7+ is a complete rewrite and many features that were consolidated in the previous versions are yet to be developed. We aim to reintroduce them all (mostly), eventually & step by step."
+    q_2: "I'd like to report an issue but the system forces me to be signed-up and logged, why?"
+    a_2: "There's a whole dedicated FAQ section regarding how to report issues, but this requires user identification in order to prevent any kind of spamming. <i>(Afterall, there's a poor human being at the other side of this thing reading all your requests, so it's better to have his little precious time well distributed among all.)</i>"
 
   privacy_policy:
     title: "Privacy Policy"
-    point_1: "<strong>We don't share with no-one any kind of user data</strong> (e-mail, full name and year of birth)."
+    point_1: "<strong>We DO NOT share with no one any kind of user data</strong> (e-mail, full name and year of birth)."
     point_2: "The full user name and the year of birth are used internally just to match the current user with any swimmer existing in our database (simply put: <i>\"we can't tell you in which competitions you took part unless we know who you are\"</i>)."
     point_3: "<strong>We don't use any kind of analytical cookies</strong>."
     point_4: "We use session cookies just to store some user preferences during a login session."
-    point_5: "<strong>We do not track our users.</strong> Some features of Master-Goggles, like the <i>\"Map of the Meetings near by\"</i> may require you to turn on geo-localization, but that's just if you want to use those features."
+    point_5: "<strong>We do not track our users.</strong> Some features of Master-Goggles, like the <i>\"Calendar Map\"</i> may require you to turn on geo-localization to focus the view around you, but that's just if you want to use those features."
     point_6: "Some parts of this site are protected against bots by hCaptcha and its <a href=\"https://hcaptcha.com/privacy\">Privacy Policy</a> and <a href=\"https://hcaptcha.com/terms\">Terms of Service</a> apply."
     point_7: "In any given moment, if you have a registered user account and you want to delete your user data, you just need to log-in, go to your user preferences and click on <i>'Cancel my account'</i>. Shortcut to the preferences:"
 
