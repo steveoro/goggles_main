@@ -1,0 +1,17 @@
+en:
+  laps:
+    edit_button:
+      label: "Laps"
+      tooltip: "Add or edit lap timings"
+    modal:
+      form:
+        title: "Edit Laps"
+        timing_label: "Timing"
+        end_result_label: "Result (%{distance} m.)"
+        submit_save_btn: "Save"
+      msgs:
+        create_successful: "Lap created."
+        submit_successful: "Lap saved: OK!"
+        destroy_successful: "Lap row deleted!"
+        submit_delete_confirm: "Are you sure you want to delete the %{lap_length} m. lap?"
+        submit_generic_failure: "Something went wrong: please, be patient and try again later."

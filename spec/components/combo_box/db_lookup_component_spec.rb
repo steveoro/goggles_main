@@ -15,6 +15,7 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
           base_name,
           free_text: free_text_option,
           required: required_option,
+          disabled: disabled_option,
           wrapper_class: wrapper_class, # customize CSS wrapper DIV
           values: options_from_collection_for_select(category_types, 'id', 'short_name')
         )
@@ -26,6 +27,7 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
     let(:label_text) { I18n.t('meetings.category') }
     let(:free_text_option) { ['true', 'false', nil].sample }
     let(:required_option) { ['true', 'false', nil].sample }
+    let(:disabled_option) { ['true', 'false', nil].sample }
     let(:category_types) do
       GogglesDb::Season.for_season_type(GogglesDb::SeasonType.mas_fin)
                        .by_begin_date.first
@@ -59,6 +61,7 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
           base_name,
           free_text: free_text_option,
           required: required_option,
+          disabled: disabled_option,
           wrapper_class: wrapper_class,
           values: options_from_collection_for_select([last_chosen_row], 'id', 'name', last_chosen_row.id)
         )
@@ -71,6 +74,7 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
     let(:label_text) { I18n.t('teams.team') }
     let(:free_text_option) { ['true', 'false', nil].sample }
     let(:required_option) { ['true', 'false', nil].sample }
+    let(:disabled_option) { ['true', 'false', nil].sample }
     let(:last_chosen_row) { GogglesDb::Team.first(100).sample }
 
     it_behaves_like('ComboBox::DbLookupComponent common rendered result')
@@ -107,6 +111,7 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
           free_text: free_text_option,
           use_2_api: true,
           required: required_option,
+          disabled: disabled_option,
           wrapper_class: wrapper_class,
           values: options_from_collection_for_select([last_chosen_row], 'id', 'description', last_chosen_row.id)
         )
@@ -119,6 +124,7 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
     let(:label_text) { I18n.t('chrono.selector.meeting') }
     let(:free_text_option) { ['true', 'false', nil].sample }
     let(:required_option) { ['true', 'false', nil].sample }
+    let(:disabled_option) { ['true', 'false', nil].sample }
     let(:last_chosen_row) { GogglesDb::Meeting.first(100).sample }
 
     it_behaves_like('ComboBox::DbLookupComponent common rendered result')

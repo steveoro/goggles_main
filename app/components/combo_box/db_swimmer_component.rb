@@ -3,7 +3,7 @@
 #
 # = ComboBox components module
 #
-#   - version:  7.3.40
+#   - version:  7-0.4.25
 #   - author:   Steve A.
 #
 module ComboBox
@@ -40,6 +40,10 @@ module ComboBox
     #
     #
     # == Supported options & defaults:
+    # - values: nil               => pre-existing array of Swimmers that will be mapped to the select options
+    #                                (no need to use +options_for_select+ or +options_from_collection_for_select+ here);
+    #                                when given, this will disable API usage.
+    #
     # - default_row: nil          => pre-selected Swimmer for the input box
     #
     # - use_2_api: false          => toggles secondary API call to retrieve more entity details
@@ -48,38 +52,61 @@ module ComboBox
     #
     # - required: false           => sets the HTML5 'required' attribute for the select field
     #
+    # - disabled: false           => sets the HTML5 'disabled' attribute for the select field
+    #
     # - query_column: 'name'      => column name used for the API query call (default: 'name')
     #
     # - wrapper_class: 'col-auto' => CSS class for the wrapping DIV
     #
     def initialize(label, base_name, options = {})
-      super('swimmers', label, base_name, options)
+      super(options[:values].present? ? nil : 'swimmers', label, base_name, options)
 
       @gender_types = [GogglesDb::GenderType.male, GogglesDb::GenderType.female]
-      return unless options[:default_row].instance_of?(GogglesDb::Swimmer)
-
-      @default_row = SwimmerDecorator.decorate(options[:default_row])
+      @default_row = SwimmerDecorator.decorate(options[:default_row]) if options[:default_row].instance_of?(GogglesDb::Swimmer)
+      @values = options[:values]&.map { |swimmer| SwimmerDecorator.decorate(swimmer) }
     end
 
     protected
 
-    # Returns the preselected option item for this component if a default entity instance is
-    # specified in the constructor
-    def preselected_option
-      return unless @default_row
+    # Returns the options list whenever there's a list of available selection row values,
+    # using @default_row for preselection.
+    # rubocop:disable Rails/OutputSafety
+    def select_options_with_preselection
+      return unless @values || @default_row
 
-      content_tag(
-        :option,
-        @default_row.text_label,
-        selected: 'selected',
-        value: @default_row.id.to_i,
-        'data-complete_name': @default_row.complete_name,
-        'data-first_name': @default_row.first_name,
-        'data-last_name': @default_row.last_name,
-        'data-year_of_birth': @default_row.year_of_birth,
-        'data-gender_type_id': @default_row.gender_type_id
-      )
+      if @default_row && @values.blank?
+        return content_tag(
+          :option,
+          @default_row.text_label,
+          selected: 'selected',
+          value: @default_row.id.to_i,
+          'data-complete_name': @default_row.complete_name,
+          'data-first_name': @default_row.first_name,
+          'data-last_name': @default_row.last_name,
+          'data-year_of_birth': @default_row.year_of_birth,
+          'data-gender_type_id': @default_row.gender_type_id
+        )
+      end
+
+      # NOTE: each content_tag must include the additional data-field values for the lookups (given the API is disabled by
+      #       the list of supplied values), so that the callbacks for the onchange event will update the hidden fields
+      #       and all other associated form inputs.
+      html_options = @values.map do |swimmer|
+        content_tag(
+          :option,
+          swimmer.text_label,
+          selected: swimmer.id == @default_row&.id ? 'selected' : nil,
+          value: swimmer.id.to_i,
+          'data-complete_name': swimmer.complete_name,
+          'data-first_name': swimmer.first_name,
+          'data-last_name': swimmer.last_name,
+          'data-year_of_birth': swimmer.year_of_birth,
+          'data-gender_type_id': swimmer.gender_type_id
+        )
+      end
+      html_options.join("\r\n").html_safe
     end
+    # rubocop:enable Rails/OutputSafety
 
     # Returns the option item list for GenderType selection
     def gender_type_options

@@ -1,0 +1,49 @@
+.card
+  .card-header#title-type1a
+    %h5.mb-0
+      %button.btn.btn-link.text-left.collapsed{ 'aria-controls' => 'body-type1a', 'aria-expanded' => 'false',
+                                                'data-target' => '#body-type1a', 'data-toggle' => 'collapse' }
+        = t('issues.type1a.label')
+  .collapse#body-type1a{ 'aria-labelledby' => 'title-type1a', 'data-parent' => '#accordion' }
+    .card-body
+      %p= t('issues.type1a.form.description1')
+      %p.bg-light-blue.p-1.text-center.shadow-box
+        %i= t('issues.type1a.form.notice1')
+      %p= t('issues.type1a.form.description2')
+      = render('form_type1a')
+.card
+  .card-header#title-type1b
+    %h5.mb-0
+      %button.btn.btn-link.text-left.collapsed{ 'aria-controls' => 'body-type1b', 'aria-expanded' => 'false',
+                                                'data-target' => '#body-type1b', 'data-toggle' => 'collapse' }
+        = t('issues.type1b.label')
+  .collapse#body-type1b{ 'aria-labelledby' => 'title-type1b', 'data-parent' => '#accordion' }
+    .card-body
+      %p= t('issues.type1b.description1')
+      %p= t('issues.type1b.description2')
+
+.card
+  .card-header#title-type1c
+    %h5.mb-0
+      %button.btn.btn-link.text-left.collapsed{ 'aria-controls' => 'body-type1c', 'aria-expanded' => 'false',
+                                                'data-target' => '#body-type1c', 'data-toggle' => 'collapse' }
+        = t('issues.type1c.label')
+  .collapse#body-type1c{ 'aria-labelledby' => 'title-type1c', 'data-parent' => '#accordion' }
+    .card-body
+      %p= t('issues.type1c.description1')
+      %p= t('issues.type1c.description2')
+      %p.text-center= link_to(t('issues.manager_req_btn'), issues_new_type0_path, class: 'btn btn-primary')
+      %p= t('issues.type1c.description3')
+
+.card
+  .card-header#title-type1d
+    %h5.mb-0
+      %button.btn.btn-link.text-left.collapsed{ 'aria-controls' => 'body-type1d', 'aria-expanded' => 'false',
+                                                'data-target' => '#body-type1d', 'data-toggle' => 'collapse' }
+        = t('issues.type1d.label')
+  .collapse#body-type1d{ 'aria-labelledby' => 'title-type1d', 'data-parent' => '#accordion' }
+    .card-body
+      %p= t('issues.type1d.description1')
+      %p= t('issues.type1c.description2') # (reuses same text & link as previous section)
+      %p.text-center= link_to(t('issues.manager_req_btn'), issues_new_type0_path, class: 'btn btn-primary')
+      %p= t('issues.type1c.description3')

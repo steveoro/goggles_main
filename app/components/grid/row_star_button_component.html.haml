@@ -1,0 +1,7 @@
+- if expired?
+  %i{ class: "#{css_icon} #{css_highlight} disabled" }
+- else
+  = link_to(enabled ? taggings_by_user_path(meeting_id: meeting_id) : '#',
+            { method: :post, remote: true, id: "btn-row-star-#{meeting_id}" }, role: 'button',
+            class: enabled ? '' : ' disabled') do
+    %i{ class: "#{css_icon} #{css_highlight}" }

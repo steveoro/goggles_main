@@ -44,21 +44,13 @@ class ImportProcessorJob < ApplicationJob
   #
   # @see IqSolverService, GogglesDb::ImportQueue for transactions details
   #
-  def perform(*args)
-    queue_type = args&.first
-
-    # Standard Micro-Transaction queue: solve dependancies
-    if queue_type == 'iq'
-      GogglesDb::ImportQueue.deletable.delete_all
-      GogglesDb::ImportQueue.without_batch_sql.each do |iq_row|
-        IqSolverService.new.call(iq_row)
-      end
-
+  def perform(*_args)
     # Macro-Transaction queue w/ attachment: SQL batch execution
-    elsif GogglesDb::ImportQueue.with_batch_sql.exists?
+    if GogglesDb::ImportQueue.with_batch_sql.exists?
       # Toggle maintenance only if not already in maintenance:
       maintenance_was_on = GogglesDb::AppParameter.maintenance?
       GogglesDb::AppParameter.maintenance = true unless maintenance_was_on
+
       # Deletion & data file purge:
       GogglesDb::ImportQueue.deletable.each do |iq_row|
         iq_row.data_file.purge
@@ -67,8 +59,16 @@ class ImportProcessorJob < ApplicationJob
       GogglesDb::ImportQueue.with_batch_sql.each do |iq_row|
         exec_sql(iq_row)
       end
+
       # Disable maintenance unless already in maintenance
       GogglesDb::AppParameter.maintenance = false unless maintenance_was_on
+
+    # Standard Micro-Transaction queue: solve dependancies
+    else
+      GogglesDb::ImportQueue.deletable.delete_all
+      GogglesDb::ImportQueue.without_batch_sql.each do |iq_row|
+        IqSolverService.new.call(iq_row)
+      end
     end
   end
 

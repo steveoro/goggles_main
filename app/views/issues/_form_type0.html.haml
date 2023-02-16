@@ -1,0 +1,26 @@
+= form_tag(issues_create_type0_path, id: 'frm-type0', method: :post) do
+  .bg-light-yellow.p-1.py-3.shadow-box
+    .form-row
+      .form-group.col.mx-3
+        = label_tag(:notice, t('issues.type0.form.label'))
+    .form-row
+      .container.my-2
+        .row-fluid
+          = render(ComboBox::DbLookupComponent.new('teams', t('teams.team'), 'team', required: true,
+                                                  free_text: false))
+        %p.text-center.form-text.text-muted
+          %small
+            %i
+              = t('issues.type0.form.notice')
+    .form-row.mx-3
+      = label_tag(:seasons, t('issues.type0.form.season_championship'))
+    - seasons.each_with_index do |season, index|
+      .container.form-row.mx-2.p-1
+        .custom-control.custom-checkbox
+          = check_box_tag("season[#{index}]", season.id, false, class: 'custom-control-input')
+          = label_tag("season[#{index}]", season.decorate.display_label, class: 'custom-control-label')
+
+  .form-group.mt-2.col-auto
+    .actions
+      = submit_tag(t('issues.generic_send_btn'), id: 'issues-type0-post-btn', class: 'btn btn-primary',
+                   data: { confirm: t('issues.ask_confirmation') })

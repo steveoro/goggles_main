@@ -14,18 +14,19 @@
       = label_tag(@base_name, @label)
       %b.text-danger{ id: "#{@base_name}-presence" } *
       %span.d-none{ id: "#{@base_name}-new" } 🆕
-      %select.select2{ id: "#{@base_name}_select", autofocus: true, required: @required,
+      %select.select2{ id: "#{@base_name}_select", autofocus: true, required: @required, disabled: @disabled,
                        data: { 'lookup-target' => 'field' } }
-        = preselected_option
+        = select_options_with_preselection
 .col-4
   .form-group
     .field
       = label_tag("#{@base_name}_year_of_birth", t('swimmers.age_class'))
       = number_field_tag("#{@base_name}_year_of_birth", @default_row&.year_of_birth, min: 1910,
-                         max: Time.zone.today.year, required: @required, autofocus: true, class: 'form-control')
+                         max: Time.zone.today.year, required: @required, disabled: @disabled, autofocus: true,
+                         class: 'form-control')
 .col-4
   .form-group
     .field
-      = label_tag(:gender_type_id, t('swimmers.sex'))
-      = select_tag(:gender_type_id, gender_type_options, required: true, autofocus: true,
+      = label_tag(:gender_type_id, t('activerecord.attributes.goggles_db/swimmer.gender_type'))
+      = select_tag(:gender_type_id, gender_type_options, required: true, disabled: @disabled, autofocus: true,
                    class: 'form-control')

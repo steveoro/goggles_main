@@ -1,0 +1,47 @@
+.modal.fade{ id: 'lap-edit-modal', 'aria-hidden' => 'true', role: 'dialog', tabindex: '-1',
+             'aria-labelledby' => 'modal title' }
+  .modal-dialog.modal-lg{ role: 'document' }
+    .modal-content
+      .modal-header
+        %h5.modal-title{ id: 'lap-edit-modal-title' }
+          %i.fa.fa-clock-o
+          = t('laps.modal.form.title')
+          &nbsp;-&nbsp;
+          %b= result_label
+
+        .alert.alert-success.mx-auto.m-0.px-2.py-0.d-none#lap-modal-alert{ role: 'alert' }
+          %small#lap-modal-alert-text
+
+        %button.close{ 'aria-label' => t('datagrid.edit_modal.close_btn'), 'data-dismiss' => 'modal' }
+          %span{ 'aria-hidden' => 'true' } &times;
+      .modal-body{ id: 'lap-edit-modal-body' }
+        .container
+          %table.table.table-sm
+            %thead
+              %tr#lap-table-header
+                %th{ scope: 'col' }
+                  .form-row.my-1
+                    .col.text-center.mt-2
+                      %h6.mark= swimmer.complete_name
+                    .col-auto.text-center
+                      = link_to(laps_path(result_id: @parent_result.id,
+                                result_class: @parent_result.class.name.split('::').last, step: 25),
+                                method: :post, remote: true, id: "lap-new25-#{@parent_result.id}",
+                                class: 'btn btn-sm btn-outline-secondary m-1') do
+                        %span
+                          %i.fa.fa-plus
+                          25m
+                      = link_to(laps_path(result_id: @parent_result.id,
+                                result_class: @parent_result.class.name.split('::').last, step: 50),
+                                method: :post, remote: true, id: "lap-new50-#{@parent_result.id}",
+                                class: 'btn btn-sm btn-outline-secondary my-1') do
+                        %span
+                          %i.fa.fa-plus
+                          50m
+            %tbody#laps-table-body
+              = render(partial: 'laps/edit_table_body', locals: { parent_result: @parent_result, laps: laps })
+
+        .modal-footer
+          %button.btn.btn-sm.btn-outline-secondary{ 'aria-label' => t('datagrid.edit_modal.close_btn'),
+                                                    'data-dismiss' => 'modal', type: 'button' }
+            = I18n.t('datagrid.edit_modal.close_btn')

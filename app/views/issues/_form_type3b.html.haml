@@ -1,0 +1,16 @@
+= form_tag(issues_create_type3b_path, id: 'frm-type3b', method: :post) do
+  .bg-light-yellow.p-1.pt-3.shadow-box
+    .form-row
+      .form-group.col.mx-3
+        = label_tag(:notice, t('issues.type3b.form.notice'))
+        %small
+          %i.form-text.text-muted
+            = t('contact_us.tooltip')
+    .form-row
+      .form-group.col
+        = render(ComboBox::DbSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer',
+                                                  free_text: false, default_row: current_user&.swimmer))
+  .form-group.mt-2.col-auto
+    .actions
+      = submit_tag(t('issues.generic_send_btn'), id: 'issues-type3b-post-btn', class: 'btn btn-primary',
+                   data: { confirm: t('issues.ask_confirmation') })

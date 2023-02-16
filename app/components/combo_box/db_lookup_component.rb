@@ -3,7 +3,7 @@
 #
 # = ComboBox components module
 #
-#   - version:  7.3.40
+#   - version:  7-0.4.25
 #   - author:   Steve A.
 #
 module ComboBox
@@ -54,6 +54,8 @@ module ComboBox
     #
     # - required: false           => sets the HTML5 'required' attribute for the select field
     #
+    # - disabled: false           => sets the HTML5 'disabled' attribute for the select field
+    #
     # - query_column: 'name'      => column name used for the API query call (default: 'name')
     #
     # - bound_query_param:        => DOM ID for a field holding the value for a same-named, additional API query parameter
@@ -68,6 +70,7 @@ module ComboBox
       @base_name = base_name
       @free_text = options[:free_text] || false
       @required = options[:required] || false
+      @disabled = options[:disabled] || false
       @query_column = options[:query_column] || 'name'
       @bound_query_param = options[:bound_query_param]
       @wrapper_class = options[:wrapper_class] || 'col-auto'

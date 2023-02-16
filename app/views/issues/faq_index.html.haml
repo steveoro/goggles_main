@@ -1,0 +1,66 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content#top-of-page
+    %section#issues-faq-title
+      = render(Title::BreadCrumbLinkComponent.new(title: t('issues.faq_title'),
+               css_icon: 'frown-o', parent_title: t('home.issues'),
+               parent_link: root_path))
+
+    .row-fluid.my-2
+      %ul.nav.nav-tabs
+        %li.nav-item
+          .nav-link.active
+            = t('issues.faq_title')
+        %li.nav-item
+          = link_to(t('issues.my_reports_title'), issues_my_reports_path, class: 'nav-link')
+
+    / (only 1 modal container per page)
+    #lap-edit-modal-container
+
+    / ************************************ WIP **********************************
+    -# - mir = GogglesDb::MeetingIndividualResult.find(1019323)
+    -# = render(Laps::EditButtonComponent.new(parent_result: mir, can_manage: true))
+    / ************************************ WIP **********************************
+    -# &nbsp;
+    -# = render(Issues::ReportMissingButtonComponent.new(parent_meeting: mir.meeting, event_type: mir.event_type))
+    -# &nbsp;
+    -# = render(Issues::ReportMistakeButtonComponent.new(result_row: mir, can_manage: true))
+
+    -# = render(Laps::EditModalComponent.new(parent_result: mir))
+    / ************************************ WIP **********************************
+    -# %table.table.table-striped.table-sm
+    -#   %thead
+    -#     = render(MIR::TableComponent.new(mirs: mir.meeting_program.meeting_individual_results.includes(:swimmer, :team),
+    -#             managed_team_ids: [1], current_swimmer_id: 142))
+    / ************************************ WIP **********************************
+
+    .container.mt-2
+      #accordion
+        = render('type1_issues')
+        = render('type2_issues')
+        = render('type3_issues')
+        .card
+          .card-header#title-type4
+            %h5.mb-0
+              %button.btn.btn-link.text-left.collapsed{ 'aria-controls' => 'body-type4', 'aria-expanded' => 'false',
+                                                        'data-target' => '#body-type4', 'data-toggle' => 'collapse' }
+                = t('issues.type4.label')
+          .collapse#body-type4{ 'aria-labelledby' => 'title-type4', 'data-parent' => '#accordion' }
+            .card-body
+              %p= t('issues.type4.description1')
+              = render('form_type4')
+
+    .row-fluid
+      %p &nbsp;
+
+    .row-fluid.text-center
+      %p
+        = link_to(t('about.go_back'), root_path)
+        |
+        = link_to(t('issues.anything_else'), home_contact_us_path, id: 'href-contact-us')
+
+    .row-fluid
+      %p &nbsp;
+
+  .spacer-right

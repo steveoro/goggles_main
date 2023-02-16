@@ -1,0 +1,101 @@
+en:
+  issues:
+    faq_title: "Report an issue"
+    my_reports_title: "My reported issues"
+    generic_send_btn: "Send request"
+    manager_req_btn: "I want to become a 'Team Manager'"
+    ask_confirmation: "Send out this request?"
+    sent_ok: "Your request has been sent!"
+    invalid_type: "Invalid or unsupported request type!"
+    no_issues_found: "(No unsolved issues reported by you were found)"
+
+    type0:
+      title: "Promote my account to 'Team Manager'"
+      form:
+        label: "I'd like to be allowed to manage the following team for the current sport season in the available Championships:"
+        notice: "The team you want to choose must be already existing in our data for it to appear on the list"
+        season_championship: "Championship / Season:"
+
+    type1a:
+      label: "I know a website where you can find the results of a Meeting that is totally missing from your data!"
+      form:
+        description1: "1. Make sure the meeting can't be found when searching for results. Try using just a part of the meeting name to see if anything comes up."
+        notice1: "If the meeting is not 'cancelled' but it can be found from the search page and it's without any results, then most probably we have it already covered and the data import will eventually happen."
+        description2: "2. Fill-in the form below with the Meeting description, the venue city name, the first date of the meeting and the web page address that shows the results you'd like to see added here and published."
+        meeting_date: "Meeting date"
+        url: "Internet page address"
+        url_placeholder: "Paste here the URL address of the external web page that has this meeting results"
+
+    type1b:
+      label: "I want to send you some missing results of mine or correct some mistakes that I've seen in your Meeting data."
+      description1: "If you have noticed a wrong result of yours when browsing a specific Meeting, look for the 'Report mistake' link (🚩) right beside your result that you think is wrong."
+      description2: "For a missing one for which you know the exact timing, look for the 'Report missing result' link (🏴) at the top of the corresponding category section that should contain the missing result."
+      form:
+        tooltip: "Report a timing missing from this Meeting results"
+        title: "🏴 Report missing result"
+        result_label: "Result"
+    type1b1:
+      form:
+        tooltip: "Report a mistake spotted in this Meeting result"
+        title: "🚩 Report mistake"
+        tab_label: "Tempo sbagliato"
+        result_label: "Correct Result"
+    type1c:
+      label: "I want to report some missing results for one my team mates or correct some wrong ones."
+      description1: "If you are already enabled as a 'team manager' for one of your teams, you'll notice that the 'Report mistake' (🚩) or the 'Report missing result' (🏴) links will be available for any meeting result or swimmer in your teams (not just for you as a swimmer)."
+      description2: "If you want to become a 'team manager' for one of the teams in which you are registered, just click on the following link to get to the request form."
+      description3: "If you've been enabled already as a 'team manager', go to the team results page of the Meeting you'd like to update and look for the edit buttons wherever a field can be edited."
+
+    type1d:
+      label: "I'd like to add to or to correct the lap timings for some results of mine or for some of my team mates'."
+      description1: "Only 'team managers' can add or edit lap timings to the results of their teams."
+
+    type2a:
+      label: "I want to correct the name or the home city for one of the Teams I belong to."
+      description1: "Only 'team managers' can edit some of the details of their teams and have the edit feature toggled on when browsing on the team detail page."
+      description3: "If you've been enabled already as a 'team manager', go to the details page of the Team you'd like to edit and look for the edit buttons wherever a field can be edited."
+      form:
+        title: "🚩 Report wrong Team detail"
+    type2b:
+      label: "I have never been part of one of the teams that I've seen myself as registered with!"
+      description1: "If you know that you've been wrongly assigned to a team with which you have a meeting result, use the same 'report mistake' link (🚩) on that same result. Then, you'll be able to select the kind of mistakes you want to report."
+      description2: "If this happens, it may be an error during our data-import procedure. As the 'wrong team attribution' is the hardest kind of issue to fix, it will definitely take some time, but we will do our best to correct the error."
+    type2b1:
+      form:
+        btn_label: "🚩 Report"
+        tab_label: "Wrong Team or Swimmer"
+        wrong_meeting_label: "Never been to this Meeting"
+        wrong_swimmer_label: "This Swimmer doesn't belong to our Team"
+        wrong_team_label: "I have never been part of this Team"
+
+    type3a:
+      label: "I want to change or correct the swimmer that has been automatically associated to my account."
+      description1: "On the main search page make a search, make sure there is indeed a swimmer matching your name and year of birth among our data. Search for just the surname and check the results found: if you're there, then the association can be made."
+      description2: "Click on the 'Account' link on the top menu bar to edit your account."
+      description3: "Scroll to the 'ID yourself as a Swimmer' section and click the edit button beside the 'Associated to Swimmer' drop-down list."
+      description4: "If your swimmer name doesn't appear in the list, you may have to widen the search for a matching swimmer. Try to clear the 'First name' and 'Year of birth' fields: the more data is there, the more strict is the matching."
+      description5: "Select the correct name from the list if there's one. Fill-in the 'existing password' field and then click on 'update' after you're done re-filling the blanked fields."
+      description6: "If the correct swimmer name still doesn't appear in the list, you may have to clear the selected swimmer first by chosing '---' and then clicking 'update' (the existing password in the previous section is still required). Then, you can retry changing the association from blank as above."
+    type3b:
+      label: "I have tried changing my associated swimmer but the system doesn't show the correct name!"
+      description1: "If loosening the filters on the automatic association doesn't budge, use the form below to message us and sort this out."
+      form:
+        notice: "I am this swimmer:"
+    type3c:
+      label: "I want to correct something about me as a swimmer. (It's me, but either the name, the age or the gender have been mistaken.)"
+      description1: "Use the form below to send us the correct data about you as a swimmer."
+
+    type4:
+      label: "I want to report a bug or an application error!"
+      description1: "Use the form below to send us specific information about this."
+      form:
+        expected: "Expected - What were you trying to do?"
+        expected_placeholder: "Describe briefly what you were expecting to get to or to see..."
+        outcome: "Actual outcome - What happened instead"
+        outcome_placeholder: "Describe briefly what happened or copy the error message you saw..."
+        reproduce: "Steps to reproduce"
+        reproduce_placeholder: "List here the steps to reproduce this issue..."
+        report_send_btn: "Send bug report"
+        ask_confirmation: "Send out this bug report?"
+
+    anything_else: "...For anything else, contact us!"

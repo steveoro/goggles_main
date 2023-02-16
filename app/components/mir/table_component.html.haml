@@ -1,2 +1,3 @@
 - @mirs.by_timing.each_with_index do |mir, index|
-  = render(MIR::TableRowComponent.new(mir: mir, index: index))
+  = render(MIR::TableRowComponent.new(mir: mir, index: index, lap_edit: can_edit_lap?(mir),
+                                      report_mistake: can_report_mistake?(mir)))

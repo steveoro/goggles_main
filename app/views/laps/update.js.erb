@@ -1,0 +1,19 @@
+document.querySelector('#laps-table-body').innerHTML = "<%=
+  escape_javascript(
+    render(
+      partial: 'laps/edit_table_body',
+      locals: { parent_result: @parent_result, laps: @parent_result.laps.by_distance }
+    )
+  )
+%>";
+document.querySelector('#result-row-delta').innerHTML = "Δt: <%=
+  escape_javascript(@last_delta_timing.to_s)
+%>"
+document.querySelector('#lap-modal-alert-text').innerHTML = "<%= escape_javascript(@alert_msg) %>"
+
+$('#lap-modal-alert').show().removeClass('d-none').delay(1500).fadeOut(1000)
+
+// Replace also the lap-show subtable if present:
+document.querySelector("#laps-show<%= @parent_result.id %>").outerHTML = "<%=
+  escape_javascript(render(Laps::TableComponent.new(laps: @parent_result.laps)))
+%>";

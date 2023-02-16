@@ -1,0 +1,26 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content#top-of-page
+    %section#myreports-title
+      = render(Title::BreadCrumbLinkComponent.new(title: t('issues.my_reports_title'),
+               css_icon: 'frown-o', parent_title: t('home.issues'),
+               parent_link: root_path))
+
+    .row-fluid.my-2
+      %ul.nav.nav-tabs
+        %li.nav-item
+          = link_to(t('issues.faq_title'), issues_faq_index_path, class: 'nav-link')
+        %li.nav-item
+          .nav-link.active
+            = t('issues.my_reports_title')
+
+    .container.mt-2
+      .row-fluid.text-center
+        %p.mt-4
+          %i= t('issues.no_issues_found')
+
+    .row-fluid
+      %p &nbsp;
+
+  .spacer-right

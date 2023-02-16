@@ -3,7 +3,7 @@
 #
 # = Footer components module
 #
-#   - version:  7.02
+#   - version:  7-0.4.25
 #   - author:   Steve A.
 #
 module Footer

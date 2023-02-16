@@ -4,6 +4,6 @@
 $("#user-star-<%= @meeting.id %>")
     .html('<%= escape_javascript(
             render(
-                Grid::RowStarComponent.new(asset_row: @meeting, current_user: current_user, saved_ok: @saved_ok)
+                Grid::RowStarButtonComponent.new(asset_row: @meeting, current_user: current_user, saved_ok: @saved_ok)
             )
           ) %>');

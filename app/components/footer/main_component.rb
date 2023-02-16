@@ -5,7 +5,7 @@ require 'version'
 #
 # = Footer components module
 #
-#   - version:  7.08
+#   - version:  7-0.4.25
 #   - author:   Steve A.
 #
 module Footer
@@ -28,7 +28,7 @@ module Footer
     end
 
     def unicode_locale_flag(locale_sym)
-      locale_sym == :it ? 'Versione 🇮🇹' : '🇬🇧 Version'
+      locale_sym == :it ? 'Cambia in 🇮🇹' : 'Change to 🇬🇧'
     end
   end
 end

@@ -1,0 +1,11 @@
+document.querySelector('#lap-edit-modal-container').innerHTML = "<%=
+  escape_javascript(
+    render(Laps::EditModalComponent.new(parent_result: @parent_result))
+  )
+%>";
+document.querySelector('#result-row-delta').innerHTML = "Δt: <%=
+  escape_javascript(@last_delta_timing.to_s)
+%>"
+
+$('#loading-indicator').addClass('d-none');
+$('#lap-edit-modal').modal('show');

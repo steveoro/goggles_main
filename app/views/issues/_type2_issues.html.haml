@@ -1,0 +1,23 @@
+.card
+  .card-header#title-type2a
+    %h5.mb-0
+      %button.btn.btn-link.text-left.collapsed{ 'aria-controls' => 'body-type2a', 'aria-expanded' => 'false',
+                                                'data-target' => '#body-type2a', 'data-toggle' => 'collapse' }
+        = t('issues.type2a.label')
+  .collapse#body-type2a{ 'aria-labelledby' => 'title-type2a', 'data-parent' => '#accordion' }
+    .card-body
+      %p= t('issues.type2a.description1')
+      %p= t('issues.type1c.description2') # (reuses same text & link as previous section)
+      %p.text-center= link_to(t('issues.manager_req_btn'), issues_new_type0_path, class: 'btn btn-primary')
+      %p= t('issues.type2a.description3')
+
+.card
+  .card-header#title-type2b
+    %h5.mb-0
+      %button.btn.btn-link.text-left.collapsed{ 'aria-controls' => 'body-type2b', 'aria-expanded' => 'false',
+                                                'data-target' => '#body-type2b', 'data-toggle' => 'collapse' }
+        = t('issues.type2b.label')
+  .collapse#body-type2b{ 'aria-labelledby' => 'title-type2b', 'data-parent' => '#accordion' }
+    .card-body
+      %p= t('issues.type2b.description1')
+      %p= t('issues.type2b.description2')

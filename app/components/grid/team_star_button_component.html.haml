@@ -1,6 +1,10 @@
-- set_id_js = "$('#frm-team-star input#meeting_id').val(#{meeting_id});"
-- set_label_js = "$('#already-tagged-for').text(\"#{@tagged_names_list}\");"
-= link_to('#team-star-modal', role: 'button', class: enabled ? '' : ' disabled',
-          id: "btn-team-star-#{meeting_id}",
-          onclick: "#{set_id_js} #{set_label_js}", data: { toggle: 'modal' }) do
-  %i{ class: "#{css_icon} #{css_highlight}" }
+- if expired?
+  %i{ class: "#{css_icon} #{css_highlight} disabled" }
+- else
+  :ruby
+    set_id_js = "$('#frm-team-star input#meeting_id').val(#{meeting_id});"
+    set_label_js = "$('#already-tagged-for').text(\"#{@tagged_names_list}\");"
+  = link_to('#team-star-modal', role: 'button', class: enabled ? '' : ' disabled',
+            id: "btn-team-star-#{meeting_id}",
+            onclick: "#{set_id_js} #{set_label_js}", data: { toggle: 'modal' }) do
+    %i{ class: "#{css_icon} #{css_highlight}" }

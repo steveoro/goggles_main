@@ -79,11 +79,11 @@ RSpec.describe WizardForm::ProgressBarComponent, type: :component do
 
     it 'renders each progress step title & icon as data attribute of its own step' do
       fixture_titles.each_with_index do |title, idx|
-        expect(subject.css(".progressbar .progress-step[data-title='#{title}']")).to be_present
-        expect(subject.css(".progressbar .progress-step[data-title='#{title}']").attr('data-icon')).to be_present
-        expect(
-          subject.css(".progressbar .progress-step[data-title='#{title}']").attr('data-icon').value
-        ).to eq(fixture_icons[idx])
+        expect(subject.at_css(".progressbar .progress-step[data-title='#{title}']")).to be_present
+        expect(subject.at_css(".progressbar .progress-step[data-title='#{title}']").attr('data-icon')).to be_present
+        # Let's use the internal index as a unique ID for the rendered subject:
+        expect(subject.at_css(".progressbar .progress-step[data-index='#{idx}']").attr('data-icon'))
+          .to eq(fixture_icons[idx])
       end
     end
   end

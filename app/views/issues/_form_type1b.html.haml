@@ -1,0 +1,47 @@
+= form_tag(issues_create_type1b_path, id: 'frm-type1b', method: :post) do
+  .bg-light-yellow.p-3.shadow-box
+    .row-fluid
+      %h4.text-center
+        %i.fa.fa-trophy
+        = render(Meeting::LabelComponent.new(meeting: parent_meeting))
+    .row-fluid.text-center
+      = parent_meeting.decorate.header_date
+
+    .container
+      .row
+        = render(ComboBox::DbLookupComponent.new(nil, t('meetings.event'), 'event_type', required: true,
+                                                 values: event_type_options(parent_meeting.event_types)))
+    .container
+      .row
+        = render(ComboBox::DbSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer', disabled: !can_manage,
+                                                  free_text: false, default_row: current_user.swimmer,
+                                                  values: swimmers))
+      = hidden_field_tag(:parent_meeting_id, parent_meeting.id)
+      = hidden_field_tag(:parent_meeting_class, parent_meeting.class.name.split('::').last)
+
+    .form-row.px-3.mb-2
+      .form-group.col-12.col-lg-2.pt-2.mt-1.mb-0
+        = label_tag(:minutes, t('issues.type1b.form.result_label'))
+      .form-group.col-3.col-lg-2.mb-1
+        .input-group.mt-1
+          = number_field_tag(:minutes, nil, min: 0, max: 120, required: true, autofocus: true, type: 'number',
+                             class: 'form-control text-right')
+          .form-control-sm.ml-1.p-1
+            %b= '\''
+      .form-group.col-3.col-lg-2.mb-1
+        .input-group.mt-1
+          = number_field_tag(:seconds, nil, min: 0, max: 59, required: true, autofocus: true, type: 'number',
+                             class: 'form-control text-right')
+          .form-control-sm.ml-0.p-1
+            %b= '"'
+      .form-group.col-3.col-lg-2.mb-1
+        .input-group.mt-1
+          = number_field_tag(:hundredths, nil, min: 0, max: 99, required: true, autofocus: true, type: 'number',
+                             class: 'form-control text-right')
+          .form-control-sm.ml-1.p-1
+            &nbsp;
+
+  .form-group.mt-2.col-auto
+    .actions
+      = submit_tag(t('issues.generic_send_btn'), id: 'issues-type1b-post-btn', class: 'btn btn-primary',
+                   data: { confirm: t('issues.ask_confirmation') })

@@ -93,7 +93,7 @@ end
 Given('I have an associated swimmer on a confirmed team manager account') do
   # WIP/NOTE: *substitute* the following after we'll be done with old data-import testing,
   #           following what's written at app/controllers/application_controller.rb:44
-  @last_seasons_ids = [182]
+  @last_seasons_ids = [GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin).id]
 
   managed_aff = FactoryBot.create(
     :managed_affiliation,

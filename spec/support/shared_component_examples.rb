@@ -133,7 +133,8 @@ end
 # - free_text_option...: 'true' to enable the free-text input
 # - base_name..........: API/widget base name
 # - label_text.........: display label for the widget
-# - required_option....: 'true' to enable the required HTML attribute for the select input tag
+# - required_option....: 'true' to enable the 'required' HTML attribute for the select input tag
+# - disabled_option....: 'true' to enable the 'disabled' HTML attribute for the select input tag
 shared_examples_for 'ComboBox::DbLookupComponent common rendered result' do
   describe 'the wrapper DIV' do
     it 'has the customizable wrapper class' do
@@ -203,6 +204,13 @@ shared_examples_for 'ComboBox::DbLookupComponent common rendered result' do
       expect(subject.css("##{base_name}_select").attr('required').value).to eq(required_option)
     end
   end
+
+  it "sets the 'disabled' HTML field flag accordingly (when set)" do
+    if disabled_option
+      expect(subject.css("##{base_name}_select").attr('disabled')).to be_present
+      expect(subject.css("##{base_name}_select").attr('disabled').value).to eq(disabled_option)
+    end
+  end
 end
 
 # REQUIRES/ASSUMES:
@@ -213,6 +221,7 @@ end
 # - base_name..........: API/widget base name
 # - label_text.........: display label for the widget
 # - required_option....: 'true' to enable the required HTML attribute for the select input tag
+# - disabled_option....: 'true' to enable the 'disabled' HTML attribute for the select input tag
 shared_examples_for 'ComboBox::DbLookupComponent with double-API call enabled' do
   it_behaves_like('ComboBox::DbLookupComponent common rendered result')
 

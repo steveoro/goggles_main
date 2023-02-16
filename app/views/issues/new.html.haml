@@ -1,0 +1,30 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    .row-fluid#issue-title
+      %h4.text-center.pb-3.mt-2
+        = @issue_title
+
+    .container.mt-2
+      - case type
+        - when '0'
+          = render(partial: 'form_type0', locals: { seasons: @seasons })
+        - when '1b'
+          = render(partial: 'form_type1b', locals: { parent_meeting: parent_meeting,
+                   swimmers: swimmers, can_manage: can_manage })
+        - when '1b1'
+          = render(partial: 'form_type1b1', locals: { result_row: result_row,
+                   can_manage: can_manage })
+        - when '2b1'
+          = render(partial: 'form_type2b1', locals: { result_row: result_row,
+                   can_manage: can_manage })
+        - else
+          .row.text-center
+            %b
+              %i= t('issues.invalid_type')
+
+    .row-fluid
+      %p &nbsp;
+
+  .spacer-right

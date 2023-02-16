@@ -1,15 +1,17 @@
-%tbody
+%tbody.resut-table-row
   %tr
     %td.text-right
       = render(RankingPosComponent.new(rank: rank))
-    %td.text-right
-      = @mir.to_timing.to_s
-      - if includes_laps? || @mir.reaction_time > 0.0
-        %br/
+    %td.text-right.pl-0
       - if @mir.reaction_time > 0.0
         %small.text-muted
           R: #{@mir.reaction_time}
+        &nbsp;
+      = @mir.to_timing.to_s
+      %br/
       = render(Switch::RotatingComponent.new(target_id: "laps#{@mir.id}")) if includes_laps?
+      = render(Laps::EditButtonComponent.new(parent_result: @mir, can_manage: @lap_edit))
+      = render(Issues::ReportMistakeButtonComponent.new(result_row: @mir, can_manage: @report_mistake))
     %td
       = swimmer&.complete_name
       %br/

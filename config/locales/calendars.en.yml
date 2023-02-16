@@ -10,6 +10,8 @@ en:
     grid:
       star:
         title: "To-do?"
+      date:
+        title: "Date ⬇"
       place:
         title: "Venue"
     tagging:

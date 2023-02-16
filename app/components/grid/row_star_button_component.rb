@@ -3,18 +3,18 @@
 #
 # = Grid components module
 #
-#   - version:  7-0.4.21
+#   - version:  7-0.4.25
 #   - author:   Steve A.
 #
 module Grid
   #
-  # = Grid::RowStarComponent
+  # = Grid::RowStarButtonComponent
   #
   # Renders the tag/star button for a Calendar or Meeting.
   # The component will render the link and parameters depending on the class
   # of the specified <tt>asset_row</tt>.
   #
-  class RowStarComponent < ViewComponent::Base
+  class RowStarButtonComponent < ViewComponent::Base
     # Creates a new ViewComponent
     #
     # == Params
@@ -39,7 +39,8 @@ module Grid
 
     # Skips rendering unless the minimum required parameters are set
     def render?
-      @asset_row.present? && @asset_row.id.to_i.positive? &&
+      (@asset_row.is_a?(GogglesDb::Meeting) || @asset_row.is_a?(GogglesDb::Calendar)) &&
+        @asset_row.id.to_i.positive? &&
         @current_user.is_a?(GogglesDb::User) && @current_user.id.to_i.positive?
     end
 
@@ -48,21 +49,29 @@ module Grid
     # Memoized Meeting instance for the tagging depending on the <tt>:asset_row</tt> class.
     # Defaults to +nil+ for unsupported asset classes.
     def meeting
-      @meeting ||= if @asset_row.is_a?(GogglesDb::Meeting)
+      @meeting ||= case @asset_row
+                   when GogglesDb::Meeting
                      GogglesDb::Meeting.includes(:taggings).find_by(id: @asset_row&.id)
-                   elsif @asset_row.respond_to?(:meeting_id)
+                   when GogglesDb::Calendar
                      GogglesDb::Meeting.includes(:taggings).find_by(id: @asset_row.meeting_id)
                    end
     end
 
-    # Returns the memoized Meeting ID.
+    # Returns the Meeting ID.
     def meeting_id
-      @meeting_id ||= meeting&.id
+      meeting&.id
     end
 
-    # Enabled is +true+ whenever <tt>meeting_id</tt> results valid
+    # Returns true if the meeting has already occurred.
+    # (A user cannot tag an old meeting: this is to prevent misuse)
+    def expired?
+      meeting && (meeting.header_date < Time.zone.today)
+    end
+
+    # Enabled is +true+ whenever the <tt>meeting</tt> exists and is not expired
     def enabled
-      @enabled ||= meeting_id.to_i.positive? && GogglesDb::Meeting.exists?(id: meeting_id)
+      @enabled ||= !expired?
+      # meeting_id.to_i.positive? && GogglesDb::Meeting.exists?(id: meeting_id)
     end
 
     # "Starred" flag: +true+ if the asset has already been tagged by a user
@@ -74,6 +83,7 @@ module Grid
 
     # CSS icon class
     def css_icon
+      return 'fa fa-minus' if expired?
       return 'fa fa-star' if enabled && @saved_ok && starred
       return 'fa fa-star-o' if enabled && @saved_ok
       return 'fa fa-minus-circle' unless enabled
@@ -83,6 +93,7 @@ module Grid
 
     # Memoized CSS class for highlighting the icon.
     def css_highlight
+      return 'text-secondary' if expired?
       return 'text-warning' if enabled && @saved_ok && starred
       return 'text-primary' if enabled && @saved_ok
 

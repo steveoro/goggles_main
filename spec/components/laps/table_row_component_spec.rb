@@ -6,13 +6,23 @@ RSpec.describe Laps::TableRowComponent, type: :component do
   context 'with a valid parameter,' do
     subject { render_inline(described_class.new(lap: fixture_lap)) }
 
-    let(:fixture_mir) { FactoryBot.create(:meeting_individual_result_with_laps) }
-    let(:fixture_lap) { fixture_mir.laps.sample }
+    # Select an abstract lap for the parent result, so that we're sure we have existing
+    # lap rows (although not required, makes the test more complete)
+    let(:parent_result) do
+      lap = [
+        GogglesDb::Lap.last(500).sample,
+        GogglesDb::UserLap.last(500).sample
+      ].sample
+      lap.parent_result
+    end
+
+    let(:fixture_lap) { parent_result.laps.sample }
 
     before do
-      expect(fixture_mir).to be_a(GogglesDb::MeetingIndividualResult).and be_valid
-      expect(fixture_lap).to be_a(GogglesDb::Lap).and be_valid
-      expect(fixture_lap.meeting_individual_result_id).to eq(fixture_mir.id)
+      expect(parent_result).to be_an(GogglesDb::AbstractResult).and be_valid
+      expect(parent_result.laps.count).to be_positive
+      expect(fixture_lap).to be_an(GogglesDb::AbstractLap).and be_valid
+      expect(fixture_lap.parent_result_id).to eq(parent_result.id)
     end
 
     it 'renders a collapsed table row with 2 cells' do

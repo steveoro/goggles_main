@@ -38,6 +38,24 @@ Rails.application.routes.draw do
   post 'chrono/commit'
   delete 'chrono/delete/:id', to: 'chrono#delete', as: 'chrono_delete'
 
+  get 'issues/faq_index' # FAQ-like landing page
+  get 'issues/my_reports' # actual report index for the current user
+  get 'issues/new_type0'
+  get 'issues/new_type1b'
+  get 'issues/new_type1b1'
+  get 'issues/new_type2b1'
+  post 'issues/create_type0'
+  post 'issues/create_type1a'
+  post 'issues/create_type1b'
+  post 'issues/create_type1b1'
+  post 'issues/create_type2b1'
+  post 'issues/create_type3b'
+  post 'issues/create_type3c'
+  post 'issues/create_type4'
+
+  post 'laps/edit_modal' # XHR only
+  resources :laps, only: %i[create update destroy] # XHR only
+
   put 'lookup/matching_swimmers'
 
   get 'maintenance', to: 'maintenance#index'

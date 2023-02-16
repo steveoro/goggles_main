@@ -16,7 +16,7 @@ class CalendarsGrid < BaseGrid
         :swimming_pools,
         { meeting_sessions: [:swimming_pool, { meeting_events: :event_type }] }
       ]
-    ).distinct.order(scheduled_date: :asc)
+    ).distinct.order(scheduled_date: :desc)
   end
 
   filter(:meeting_name, :string, header: I18n.t('meetings.meeting')) do |value, scope|
@@ -36,7 +36,7 @@ class CalendarsGrid < BaseGrid
   )
 
   # Required custom column naming. See app/views/datagrid/_row.html.haml:19
-  column(:calendar_date, header: I18n.t('meetings.header_date'), html: true, mandatory: true, order: false) do |asset|
+  column(:calendar_date, header: I18n.t('calendars.grid.date.title'), html: true, mandatory: true, order: false) do |asset|
     if asset.meeting&.cancelled
       content_tag(:span, asset.scheduled_date) +
         content_tag(:div, I18n.t('activerecord.attributes.goggles_db/meeting.cancelled'), class: 'cancelled-row')

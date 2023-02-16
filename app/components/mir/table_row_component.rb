@@ -3,7 +3,7 @@
 #
 # = MIR components module
 #
-#   - version:  7.3.07
+#   - version:  7-0.4.25
 #   - author:   Steve A.
 #
 module MIR
@@ -22,10 +22,14 @@ module MIR
     # == Params
     # - mir: the GogglesDb::MeetingIndividualResult model instance to be displayed
     # - index: the current MIR index, spanning the event context (can substitute rank when rank is missing)
-    def initialize(mir:, index: 0)
+    # - lap_edit: when +true+, it will render the "lap edit" row-action button
+    # - report_mistake: when +true+, it will render the "report mistake" row-action button
+    def initialize(mir:, index: 0, lap_edit: false, report_mistake: false)
       super
       @mir = mir
       @index = index
+      @lap_edit = lap_edit
+      @report_mistake = report_mistake
     end
 
     # Skips rendering unless the member is properly set

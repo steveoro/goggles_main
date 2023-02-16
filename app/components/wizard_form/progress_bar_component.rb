@@ -3,7 +3,7 @@
 #
 # = WizardForm components module
 #
-#   - version:  7.3.40
+#   - version:  7-0.3.40
 #   - author:   Steve A.
 #
 module WizardForm

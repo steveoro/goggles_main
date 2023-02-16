@@ -1,0 +1,42 @@
+.card
+  .card-header#title-type3a
+    %h5.mb-0
+      %button.btn.btn-link.text-left.collapsed{ 'aria-controls' => 'body-type3a', 'aria-expanded' => 'false',
+                                                'data-target' => '#body-type3a', 'data-toggle' => 'collapse' }
+        = t('issues.type3a.label')
+  .collapse#body-type3a{ 'aria-labelledby' => 'title-type3a', 'data-parent' => '#accordion' }
+    .card-body
+      %ul
+        %li
+          %p= t('issues.type3a.description1')
+        %li
+          %p= t('issues.type3a.description2')
+        %li
+          %p= t('issues.type3a.description3')
+        %li
+          %p= t('issues.type3a.description4')
+        %li
+          %p= t('issues.type3a.description5')
+      %p= t('issues.type3a.description6')
+
+.card
+  .card-header#title-type3b
+    %h5.mb-0
+      %button.btn.btn-link.text-left.collapsed{ 'aria-controls' => 'body-type3b', 'aria-expanded' => 'false',
+                                                'data-target' => '#body-type3b', 'data-toggle' => 'collapse' }
+        = t('issues.type3b.label')
+  .collapse#body-type3b{ 'aria-labelledby' => 'title-type3b', 'data-parent' => '#accordion' }
+    .card-body
+      %p= t('issues.type3b.description1')
+      = render('form_type3b')
+
+.card
+  .card-header#title-type3c
+    %h5.mb-0
+      %button.btn.btn-link.text-left.collapsed{ 'aria-controls' => 'body-type3c', 'aria-expanded' => 'false',
+                                                'data-target' => '#body-type3c', 'data-toggle' => 'collapse' }
+        = t('issues.type3c.label')
+  .collapse#body-type3c{ 'aria-labelledby' => 'title-type3c', 'data-parent' => '#accordion' }
+    .card-body
+      %p= t('issues.type3c.description1')
+      = render('form_type3c')

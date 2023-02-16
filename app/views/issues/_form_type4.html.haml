@@ -1,0 +1,31 @@
+= form_tag(issues_create_type4_path, id: 'frm-type4', method: :post) do
+  .bg-light-yellow.p-1.pt-3.shadow-box
+    .form-row
+      .form-group.col.mx-3
+        = label_tag(:expected, t('issues.type4.form.expected'))
+        %br/
+        = text_area_tag(:expected, nil, rows: 3, autofocus: true, class: 'form-control',
+                        'aria-describedby' => 'expected goal',
+                        placeholder: t('issues.type4.form.expected_placeholder'))
+    .form-row
+      .form-group.col.mx-3
+        = label_tag(:outcome, t('issues.type4.form.outcome'))
+        %br/
+        = text_area_tag(:outcome, nil, rows: 3, autofocus: true, class: 'form-control',
+                        'aria-describedby' => 'actual outcome',
+                        placeholder: t('issues.type4.form.outcome_placeholder'))
+    .form-row
+      .form-group.col.mx-3
+        = label_tag(:reproduce, t('issues.type4.form.reproduce'))
+        %br/
+        = text_area_tag(:reproduce, nil, rows: 5, autofocus: true, class: 'form-control',
+                        'aria-describedby' => 'steps to reproduce',
+                        placeholder: t('issues.type4.form.reproduce_placeholder'))
+        %small
+          %i.form-text.text-muted
+            = t('contact_us.tooltip')
+
+  .form-group.mt-2.col-auto
+    .actions
+      = submit_tag(t('issues.type4.form.report_send_btn'), id: 'issues-type4-post-btn', class: 'btn btn-primary',
+                   data: { confirm: t('issues.type4.form.ask_confirmation') })

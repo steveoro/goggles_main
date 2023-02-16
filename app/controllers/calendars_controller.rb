@@ -10,10 +10,12 @@ class CalendarsController < ApplicationController
   # Prepares all the Calendar rows available for the latest seasons.
   # Requires authentication.
   #
+  # Relies on @last_seasons as collected by ApplicationController#prepare_last_seasons
+  #
   def current
     CalendarsGrid.managed_teams = @managed_teams
     @grid = CalendarsGrid.new(grid_filter_params) do |scope|
-      scope.where(season_id: @last_seasons_ids).page(index_params[:page]).per(8)
+      scope.where(season_id: @last_seasons_ids).page(index_params[:page]).per(10)
     end
   end
   #-- -------------------------------------------------------------------------
@@ -23,11 +25,13 @@ class CalendarsController < ApplicationController
   # Prepares all the Calendar rows tagged as interesting either by the user or by the team.
   # Requires authentication.
   #
+  # Relies on @last_seasons as collected by ApplicationController#prepare_last_seasons
+  #
   def starred
     CalendarsGrid.managed_teams = @managed_teams
     @grid = CalendarsGrid.new(grid_filter_params) do |scope|
       scope.where(season_id: @last_seasons_ids, meeting_id: prepare_tagged_meeting_ids)
-           .page(index_params[:page]).per(8)
+           .page(index_params[:page]).per(10)
     end
   end
 
@@ -65,6 +69,7 @@ class CalendarsController < ApplicationController
   end
 
   # Collects into an array all tagged Meeting IDs (both by current user & by the user's teams).
+  #
   # Uses @last_seasons_ids & @user_teams to filter out the tagged meetings.
   # Returns the array of unique tagged IDs.
   def prepare_tagged_meeting_ids

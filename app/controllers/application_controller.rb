@@ -44,7 +44,8 @@ class ApplicationController < ActionController::Base
       # WIP: testing latest data imports
       # ACTUAL: GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin)
       # EDIT ALSO: features/step_definitions/devise/given_any_user_steps.rb:93
-      GogglesDb::Season.find(182)
+      # WAS: GogglesDb::Season.find(222)
+      GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin)
     ]
     @last_seasons_ids = @last_seasons.pluck(:id)
     # Can we show any related management buttons? (team selection should happen afterwards)

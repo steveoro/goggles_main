@@ -1,0 +1,56 @@
+%section#tab-form-1b
+  .row-fluid.my-2
+    %ul.nav.nav-tabs
+      %li.nav-item
+        .nav-link.active
+          = t('issues.type1b1.form.tab_label')
+      %li.nav-item
+        = link_to(t('issues.type2b1.form.tab_label'), issues_new_type2b1_path(result_id: result_row.id,
+                  result_class: result_row.class.name), class: 'nav-link')
+
+  .row-fluid.mt-4
+    = form_tag(issues_create_type1b1_path, id: 'frm-type1b', method: :post) do
+      = hidden_field_tag(:result_id, result_row.id)
+      = hidden_field_tag(:result_class, result_row.class.name.split('::').last)
+      - parent_meeting = result_row.parent_meeting
+      .bg-light-yellow.p-3.shadow-box
+        .row-fluid
+          %h4.text-center
+            %i.fa.fa-trophy
+            = render(Meeting::LabelComponent.new(meeting: parent_meeting))
+        .row-fluid.text-center
+          = parent_meeting.decorate.header_date
+        .row-fluid.col-12.pt-2.mb-0.text-center
+          %h5
+            %b
+              #{result_row.swimmer.complete_name} - #{result_row.event_type.label} #{result_row.gender_type.label}
+        - if result_row.respond_to?(:team)
+          .row-fluid.text-center.mb-3
+            = result_row.team.editable_name
+
+        .form-row.px-3.mb-2
+          .form-group.col-12.col-lg-4.pt-2.mt-1.mb-0
+            = label_tag(:minutes, t('issues.type1b1.form.result_label'))
+          .form-group.col-3.col-lg-2.mb-1
+            .input-group.mt-1
+              = number_field_tag(:minutes, result_row.minutes, min: 0, max: 120, required: true, autofocus: true,
+                                type: 'number', class: 'form-control text-right')
+              .form-control-sm.ml-1.p-1
+                %b= '\''
+          .form-group.col-3.col-lg-2.mb-1
+            .input-group.mt-1
+              = number_field_tag(:seconds, result_row.seconds, min: 0, max: 59, required: true, autofocus: true,
+                                type: 'number', class: 'form-control text-right')
+              .form-control-sm.ml-0.p-1
+                %b= '"'
+          .form-group.col-3.col-lg-2.mb-1
+            .input-group.mt-1
+              = number_field_tag(:hundredths, result_row.hundredths, min: 0, max: 99, required: true, autofocus: true,
+                                type: 'number', class: 'form-control text-right')
+              .form-control-sm.ml-1.p-1
+                &nbsp;
+
+      .form-group.mt-2.col-auto
+        .actions
+          = submit_tag(t('issues.generic_send_btn'), id: 'issues-type1b-post-btn', class: 'btn btn-primary',
+                      data: { confirm: t('issues.ask_confirmation') })

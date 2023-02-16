@@ -1,0 +1,9 @@
+= link_to(issues_new_type1b_path(parent_meeting_id: @parent_meeting.id,
+          parent_meeting_class: @parent_meeting.class.name.split('::').last,
+          event_type_id: @event_type.id), type: 'button', method: :get,
+          id: "type1b-btn-#{@parent_meeting.id}-#{@event_type.id}",
+          class: 'btn btn-sm text-secondary px-1', role: 'button',
+          data: 'tooltip', title: t('issues.type1b.form.tooltip')) do
+  %span
+    %i.fa.fa-flag-o
+    = t('issues.type1b.form.btn_label')

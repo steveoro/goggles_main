@@ -18,6 +18,7 @@ RSpec.describe ComboBox::DbSwimmingPoolComponent, type: :component do
           base_name,
           free_text: free_text_option,
           required: required_option,
+          disabled: disabled_option,
           use_2_api: true,
           default_row: default_row
         )
@@ -32,6 +33,7 @@ RSpec.describe ComboBox::DbSwimmingPoolComponent, type: :component do
     # Actual options:
     let(:free_text_option) { ['true', 'false', nil].sample }
     let(:required_option) { ['true', 'false', nil].sample }
+    let(:disabled_option) { ['true', 'false', nil].sample }
     let(:default_row) { GogglesDb::SwimmingPool.first(50).sample }
     let(:decorated_default_row) { SwimmingPoolDecorator.decorate(default_row) }
 

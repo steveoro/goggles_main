@@ -3,7 +3,7 @@
 #
 # = ComboBox components module
 #
-#   - version:  7.3.40
+#   - version:  7-0.4.25
 #   - author:   Steve A.
 #
 module ComboBox
@@ -47,6 +47,8 @@ module ComboBox
     # - free_text: false          => allows/disables free text as input
     #
     # - required: false           => sets the HTML5 'required' attribute for the select field
+    #
+    # - disabled: false           => sets the HTML5 'disabled' attribute for the select field
     #
     # - query_column: 'name'      => column name used for the API query call (default: 'name')
     #

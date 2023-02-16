@@ -43,8 +43,8 @@ RSpec.describe ImportProcessorJob, type: :job do
 
     it_behaves_like('ImportProcessorJob properly enqueued')
 
-    context 'if there are rows marked as solved,' do
-      it 'consumes the IQ solved rows' do
+    context 'when there are rows marked as "done" (deletable),' do
+      it 'consumes those IQ rows' do
         expect { described_class.perform_now }.to change { GogglesDb::ImportQueue.count }.by(-1)
       end
     end

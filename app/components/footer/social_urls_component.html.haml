@@ -1,8 +1,8 @@
 - if @social_urls.facebook.present?
-  = link_to(content_tag(:i, '', id: 'social-fb-link', class: 'fa fa-facebook'), @social_urls.facebook)
+  = link_to(tag.i('', class: 'fa fa-facebook'), @social_urls.facebook, id: 'social-fb-link')
   &nbsp;
 - if @social_urls.linkedin.present?
-  = link_to(content_tag(:i, '', id: 'social-linkedin-link', class: 'fa fa-linkedin'), @social_urls.linkedin)
+  = link_to(tag.i('', class: 'fa fa-linkedin'), @social_urls.linkedin, id: 'social-linkedin-link')
   &nbsp;
 - if @social_urls.twitter.present?
-  = link_to(content_tag(:i, '', id: 'social-twitter-link', class: 'fa fa-twitter'), @social_urls.twitter)
+  = link_to(tag.i('', class: 'fa fa-twitter'), @social_urls.twitter, id: 'social-twitter-link')

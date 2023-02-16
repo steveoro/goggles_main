@@ -24,6 +24,11 @@ RSpec.describe Footer::MainComponent, type: :component do
     expect(rendered_footer.at_css('a#href-contact-us')['href']).to include(home_contact_us_path.to_s)
   end
 
+  it 'includes the "issues?" link' do
+    expect(rendered_footer.text).to include(I18n.t('home.issues'))
+    expect(rendered_footer.at_css('a#href-issues')['href']).to include(issues_faq_index_path.to_s)
+  end
+
   it 'includes the "privacy policy" link' do
     expect(rendered_footer.text).to include(I18n.t('home.privacy_policy.title'))
     expect(rendered_footer.at_css('a#href-privacy-policy')['href']).to include(home_about_path(anchor: 'privacy-policy'))
@@ -31,7 +36,7 @@ RSpec.describe Footer::MainComponent, type: :component do
 
   it 'includes the "about" link' do
     expect(rendered_footer.text).to include(I18n.t('home.about_this'))
-    expect(rendered_footer.at_css('a#href-about')['href']).to include(home_about_path)
+    expect(rendered_footer.at_css('a#href-about')['href']).to include(home_about_path.to_s)
   end
 
   it 'includes the copyright notice' do

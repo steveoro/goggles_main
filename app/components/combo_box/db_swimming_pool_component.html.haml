@@ -15,6 +15,6 @@
       = label_tag(@base_name, @label)
       %b.text-danger{ id: "#{@base_name}-presence" } *
       %span.d-none{ id: "#{@base_name}-new" } 🆕
-      %select.select2{ id: "#{@base_name}_select", autofocus: true, required: @required,
+      %select.select2{ id: "#{@base_name}_select", autofocus: true, required: @required, disabled: @disabled,
                        data: { 'lookup-target' => 'field' } }
         = preselected_option

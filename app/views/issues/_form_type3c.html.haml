@@ -1,0 +1,34 @@
+= form_tag(issues_create_type3c_path, id: 'frm-type3c', method: :post) do
+  .bg-light-yellow.p-1.pt-3.shadow-box
+    .form-row
+      .form-group.col.mx-3
+        = label_tag(:notice, t('issues.type3b.form.notice'))
+        %small
+          %i.form-text.text-muted
+            = t('contact_us.tooltip')
+    / Use special namespaces for free-text fields to avoid clashing with DBLookups
+    .form-row
+      .form-group.col-sm-5.col-lg-4.mx-3
+        = label_tag(:type3c_first_name, t('activerecord.attributes.goggles_db/swimmer.first_name'))
+        = text_field_tag(:type3c_first_name, current_user&.swimmer&.first_name, required: true,
+                         autofocus: true, class: 'form-control')
+      .form-group.col-sm-5.col-lg-4.mx-3
+        = label_tag(:type3c_last_name, t('activerecord.attributes.goggles_db/swimmer.last_name'))
+        = text_field_tag(:type3c_last_name, current_user&.swimmer&.last_name, required: true,
+                         autofocus: true, class: 'form-control')
+    .form-row
+      .form-group.col-sm-3.mx-3
+        = label_tag(:type3c_year_of_birth, t('activerecord.attributes.goggles_db/swimmer.year_of_birth'))
+        = number_field_tag(:type3c_year_of_birth, current_user&.swimmer&.year_of_birth, min: 1910,
+                           max: Time.zone.today.year, required: true, autofocus: true, class: 'form-control')
+      .form-group.col-sm-3.mx-3
+        = label_tag(:type3c_gender_type_id, t('activerecord.attributes.goggles_db/swimmer.gender_type'))
+        = select_tag(:type3c_gender_type_id,
+            options_from_collection_for_select([GogglesDb::GenderType.male, GogglesDb::GenderType.female],
+              'id', 'label', current_user&.swimmer&.gender_type_id), required: true, autofocus: true,
+              class: 'form-control')
+
+  .form-group.mt-2.col-auto
+    .actions
+      = submit_tag(t('issues.generic_send_btn'), id: 'issues-type3c-post-btn', class: 'btn btn-primary',
+                   data: { confirm: t('issues.ask_confirmation') })

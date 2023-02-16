@@ -1,0 +1,7 @@
+= link_to(laps_edit_modal_path(result_id: @parent_result.id,
+          result_class: @parent_result.class.name.split('::').last),
+          method: :post, remote: true, id: "lap-req-edit-modal-#{@parent_result.id}",
+          type: 'button', class: 'btn btn-sm text-success px-1', role: 'button',
+          data: 'tooltip', title: t('laps.edit_button.tooltip'),
+          onclick: "document.querySelector('#loading-indicator').classList.remove('d-none');") do
+  %i.fa.fa-pencil-square-o

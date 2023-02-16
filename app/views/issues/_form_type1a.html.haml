@@ -1,0 +1,26 @@
+= form_tag(issues_create_type1a_path, id: 'frm-type1a', method: :post) do
+  .bg-light-yellow.p-1.pt-3.shadow-box
+    .form-row
+      .form-group.col
+        = render(ComboBox::DbLookupComponent.new('meetings', t('chrono.selector.meeting'), 'meeting',
+                                                  free_text: true, use_2_api: true))
+    .form-row
+      .form-group.col
+        = render(ComboBox::DbCityComponent.new(required: true, free_text: true))
+    .form-row
+      .form-group.col-sm-6.col-md-5.col-lg-3.mx-3
+        = label_tag(:event_date, t('issues.type1a.form.meeting_date'))
+        = date_field_tag(:event_date, cookies[:event_date] || Time.zone.today, required: true,
+                          autofocus: true, class: 'form-control')
+    .form-row
+      .form-group.col.mx-3
+        = label_tag(:results_url, t('issues.type1a.form.url'))
+        = text_field_tag(:results_url, nil, required: true, autofocus: true, class: 'form-control',
+                          placeholder: t('issues.type1a.form.url_placeholder'))
+        %small
+          %i.form-text.text-muted
+            = t('contact_us.tooltip')
+  .form-group.mt-2.col-auto
+    .actions
+      = submit_tag(t('issues.generic_send_btn'), id: 'issues-type1a-post-btn', class: 'btn btn-primary',
+                   data: { confirm: t('issues.ask_confirmation') })

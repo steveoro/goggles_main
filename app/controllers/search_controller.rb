@@ -69,8 +69,11 @@ class SearchController < ApplicationController
 
   # Sets the @swimmers member
   def prepare_swimmer_search_results
+    # @see [goggles_api]/app/api/goggles/swimmers_api.rb:132
     # (NOTE: fulltext search filters like #for_name do not need strong checking)
+    like_value = "%#{params['q']}%"
     @swimmers = GogglesDb::Swimmer.for_name(params['q'])
+                                  .where('complete_name LIKE ?', like_value)
                                   .page(params['page']).per(5)
   end
 

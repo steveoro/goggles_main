@@ -5,35 +5,71 @@ require 'rails_helper'
 RSpec.describe ComboBox::DbSwimmerComponent, type: :component do
   include ActionView::Helpers::FormOptionsHelper
 
-  # Testing only the most complete option setup outcome:
-  context 'with a full setup (including a default row, with dual-API enabled),' do
-    # Default values for the rendered sub-component: (needed by the shared examples)
-    subject do
-      expect(default_row).to be_a(GogglesDb::Swimmer).and be_valid
-      expect(decorated_default_row).to be_a(SwimmerDecorator).and be_valid
+  let(:wrapper_class) { 'col-auto' }
+  let(:api_url) { 'swimmers' }
+  let(:label_text) { I18n.t('swimmers.swimmer_with_layout') }
+  let(:base_name) { 'swimmer' }
 
+  # Actual options:
+  let(:free_text_option) { ['true', 'false', nil].sample }
+  let(:required_option) { ['true', 'false', nil].sample }
+  let(:disabled_option) { ['true', 'false', nil].sample }
+  let(:default_row) { GogglesDb::Swimmer.first(150).sample }
+  let(:decorated_default_row) { SwimmerDecorator.decorate(default_row) }
+  let(:values) { GogglesDb::Swimmer.first(250).sample(5) }
+
+  before do
+    expect(default_row).to be_a(GogglesDb::Swimmer).and be_valid
+    expect(decorated_default_row).to be_a(SwimmerDecorator).and be_valid
+    expect(values).to all be_a(GogglesDb::Swimmer).and be_valid
+  end
+
+  context 'with a prefixed lookup list of option values,' do
+    subject do
       render_inline(
         described_class.new(
           label_text,
           base_name,
           free_text: free_text_option,
           required: required_option,
+          disabled: disabled_option,
+          wrapper_class: wrapper_class, # customize CSS wrapper DIV
+          values: values
+        )
+      )
+    end
+
+    it_behaves_like('ComboBox::DbLookupComponent common rendered result')
+
+    it "doesn't have an associated API URL value" do
+      expect(subject.css("div.#{wrapper_class}").attr('data-lookup-api-url-value'))
+        .not_to be_present
+    end
+
+    it 'renders as many option tags for the input select as the specified values' do
+      expect(subject.css("div.#{wrapper_class} select.select2##{base_name}_select option")).to be_present
+      expect(subject.css("div.#{wrapper_class} select.select2##{base_name}_select option").count)
+        .to eq(values.count)
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  context 'with a full API setup (including a default row, with dual-API enabled),' do
+    # Default values for the rendered sub-component: (needed by the shared examples)
+    subject do
+      render_inline(
+        described_class.new(
+          label_text,
+          base_name,
+          free_text: free_text_option,
+          required: required_option,
+          disabled: disabled_option,
           use_2_api: true,
           default_row: default_row
         )
       )
     end
-
-    let(:wrapper_class) { 'col-auto' }
-    let(:api_url) { 'swimmers' }
-    let(:label_text) { I18n.t('swimmers.swimmer_with_layout') }
-    let(:base_name) { 'swimmer' }
-
-    # Actual options:
-    let(:free_text_option) { ['true', 'false', nil].sample }
-    let(:required_option) { ['true', 'false', nil].sample }
-    let(:default_row) { GogglesDb::Swimmer.first(150).sample }
-    let(:decorated_default_row) { SwimmerDecorator.decorate(default_row) }
 
     it_behaves_like('ComboBox::DbLookupComponent with double-API call enabled')
 
@@ -113,4 +149,6 @@ RSpec.describe ComboBox::DbSwimmerComponent, type: :component do
         .to eq(default_row&.gender_type_id.to_s)
     end
   end
+  #-- -------------------------------------------------------------------------
+  #++
 end

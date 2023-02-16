@@ -23,6 +23,7 @@ RSpec.describe ComboBox::DbCityComponent, type: :component do
     # Actual options:
     let(:free_text_option) { ['true', 'false', nil].sample }
     let(:required_option) { ['true', 'false', nil].sample }
+    let(:disabled_option) { false } # (no support for the 'disabled' option in DbCityComponent at the moment)
     let(:default_row) { GogglesDb::City.first(100).sample }
 
     it_behaves_like('ComboBox::DbLookupComponent common rendered result')

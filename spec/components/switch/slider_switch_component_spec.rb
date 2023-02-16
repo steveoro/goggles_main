@@ -18,4 +18,6 @@ RSpec.describe Switch::SliderComponent, type: :component do
   it 'links to the specified DOM target_id' do
     expect(subject.at_css('.slider')['href']).to eq("##{fixture_dom_id}")
   end
+
+  # TODO: add specs for usage as a boolean form field
 end

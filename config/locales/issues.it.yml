@@ -1,0 +1,102 @@
+it:
+  issues:
+    faq_title: "Segnala un problema"
+    my_reports_title: "Le mie segnalazioni"
+    generic_send_btn: "Manda segnalazione"
+    manager_req_btn: "Voglio diventare un 'Team Manager'"
+    ask_confirmation: "Spedisci questa richiesta?"
+    sent_ok: "La tua richiesta è stata inviata!"
+    invalid_type: "Tipo di richiesta non valido o non supportato!"
+    no_issues_found: "(Nessuna tua segnalazione non risolta è stata trovata)"
+
+    type0:
+      title: "Promuovimi a 'Team Manager'"
+      form:
+        label: "Vorrei poter gestire le squadre che seguono nei Campionati disponibili per la stagione sportiva in corso:"
+        notice: "La squadra che vuoi scegliere deve già esistere fra i nostri dati per comparire in lista"
+        season_championship: "Campionato / Stagione:"
+
+    type1a:
+      label: "Conosco un sito web dove potresti trovare i risultati di un Meeting che manca completamente fra i tuoi dati!"
+      form:
+        description1: "1. Assicurati che il Meeting non salti fuori quando cerchi i suoi risultati. Prova ad effettuare la ricerca usando solo una parte del nome del Meeting per vedere se davvero non salta fuori nulla."
+        notice1: "Se il Meeting non è 'annullato' e può essere trovato con la ricerca ma è senza risultati, allora molto probabilmente ce l'abbiamo già da qualche parte e prima o poi finiremo la sua importazione dati."
+        description2: "2. Riempi i campi qui sotto con la descrizione del Meeting, il nome della città dell'impianto principale, la prima data di inizio e l'indirizzo della pagina web che mostra i risultati che vorresti vedere aggiunti e pubblicati qui."
+        meeting_date: "Data Meeting"
+        url: "Indirizzo pagina Web risultati"
+        url_placeholder: "Incolla qui l'indirizzo internet della pagina coi risultati del Meeting"
+
+    type1b:
+      label: "Vorrei mandarti alcuni risultati che mancano o correggere alcuni errori che ho visto fra i tuoi dati Meeting."
+      description1: "Se hai notato qualcosa di sbagliato fra i tuoi risultati mentre guardavi un Meeting in particolare, clicca sul link 'Segnala errore' (🚩) a fianco del risultato che pensi sia sbagliato."
+      description2: "Per un risultato mancante di cui conosci il tempo esatto, clicca sul link 'Segnala risultato mancante' (🏴) all'inizio della sezione categoria corrispondente che lo dovrebbe includere."
+      form:
+        tooltip: "Segnala un risultato mancante fra questo elenco del Meeting"
+        btn_label: "Segnala mancanza"
+        title: "🏴 Segnala risultato mancante"
+        result_label: "Risultato"
+    type1b1:
+      form:
+        tooltip: "Segnala un errore in questo risultato del Meeting"
+        title: "🚩 Segnala errore"
+        tab_label: "Tempo sbagliato"
+        result_label: "Risultato corretto"
+    type1c:
+      label: "Vorrei segnalare dei risultati mancanti per alcuni miei compagni di squadra o correggerne di sbagliati."
+      description1: "Se sei già stato abilitato come 'Team Manager' di una delle squadre a cui sei iscritto, noterai che i link 'Segnala errore' (🚩) o 'Segnala risultato mancante' (🏴) compariranno non solo per i tuoi risultati ma anche per i tuoi compagni delle squadre che gestisci."
+      description2: "Se vuoi diventare 'Team Manager' di una delle squadre a cui sei iscritto, clicca sul link che segue per andare alla form di richiesta."
+      description3: "Se sei già stato abilitato come 'Team Manager', vai alla sotto-pagina dei risultati di squadra del Meeting che vorresti aggiornare e cerca i link di modifica per i campi che sono aggiornabili."
+
+    type1d:
+      label: "Vorrei aggiungere o correggere i tempi dei passaggi di alcuni miei risultati o dei miei compagni di squadra."
+      description1: "Solo i 'Team Manager' possono aggiungere o modificare i passaggi gara ai risultati di squadra."
+
+    type2a:
+      label: "Vorrei correggere il nome o la città di una delle squadre di cui faccio parte."
+      description1: "Solo i 'Team Manager' possono modificare alcuni dei dettagli delle loro squadre ed hanno le pagine dei dettagli delle loro squadre con alcuni pulsanti di modifica abilitati."
+      description3: "Se sei già stato abilitato come 'Team Manager', vai alla pagina dei dettagli della squadra che vorresti aggiornare (la 'radiografia' di squadra) e cerca i pulsati di modifica la dove c'è un campo che può essere modificato."
+      form:
+        title: "🚩 Segnala dettaglio Squadra sbagliato"
+    type2b:
+      label: "Non ho mai fatto parte di una delle squadre in cui mi vedo iscritto nella mia pagina dettagli!"
+      description1: "Se hai visto che sei stato assegnato per sbaglio ad una squadra per la quale c'è anche un risultato di un Meeting, usa lo stesso link 'Segnala errore' (🚩) a fianco del risultato sbagliato. Nella form di segnalazione potrai poi scegliere il tipo di errore che vuoi segnalare."
+      description2: "Se capita, di solito è un errore di importazione dati. Siccome l'errata attribuzione di squadra è il tipo di errore più difficile da correggere, potrebbe volerci un po' di tempo, ma faremo del nostro meglio per correggere il problema."
+    type2b1:
+      form:
+        btn_label: "🚩 Segnala"
+        tab_label: "Squadra o Atleta sbagliati"
+        wrong_meeting_label: "Non ho/ha mai partecipato a questo Meeting"
+        wrong_swimmer_label: "L'atleta non appartiene alla nostra Squadra"
+        wrong_team_label: "Non ho mai fatto parte di questa Squadra"
+
+    type3a:
+      label: "Vorrei cambiare o correggere il nuotatore che è stato attribuito automaticamente al mio profilo."
+      description1: "Sulla pagina principale di ricerca, assicurati che fra i nostri dati ci sia un nuotatore che abbia il tuo stesso nome ed anno di nascita. Cerca anche solo il cognome e controlla i risultati trovati: se ci sei, allora l'attribuzione si può fare."
+      description2: "Clicca sul link 'Profilo' sulla barra del menu in alto per modificare il tuo profilo."
+      description3: "Scrolla in basso sino alla sezione 'Identificati come Nuotatore' e clicca sul pulsante di modifica a fianco dell'elenco 'Associato al nuotatore'."
+      description4: "Se il tuo nome come nuotatore non compare in lista, potresti dover allargare la ricerca che viene fatta automaticamente per trovare i nomi che corrispondono al tuo. Prova a ripulire i campi 'Nome' e 'Data di nascita' del tuo profilo. (Più dati ci sono e più la ricerca automatica sarà 'stretta'.)"
+      description5: "Scegli il nome corretto dalla lista, se ne compare uno. Riempi il campo 'Password corrente' per abilitare le modifiche al profilo e poi clicca su 'Aggiorna' dopo che avrai nuovamente riempito gli eventuali campi ripuliti prima (per allargare la ricerca automatica)."
+      description6: "Se il nuotatore corretto non compare nella lista, puoi anche provare a ripulire l'attribuzione prima, selezionando '---' (nessuno) e cliccando poi su 'Aggiorna' (sempre mettendo prima la 'Password corrente' per abilitare le modifiche). Dopo di ché, puoi riprovare a cambiare l'attribuzione partendo da zero seguendo gli stessi passaggi elencati qui sopra."
+    type3b:
+      label: "Ho provato a cambiare l'attribuzione automatica del mio nuotatore ma il sistema non mi mostra il nome corretto!"
+      description1: "Se allentando i parametri della ricerca automatica (che sono basati su quello che scrivi nel tuo profilo) non basta, usa la form qui sotto per provare a risolvere la cosa segnalandoci chi sei veramente."
+      form:
+        notice: "Io sono questo nuotatore:"
+    type3c:
+      label: "Vorrei correggere qualcosa su di me come nuotatore. (Sono io, ma o il nome, o l'età o il sesso sono sbagliati.)"
+      description1: "Usa i campi qui sotto per segnalarci i dati corretti su di te come nuotatore."
+
+    type4:
+      label: "Vorrei segnalare un bug o un errore nell'applicazione!"
+      description1: "Usa i campi qui sotto per inviarci informazioni più dettagliate."
+      form:
+        expected: "'Mi aspettavo di...' - Cosa stavi cercando di fare o vedere?"
+        expected_placeholder: "Descrivi brevemente cosa ti aspettavi di ottenere o di vedere..."
+        outcome: "Risultato effettivo - Cosa è successo invece"
+        outcome_placeholder: "Descrivi brevemente cosa è successo e/o copia il messaggio di errore che hai visto..."
+        reproduce: "Passi per riprodurre la cosa"
+        reproduce_placeholder: "Elenca qui i passi per riprodurre il problema..."
+        report_send_btn: "Invia segnalazione bug"
+        ask_confirmation: "Spedisco la segnalazione bug?"
+
+    anything_else: "...Per qualsiasi altra cosa, contattaci!"

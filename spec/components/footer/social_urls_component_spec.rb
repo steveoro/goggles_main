@@ -7,16 +7,24 @@ RSpec.describe Footer::SocialUrlsComponent, type: :component do
     # (Default settings values will do just fine)
     subject { render_inline(described_class.new) }
 
+    let(:social_urls) { GogglesDb::AppParameter.versioning_row.settings(:social_urls) }
+
     it 'renders the Facebook URL link' do
-      expect(subject.at_css('#social-fb-link')).to be_present
+      rendered_button = subject.at_css('a#social-fb-link')
+      expect(rendered_button).to be_present
+      expect(rendered_button['href']).to eq(social_urls.facebook)
     end
 
     it 'renders the Linkedin URL link' do
-      expect(subject.at_css('#social-linkedin-link')).to be_present
+      rendered_button = subject.at_css('a#social-linkedin-link')
+      expect(rendered_button).to be_present
+      expect(rendered_button['href']).to eq(social_urls.linkedin)
     end
 
     it 'renders the Twitter URL link' do
-      expect(subject.at_css('#social-twitter-link')).to be_present
+      rendered_button = subject.at_css('a#social-twitter-link')
+      expect(rendered_button).to be_present
+      expect(rendered_button['href']).to eq(social_urls.twitter)
     end
   end
 

@@ -1,0 +1,47 @@
+%tr
+  %td{ scope: 'col' }
+    = form_tag(lap_path(lap.id), id: "frm-lap-row-#{index + 1}", method: :put, remote: true) do
+      = hidden_field_tag("result_id[#{index}]", parent_result.id)
+      = hidden_field_tag("result_class[#{index}]", parent_result.class.name.split('::').last)
+      .form-row.my-1
+        .col-3.col-lg-2.mb-1
+          .input-group.mt-1
+            = number_field_tag("length_in_meters[#{index}]", lap.length_in_meters, min: 15, max: 1500,
+                               required: true, autofocus: true, type: 'number',
+                               class: 'form-control form-control-sm text-right')
+            .form-control-sm.ml-1.p-1
+              %small
+                %b= 'm.'
+        .col-3.col-lg-2.mb-1
+          .input-group.mt-1
+            = number_field_tag("minutes_from_start[#{index}]", lap.minutes_from_start, min: 0, max: 120,
+                               required: true, autofocus: true, type: 'number',
+                               class: 'form-control form-control-sm text-right')
+            .form-control-sm.ml-1.p-1
+              %b= '\''
+        .col-3.col-lg-2.mb-1
+          .input-group.mt-1
+            = number_field_tag("seconds_from_start[#{index}]", lap.seconds_from_start, min: 0, max: 59,
+                               required: true, autofocus: true, type: 'number',
+                               class: 'form-control form-control-sm text-right')
+            .form-control-sm.ml-0.p-1
+              %b= '"'
+        .col-3.col-lg-2.mb-1
+          .input-group.mt-1
+            = number_field_tag("hundredths_from_start[#{index}]", lap.hundredths_from_start, min: 0, max: 99,
+                               required: true, autofocus: true, type: 'number',
+                               class: 'form-control form-control-sm text-right')
+            .form-control-sm.ml-1.p-1
+              &nbsp;
+        .col.mb-1
+          = submit_tag(t('laps.modal.form.submit_save_btn'), id: "lap-save-row-#{index}",
+                        class: 'btn btn-sm btn-outline-primary my-1')
+          - if lap.id.to_i.positive?
+            = link_to(lap_path(id: lap.id, "result_id[#{index}]": parent_result.id,
+                      "result_class[#{index}]": parent_result.class.name), method: :delete, remote: true,
+                      id: "lap-delete-row-#{index}", class: 'btn btn-sm btn-outline-danger',
+                      data: { confirm: t('laps.modal.msgs.submit_delete_confirm',
+                              lap_length: lap.length_in_meters) }) do
+              %i.fa.fa-trash-o
+          %span.my-2.float-right
+            Δt: #{lap.to_timing}

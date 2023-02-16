@@ -3,7 +3,7 @@
 #
 # = Mevent components module
 #
-#   - version:  7.01
+#   - version:  7-0.4.25
 #   - author:   Steve A.
 #
 module Mevent
@@ -19,9 +19,11 @@ module Mevent
     #
     # == Params
     # - meeting_event: an undecorated GogglesDb::MeetingEvent model instance
-    def initialize(meeting_event:)
+    # - can_manage: when +true+ the row-action button "report missing" will be rendered; default: false
+    def initialize(meeting_event:, can_manage: false)
       super
       @meeting_event = meeting_event
+      @can_manage = can_manage
     end
 
     # Skips rendering unless the member is properly set
