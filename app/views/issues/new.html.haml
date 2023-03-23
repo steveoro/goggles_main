@@ -7,18 +7,18 @@
         = @issue_title
 
     .container.mt-2
-      - case type
+      - case @type
         - when '0'
           = render(partial: 'form_type0', locals: { seasons: @seasons })
         - when '1b'
-          = render(partial: 'form_type1b', locals: { parent_meeting: parent_meeting,
-                   swimmers: swimmers, can_manage: can_manage })
+          = render(partial: 'form_type1b', locals: { parent_meeting: @parent_meeting,
+                   swimmers: @swimmers, can_manage: @can_manage })
         - when '1b1'
-          = render(partial: 'form_type1b1', locals: { result_row: result_row,
-                   can_manage: can_manage })
+          = render(partial: 'form_type1b1', locals: { result_row: @result_row,
+                   can_manage: @can_manage })
         - when '2b1'
-          = render(partial: 'form_type2b1', locals: { result_row: result_row,
-                   can_manage: can_manage })
+          = render(partial: 'form_type2b1', locals: { result_row: @result_row,
+                   can_manage: @can_manage })
         - else
           .row.text-center
             %b

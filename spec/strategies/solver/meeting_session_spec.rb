@@ -69,8 +69,8 @@ RSpec.describe Solver::MeetingSession, type: :strategy do
       {
         'meeting_id' => row.meeting_id,
         'session_order' => row.session_order,
-        # Optional fields:
         'scheduled_date' => row.scheduled_date,
+        # Optional fields:
         'meeting_session_description' => row.description,
         'swimming_pool_id' => row.swimming_pool_id,
         'day_part_type_id' => row.day_part_type_id
@@ -138,7 +138,7 @@ RSpec.describe Solver::MeetingSession, type: :strategy do
         solver
       end
 
-      let(:fixture_row) { GogglesDb::MeetingSession.first(200).sample }
+      let(:fixture_row) { GogglesDb::MeetingSession.last(200).sample }
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { fixture_row.id }
 
@@ -146,7 +146,7 @@ RSpec.describe Solver::MeetingSession, type: :strategy do
 
       describe '#entity' do
         %i[
-          meeting_id session_order scheduled_date description
+          meeting_id scheduled_date session_order description
         ].each do |column_name|
           it "has the expected #{column_name}" do
             expect(subject.entity.send(column_name)).to eq(fixture_row.send(column_name))

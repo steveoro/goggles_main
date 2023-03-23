@@ -1,36 +1,47 @@
 # language:en
 
 Feature: Chrono index
-  As a logged-in user
+  As a logged-in user with Team management grants
   I want to see the index of current or pending chrono requests made by me
   I want to see the details of each request
   I want to be able to delete a chrono request
   Also, if I have Admin grants
   I want to be able to download each pending request as a JSON file
+  Conversely, a standard signed-in user shouldn't be able to even see the 'chrono' action in the menu
 
-  Scenario: chrono command directly accessible from the top menu
+  Scenario: chrono command NOT accessible from default top menu
     Given I am not signed in
     When I browse to '/'
     And I open the drop-down top menu to see the available commands
+    Then I should NOT see the 'link-chrono' command
+
+  Scenario: chrono command accessible from top menu for Team managers
+    Given I have an associated swimmer on a team manager account and have already signed-in
+    When I open the drop-down top menu to see the available commands
     Then I should see the 'link-chrono' command
 
-  Scenario: using chrono requires authentication
+  Scenario: chrono command accessible from top menu for Admins
+    Given I have Admin grants and have already signed-in and at the root page
+    When I open the drop-down top menu to see the available commands
+    Then I should see the 'link-chrono' command
+
+  Scenario: using chrono requires authentication but also grants
     Given I am not signed in
     And I have a confirmed account
     When I browse to '/chrono'
     Then I get redirected to '/users/sign_in'
     When I fill the log-in form as the confirmed user
     Then the user row is signed-in
-    And a flash 'devise.sessions.signed_in' message is present
-    And I am at the Chrono index page
+    And a flash 'search_view.errors.invalid_request' message is present
+    And I am at the root page
 
   Scenario: no pending requests from the current user
-    Given I am already signed-in and at the root page
+    Given I have an associated swimmer on a team manager account and have already signed-in
     When I browse to '/chrono'
     Then I can see the empty chrono index page
 
   Scenario: some pending requests from the current user
-    Given I am already signed-in and at the root page
+    Given I have an associated swimmer on a team manager account and have already signed-in
     And there is a chrono recording request from the current_user with sibling rows
     When I browse to '/chrono'
     Then I can see the chrono index page with an expandable row with details

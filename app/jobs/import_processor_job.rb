@@ -45,30 +45,10 @@ class ImportProcessorJob < ApplicationJob
   # @see IqSolverService, GogglesDb::ImportQueue for transactions details
   #
   def perform(*_args)
-    # Macro-Transaction queue w/ attachment: SQL batch execution
     if GogglesDb::ImportQueue.with_batch_sql.exists?
-      # Toggle maintenance only if not already in maintenance:
-      maintenance_was_on = GogglesDb::AppParameter.maintenance?
-      GogglesDb::AppParameter.maintenance = true unless maintenance_was_on
-
-      # Deletion & data file purge:
-      GogglesDb::ImportQueue.deletable.each do |iq_row|
-        iq_row.data_file.purge
-        iq_row.delete
-      end
-      GogglesDb::ImportQueue.with_batch_sql.each do |iq_row|
-        exec_sql(iq_row)
-      end
-
-      # Disable maintenance unless already in maintenance
-      GogglesDb::AppParameter.maintenance = false unless maintenance_was_on
-
-    # Standard Micro-Transaction queue: solve dependancies
+      handle_macrotransaction_batch_row
     else
-      GogglesDb::ImportQueue.deletable.delete_all
-      GogglesDb::ImportQueue.without_batch_sql.each do |iq_row|
-        IqSolverService.new.call(iq_row)
-      end
+      handle_microtransaction_row
     end
   end
 
@@ -125,5 +105,49 @@ class ImportProcessorJob < ApplicationJob
       rails_config.database_configuration[Rails.env]['password'],
       rails_config.database_configuration[Rails.env]['host']
     ]
+  end
+
+  # Process any Macro-Transaction queue having a batch file attachment
+  # by executing the SQL contained in the file (which should be allegedly ok,
+  # as no syntax checking is done on its contents).
+  #
+  # The SQL execution is done while the "soft maintenance" mode is toggled ON.
+  #
+  def handle_macrotransaction_batch_row
+    # Toggle maintenance only if not already in maintenance:
+    maintenance_was_on = GogglesDb::AppParameter.maintenance?
+    GogglesDb::AppParameter.maintenance = true unless maintenance_was_on
+
+    # Global deletion & data file purge:
+    GogglesDb::ImportQueue.deletable.each do |iq_row|
+      iq_row.data_file.purge
+      iq_row.delete
+    end
+    GogglesDb::ImportQueue.with_batch_sql.each do |iq_row|
+      exec_sql(iq_row)
+    end
+
+    # Disable maintenance unless already in maintenance
+    GogglesDb::AppParameter.maintenance = false unless maintenance_was_on
+  end
+
+  # Process a "standard" Micro-Transaction queue by solving dependancies,
+  # respecting any bound queue & starting from its last sibling row.
+  #
+  def handle_microtransaction_row
+    GogglesDb::ImportQueue.deletable.delete_all # Clean solved rows (including siblings)
+
+    GogglesDb::ImportQueue.without_batch_sql.each do |iq_row|
+      if iq_row.sibling_rows.any? # Parent w/ siblings?
+        iq_row.update!(process_runs: iq1.process_runs + 1) # Do nothing and focus always on last remaining sibling as next row
+        IqSolverService.new.call(iq_row.sibling_rows.last)
+
+      elsif iq_row.import_queue.present? # Sibling row found?
+        iq_row.update!(process_runs: iq1.process_runs + 1) # Keep IQ row idle if it has a parent
+
+      else
+        IqSolverService.new.call(iq_row) # Leaf or ex-parent w/o siblings
+      end
+    end
   end
 end

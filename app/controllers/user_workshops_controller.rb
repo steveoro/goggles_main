@@ -4,6 +4,7 @@
 #
 class UserWorkshopsController < ApplicationController
   before_action :authenticate_user!, only: [:index]
+  before_action :prepare_managed_teams, only: [:show]
 
   # GET /user_workshops/:id
   # Shows "My attended Workshops" grid.
@@ -69,6 +70,11 @@ class UserWorkshopsController < ApplicationController
       redirect_to(root_path) && return
     end
 
+    @managed_team_ids = @managed_teams.map(&:id) if @managed_teams
+    # Team managers of the Team that created this Workshop can act as Admins and manage any team in this:
+    @managed_team_ids = nil if @managed_team_ids.is_a?(Array) && @managed_team_ids.include?(@user_workshop.team_id)
+
+    @current_swimmer_id = current_user.swimmer_id if user_signed_in?
     @user_workshop_events = @user_workshop.event_types.uniq
     @user_workshop_results = @user_workshop.user_results.includes(:event_type)
   end

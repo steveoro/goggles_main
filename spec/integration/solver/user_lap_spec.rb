@@ -4,7 +4,91 @@ require 'rails_helper'
 
 # rubocop:disable Metrics/BlockLength
 RSpec.describe Solver::UserLap, type: :integration do
-  context 'when solving a deeply nested request,' do
+  #
+  # MULTIPLE requests, each with mixed NEW & EXISTING VALID data
+  # (some parent entities are new, some are existing => bind all laps to same UR)
+  #
+  context 'when solving a group of multi-user_lap chrono requests from a fixture,' do
+    let(:array_of_req_hash) { JSON.parse(File.read('spec/fixtures/7x_swimmer-23_chrono.json')) }
+    # ****************** TODO: after DB engine update, use this instead: ***************************
+    # JSON.parse(File.read("#{GogglesDb::Engine.root}/spec/fixtures/7x_swimmer-23_chrono.json"))
+
+    before do
+      expect(array_of_req_hash).to be_an(Array).and be_present
+      expect(array_of_req_hash).to all be_an(Hash)
+      expect(array_of_req_hash.count).to eq(7)
+    end
+
+    context 'having solvable #req data (each row belonging to the same parent),' do
+      7.times do |index|
+        describe "processing row #{index + 1}," do
+          subject do
+            solver = Solver::Factory.for('UserLap', array_of_req_hash[index])
+            solver.solve!
+            solver
+          end
+
+          describe '#solved?' do
+            it 'is true' do
+              expect(subject.solved?).to be true
+            end
+          end
+
+          describe '#entity' do
+            it 'is of the expected target entity type (UserLap)' do
+              expect(subject.entity).to be_a(GogglesDb::UserLap)
+              expect(subject.entity.id).to be_positive
+            end
+
+            it 'is bound to the expected existing swimmer' do
+              expect(subject.entity.swimmer_id.to_s).to eq(array_of_req_hash[index]['user_lap']['swimmer']['id'])
+              expect(subject.entity.user_result.swimmer_id.to_s).to eq(array_of_req_hash[index]['user_lap']['swimmer']['id'])
+            end
+
+            it 'is bound to the expected existing swimming pool' do
+              expect(subject.entity.user_result.swimming_pool_id.to_s).to eq(array_of_req_hash[index]['user_lap']['user_result']['swimming_pool']['id'])
+            end
+
+            %i[
+              length_in_meters minutes seconds hundredths
+              minutes_from_start seconds_from_start hundredths_from_start
+            ].each do |column_name|
+              it "has the expected #{column_name}" do
+                expect(subject.entity.send(column_name)).to eq(array_of_req_hash[index]['user_lap'][column_name.to_s])
+              end
+            end
+          end
+        end
+      end
+      #-- ---------------------------------------------------------------------
+      #++
+
+      context 'after sorting out all rows, the whole group' do
+        it 'is bound to the same UserResult parent' do
+          results = []
+          array_of_req_hash.each_with_index do |request_hash, _index|
+            solver = Solver::Factory.for('UserLap', request_hash)
+
+            solver.solve!
+            expect(solver).to be_solved
+            expect(solver.entity).to be_a(GogglesDb::UserLap).and be_valid
+            results << solver.entity
+          end
+
+          expect(results.map(&:user_result_id).uniq).to eq([results.first.user_result_id])
+        end
+      end
+    end
+    #-- -----------------------------------------------------------------------
+    #++
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  #
+  # INDIVIDUAL request, NEW & EXISTING VALID data
+  #
+  context 'when solving a single deeply nested request,' do
     [
       # depth 4 - Complete breadth (full request layout sample)
       lambda { |row|
@@ -143,5 +227,7 @@ RSpec.describe Solver::UserLap, type: :integration do
       #++
     end
   end
+  #-- -------------------------------------------------------------------------
+  #++
 end
 # rubocop:enable Metrics/BlockLength

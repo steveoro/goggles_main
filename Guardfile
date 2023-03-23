@@ -185,11 +185,11 @@ guard :cucumber, cucumber_options do
   # Watch for support file updates (will trigger a re-run of all features):
   watch(%r{^features/support/.+$}) do |m|
     puts "'#{m[0]}' support file modified..."
-    Dir[File.join("features\/\*\*\/*.feature")]
+    Dir[File.join('features/**/*.feature')]
   end
   # Watch for step definition updates (will trigger a re-run of a whole feature):
   watch(%r{^features/step_definitions/(.+/)?(.+)_steps\.rb$}) do |m|
     puts "'#{m[1]}' steps file modified..."
-    Dir[File.join("features\/\*\*\/*#{m[1]}*.feature")]
+    Dir[File.join("features/**/*#{m[1]}*.feature")]
   end
 end

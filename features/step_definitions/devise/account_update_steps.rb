@@ -27,7 +27,7 @@ end
 
 # Uses @matching_swimmer
 When('I select the desired matching swimmer') do
-  find('#user_swimmer_id').select(SwimmerDecorator.decorate(@matching_swimmer).text_label)
+  find_by_id('user_swimmer_id').select(SwimmerDecorator.decorate(@matching_swimmer).text_label)
 end
 
 # Uses @current_user

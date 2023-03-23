@@ -23,8 +23,11 @@ class CalendarsGrid < BaseGrid
     scope.where('meeting_name LIKE ?', "%#{value}%")
   end
 
-  def row_class(_asset)
-    'bg-light-cyan2'
+  # Returns the proper CSS background class for the row, depending if the asset row is "expired" or not
+  def row_class(asset)
+    expired_or_cancelled = asset&.meeting &&
+                           (asset.meeting.cancelled || asset.meeting.header_date < Time.zone.today)
+    expired_or_cancelled ? 'bg-light-grey' : 'bg-light-cyan2'
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -52,9 +55,10 @@ class CalendarsGrid < BaseGrid
       city_name = if meeting.swimming_pools.present?
                     pool = meeting.swimming_pools.first
                     pool.city&.name
-                  else
+                  elsif asset.meeting_place.present?
                     asset.meeting_place.to_s.split('-').last.strip
                   end
+      city_name = city_name&.split(/\s\d/)&.first # Keep just the city name for those cities that include a ZIP code
       city_name = content_tag(:b) { content_tag(:i, " - #{city_name}") }
 
       if meeting.cancelled

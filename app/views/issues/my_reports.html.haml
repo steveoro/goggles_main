@@ -7,18 +7,20 @@
                css_icon: 'frown-o', parent_title: t('home.issues'),
                parent_link: root_path))
 
-    .row-fluid.my-2
-      %ul.nav.nav-tabs
-        %li.nav-item
-          = link_to(t('issues.faq_title'), issues_faq_index_path, class: 'nav-link')
-        %li.nav-item
-          .nav-link.active
-            = t('issues.my_reports_title')
+    %section#tab-my-reports
+      .row-fluid.my-2
+        %ul.nav.nav-tabs
+          %li.nav-item
+            = link_to(t('issues.faq_title'), issues_faq_index_path, class: 'nav-link')
+          %li.nav-item
+            .nav-link.active
+              = t('issues.my_reports_title')
 
-    .container.mt-2
-      .row-fluid.text-center
-        %p.mt-4
-          %i= t('issues.no_issues_found')
+    %section#issues-grid
+      .container.mt-2
+        .row-fluid.text-center
+          %p.mt-4
+            %i= t('issues.no_issues_found')
 
     .row-fluid
       %p &nbsp;

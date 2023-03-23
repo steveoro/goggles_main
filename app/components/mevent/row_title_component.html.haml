@@ -4,5 +4,5 @@
       = @meeting_event.event_type.long_label
       - if @can_manage
         &nbsp;
-        = render(Issues::ReportMissingButtonComponent.new(parent_meeting: @meeting_event.meeting,
-                event_type: @meeting_event.event_type))
+        = render(Issues::ReportMissingButtonComponent.new(parent_meeting: parent_meeting,
+                 event_type: @meeting_event.event_type))

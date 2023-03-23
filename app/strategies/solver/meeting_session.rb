@@ -8,7 +8,7 @@ module Solver
   #
   # = MeetingSession solver strategy object
   #
-  #   - version:  7-0.3.41
+  #   - version:  7-0.4.25
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::MeetingSession.
@@ -32,6 +32,8 @@ module Solver
       solve_bindings
       return nil unless finder_required_bindings.values.all?(&:present?)
 
+      # Find the first matching session for the same header date:
+      # (Ignore session order because is basically never present in IQ request data)
       GogglesDb::MeetingSession.where(finder_required_bindings).first
     end
     #-- -----------------------------------------------------------------------
@@ -92,16 +94,14 @@ module Solver
 
     # Filtered hash of minimum required field bindings for the finder strategy
     def finder_required_bindings
-      @bindings.select do |key, _value|
-        %i[meeting_id session_order scheduled_date].include?(key)
-      end
+      required_keys = %i[meeting_id scheduled_date session_order]
+      @bindings.select { |key, _value| required_keys.include?(key) }
     end
 
     # Filtered hash of minimum required field bindings for the creator strategy
     def creator_required_bindings
-      @bindings.select do |key, _value|
-        %i[meeting_id].include?(key)
-      end
+      required_keys = %i[meeting_id]
+      @bindings.select { |key, _value| required_keys.include?(key) }
     end
 
     # Computes a possible session order assuming the specified meeting is valid

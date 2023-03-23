@@ -67,7 +67,11 @@ module MIR
 
     # Memoized & generalized lap association
     def laps
-      @laps ||= @mir.laps
+      # [Steve, 20230321] Although we have already defined an alias for user_laps
+      # in UserResults (as the #laps method), we cannot define two conflicting has_many clauses
+      # referring to the same destination model. Thus comes the quick hack below:
+      lap_includes_sym = @mir.is_a?(GogglesDb::UserResult) ? :user_laps : :laps
+      @laps ||= @mir.class.includes(lap_includes_sym).find_by(id: @mir.id).laps
     end
 
     # Memoized lap presence
@@ -91,7 +95,7 @@ module MIR
 
     # Computes points based on ranking, according to the CSI Championship rules.
     def compute_csi_score
-      score = 100 - (rank - 1) * 5
+      score = 100 - ((rank - 1) * 5)
       score.positive? ? score : 0
     end
   end

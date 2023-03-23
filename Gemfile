@@ -79,8 +79,12 @@ group :development do
   gem 'inch', require: false # grades source documentation
   gem 'listen', '~> 3.2'
   # [20210128] Rubocop 1.9.0 seems to have several issues with the current stack
-  gem 'rubocop', '= 1.8.1', require: false
-  gem 'rubocop-rails'
+  # gem 'rubocop', '= 1.8.1', require: false
+  gem 'rubocop'
+  gem 'rubocop-capybara'
+  gem 'rubocop-performance'
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rake'
   gem 'rubocop-rspec'
   gem 'spring'
   gem 'spring-commands-rspec'

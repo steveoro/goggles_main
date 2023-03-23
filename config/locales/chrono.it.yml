@@ -43,6 +43,7 @@ it:
       confirm_reset: 'Azzero e ripulisco il Chrono?'
       confirm_post: 'Mando questi tempi a Master-Goggles? Niente da modificare? Tutto a posto?'
       post_done: 'Dati inviati ed accodati per la registrazione.'
-      post_error: "Mi spiace: un errore ha impedito ai dati inviati di venire accodati per la registrazione."
+      post_api_error: "Richiesta errata: nella versione API corrente supportata i dati per la registrazione devono contenere sempre almeno 1 lap + il risultato finale."
+      post_empty_payload_error: "Errore: nessun parametro inviato!"
       delete_done: "Registrazione eliminata."
       delete_error: "Mi spiace: un errore ha impedito l'eliminazione della registrazione."

@@ -57,8 +57,7 @@ module Solver
     # Creates a new Solver strategy.
     #
     # == Params:
-    # - req: Hash of attributes typically parsed from the JSON request
-    #         data of an ImportQueue row
+    # - req: Hash of attributes typically parsed from the JSON request data of an ImportQueue row
     #
     def initialize(req: {})
       @req = req
@@ -147,7 +146,7 @@ module Solver
       # made by hand by operators (in some cases "\s" is not enough)
       name.to_s
           .gsub(/\W\d{4}/iu, '')
-          .gsub(%r{[\-_'`\\/:.,;]}, '')
+          .gsub(%r{[-_'`\\/:.,;]}, '')
           .gsub(/à/iu, 'a')
           .gsub(/[èé]/iu, 'e')
           .gsub(/ì/iu, 'i')

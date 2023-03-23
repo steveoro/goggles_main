@@ -8,7 +8,6 @@ require 'version'
 #
 class HomeController < ApplicationController
   before_action :authenticate_user!, only: %i[contact_us dashboard]
-  before_action :prepare_last_seasons, only: :dashboard
 
   # [GET] Main landing page default action.
   # Includes the "smart" search box.

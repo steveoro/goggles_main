@@ -52,7 +52,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
   let(:minutes) { (rand * 5).to_i }
   let(:seconds) { (rand * 59).to_i }
   let(:hundredths) { (rand * 99).to_i }
-  let(:meters) { 50 + (rand * 8).to_i * 50 }
+  let(:meters) { 50 + ((rand * 8).to_i * 50) }
   let(:order) { 1 + (rand * 8).to_i }
   let(:rec_data_hash) do
     {

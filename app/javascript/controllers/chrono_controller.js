@@ -439,7 +439,7 @@ export default class extends Controller {
 
     // Add a new lap row:
     if (this.hasLapsGridTarget) {
-      var lengthInMt = parseInt(this.data.get('lap-length')) || 50
+      const lengthInMt = parseInt(this.data.get('lap-length')) || 50
       const lapTimeModel = new Timing({
         order: timing.order,
         hours: timing.hours,

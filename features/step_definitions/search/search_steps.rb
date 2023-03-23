@@ -6,7 +6,7 @@ When('I search for {string}') do |query_string|
 end
 
 Then('the {string} search results are displayed, all matching {string}') do |model_downcase_name, query_string|
-  results_node = find("##{model_downcase_name.gsub('_', '-')}-results")
+  results_node = find("##{model_downcase_name.tr('_', '-')}-results")
   expect(results_node.text).not_to be_empty
   within(results_node) do
     find('table tbody').all('tr').each do |tr_node|
@@ -23,7 +23,7 @@ end
 Then('the pagination controls are present') do
   content_node = find('.swipe-wrapper', visible: true)
   expect(content_node).to have_css('#paginator-controls')
-  paginator_node = find('#paginator-controls')
+  paginator_node = find_by_id('paginator-controls')
   expect(paginator_node).to be_present
 end
 
@@ -38,7 +38,7 @@ Then('a flash alert is shown about the empty results') do
 end
 
 Then('I click on the first {string} result to browse to its detail page') do |model_downcase_name|
-  results_node = find("##{model_downcase_name.gsub('_', '-')}-results")
+  results_node = find("##{model_downcase_name.tr('_', '-')}-results")
   expect(results_node.text).not_to be_empty
   within(results_node) do
     find('table tbody tr td a', visible: true).click

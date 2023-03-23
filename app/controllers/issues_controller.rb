@@ -19,11 +19,12 @@ class IssuesController < ApplicationController
 
   # [GET] Form setup for issue type "0": request update to 'team manager'.
   def new_type0
+    @type = '0'
     @issue_title = I18n.t('issues.type0.title')
     # WIP: Get just the last FIN Season for the time being:
     season_types = GogglesDb::SeasonType.all_masters
     @seasons = season_types.map { |season_type| GogglesDb::Season.last_season_by_type(season_type) }
-    render('new', locals: { type: '0' })
+    render('new')
   end
 
   # [POST] Create issue type "0": request update to 'team manager'.
@@ -71,28 +72,29 @@ class IssuesController < ApplicationController
   #
   # rubocop:disable Metrics/AbcSize
   def new_type1b
-    parent_meeting = meeting_class_from_params.includes(:event_types, :pool_types)
-                                              .find_by(id: type1b_params[:parent_meeting_id])
-    unless parent_meeting
+    @parent_meeting = meeting_class_from_params.includes(:event_types, :pool_types)
+                                               .find_by(id: type1b_params[:parent_meeting_id])
+    unless @parent_meeting
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(root_path) and return
     end
 
+    @type = '1b'
     @issue_title = I18n.t('issues.type1b.form.title')
     # Store preselected event type in cookies as we'll use the event_type_options() chrono helper for this:
     cookies[:event_type_id] = type1b_params[:event_type_id].to_i
+    @swimmers = managed_swimmers(@parent_meeting.season_id)
     # TODO: After DB update:
-    # can_manage = GogglesDb::ManagerChecker.any_for?(current_user, parent_meeting.season)
+    # @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, parent_meeting.season)
     # WIP: remove this afterwards:
-    can_manage = GogglesDb::GrantChecker.admin?(current_user) ||
-                 GogglesDb::ManagedAffiliation.includes(:team_affiliation).joins(:team_affiliation)
-                                              .exists?(
-                                                user_id: current_user.id,
-                                                'team_affiliations.season_id': parent_meeting.season_id
-                                              )
-
-    render('new', locals: { type: '1b', parent_meeting: parent_meeting,
-                            swimmers: managed_swimmers(parent_meeting.season_id), can_manage: can_manage })
+    @can_manage = GogglesDb::GrantChecker.admin?(current_user) ||
+                  GogglesDb::ManagedAffiliation.includes(team_affiliation: %i[team season])
+                                               .joins(team_affiliation: %i[team season])
+                                               .exists?(
+                                                 user_id: current_user.id,
+                                                 'team_affiliations.season_id': @parent_meeting.season_id
+                                               )
+    render('new')
   end
   # rubocop:enable Metrics/AbcSize
 
@@ -100,11 +102,9 @@ class IssuesController < ApplicationController
   #
   # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def create_type1b
-    unless request.post? && type1b_params[:event_type_id].present? &&
-           type1b_params[:swimmer_id].present? && type1b_params[:gender_type_id].present? &&
+    unless request.post? && type1b_params[:event_type_id].present? && type1b_params[:swimmer_id].present? &&
            type1b_params[:parent_meeting_id].present? && type1b_params[:parent_meeting_class].present? &&
-           type1b_params[:minutes].present? && type1b_params[:seconds].present? &&
-           type1b_params[:hundredths].present?
+           type1b_params[:minutes].present? && type1b_params[:seconds].present? && type1b_params[:hundredths].present?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(issues_my_reports_path) and return
     end
@@ -128,27 +128,27 @@ class IssuesController < ApplicationController
   #
   # rubocop:disable Metrics/AbcSize
   def new_type1b1
-    result_row = result_class_from_params.includes(:swimmer, :event_type)
-    result_row = result_row.includes(:team) if result_class_from_params.new.respond_to?(:team)
-    result_row = result_row.find_by(id: type1b1_params[:result_id])
-
-    unless result_row
+    @result_row = result_class_from_params.includes(:swimmer, :event_type)
+    @result_row = @result_row.includes(:team) if result_class_from_params.new.respond_to?(:team)
+    @result_row = @result_row.find_by(id: type1b1_params[:result_id])
+    unless @result_row
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(root_path) and return
     end
 
+    @type = '1b1'
     @issue_title = I18n.t('issues.type1b1.form.title')
     # TODO: After DB update:
-    # can_manage = GogglesDb::ManagerChecker.any_for?(current_user, parent_meeting.season)
+    # @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, parent_meeting.season)
     # WIP: remove this afterwards:
-    can_manage = GogglesDb::GrantChecker.admin?(current_user) ||
-                 GogglesDb::ManagedAffiliation.includes(:team_affiliation).joins(:team_affiliation)
-                                              .exists?(
-                                                user_id: current_user.id,
-                                                'team_affiliations.season_id': result_row.parent_meeting.season_id
-                                              )
-
-    render('new', locals: { type: '1b1', result_row: result_row, can_manage: can_manage })
+    @can_manage = GogglesDb::GrantChecker.admin?(current_user) ||
+                  GogglesDb::ManagedAffiliation.includes(team_affiliation: %i[team season])
+                                               .joins(team_affiliation: %i[team season])
+                                               .exists?(
+                                                 user_id: current_user.id,
+                                                 'team_affiliations.season_id': @result_row.parent_meeting.season_id
+                                               )
+    render('new')
   end
   # rubocop:enable Metrics/AbcSize
 
@@ -180,32 +180,31 @@ class IssuesController < ApplicationController
   #
   # rubocop:disable Metrics/AbcSize
   def new_type2b1
-    result_row = result_class_from_params.includes(:swimmer, :event_type)
-    result_row = result_row.includes(:team) if result_class_from_params.new.respond_to?(:team)
-    result_row = result_row.find_by(id: type1b1_params[:result_id])
-
-    unless result_row
+    @result_row = result_class_from_params.includes(:swimmer, :event_type)
+    @result_row = @result_row.includes(:team) if result_class_from_params.new.respond_to?(:team)
+    @result_row = @result_row.find_by(id: type1b1_params[:result_id])
+    unless @result_row
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(root_path) and return
     end
 
+    @type = '2b1'
     @issue_title = I18n.t('issues.type1b1.form.title')
     # TODO: After DB update:
-    # can_manage = GogglesDb::ManagerChecker.any_for?(current_user, parent_meeting.season)
+    # @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, parent_meeting.season)
     # WIP: remove this afterwards:
-    can_manage = GogglesDb::GrantChecker.admin?(current_user) ||
-                 GogglesDb::ManagedAffiliation.includes(:team_affiliation).joins(:team_affiliation)
-                                              .exists?(
-                                                user_id: current_user.id,
-                                                'team_affiliations.season_id': result_row.parent_meeting.season_id
-                                              )
-
-    render('new', locals: { type: '2b1', result_row: result_row, can_manage: can_manage })
+    @can_manage = GogglesDb::GrantChecker.admin?(current_user) ||
+                  GogglesDb::ManagedAffiliation.includes(team_affiliation: %i[team season])
+                                               .joins(team_affiliation: %i[team season])
+                                               .exists?(
+                                                 user_id: current_user.id,
+                                                 'team_affiliations.season_id': @result_row.parent_meeting.season_id
+                                               )
+    render('new')
   end
   # rubocop:enable Metrics/AbcSize
 
   # [POST] Create issue type "2b1": wrong team, swimmer or meeting
-  #
   # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def create_type2b1
     unless request.post? &&
@@ -228,12 +227,9 @@ class IssuesController < ApplicationController
   #-- -------------------------------------------------------------------------
   #++
 
-  # [POST] Create issue type "3b": change swimmer association (free select / free text & fields)
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  # [POST] Create issue type "3b": change swimmer association (free select)
   def create_type3b
-    unless request.post? && type1b_params[:swimmer_id].present? && type1b_params[:gender_type_id].present? &&
-           type1b_params[:swimmer_complete_name].present? && type1b_params[:swimmer_first_name].present? &&
-           type1b_params[:swimmer_last_name].present? && type1b_params[:swimmer_year_of_birth].present?
+    unless request.post? && type1b_params[:swimmer_id].present?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(issues_my_reports_path) and return
     end
@@ -249,9 +245,8 @@ class IssuesController < ApplicationController
     flash[:info] = I18n.t('issues.sent_ok')
     redirect_to(issues_my_reports_path) and return
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
-  # [POST] Create issue type "3c": edit swimmer details (may require confirm from user after parsing)
+  # [POST] Create issue type "3c": edit swimmer details (free text - may require confirm from user after parsing)
   def create_type3c
     unless request.post? && type3c_params[:type3c_first_name].present? && type3c_params[:type3c_last_name].present? &&
            type3c_params[:type3c_year_of_birth].present? && type3c_params[:type3c_gender_type_id].present?
@@ -349,7 +344,8 @@ class IssuesController < ApplicationController
     # But if the user is also an admin, returning nil will allow any API search for swimmers.
     return if GogglesDb::GrantChecker.admin?(current_user)
 
-    managed_teams_ids = GogglesDb::ManagedAffiliation.includes(:team_affiliation)
+    managed_teams_ids = GogglesDb::ManagedAffiliation.includes(team_affiliation: %i[team season])
+                                                     .joins(team_affiliation: %i[team season])
                                                      .where(user_id: current_user.id,
                                                             'team_affiliations.season_id': season_id)
                                                      .map { |ma| ma.team_affiliation.team_id }

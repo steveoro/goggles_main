@@ -28,21 +28,28 @@ Then('I get redirected to the sign-in page') do
   find('#content .main-content #login-box', visible: true)
 end
 
+# Checks current_path vs. the specified string.
+# Note that relative current_path should always start with a '/'.
 Then('I am still at the {string} path') do |string_path|
   sleep(1) && wait_for_ajax
   # Wait for content to be rendered and then verify path:
-  find('#content', visible: true)
-  expect(current_path).to include(string_path)
+  find_by_id('content', visible: true)
+  expect(page).to have_current_path(string_path)
 end
 
-# Alias:
+# Alias #1:
 Then('I get redirected to {string}') do |string_path|
   step("I am still at the '#{string_path}' path")
 end
 
-# Similar to the above, but simpler (may catch similar URLs given the same common path):
+# Alias #2:
 Given('I am already at the {string} page') do |string_path|
-  expect(current_url).to include(string_path)
+  step("I am still at the '#{string_path}' path")
+end
+
+# Alias #3:
+Given('I am at the {string} page') do |string_path|
+  step("I am still at the '#{string_path}' path")
 end
 # -----------------------------------------------------------------------------
 
@@ -129,5 +136,22 @@ When('I submit the filters for the datagrid {string} waiting {int} secs tops for
     visible = find("section#data-grid form.datagrid-form#{datagrid_dom_id}").visible?
     find("section#data-grid form.datagrid-form#{datagrid_dom_id} .datagrid-actions input[type=\"submit\"]", visible: true).click if visible
   end
+end
+# -----------------------------------------------------------------------------
+
+Then('I check {string} as a selected checkbox') do |input_id|
+  find("label[for='#{input_id}']").click
+end
+
+Then('I see that the {string} checkbox is unchecked') do |input_id|
+  expect(find("input##{input_id}")).not_to be_checked
+end
+
+Then('I fill the {string} field with {string}') do |input_id, string_value|
+  fill_in(input_id, with: string_value)
+end
+
+Then('I select {string} for the {string} select field') do |string_value, input_id|
+  find("##{input_id}").set(string_value)
 end
 # -----------------------------------------------------------------------------

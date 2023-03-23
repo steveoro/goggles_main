@@ -12,7 +12,7 @@ end
 
 # ASSUMES: total_seconds is just a single digit < 9
 Then('I should see a minimum of {int} seconds for the total elapsed time') do |total_seconds|
-  expect(find('#timer-digits').text).to start_with("00:0#{total_seconds}.")
+  expect(find_by_id('timer-digits').text).to start_with("00:0#{total_seconds}.")
     .or start_with("00:0#{total_seconds + 1}.")
 end
 
@@ -42,13 +42,13 @@ end
 # Click on OK/Yes
 When('I click on the timer save button accepting the confirmation request') do
   accept_confirm do
-    find('#timer-btn-save').click
+    find_by_id('timer-btn-save').click
   end
 end
 
 When('I am redirected to the Chrono index page') do
   sleep(1) && wait_for_ajax
   # Wait for content to be rendered and then verify path:
-  find('#content', visible: true)
+  find_by_id('content', visible: true)
   expect(current_url).to include('/chrono/index')
 end

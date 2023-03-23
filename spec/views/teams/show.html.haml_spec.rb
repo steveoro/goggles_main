@@ -48,7 +48,6 @@ RSpec.describe 'teams/show.html.haml', type: :view do
   # - stats_row: the prepared GogglesDb::TeamStat collection from the fixture row
   # ASSUMES:
   # - stats_row.results.count > 0 (needs a fixture team with at least some meeting results)
-  # rubocop:disable Metrics/BlockLength
   shared_examples_for('federation stats partial') do
     it 'includes the team stats table' do
       node = Nokogiri::HTML.fragment(rendered).at_css('section#team-stats table')
@@ -101,7 +100,6 @@ RSpec.describe 'teams/show.html.haml', type: :view do
       end
     end
   end
-  # rubocop:enable Metrics/BlockLength
   #-- -------------------------------------------------------------------------
   #++
 

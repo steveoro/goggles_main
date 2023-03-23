@@ -2,7 +2,7 @@
 
 Then('I am at the show page for the details of the swimmer') do
   # We don't care which detail row is:
-  expect(current_path).to include(swimmer_show_path(-1).gsub('-1', ''))
+  expect(page.current_path.to_s).to include(swimmer_show_path(-1).gsub('-1', ''))
 end
 
 Then('I see the swimmer\'s details table') do
@@ -44,7 +44,7 @@ end
 # Uses @chosen_swimmer
 Then('I am at the history recap page of the chosen swimmer') do
   expect(@chosen_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
-  expect(current_path).to eq(swimmer_history_recap_path(@chosen_swimmer))
+  expect(page).to have_current_path(swimmer_history_recap_path(@chosen_swimmer), ignore_query: true)
 end
 
 # Uses @chosen_swimmer
@@ -83,7 +83,7 @@ end
 Then('I am at the detailed history page for the chosen event type and swimmer') do
   expect(@chosen_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
   find('section#swimmer-history-detail', visible: true)
-  expect(current_path).to match(%r{swimmers/#{@chosen_swimmer.id}/history/\d+})
+  expect(page).to have_current_path(%r{swimmers/#{@chosen_swimmer.id}/history/\d+})
 end
 
 And('I can see the chosen swimmer\'s name as subtitle of the history detail page') do

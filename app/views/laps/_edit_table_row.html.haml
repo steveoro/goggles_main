@@ -3,7 +3,7 @@
     = form_tag(lap_path(lap.id), id: "frm-lap-row-#{index + 1}", method: :put, remote: true) do
       = hidden_field_tag("result_id[#{index}]", parent_result.id)
       = hidden_field_tag("result_class[#{index}]", parent_result.class.name.split('::').last)
-      .form-row.my-1
+      .form-row.my-1.lap-row
         .col-3.col-lg-2.mb-1
           .input-group.mt-1
             = number_field_tag("length_in_meters[#{index}]", lap.length_in_meters, min: 15, max: 1500,

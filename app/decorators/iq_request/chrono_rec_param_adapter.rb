@@ -275,7 +275,7 @@ module IqRequest
 
     # Returns the display label for the "Event container" (either meeting or workshop) being recorded
     def chrono_event_container_label
-      return @params&.fetch('meeting_label') if @params&.fetch('meeting_label', nil).present?
+      return @params&.fetch('meeting_label') if rec_type_meeting?
 
       @params&.fetch('user_workshop_label', nil)
     end

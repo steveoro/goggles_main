@@ -2,7 +2,7 @@
 
 Then('I am at the show page for the details of the team') do
   # We don't care which detail row is:
-  expect(current_path).to include(team_show_path(-1).gsub('-1', ''))
+  expect(page.current_path.to_s).to include(team_show_path(-1).gsub('-1', ''))
 end
 
 Then('I see the team\'s details table') do
@@ -34,7 +34,7 @@ end
 #++
 
 Then('I am at the team swimmers page index for team ID {int}') do |team_id|
-  expect(current_path).to include(team_current_swimmers_path(team_id))
+  expect(page.current_path.to_s).to include(team_current_swimmers_path(team_id))
 end
 
 Then('the list of swimmers is not displayed') do

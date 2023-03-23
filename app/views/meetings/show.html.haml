@@ -15,7 +15,8 @@
 
     #meeting-show-results
       %table.table.table-striped.table-sm
-        - @meeting_events&.includes(:meeting)&.by_order&.each_with_index do |meeting_event, index|
+        - @meeting_events&.includes(:event_type, meeting_session: :meeting)&.joins(:event_type,
+              meeting_session: :meeting)&.by_order&.each_with_index do |meeting_event, index|
           - prgs_for_event = GogglesDb::MeetingProgram.where(meeting_event_id: meeting_event.id).joins(:meeting_event,
               :event_type, :category_type, :gender_type).includes(:meeting_event, :event_type, :category_type,
               :gender_type).order('category_types.age_begin, gender_types.id DESC')

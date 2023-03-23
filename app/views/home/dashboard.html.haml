@@ -18,6 +18,20 @@
             = t('home.my.associate_to_a_swimmer', user_name: current_user.name.titleize)
 
     %section.container#dashboard-btns
+      .row.d-flex.justify-content-center
+        .col.d-flex
+          = link_to(calendars_current_path, id: 'btn-plan-meeting', method: :get,
+                    class: 'btn btn-block btn-info py-2 my-2 align-vertical-center', role: 'button') do
+            %i.fixed-size-48x48.fa.fa-3x.fa-calendar
+            %br/
+            = t('home.dashboard.plan_meeting_btn')
+        - if @current_user_is_manager
+          .col.d-flex
+            = link_to('#', id: 'btn-team-reservations', method: :get,
+                      class: 'btn btn-block btn-info py-2 my-2 align-vertical-center disabled', role: 'button') do
+              %i.fixed-size-48x48.fa.fa-3x.fa-calendar-check-o
+              %br/
+              = t('home.dashboard.team_reservation_btn')
       .row.d-flex.justify-content-around
         .col.d-flex
           = link_to(meetings_path, id: 'btn-my-past-meetings', method: :get,
@@ -62,19 +76,5 @@
               %i.fixed-size-48x48.fa.fa-3x.fa-line-chart
               %br/
               = t('home.dashboard.history_btn')
-      .row.d-flex.justify-content-center
-        .col.d-flex
-          = link_to(calendars_current_path, id: 'btn-plan-meeting', method: :get,
-                    class: 'btn btn-block btn-info py-2 my-2 align-vertical-center', role: 'button') do
-            %i.fixed-size-48x48.fa.fa-3x.fa-calendar
-            %br/
-            = t('home.dashboard.plan_meeting_btn')
-        - if @current_user_is_manager
-          .col.d-flex
-            = link_to('#', id: 'btn-team-reservations', method: :get,
-                      class: 'btn btn-block btn-info py-2 my-2 align-vertical-center disabled', role: 'button') do
-              %i.fixed-size-48x48.fa.fa-3x.fa-calendar-check-o
-              %br/
-              = t('home.dashboard.team_reservation_btn')
 
   .spacer-right

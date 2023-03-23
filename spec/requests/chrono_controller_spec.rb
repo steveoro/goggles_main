@@ -3,19 +3,51 @@
 require 'rails_helper'
 
 RSpec.describe ChronoController, type: :request do
+  let(:fixture_user) { FactoryBot.create(:user) }
+
   describe 'GET /chrono/index' do
     context 'with an unlogged user,' do
       it 'is a redirect to the login path' do
-        get(chrono_new_path)
+        get(chrono_index_path)
         expect(response).to redirect_to(new_user_session_path)
       end
     end
 
-    context 'with a logged-in user' do
+    context 'with a logged-in user (not a manager)' do
       before do
-        user = GogglesDb::User.first(50).sample
+        user = FactoryBot.create(:user)
         sign_in(user)
-        get(chrono_new_path)
+        get(chrono_index_path)
+      end
+
+      it 'is a redirect to the root path' do
+        expect(response).to redirect_to(root_path)
+      end
+
+      it 'sets an invalid request flash warning message' do
+        expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+      end
+    end
+
+    context 'with a signed-in admin' do
+      before do
+        user = GogglesDb::User.first(2).sample
+        sign_in(user)
+        get(chrono_index_path)
+      end
+
+      it 'returns http success' do
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context 'with a signed-in team manager' do
+      include_context('current_user is a team manager on last FIN season ID')
+
+      before do
+        expect(current_user).to be_a(GogglesDb::User).and be_valid
+        sign_in(current_user)
+        get(chrono_index_path)
       end
 
       it 'returns http success' do
@@ -27,20 +59,20 @@ RSpec.describe ChronoController, type: :request do
   #++
 
   describe 'GET /chrono/download/:id' do
-    let(:fixture_user) { GogglesDb::User.first(50).sample }
     let(:fixture_row) do
+      expect(fixture_user).to be_a(GogglesDb::User).and be_valid
       master_row = FactoryBot.create(
         :import_queue,
         user: fixture_user,
         request_data: {
-          'target_entity': 'Lap',
-          'lap': {
-            'label': "01'26\"59",
-            'order': 4,
-            'length_in_meters': 100,
-            'minutes_from_start': 1,
-            'seconds_from_start': 26,
-            'hundredths_from_start': 59
+          target_entity: 'Lap',
+          lap: {
+            label: "01'26\"59",
+            order: 4,
+            length_in_meters: 100,
+            minutes_from_start: 1,
+            seconds_from_start: 26,
+            hundredths_from_start: 59
           }.to_json
         }
       )
@@ -56,11 +88,44 @@ RSpec.describe ChronoController, type: :request do
       end
     end
 
-    context 'with a logged-in user' do
+    context 'with a logged-in user (not a manager)' do
       before do
         expect(fixture_user).to be_a(GogglesDb::User).and be_valid
         expect(fixture_row).to be_a(GogglesDb::ImportQueue).and be_valid
         sign_in(fixture_user)
+        get(chrono_download_path(fixture_row.id))
+      end
+
+      it 'is a redirect to the root path' do
+        expect(response).to redirect_to(root_path)
+      end
+
+      it 'sets an invalid request flash warning message' do
+        expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+      end
+    end
+
+    shared_examples_for('chrono#download for an authorized user') do
+      let(:iq_row_for_current_user) do
+        expect(current_user).to be_a(GogglesDb::User).and be_valid
+        master_row = FactoryBot.create(
+          :import_queue,
+          user: current_user,
+          request_data: {
+            target_entity: 'Lap',
+            lap: {
+              label: "01'26\"59",
+              order: 4,
+              length_in_meters: 100,
+              minutes_from_start: 1,
+              seconds_from_start: 26,
+              hundredths_from_start: 59
+            }.to_json
+          }
+        )
+        FactoryBot.create_list(:import_queue, 3, user: current_user, import_queue: master_row)
+        expect(GogglesDb::ImportQueue.count).to be >= 4
+        master_row
       end
 
       context 'with an invalid :id parameter,' do
@@ -76,7 +141,10 @@ RSpec.describe ChronoController, type: :request do
       end
 
       context 'with a valid :id parameter,' do
-        before { get(chrono_download_path(id: fixture_row.id)) }
+        before do
+          expect(iq_row_for_current_user).to be_a(GogglesDb::ImportQueue).and be_valid
+          get(chrono_download_path(id: iq_row_for_current_user.id))
+        end
 
         it 'downloads a JSON text data file' do
           expect(response.headers['Content-Type']).to eq('text/json')
@@ -85,9 +153,31 @@ RSpec.describe ChronoController, type: :request do
 
         it 'sends a data file containing the JSON request data of the chosen rows' do
           # Limiting just to the first row to be quick::
-          expect(response.body).to be_present && include(fixture_row.request_data)
+          expect(response.body).to be_present && include(iq_row_for_current_user.request_data)
         end
       end
+    end
+
+    context 'with a signed-in admin' do
+      before do
+        expect(current_user).to be_a(GogglesDb::User).and be_valid
+        sign_in(current_user)
+      end
+
+      let(:current_user) { GogglesDb::User.first(2).sample }
+
+      it_behaves_like('chrono#download for an authorized user')
+    end
+
+    context 'with a signed-in team manager' do
+      include_context('current_user is a team manager on last FIN season ID')
+
+      before do
+        expect(current_user).to be_a(GogglesDb::User).and be_valid
+        sign_in(current_user)
+      end
+
+      it_behaves_like('chrono#download for an authorized user')
     end
   end
   #-- -------------------------------------------------------------------------
@@ -101,10 +191,40 @@ RSpec.describe ChronoController, type: :request do
       end
     end
 
-    context 'with a logged-in user' do
+    context 'with a logged-in user (not a manager)' do
       before do
-        user = GogglesDb::User.first(50).sample
+        user = FactoryBot.create(:user)
         sign_in(user)
+        get(chrono_new_path)
+      end
+
+      it 'is a redirect to the root path' do
+        expect(response).to redirect_to(root_path)
+      end
+
+      it 'sets an invalid request flash warning message' do
+        expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+      end
+    end
+
+    context 'with a signed-in admin' do
+      before do
+        user = GogglesDb::User.first(2).sample
+        sign_in(user)
+        get(chrono_new_path)
+      end
+
+      it 'returns http success' do
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context 'with a signed-in team manager' do
+      include_context('current_user is a team manager on last FIN season ID')
+
+      before do
+        expect(current_user).to be_a(GogglesDb::User).and be_valid
+        sign_in(current_user)
         get(chrono_new_path)
       end
 
@@ -124,12 +244,23 @@ RSpec.describe ChronoController, type: :request do
       end
     end
 
-    context 'with a logged-in user' do
+    context 'with a logged-in user (not a manager)' do
       before do
-        user = GogglesDb::User.first(50).sample
+        user = FactoryBot.create(:user)
         sign_in(user)
+        post(chrono_rec_path)
       end
 
+      it 'is a redirect to the root path' do
+        expect(response).to redirect_to(root_path)
+      end
+
+      it 'sets an invalid request flash warning message' do
+        expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+      end
+    end
+
+    shared_examples_for('chrono#rec for an authorized user') do
       context 'without some of the required parameters,' do
         [
           { 'rec_type' => 1 },
@@ -156,6 +287,26 @@ RSpec.describe ChronoController, type: :request do
         end
       end
     end
+
+    context 'with a signed-in admin' do
+      before do
+        user = GogglesDb::User.first(2).sample
+        sign_in(user)
+      end
+
+      it_behaves_like('chrono#rec for an authorized user')
+    end
+
+    context 'with a signed-in team manager' do
+      include_context('current_user is a team manager on last FIN season ID')
+
+      before do
+        expect(current_user).to be_a(GogglesDb::User).and be_valid
+        sign_in(current_user)
+      end
+
+      it_behaves_like('chrono#rec for an authorized user')
+    end
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -168,18 +319,27 @@ RSpec.describe ChronoController, type: :request do
       end
     end
 
-    context 'with a logged-in user' do
-      let(:fixture_user) { GogglesDb::User.first(50).sample }
-
+    context 'with a logged-in user (not a manager)' do
       before do
-        expect(fixture_user).to be_a(GogglesDb::User).and be_valid
-        sign_in(fixture_user)
+        user = FactoryBot.create(:user)
+        sign_in(user)
+        post(chrono_commit_path)
       end
 
+      it 'is a redirect to the root path' do
+        expect(response).to redirect_to(root_path)
+      end
+
+      it 'sets an invalid request flash warning message' do
+        expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+      end
+    end
+
+    shared_examples_for('chrono#commit for an authorized user') do
       context 'without some of the required parameters,' do
         [
           { json_header: { 'target_entity' => 'Lap' }.to_json },
-          { json_payload: { order: 1, minutes: 0, seconds: 45, hundredths: 10 }.to_json }
+          { json_payload: [{ order: 1, minutes_from_start: 0, seconds_from_start: 45, hundredths_from_start: 10 }].to_json }
         ].each do |partial_params|
           before { post(chrono_commit_path, params: partial_params) }
 
@@ -201,9 +361,16 @@ RSpec.describe ChronoController, type: :request do
           }
         end
 
-        it 'yields a server error' do
-          expect { post(chrono_commit_path, params: invalid_request_params) }
-            .to raise_error(ArgumentError)
+        before do
+          post(chrono_commit_path, params: invalid_request_params)
+        end
+
+        it 'redirects to /chrono/index' do
+          expect(response).to redirect_to(chrono_index_path)
+        end
+
+        it 'sets the chrono/post API error message' do
+          expect(flash[:error]).to eq(I18n.t('chrono.messages.post_api_error'))
         end
       end
 
@@ -233,7 +400,10 @@ RSpec.describe ChronoController, type: :request do
             chrono_commit_path,
             params: {
               json_header: min_request_header.to_json,
-              json_payload: { order: 1, minutes: 0, seconds: 45, hundredths: 10 }.to_json
+              json_payload: [
+                { order: 1, minutes_from_start: 0, seconds_from_start: 45, hundredths_from_start: 10 },
+                { order: 2, minutes_from_start: 1, seconds_from_start: 27, hundredths_from_start: 30 }
+              ].to_json
             }
           )
         end
@@ -247,11 +417,33 @@ RSpec.describe ChronoController, type: :request do
         end
       end
     end
+
+    context 'with a signed-in admin' do
+      before do
+        user = GogglesDb::User.first(2).sample
+        sign_in(user)
+      end
+
+      it_behaves_like('chrono#commit for an authorized user')
+    end
+
+    context 'with a signed-in team manager' do
+      include_context('current_user is a team manager on last FIN season ID')
+
+      before do
+        expect(current_user).to be_a(GogglesDb::User).and be_valid
+        sign_in(current_user)
+      end
+
+      it_behaves_like('chrono#commit for an authorized user')
+    end
   end
   #-- -------------------------------------------------------------------------
   #++
 
   describe 'DELETE /chrono/delete/:id' do
+    let(:deletable_row) { FactoryBot.create(:import_queue, user: fixture_user) }
+
     context 'with an unlogged user,' do
       it 'is a redirect to the login path' do
         delete(chrono_delete_path(id: 1))
@@ -259,16 +451,23 @@ RSpec.describe ChronoController, type: :request do
       end
     end
 
-    context 'with a logged-in user' do
-      let(:fixture_user) { GogglesDb::User.first(50).sample }
-      let(:deletable_row) { FactoryBot.create(:import_queue, user: fixture_user) }
-
+    context 'with a logged-in user (not a manager)' do
       before do
-        expect(fixture_user).to be_a(GogglesDb::User).and be_valid
-        expect(deletable_row).to be_a(GogglesDb::ImportQueue).and be_valid
-        sign_in(fixture_user)
+        user = FactoryBot.create(:user)
+        sign_in(user)
+        delete(chrono_delete_path(id: 1))
       end
 
+      it 'is a redirect to the root path' do
+        expect(response).to redirect_to(root_path)
+      end
+
+      it 'sets an invalid request flash warning message' do
+        expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+      end
+    end
+
+    shared_examples_for('chrono#delete for an authorized user') do
       context 'with an invalid :id parameter,' do
         before { delete(chrono_delete_path(id: -1)) }
 
@@ -282,7 +481,9 @@ RSpec.describe ChronoController, type: :request do
       end
 
       context 'with a valid :id parameter,' do
-        before { delete(chrono_delete_path(id: deletable_row.id)) }
+        before { delete(chrono_delete_path(id: deletable_row_for_curr_user.id)) }
+
+        let(:deletable_row_for_curr_user) { FactoryBot.create(:import_queue, user: current_user) }
 
         it 'redirects to /chrono/index' do
           expect(response).to redirect_to(chrono_index_path)
@@ -292,6 +493,28 @@ RSpec.describe ChronoController, type: :request do
           expect(flash[:notice]).to eq(I18n.t('chrono.messages.delete_done'))
         end
       end
+    end
+
+    context 'with a signed-in admin' do
+      before do
+        expect(current_user).to be_a(GogglesDb::User).and be_valid
+        sign_in(current_user)
+      end
+
+      let(:current_user) { GogglesDb::User.first(2).sample }
+
+      it_behaves_like('chrono#delete for an authorized user')
+    end
+
+    context 'with a signed-in team manager' do
+      include_context('current_user is a team manager on last FIN season ID')
+
+      before do
+        expect(current_user).to be_a(GogglesDb::User).and be_valid
+        sign_in(current_user)
+      end
+
+      it_behaves_like('chrono#delete for an authorized user')
     end
   end
   #-- -------------------------------------------------------------------------

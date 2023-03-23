@@ -5,11 +5,11 @@
     - if column.name == :star
       - row_id = asset.respond_to?(:meeting_id) ? asset.meeting_id : asset.id
       %td.text-center
-        %span{ id: "user-star-#{row_id}" }
+        %span.user-star{ id: "user-star-#{row_id}", data: { row_id: row_id } }
           = render(Grid::RowStarButtonComponent.new(asset_row: asset, current_user: current_user))
         - if grid.class.respond_to?(:managed_teams) && grid.class.managed_teams.present?
           &nbsp;
-          %span{ id: "team-star-#{row_id}" }
+          %span.team-star{ id: "team-star-#{row_id}", data: { row_id: row_id } }
             = render(Grid::TeamStarButtonComponent.new(asset_row: asset, current_user: current_user,
                      user_teams: grid.class.managed_teams))
     - else

@@ -9,7 +9,7 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
   let(:minutes) { (rand * 5).to_i }
   let(:seconds) { (rand * 59).to_i }
   let(:hundredths) { (rand * 99).to_i }
-  let(:meters) { 50 + (rand * 8).to_i * 50 }
+  let(:meters) { 50 + ((rand * 8).to_i * 50) }
 
   before do
     expect(current_user).to be_a(GogglesDb::User).and be_valid

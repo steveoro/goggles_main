@@ -454,7 +454,7 @@ export default class extends Controller {
    * @param {String}  baseName base name for the presence indicator.
    * @param {boolean} visible true/false to toggle the 'd-none' CSS class.
    */
-  newLedUpdate(baseName, visible) {
+  newLedUpdate (baseName, visible) {
     // DEBUG
     // console.log(`newLedUpdate('${baseName}', ${visible})`)
     if (document.querySelector(`#${baseName}-new`)) {
@@ -510,8 +510,7 @@ export default class extends Controller {
         if (baseName.startsWith('swimmer') && mapData.get('label') && document.querySelector(`#${baseName}_complete_name`)) {
           document.querySelector(`#${baseName}_complete_name`).value = mapData.get('label')
         }
-      }
-      else {
+      } else {
         this.newLedUpdate(baseName, false) // Hide the "new" led/flag if there's a result match
       }
 

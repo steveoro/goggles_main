@@ -32,7 +32,7 @@ module Laps
 
     # Skips rendering unless @laps is enumerable and orderable :by_distance
     def render?
-      @laps.respond_to?(:each) && @laps.respond_to?(:by_distance)
+      @laps.present? && @laps.respond_to?(:each) && @laps.respond_to?(:by_distance)
     end
 
     protected
@@ -49,18 +49,18 @@ module Laps
 
     # Returns the DOM ID for this component
     def dom_id
-      "laps-show#{parent_result.id}"
+      "laps-show#{parent_result&.id}"
     end
 
     # Returns the associated parent result instance (memoized)
     def parent_result
-      @parent_result ||= last_lap.parent_result
+      @parent_result ||= last_lap&.parent_result
     end
 
     # Returns an additional closing lap row filled using the end result for the "timing from start",
     # and computing its delta using the actual last available lap.
     def closing_result_lap
-      return unless last_lap
+      return unless last_lap && parent_result
 
       last_delta_timing = parent_result.to_timing - last_lap.timing_from_start
       result_lap = last_lap.dup.from_timing(last_delta_timing)

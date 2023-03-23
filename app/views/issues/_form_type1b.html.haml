@@ -12,6 +12,14 @@
         = render(ComboBox::DbLookupComponent.new(nil, t('meetings.event'), 'event_type', required: true,
                                                  values: event_type_options(parent_meeting.event_types)))
     .container
+      - if current_user.swimmer.nil?
+        %p.form-text.text-center.text-muted
+          %small
+            %i= t('issues.type1b.form.notice.no_associated_swimmer')
+      - unless can_manage
+        %p.form-text.text-center.text-muted
+          %small
+            %i= t('issues.type1b.form.notice.cant_manage')
       .row
         = render(ComboBox::DbSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer', disabled: !can_manage,
                                                   free_text: false, default_row: current_user.swimmer,

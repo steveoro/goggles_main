@@ -7,7 +7,8 @@ require 'version'
 # Common parent controller
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
-  before_action :app_settings_row, :set_locale, :detect_device_variant, :check_maintenance_mode, :update_stats
+  before_action :app_settings_row, :set_locale, :detect_device_variant, :check_maintenance_mode,
+                :update_stats, :prepare_last_seasons
   before_action :configure_devise_permitted_parameters, if: :devise_controller?
 
   # Catch-all redirect in case of 404s
@@ -40,18 +41,27 @@ class ApplicationController < ActionController::Base
   #   Further affiliation filtering (by team) should happen after the user selects any actions which
   #   requires selecting a specific managed team.
   def prepare_last_seasons
-    @last_seasons = [
-      # WIP: testing latest data imports
-      # ACTUAL: GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin)
-      # EDIT ALSO: features/step_definitions/devise/given_any_user_steps.rb:93
-      # WAS: GogglesDb::Season.find(222)
-      GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin)
-    ]
-    @last_seasons_ids = @last_seasons.pluck(:id)
+    # Retrieve any available latest season(s) by type, but include also those *having* at least some results (this is required by many features)
+    # [Update 20230323] Memoize season member variables as these won't change frequently
+    @last_seasons ||= [
+      GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin),
+      GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).by_season(:desc).first.season,
+      GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin),
+      GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season).by_season(:desc).first.season
+    ].sort.uniq
+    # [!!!] Whenever the above ^^ changes, CHECK & UPDATE ALSO:
+    # - features/step_definitions/calendars/calendars_steps.rb:17
+    # - features/step_definitions/calendars/given_any_calendars_steps.rb:8:37:56
+    # - features/step_definitions/devise/given_any_user_steps.rb:99:184:251
+    # - spec/support/shared_team_managers_context.rb:4
+
+    @last_seasons_ids ||= @last_seasons.pluck(:id)
+
     # Can we show any related management buttons? (team selection should happen afterwards)
-    @current_user_is_manager = @last_seasons_ids.present? &&
-                               GogglesDb::ManagedAffiliation.includes(:season)
-                                                            .joins(:season)
+    @current_user_is_admin = GogglesDb::GrantChecker.admin?(current_user)
+    @current_user_is_manager = @last_seasons_ids.present? && user_signed_in? &&
+                               GogglesDb::ManagedAffiliation.includes(team_affiliation: %i[team season])
+                                                            .joins(team_affiliation: %i[team season])
                                                             .exists?(user_id: current_user.id, 'seasons.id': @last_seasons_ids)
   end
 
@@ -76,6 +86,7 @@ class ApplicationController < ActionController::Base
   # Defaults to an empty array otherwise.
   #
   # Uses @last_seasons_ids & @current_user_is_manager.
+  #
   # Sets the internal member:
   # - <tt>@managed_teams</tt>
   #  Array of all unique GogglesDb::Team rows found, managed the current_user and
@@ -85,9 +96,9 @@ class ApplicationController < ActionController::Base
     @managed_teams = []
     return unless @current_user_is_manager
 
-    mas = GogglesDb::ManagedAffiliation.includes(:season, team_affiliation: :team)
+    mas = GogglesDb::ManagedAffiliation.includes(:team, :season, team_affiliation: %i[team season])
+                                       .joins(team_affiliation: %i[team season])
                                        .where(user_id: current_user.id, 'seasons.id': @last_seasons_ids)
-
     @managed_teams = mas.map(&:team).uniq
   end
   #-- -------------------------------------------------------------------------

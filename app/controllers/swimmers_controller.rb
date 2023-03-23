@@ -158,7 +158,7 @@ class SwimmersController < ApplicationController
       percent = (hsh[:count25] * 100 / event_total).round(2)
       {
         key: hsh[:label],
-        value: percent < 1.0 ? 1.0 : percent,
+        value: [percent, 1.0].max,
         count: hsh[:count25],
         typeLabel: GogglesDb::PoolType.mt_25.label
       }
@@ -180,7 +180,7 @@ class SwimmersController < ApplicationController
       percent = (hsh[:count50] * 100 / event_total).round(2)
       {
         key: hsh[:label],
-        value: percent < 1.0 ? 1.0 : percent,
+        value: [percent, 1.0].max,
         count: hsh[:count50],
         typeLabel: GogglesDb::PoolType.mt_50.label
       }

@@ -2,7 +2,8 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
-- **0.4.25** [Steve A.] descending order for calendars; issues controller and related pages
+- **0.5.01** [Steve A.] full support for reported issues for signed-in users; fixed microtransactions data-import for laps
+- **0.4.25** [Steve A.] descending order for calendars; scaffolding support for reported issues w/ related view components; smart search now matches at least the results from the swimmers API; misc improvements, bugfixes & additional specs
 - **0.4.21** [Steve A.] resync w/ base engine; calendar views & map; support for meeting tag by user or by team in calendars with dedicated components; additional specs
 - **0.4.20** [Steve A.] priority for maps URL in SwimmingPool decorator; resync w/ base engine: some security updates; increased duration of JWTs to 10 hours; removed unconfirmed new user access possibility; added a default scope for Team
 - **0.4.10** [Steve A.] resync w/ base engine: forced UTF-8 encoding for downloaded script files in ImportQueues

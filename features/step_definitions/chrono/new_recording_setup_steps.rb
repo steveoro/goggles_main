@@ -10,12 +10,12 @@ end
 
 Given('I select {string} as the event container type') do |rec_type_label|
   wait_for_ajax && sleep(1)
-  expected_type = rec_type_label =~ /meeting/i ? '1' : '2'
-  if find('#rec_type').value.to_s != expected_type
+  expected_type = /meeting/i.match?(rec_type_label) ? '1' : '2'
+  if find_by_id('rec_type').value.to_s != expected_type
     find('#rec_type + span > label.switch').click
     wait_for_ajax
   end
-  expect(find('#rec_type').value).to eq(expected_type)
+  expect(find_by_id('rec_type').value).to eq(expected_type)
 end
 
 When('I see that my associated swimmer is already set as subject') do
@@ -27,9 +27,18 @@ When('I see that my associated swimmer is already set as subject') do
   expect(selected_option.text).to include(@current_user.swimmer.complete_name)
     .and include(@current_user.swimmer.year_of_birth.to_s)
 end
+# -----------------------------------------------------------------------------
 
 When('I type {string} as selection for the {string} pre-filled select field') do |manual_input_label, field_camelcase_name|
   find("##{field_camelcase_name}_select", visible: true).select(manual_input_label)
+end
+
+When('I see that the {string} Select2 field is disabled') do |field_camelcase_name|
+  expect(find("select##{field_camelcase_name}_select", visible: true)).to be_disabled
+end
+
+When('I see that the {string} Select2 field is enabled') do |field_camelcase_name|
+  expect(find("select##{field_camelcase_name}_select", visible: true)).not_to be_disabled
 end
 
 # [Steve A.] This goes beyond simply reproducing user actions because most DbLookup components are based
@@ -70,14 +79,14 @@ When('I see that {string} is already set as {string} field') do |manual_input_la
 end
 
 When('I see that the current date is already set as the date of the event') do
-  expect(find('#event_date').value).to eq(Time.zone.today.to_s)
+  expect(find_by_id('event_date').value).to eq(Time.zone.today.to_s)
 end
 
 When('I click on the go to chrono button') do
   # Fake button enabled state, normally validated by Stimulus JS controller (doesn't work here):
   execute_script("$('#btn-rec-chrono').prop('disabled', false)")
   wait_for_ajax
-  find('#btn-rec-chrono', visible: true).click
+  find_by_id('btn-rec-chrono', visible: true).click
 end
 
 When('I am redirected to the Chrono recording page') do
@@ -85,16 +94,16 @@ When('I am redirected to the Chrono recording page') do
 end
 
 When('I see that the chosen swimmer is shown in the chrono summary') do
-  expect(find('#chrono-summary').text).to include(@current_user.swimmer.complete_name)
+  expect(find_by_id('chrono-summary').text).to include(@current_user.swimmer.complete_name)
     .and include(@current_user.swimmer.year_of_birth.to_s)
 end
 
 When('I see that the current date is shown in the chrono summary') do
-  expect(find('#chrono-summary').text).to include(Time.zone.today.to_s)
+  expect(find_by_id('chrono-summary').text).to include(Time.zone.today.to_s)
 end
 
 When('I see that {string} is included in the chrono summary') do |manual_input_label|
-  expect(find('#chrono-summary').text).to include(manual_input_label)
+  expect(find_by_id('chrono-summary').text).to include(manual_input_label)
 end
 
 When('I click on the {string} button at the end of form step {string}') do |btn_type, step_name|

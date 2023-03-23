@@ -280,7 +280,7 @@ Devise.setup do |config|
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
-  config.omniauth :facebook, ENV['FACEBOOK_APP_ID'], ENV['FACEBOOK_APP_SECRET'],
+  config.omniauth :facebook, ENV.fetch('FACEBOOK_APP_ID', nil), ENV.fetch('FACEBOOK_APP_SECRET', nil),
                   scope: 'email,user_birthday', display: 'popup'
 
   # [Steve, 20210804] Google changed OAuth ID flow in 2021: it now returns a JWT with a different structure,

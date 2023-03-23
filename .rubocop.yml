@@ -1,6 +1,9 @@
 require:
-  - rubocop-rspec
+  - rubocop-capybara
+  - rubocop-performance
   - rubocop-rails
+  - rubocop-rake
+  - rubocop-rspec
 
 inherit_from: .rubocop_todo.yml
 
@@ -42,10 +45,11 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   Max: 40
   CountAsOne: ['array', 'heredoc']
-  IgnoredMethods: ['describe', 'context', 'define', 'namespace']
   Exclude:
-    - 'spec/decorators/iq_request/chrono_rec_param_adapter_spec.rb'
-    - 'spec/support/shared_component_examples.rb'
+    - 'lib/capistrano/tasks/db.rake'
+    - 'lib/capistrano/tasks/status.rake'
+    - 'lib/tasks/stats.rake'
+    - 'spec/**/*'
 
 Metrics/ClassLength:
   Max: 120
@@ -66,6 +70,27 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Exclude:
     - 'bin/bundle'
+
+
+# We use arrays group multiple similar specs under a single implementation
+Performance/CollectionLiteralInLoop:
+  Exclude:
+    - 'spec/**/*'
+
+
+Rake/Desc:
+  Exclude:
+    - 'lib/tasks/cucumber.rake'
+
+Rake/DuplicateTask:
+  Exclude:
+    - 'lib/tasks/cucumber.rake'
+
+Rake/MethodDefinitionInTask:
+  Exclude:
+    - 'lib/capistrano/tasks/db.rake'
+    - 'lib/tasks/stats.rake'
+
 
 RSpec/Capybara/CurrentPathExpectation:
   Enabled: false

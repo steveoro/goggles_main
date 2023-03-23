@@ -2,6 +2,10 @@
 
 require 'version'
 
+When('I am at the root page') do
+  expect(page).to have_current_path(root_path, ignore_query: true)
+end
+
 Then('I see the version of the app at the bottom of the page') do
   expect(find('section#footer').text).to include(Version::SEMANTIC)
 end

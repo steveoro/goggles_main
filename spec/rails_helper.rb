@@ -72,7 +72,7 @@ require 'view_component/test_helpers'
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.fixture_path = Rails.root.join('/spec/fixtures')
 
   # Add custom request spec path for Grape APIs: (for a standard Rails API test suite these are expected to be in /spec/requests/)
   config.include(RSpec::Rails::RequestExampleGroup, type: :request, file_path: %r{spec/api})

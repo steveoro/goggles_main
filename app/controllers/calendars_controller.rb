@@ -3,8 +3,7 @@
 # = CalendarsController
 #
 class CalendarsController < ApplicationController
-  before_action :authenticate_user!, :prepare_last_seasons,
-                :prepare_user_teams, :prepare_managed_teams
+  before_action :authenticate_user!, :prepare_user_teams, :prepare_managed_teams
 
   # GET /current
   # Prepares all the Calendar rows available for the latest seasons.

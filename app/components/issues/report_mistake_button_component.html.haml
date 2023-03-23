@@ -1,5 +1,5 @@
 = link_to(issues_new_type1b1_path(result_id: @result_row.id, result_class: @result_row.class.name.split('::').last),
           type: 'button', method: :get, id: "type1b1-btn-#{@result_row.id}",
-          class: 'btn btn-sm text-secondary px-1', role: 'button',
+          class: 'btn btn-sm text-secondary px-1 issue-type1b1-btn', role: 'button',
           data: 'tooltip', title: t('issues.type1b1.form.tooltip')) do
   %i.fa.fa-flag-o.text-danger

@@ -37,7 +37,7 @@ module DownloadHelpers
   # @see: https://github.com/SeleniumHQ/selenium/issues/5159
   #
   def enable_download_behavior
-    return unless Capybara.current_driver.to_s =~ /headless/i
+    return unless /headless/i.match?(Capybara.current_driver.to_s)
 
     bridge = page.driver.browser.send(:bridge)
     bridge.http.call(

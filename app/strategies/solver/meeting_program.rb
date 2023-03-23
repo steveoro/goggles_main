@@ -93,9 +93,8 @@ module Solver
 
     # Filtered hash of minimum required field bindings
     def required_bindings
-      @bindings.select do |key, _value|
-        %i[meeting_event_id pool_type_id category_type_id gender_type_id].include?(key)
-      end
+      required_keys = %i[meeting_event_id pool_type_id category_type_id gender_type_id]
+      @bindings.select { |key, _value| required_keys.include?(key) }
     end
 
     # Returns an esteem of the existing MeetingProgram order for the associated MeetingEvent,

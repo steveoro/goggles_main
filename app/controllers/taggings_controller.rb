@@ -4,7 +4,7 @@
 #
 class TaggingsController < ApplicationController
   before_action :authenticate_user!, :validate_ajax_request_and_meeting_id
-  before_action :validate_team_id, :prepare_last_seasons, :prepare_managed_teams, only: :by_team
+  before_action :validate_team_id, :prepare_managed_teams, only: :by_team
 
   # XHR POST /by_user/:meeting_id
   # Tags/Untags the specified Meeting ID as "starred" by the current_user.

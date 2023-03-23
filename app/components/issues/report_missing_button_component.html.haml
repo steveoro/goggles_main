@@ -2,7 +2,7 @@
           parent_meeting_class: @parent_meeting.class.name.split('::').last,
           event_type_id: @event_type.id), type: 'button', method: :get,
           id: "type1b-btn-#{@parent_meeting.id}-#{@event_type.id}",
-          class: 'btn btn-sm text-secondary px-1', role: 'button',
+          class: 'btn btn-sm text-second\ary px-1 issue-type1b-btn', role: 'button',
           data: 'tooltip', title: t('issues.type1b.form.tooltip')) do
   %span
     %i.fa.fa-flag-o

@@ -42,6 +42,8 @@ en:
       confirm_reset: "Reset & clear Chrono's log?"
       confirm_post: "Post these lap timings to Master-Goggles.org? Editing finished? Ready to send?"
       post_done: "Data sent & queued for registration."
+      post_api_error: "Wrong request: in our currently supported chrono API, all enqueued data must include at least both a lap + a final result."
       post_error: "Sorry: an error during data registration prevented this data from being queued."
+      post_empty_payload_error: "Error: invalid empty payload!"
       delete_done: "Recording deleted."
       delete_error: "Sorry: an error prevented the deletion of this recording."

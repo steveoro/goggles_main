@@ -158,7 +158,6 @@ RSpec.describe IssuesController, type: :request do
   # - path_to_be_tested: the path that will be called by the POST method
   # - params: the params Hash for the call
   #
-  # rubocop:disable Metrics/BlockLength
   shared_examples_for('issues POST request w/ varying parameters and context') do
     context 'with an unlogged user' do
       before do
@@ -216,7 +215,6 @@ RSpec.describe IssuesController, type: :request do
       end
     end
   end
-  # rubocop:enable Metrics/BlockLength
   #-- -------------------------------------------------------------------------
   #++
 
@@ -290,12 +288,9 @@ RSpec.describe IssuesController, type: :request do
     let(:path_to_be_tested) { issues_create_type3b_path }
     let(:params) do
       {
-        swimmer_id: fixture_swimmer.id,
-        gender_type_id: fixture_swimmer.gender_type_id,
-        swimmer_complete_name: fixture_swimmer.complete_name,
-        swimmer_first_name: fixture_swimmer.first_name,
-        swimmer_last_name: fixture_swimmer.last_name,
-        swimmer_year_of_birth: fixture_swimmer.year_of_birth
+        swimmer_id: fixture_swimmer.id
+        # [20230321] Made all swimmer-defining remaining parameters optional because now the user is supposed
+        # to request issue 3c for a free-form swimmer association
       }
     end
 

@@ -1,12 +1,12 @@
 # language:en
 
 Feature: Chrono time recording setup
-  As a logged-in user
+  As a logged-in user with Team management grants
   I want to be able to setup all the details regarding the type of Meeting or Workshop for an event
   So that I can record the elapsed times of any event with an embedded chronometer
 
   Background: API is working, user sign-in & correct starting page
-    Given I have an associated swimmer and have already signed-in
+    Given I have an associated swimmer on a team manager account and have already signed-in
     When I browse to '/chrono'
     And I click on the new recording button
     Then I am redirected to the Chrono setup page

@@ -1,13 +1,13 @@
 # language:en
 
 Feature: Chrono time recording setup
-  As a logged-in user
+  As a logged-in user with Team management grants
   After detailed Meeting or Workshop event setup
   I want to be able to record the elapsed time of the event
   So that I can enqueue its results for later processing
 
   Background: user sign-in & correct starting page
-    Given I have an associated swimmer and have already signed-in
+    Given I have an associated swimmer on a team manager account and have already signed-in
     And I browse to '/chrono'
     When I click on the new recording button
     Then I am redirected to the Chrono setup page

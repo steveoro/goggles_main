@@ -40,7 +40,11 @@ module MIR
     def can_edit_lap?(mir)
       return true if @managed_team_ids.nil?
 
-      mir.respond_to?(:team_id) && @managed_team_ids.include?(mir.team_id)
+      team_id = mir.team_id if mir.respond_to?(:team_id)
+      # UserWorkshop should be always managed by the team manager of the same team that created it:
+      team_id = mir.parent_meeting.team_id if mir.is_a?(GogglesDb::UserResult)
+
+      @managed_team_ids.include?(team_id)
     end
 
     # Returns +true+ if the specified +mir+ row can show the "report mistake" button.

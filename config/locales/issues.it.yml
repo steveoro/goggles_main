@@ -12,7 +12,7 @@ it:
     type0:
       title: "Promuovimi a 'Team Manager'"
       form:
-        label: "Vorrei poter gestire le squadre che seguono nei Campionati disponibili per la stagione sportiva in corso:"
+        label: "Vorrei poter gestire la squadra scelta qui sotto per i Campionati disponibili della stagione sportiva in corso:"
         notice: "La squadra che vuoi scegliere deve già esistere fra i nostri dati per comparire in lista"
         season_championship: "Campionato / Stagione:"
 
@@ -35,6 +35,9 @@ it:
         btn_label: "Segnala mancanza"
         title: "🏴 Segnala risultato mancante"
         result_label: "Risultato"
+        notice:
+          cant_manage: "Solo i Team manager possono selezionare un atleta dall'elenco."
+          no_associated_swimmer: "Non hai un nuotatore associato al tuo account, quindi non è possibile preselezionare un atleta."
     type1b1:
       form:
         tooltip: "Segnala un errore in questo risultato del Meeting"

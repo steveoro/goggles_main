@@ -252,7 +252,7 @@ class LapsController < ApplicationController
       )
     end
 
-    GogglesDb::Lap.UserLap.new(
+    GogglesDb::UserLap.new(
       user_result_id: @parent_result.id,
       swimmer_id: @parent_result.swimmer_id,
       length_in_meters: length_in_meters,

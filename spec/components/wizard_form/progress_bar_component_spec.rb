@@ -62,8 +62,8 @@ RSpec.describe WizardForm::ProgressBarComponent, type: :component do
     end
 
     let(:steps_tot) { [3, 4, 5, 6].sample }
-    let(:fixture_titles) { steps_tot.times.map { FFaker::Lorem.word } }
-    let(:fixture_icons) { steps_tot.times.map { |i| (i + 1).to_s } }
+    let(:fixture_titles) { Array.new(steps_tot) { FFaker::Lorem.word } }
+    let(:fixture_icons) { Array.new(steps_tot) { |i| (i + 1).to_s } }
 
     before do
       expect(steps_tot).to be_positive

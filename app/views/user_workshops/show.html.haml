@@ -10,6 +10,9 @@
           = render(Meeting::HeaderBodyComponent.new(meeting: @user_workshop))
           = render(Meeting::MoreBodyComponent.new(meeting: @user_workshop))
 
+    / (only 1 modal container per page)
+    #lap-edit-modal-container
+
     #workshop-show-results
       %table.table.table-striped.table-sm
         - @user_workshop_events&.each_with_index do |event_type, index|
@@ -18,7 +21,13 @@
             = render(Mevent::RowSeparatorComponent.new) if index.positive? # skip first separator
             %tr{ id: event_type.id }
               %th.mevent-separator{ colspan: 4 }
-                %h4= event_type.long_label
-            = render(MIR::TableComponent.new(mirs: results))
+                %h4
+                  = event_type.long_label
+                  - if user_signed_in?
+                    &nbsp;
+                    = render(Issues::ReportMissingButtonComponent.new(parent_meeting: @user_workshop,
+                             event_type: event_type))
+            = render(MIR::TableComponent.new(mirs: results, managed_team_ids: @managed_team_ids,
+                     current_swimmer_id: @current_swimmer_id))
 
   .spacer-right

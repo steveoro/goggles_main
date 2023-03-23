@@ -6,7 +6,7 @@
 # user-supplied lap timings.
 #
 class ChronoController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, :validate_grants
   before_action :validate_rec_params, only: :rec
   before_action :validate_commit_params, only: :commit
   before_action :validate_download_params, only: :download
@@ -34,7 +34,7 @@ class ChronoController < ApplicationController
     if queue.present?
       rows = queue.sibling_rows.or(GogglesDb::ImportQueue.where(id: queue.id)).includes(:import_queues)
       decorated = GogglesDb::ImportQueueDecorator.decorate_collection(rows)
-      sorted_stringified = decorated.sort { |a, b| a.req_length_in_meters <=> b.req_length_in_meters }
+      sorted_stringified = decorated.sort_by(&:req_length_in_meters)
                                     .map(&:request_data)
                                     .join(', ')
       send_data(
@@ -82,21 +82,27 @@ class ChronoController < ApplicationController
   #
   # == Params:
   # - json_payload: JSON array of detail data that will be converted to a list of new micro-transaction requests
+  #
+  # rubocop:disable Metrics/AbcSize
   def commit
     # DEBUG
     logger.debug("\r\n\r\n#{params.inspect}\r\n")
     laps_list = parse_json_payload(commit_params[:json_payload])
 
-    if laps_list.present?
+    if laps_list.is_a?(Array) && laps_list.respond_to?(:length) && laps_list.length > 1
       commit_import_queues(laps_list)
       flash[:notice] = t('chrono.messages.post_done')
+    elsif laps_list.is_a?(Hash) || (laps_list.respond_to?(:length) && laps_list.length < 2)
+      # Currently we support only multiple payloads with >=1 lap + final result (included in each lap IQ):
+      flash[:error] = t('chrono.messages.post_api_error')
     else
       # POST shouldn't happen on an empty payload:
-      flash[:error] = t('chrono.messages.post_error')
+      flash[:error] = t('chrono.messages.post_empty_payload_error')
     end
 
     redirect_to(chrono_index_path)
   end
+  # rubocop:enable Metrics/AbcSize
   #-- -------------------------------------------------------------------------
   #++
 
@@ -124,6 +130,14 @@ class ChronoController < ApplicationController
   #++
 
   private
+
+  # Redirects to the root path unless the current user has minimal grants.
+  def validate_grants
+    return if @current_user_is_manager || @current_user_is_admin
+
+    flash[:warning] = I18n.t('search_view.errors.invalid_request')
+    redirect_to(root_path) && return
+  end
 
   # Strong parameter checking for POST /rec
   def rec_params
@@ -227,10 +241,13 @@ class ChronoController < ApplicationController
 
   # Returns the last recored timing data, minus the order (which is not used in the actual result).
   def overall_result_timing(laps_list)
-    return {} if laps_list.blank?
-    return laps_list if laps_list.is_a?(Hash)
-
-    laps_list.last.reject { |key| key == 'order' }
+    {
+      'minutes' => laps_list.last['minutes_from_start'],
+      'seconds' => laps_list.last['seconds_from_start'],
+      'hundredths' => laps_list.last['hundredths_from_start'],
+      'length_in_meters' => laps_list.last['length_in_meters'],
+      'label' => laps_list.last['label']
+    }
   end
 
   # Creates a new ImportQueue for each detail row data.
@@ -241,19 +258,28 @@ class ChronoController < ApplicationController
   # - json_header: JSON-ified common header parameters shared among all the detail requests
   # - laps_list: the list of Hash data from the actual detail payload
   #
+  # rubocop:disable Metrics/AbcSize
   def commit_import_queues(laps_list)
     adapter = IqRequest::ChronoRecParamAdapter.from_request_data(commit_params['json_header'])
+    parent_id = nil
+
+    # Compute & store delta timing in each lap data row: (lap_data: 1..3, index 0..2)
+    if laps_list.count > 1
+      laps_list[1..]&.each_with_index do |lap_data, index|
+        delta_timing = compute_delta_timing_from_lap_data(lap_data, laps_list[index])
+        lap_data['minutes'] = delta_timing.minutes
+        lap_data['seconds'] = delta_timing.seconds
+        lap_data['hundredths'] = delta_timing.hundredths
+      end
+    end
+
     # Update parent result timing using last lap:
     adapter.update_result_data(overall_result_timing(laps_list))
-    parent_id = nil
-    laps_list = [laps_list] if laps_list.is_a?(Hash)
 
-    # Create an IQ row for each lap data obtained from the payload, starting from last lap
-    # which, allegedly, should contain the last overall timing:
-    laps_list.reverse.each_with_index do |lap_data, index|
+    # Create an IQ row for each lap, except the last obtained from the payload:
+    laps_list.reverse[1..].each_with_index do |lap_data, index|
       # DEBUG
       logger.debug("\r\n- lap_data: #{lap_data.inspect}")
-
       # Merge detail request data with common header:
       adapter.update_rec_detail_data(lap_data)
       # DEBUG
@@ -270,4 +296,24 @@ class ChronoController < ApplicationController
       parent_id = iq_row.id if index.zero?
     end
   end
+  # rubocop:enable Metrics/AbcSize
+end
+
+# Returns a new Timing delta computed from the 2 specified Hash instances.
+# Both +curr_lap_data+ & +prev_lap_data+ should have these keys, with or without any value assigned to it:
+# - 'minutes_from_start'
+# - 'seconds_from_start'
+# - 'hundredths_from_start'
+def compute_delta_timing_from_lap_data(curr_lap_data, prev_lap_data)
+  prev_timing = Timing.new(
+    minutes: prev_lap_data&.fetch('minutes_from_start', 0),
+    seconds: prev_lap_data&.fetch('seconds_from_start', 0),
+    hundredths: prev_lap_data&.fetch('hundredths_from_start', 0)
+  )
+  curr_timing = Timing.new(
+    minutes: curr_lap_data&.fetch('minutes_from_start', 0),
+    seconds: curr_lap_data&.fetch('seconds_from_start', 0),
+    hundredths: curr_lap_data&.fetch('hundredths_from_start', 0)
+  )
+  curr_timing - prev_timing
 end

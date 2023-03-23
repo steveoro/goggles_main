@@ -1,15 +1,15 @@
-%section#tab-form-1b
+%section#tab-form-2b1
   .row-fluid.my-2
     %ul.nav.nav-tabs
-      %li.nav-item
+      %li.nav-item#type1b1-nav-item
         = link_to(t('issues.type1b1.form.tab_label'), issues_new_type1b1_path(result_id: result_row.id,
                   result_class: result_row.class.name), class: 'nav-link')
-      %li.nav-item
+      %li.nav-item#type2b1-nav-item
         .nav-link.active
           = t('issues.type2b1.form.tab_label')
 
   .row-fluid.mt-4
-    = form_tag(issues_create_type2b1_path, id: 'frm-type1b', method: :post) do
+    = form_tag(issues_create_type2b1_path, id: 'frm-type2b1', method: :post) do
       = hidden_field_tag(:result_id, result_row.id)
       = hidden_field_tag(:result_class, result_row.class.name.split('::').last)
       - parent_meeting = result_row.parent_meeting
@@ -69,5 +69,5 @@
 
       .form-group.mt-2.col-auto
         .actions
-          = submit_tag(t('issues.generic_send_btn'), id: 'issues-type1b-post-btn', class: 'btn btn-primary',
+          = submit_tag(t('issues.generic_send_btn'), id: 'issues-type2b1-post-btn', class: 'btn btn-primary',
                       data: { confirm: t('issues.ask_confirmation') })

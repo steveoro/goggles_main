@@ -11,13 +11,27 @@ end
 Then('I click on the first row to see the details of the first workshop') do
   first_row = find('section#data-grid table tr td.workshop_name a', visible: true)
   first_row.click
-  wait_for_ajax(5) && sleep(1)
-  find('.main-content#top-of-page #workshop-show-title', visible: true)
+  10.times do
+    putc('.')
+    sleep(1) && wait_for_ajax
+    found = begin
+      find('.main-content#top-of-page #workshop-show-title', visible: true)
+    rescue StandardError
+      false
+    end
+    break if found
+  end
+  find('.main-content#top-of-page #workshop-show-title')
+end
+
+# Uses @chosen_workshop
+Then('I browse to see the selected workshop details') do
+  visit(user_workshop_show_path(@chosen_workshop.id))
 end
 
 Then('I am at the show page for the details of the workshop') do
   # We don't care which detail row is:
-  expect(current_path).to include(user_workshop_show_path(-1).gsub('-1', ''))
+  expect(page.current_path.to_s).to include(user_workshop_show_path(-1).gsub('-1', ''))
 end
 #-- ---------------------------------------------------------------------------
 #++

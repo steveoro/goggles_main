@@ -86,19 +86,29 @@ Given('I have an associated swimmer on a confirmed account') do
   expect(@matching_swimmer.associated_user_id).to eq(@current_user.id)
 end
 
+# Prepares a ManagedAffiliation for each @last_season_ids found, setting also
+# the current user and its associated swimmer using the first managed affiliation
+# created or found.
+#
 # Sets:
 # - @current_user
 # - @matching_swimmer
 # - @last_seasons_ids => list of valid Season IDs considered as "manageable"
 Given('I have an associated swimmer on a confirmed team manager account') do
-  # WIP/NOTE: *substitute* the following after we'll be done with old data-import testing,
-  #           following what's written at app/controllers/application_controller.rb:44
-  @last_seasons_ids = [GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin).id]
+  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:46)
+  @last_seasons_ids = [
+    GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin).id,
+    GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season).by_season(:desc).first.season_id
+  ].uniq
+  last_season_id = @last_seasons_ids.first
 
-  managed_aff = FactoryBot.create(
-    :managed_affiliation,
-    team_affiliation: FactoryBot.create(:team_affiliation, season: GogglesDb::Season.find(@last_seasons_ids.sample))
-  )
+  team_affiliation = GogglesDb::TeamAffiliation.where(season_id: last_season_id).first ||
+                     FactoryBot.create(:team_affiliation, season: GogglesDb::Season.find(last_season_id))
+  managed_aff = GogglesDb::ManagedAffiliation.where(team_affiliation_id: team_affiliation.id).first ||
+                FactoryBot.create(:managed_affiliation, team_affiliation: team_affiliation)
+  expect(managed_aff.team).to be_valid
+  expect(managed_aff.season).to be_valid
+
   @current_user = managed_aff.manager
   @current_user.confirmed_at = Time.zone.now if @current_user.confirmed_at.blank?
   # This is needed when the user comes from the test seed and its password may be already encrypted:
@@ -117,21 +127,32 @@ Given('I have an associated swimmer on a confirmed team manager account') do
     @current_user.associate_to_swimmer!(@matching_swimmer)
     @matching_swimmer.reload
   end
-
-  expect(managed_aff.team).to be_valid
-  expect(managed_aff.season).to be_valid
   expect(@current_user.confirmed_at).to be_present
   expect(@current_user.swimmer_id).to eq(@matching_swimmer.id)
   expect(@matching_swimmer.associated_user_id).to eq(@current_user.id)
+
+  # For completeness, build any missing managed association for all possible remaining season IDs:
+  @last_seasons_ids[1..].each do |season_id|
+    next unless managed_aff.season.id != season_id
+
+    additional_team_aff = GogglesDb::TeamAffiliation.where(season_id: season_id).first ||
+                          FactoryBot.create(:team_affiliation, season: GogglesDb::Season.find(season_id))
+    GogglesDb::ManagedAffiliation.where(team_affiliation_id: additional_team_aff.id, user_id: @current_user.id).first ||
+      FactoryBot.create(:managed_affiliation, team_affiliation: additional_team_aff, manager: @current_user)
+  end
 end
+# -----------------------------------------------------------------------------
 
 # Designed for Meetings
-# Sets both @current_user & @matching_swimmer
+# Sets:
+# - @current_user
+# - @matching_swimmer
+# - @associated_mirs => MIRS associated to the @matching_swimmer (these can be used to select a meeting)
 Given('I have a confirmed account with associated swimmer and existing MIRs') do
   # It's faster using 2 queries instead of 1:
   swimmer_id = GogglesDb::MeetingIndividualResult.includes(swimmer: [:associated_user])
                                                  .joins(swimmer: [:associated_user])
-                                                 .distinct(:swimmer_id).first(300)
+                                                 .distinct(:swimmer_id).first(500)
                                                  .pluck(:swimmer_id)
                                                  .sample
   @matching_swimmer = GogglesDb::Swimmer.find(swimmer_id)
@@ -146,10 +167,55 @@ Given('I have a confirmed account with associated swimmer and existing MIRs') do
 
   expect(@current_user.confirmed_at).to be_present
   expect(@current_user.swimmer_id).to eq(@matching_swimmer.id)
+  @associated_mirs = GogglesDb::MeetingIndividualResult.where(swimmer_id: swimmer_id)
+  expect(@associated_mirs.count).to be_positive
 end
 
+# Designed for Meetings & Team Managers
+# (Similar to the above, w/o setting an associated swimmer)
+# Sets:
+# - @current_user
+# - @managed_team
+# - @associated_mirs => MIRS associated to the @managed_team
+# - @last_seasons_ids => list of valid Season IDs considered as "manageable"
+Given('I have a confirmed team manager account managing some existing MIRs') do
+  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:46)
+  @last_seasons_ids = [
+    GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin).id
+  ]
+  last_season_id = @last_seasons_ids.first
+
+  # Make sure we choose a team w/ results by selecting the meeting first & the team manager afterwards,
+  # creating also anything that's beeen missing:
+  meeting_with_results = GogglesDb::Meeting.includes(:meeting_individual_results).joins(:meeting_individual_results)
+                                           .where(season_id: last_season_id)
+                                           .by_date(:desc).first(25)
+                                           .sample
+  @managed_team = meeting_with_results.meeting_individual_results.sample.team
+  expect(@managed_team).to be_a(GogglesDb::Team).and be_valid
+  @associated_mirs = GogglesDb::MeetingIndividualResult.includes(meeting: :season).joins(meeting: :season)
+                                                       .where(team_id: @managed_team.id, 'meetings.season_id': last_season_id)
+  expect(@associated_mirs.count).to be_positive
+
+  team_affiliation = GogglesDb::TeamAffiliation.where(team_id: @managed_team.id, season_id: last_season_id).first ||
+                     FactoryBot.create(:team_affiliation, season: GogglesDb::Season.find(last_season_id))
+  managed_aff = GogglesDb::ManagedAffiliation.where(team_affiliation_id: team_affiliation.id).first ||
+                FactoryBot.create(:managed_affiliation, team_affiliation: team_affiliation)
+
+  @current_user = managed_aff.manager
+  @current_user.confirmed_at = Time.zone.now if @current_user.confirmed_at.blank?
+  # This is needed when the user comes from the test seed and its password may be already encrypted:
+  @current_user.password = 'Password123!' # force usage of test password for easier login
+  @current_user.save!
+  expect(@current_user.confirmed_at).to be_present
+end
+# -----------------------------------------------------------------------------
+
 # Designed for UserWorkshops
-# Sets both @current_user & @matching_swimmer
+# Sets:
+# - @current_user
+# - @matching_swimmer
+# - @associated_urs => UserResults associated to the @matching_swimmer (these can be used to select a Workshop)
 Given('I have a confirmed account with associated swimmer and existing user results') do
   expect(GogglesDb::UserResult.count).to be_positive
   # It's faster using 2 queries instead of 1:
@@ -169,7 +235,52 @@ Given('I have a confirmed account with associated swimmer and existing user resu
 
   expect(@current_user.confirmed_at).to be_present
   expect(@current_user.swimmer_id).to eq(@matching_swimmer.id)
+  @associated_urs = GogglesDb::UserResult.where(swimmer_id: swimmer_id)
+  expect(@associated_urs.count).to be_positive
 end
+
+# Designed for UserWorkshops & Team Managers
+# (Similar to the above, w/o setting an associated swimmer)
+# Sets:
+# - @current_user
+# - @managed_team
+# - @associated_urs => UserResults associated to the @managed_team
+# - @last_seasons_ids => list of valid Season IDs considered as "manageable"
+Given('I have a confirmed team manager account managing some existing URs') do
+  # NOTE: this must also match app/controllers/application_controller.rb:45
+  @last_seasons_ids = [
+    GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season)
+                           .by_season(:desc).first.season_id
+  ]
+  last_season_id = @last_seasons_ids.first
+
+  # Make sure we choose a team w/ results by selecting the meeting first & the team manager afterwards,
+  # creating also anything that's beeen missing:
+  meeting_with_results = GogglesDb::UserWorkshop.includes(:user_results).joins(:user_results)
+                                                .where(season_id: last_season_id)
+                                                .by_date(:desc).first(25)
+                                                .sample
+  @managed_team = meeting_with_results.team
+  expect(@managed_team).to be_a(GogglesDb::Team).and be_valid
+  all_worshops_ids = GogglesDb::UserWorkshop.includes(:season).joins(:season)
+                                            .where(team_id: @managed_team.id, season_id: last_season_id)
+                                            .pluck(:id)
+  @associated_urs = GogglesDb::UserResult.where(user_workshop_id: all_worshops_ids)
+  expect(@associated_urs.count).to be_positive
+
+  team_affiliation = GogglesDb::TeamAffiliation.where(team_id: @managed_team.id, season_id: last_season_id).first ||
+                     FactoryBot.create(:team_affiliation, team: @managed_team, season: GogglesDb::Season.find(last_season_id))
+  managed_aff = GogglesDb::ManagedAffiliation.where(team_affiliation_id: team_affiliation.id).first ||
+                FactoryBot.create(:managed_affiliation, team_affiliation: team_affiliation)
+
+  @current_user = managed_aff.manager
+  @current_user.confirmed_at = Time.zone.now if @current_user.confirmed_at.blank?
+  # This is needed when the user comes from the test seed and its password may be already encrypted:
+  @current_user.password = 'Password123!' # force usage of test password for easier login
+  @current_user.save!
+  expect(@current_user.confirmed_at).to be_present
+end
+# -----------------------------------------------------------------------------
 
 # Uses @matching_swimmer & sets @chosen_swimmer
 Given('my associated swimmer is already the chosen swimmer for the meeting list') do

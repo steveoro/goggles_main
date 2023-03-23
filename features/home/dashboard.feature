@@ -26,7 +26,7 @@ Feature: My Dashboard
   Scenario: "go to my dashboard" is available on the top menu when logged-in
     Given I am already signed-in and at the root page
     When I open the drop-down top menu to see the available commands
-    Then I should see the 'link-chrono' command
+    Then I should see the 'link-dashboard' command
 
   Scenario: logged-in user without associated swimmer browsing the dashboard
     Given I am already signed-in and at the root page
@@ -60,7 +60,7 @@ Feature: My Dashboard
       | 'btn-team-reservations'  | 'missing'  |
 
   Scenario: logged-in user with associated swimmer and team manager grants browsing the dashboard
-    Given I have an associated swimmer on team manager account and have already signed-in
+    Given I have an associated swimmer on a team manager account and have already signed-in
     And I browse to '/home/dashboard'
     Then I am at my dashboard page
     And I see the button <button_id> <css_status>

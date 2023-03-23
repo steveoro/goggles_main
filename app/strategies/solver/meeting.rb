@@ -105,9 +105,8 @@ module Solver
 
     # Filtered hash of minimum required field bindings
     def required_bindings
-      @bindings.select do |key, _value|
-        %i[description season_id header_date].include?(key)
-      end
+      required_keys = %i[description season_id header_date]
+      @bindings.select { |key, _value| required_keys.include?(key) }
     end
   end
 end

@@ -61,8 +61,8 @@ class SwimmingPoolDecorator < Draper::Decorator
   # - uri_text: the string URI for the link
   def link_tag_for_maps(uri_text)
     h.link_to(uri_text, { class: 'btn btn-sm btn-outline-secondary' }) do
-      "#{h.content_tag(:i, '', class: 'fa fa-map-marker')}" \
-      " #{h.content_tag(:span, "&nbsp;#{name}".html_safe)}".html_safe
+      "#{h.content_tag(:i, '', class: 'fa fa-map-marker')} " \
+      "#{h.content_tag(:span, "&nbsp;#{name}".html_safe)}".html_safe
     end
   end
 
@@ -86,6 +86,6 @@ class SwimmingPoolDecorator < Draper::Decorator
       I18n.t('swimming_pools.pool'), name, address, city&.name
     ].compact
     full_address.delete('')
-    "https://www.google.com/maps?q=#{full_address.join('+').gsub(' ', '+')}"
+    "https://www.google.com/maps?q=#{full_address.join('+').tr(' ', '+')}"
   end
 end

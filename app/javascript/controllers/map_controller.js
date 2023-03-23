@@ -1,8 +1,8 @@
 import { Controller } from '@hotwired/stimulus'
-import 'leaflet/dist/leaflet.css';
-import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css'; // Re-uses images from ~leaflet package
-import * as L from 'leaflet';
-import 'leaflet-defaulticon-compatibility';
+import 'leaflet/dist/leaflet.css'
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css' // Re-uses images from ~leaflet package
+import * as L from 'leaflet'
+import 'leaflet-defaulticon-compatibility'
 
 /**
  * = StimulusJS Leaflet Map controller =
@@ -44,18 +44,18 @@ export default class extends Controller {
    * Initialization boilerplate for the map target.
    * (Re-run each time the controller is connected to the DOM)
    */
-  connect() {
+  connect () {
     if (this.hasMapTarget && this.hasPlacesListValue) {
       // DEBUG
       // console.log('map controller connected')
-      var map = L.map(this.mapTarget);
+      const map = L.map(this.mapTarget)
 
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map);
+      }).addTo(map)
 
       this.placesListValue.forEach((place) => {
-        var popupHtml = `<p>${place.name}<br/><b>${place.bold_text ? place.bold_text : ''}</b>` +
+        let popupHtml = `<p>${place.name}<br/><b>${place.bold_text ? place.bold_text : ''}</b>` +
                         `<br/><i><small>${place.italic_text ? place.italic_text : ''}</small></i></p>`
         if (place.details_link1) {
           popupHtml += `<p />${place.details_link1}`
@@ -68,11 +68,11 @@ export default class extends Controller {
         }
 
         L.marker([place.lat, place.lng])
-         .addTo(map)
+          .addTo(map)
           .bindPopup(popupHtml)
       })
 
-      map.locate({ setView: true, maxZoom: 7 });
+      map.locate({ setView: true, maxZoom: 7 })
     }
   }
 }

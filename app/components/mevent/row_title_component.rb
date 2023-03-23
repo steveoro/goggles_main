@@ -37,5 +37,10 @@ module Mevent
     def dom_id
       "mevent-#{@meeting_event&.id}"
     end
+
+    # Returns the parent Meeting of this event, if none
+    def parent_meeting
+      @meeting_event&.meeting_session&.meeting
+    end
   end
 end

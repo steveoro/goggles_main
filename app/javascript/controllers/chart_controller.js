@@ -27,7 +27,7 @@ export const CHART_COLORS = {
   greydark: '#343a40',
   light: '#f8f9fa',
   dark: '#343a40'
-};
+}
 
 /**
  * = Chart.js setup for graphic reports - StimulusJS controller =
@@ -76,14 +76,14 @@ export default class extends Controller {
   /**
    * Setup invoked each time the controller instance connects.
    */
-  connect() {
+  connect () {
     if (this.hasChartTarget && this.hasData1Value) {
+      /* eslint-disable no-new */
       // DEBUG
       // console.log('Target & min values found. Setting up chart...')
       const chartType = this.hasTypeValue ? this.typeValue : 'pie'
       new Chart(this.chartTarget, this.prepareConfig(chartType))
     }
-
   }
   // ---------------------------------------------------------------------------
 
@@ -96,7 +96,7 @@ export default class extends Controller {
    *          - https://www.chartjs.org/docs/latest/charts/doughnut.html
    *          - https://www.chartjs.org/docs/latest/charts/line.html
    */
-  prepareConfig(chartType) {
+  prepareConfig (chartType) {
     const ctrl = this
     const title1 = this.hasData1TitleValue ? this.data1TitleValue : null
     const title2 = this.hasData2TitleValue ? this.data2TitleValue : null
@@ -112,7 +112,7 @@ export default class extends Controller {
         plugins: ctrl.prepareChartPlugins(chartType),
         scales: ctrl.prepareChartScales(chartType)
       }
-    };
+    }
   }
   // ---------------------------------------------------------------------------
 
@@ -127,9 +127,9 @@ export default class extends Controller {
    * @param {Array} dataset2, the dataset Array #2 (can be null).
    * @returns the compound data Object for the chart; see: https://www.chartjs.org/docs/latest/general/data-structures.html
    */
-  prepareDatasets(chartType, title1, title2, dataset1, dataset2) {
-    if (chartType == 'pie') {
-      let datasets = [
+  prepareDatasets (chartType, title1, title2, dataset1, dataset2) {
+    if (chartType === 'pie') {
+      const datasets = [
         {
           borderWidth: 0.1,
           backgroundColor: Object.values(CHART_COLORS),
@@ -147,7 +147,7 @@ export default class extends Controller {
       }
     }
 
-    let datasets = [
+    const datasets = [
       {
         label: title1,
         tension: 0.3,
@@ -176,8 +176,8 @@ export default class extends Controller {
    * @param {String} chartType, the type of chart ('pie' or 'line').
    * @returns An Object containing the chart interaction configuration for the specified chart type.
    */
-  prepareChartInteraction(chartType) {
-    if (chartType == 'pie') {
+  prepareChartInteraction (chartType) {
+    if (chartType === 'pie') {
       return {
         mode: 'index'
       }
@@ -194,8 +194,8 @@ export default class extends Controller {
    * @param {String} chartType, the type of chart ('pie' or 'line').
    * @returns An Object containing the chart plugins configuration for the specified chart type.
    */
-  prepareChartPlugins(chartType) {
-    if (chartType == 'pie') {
+  prepareChartPlugins (chartType) {
+    if (chartType === 'pie') {
       return {
         legend: {
           position: 'top'
@@ -218,14 +218,14 @@ export default class extends Controller {
 
     return {
       legend: {
-        position: 'top',
+        position: 'top'
       },
       tooltip: {
         callbacks: {
           title: (tooltipItems) => {
             // DEBUG
             // console.log('Tooltip items:', tooltipItems)
-            let list = []
+            const list = []
             tooltipItems.forEach(function (tooltipItem) {
               list.push(tooltipItem.raw.xLabel)
             })
@@ -244,8 +244,8 @@ export default class extends Controller {
    * @param {String} chartType, the type of chart ('pie' or 'line').
    * @returns An Object containing the chart scales configuration for the specified chart type.
    */
-  prepareChartScales(chartType) {
-    if (chartType == 'pie') {
+  prepareChartScales (chartType) {
+    if (chartType === 'pie') {
       return null
     }
 
@@ -279,13 +279,13 @@ export default class extends Controller {
    * @param {integer} value, a timing value expressed as 1/100ths of a second
    * @returns the corresponding String label for the date (<YYYYmmdd> => <YYYY-mm-dd>)
    */
-  dateFormatter(value) {
+  dateFormatter (value) {
     const year = Math.floor(value / 10000)
     let remainder = Math.floor(value % 10000)
     const month = Math.floor(remainder / 100)
     remainder = Math.floor(remainder % 100)
 
-    return month == 0 || remainder == 0 ? `${year}` : `${year}-${month}-${remainder}`
+    return month === 0 || remainder === 0 ? `${year}` : `${year}-${month}-${remainder}`
   }
 
   /**
@@ -294,7 +294,7 @@ export default class extends Controller {
    * @param {integer} value, a timing value expressed as 1/100ths of a second
    * @returns the corresponding String label for the timing ("[HHh]MM'SS.SS")
    */
-  timingFormatter(value) {
+  timingFormatter (value) {
     const hours = Math.floor(value / 360000)
     let remainder = Math.floor(value % 360000)
     const minutes = Math.floor(remainder / 6000)
@@ -303,13 +303,12 @@ export default class extends Controller {
     const hundredths = Math.floor(remainder % 100)
 
     let label = hours > 0 ? `${hours}h ` : ''
-    let secLabel = seconds.toString().length < 2 ? `0${seconds}` : seconds.toString()
-    let hdrLabel = hundredths.toString().length < 2 ? `0${hundredths}` : hundredths.toString()
+    const secLabel = seconds.toString().length < 2 ? `0${seconds}` : seconds.toString()
+    const hdrLabel = hundredths.toString().length < 2 ? `0${hundredths}` : hundredths.toString()
 
     if (minutes > 0) {
       label += `${minutes}'${secLabel}"${hdrLabel}`
-    }
-    else {
+    } else {
       label += `${secLabel}"${hdrLabel}`
     }
 

@@ -7,13 +7,14 @@
                css_icon: 'calendar', parent_title: t('home.my.dashboard_name'),
                parent_link: home_dashboard_path))
 
-    .row-fluid.my-2
-      %ul.nav.nav-tabs
-        %li.nav-item
-          .nav-link.active
-            = t('calendars.dashboard.starred_list')
-        %li.nav-item
-          = link_to(t('calendars.dashboard.starred_map'), calendars_starred_map_path, class: 'nav-link')
+    %section#calendars-starred-navs
+      .row-fluid.my-2
+        %ul.nav.nav-tabs
+          %li.nav-item
+            .nav-link.active
+              = t('calendars.dashboard.starred_list')
+          %li.nav-item
+            = link_to(t('calendars.dashboard.starred_map'), calendars_starred_map_path, class: 'nav-link')
 
     = render(partial: 'calendar_grid',
              locals: { grid: @grid, user_teams: @managed_teams, filterable: false })

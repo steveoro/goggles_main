@@ -98,12 +98,8 @@ module Solver
 
     # Filtered hash of minimum required field bindings
     def required_bindings
-      @bindings.select do |key, _value|
-        %i[
-          user_workshop_id user_id swimmer_id category_type_id pool_type_id
-          event_type_id swimming_pool_id
-        ].include?(key)
-      end
+      required_keys = %i[user_workshop_id user_id swimmer_id category_type_id pool_type_id event_type_id swimming_pool_id]
+      @bindings.select { |key, _value| required_keys.include?(key) }
     end
   end
 end

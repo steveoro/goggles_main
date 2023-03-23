@@ -11,3 +11,11 @@ end
 Given('there are no workshops matching my query {string}') do |query_string|
   expect(GogglesDb::UserWorkshop.for_name(query_string).count).to be_zero
 end
+# -----------------------------------------------------------------------------
+
+# Sets @chosen_workshop
+# Uses @associated_urs
+Given('I have already selected a random workshop from any of my available results') do
+  @chosen_workshop = @associated_urs.sample.user_workshop
+  expect(@chosen_workshop).to be_a(GogglesDb::UserWorkshop).and be_valid
+end

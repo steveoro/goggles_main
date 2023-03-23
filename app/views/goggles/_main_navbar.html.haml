@@ -29,11 +29,12 @@
                                                      href: '#', role: 'button' }
           = t('home.commands')
         .dropdown-menu{ 'aria-labelledby' => 'navbar-dropdown' }
-          = link_to("⏱ #{t('chrono.title')}", chrono_index_path, id: 'link-chrono', class: 'dropdown-item')
+          - if @current_user_is_manager || @current_user_is_admin
+            = link_to("⏱ #{t('chrono.title')}", chrono_index_path, id: 'link-chrono', class: 'dropdown-item')
           = link_to("🔢 #{t('home.compute_fin_score')}", tools_fin_score_path, id: 'link-compute-score',
                     class: 'dropdown-item')
           .dropdown-divider
-          - if GogglesDb::GrantChecker.admin?(current_user)
+          - if @current_user_is_admin
             = link_to('🛠 DelayedJob web UI', '/jobs', id: 'link-jobs', class: 'dropdown-item')
             .dropdown-divider
           %a.dropdown-item{ href: '#' } MORE FEATURES COMING SOON

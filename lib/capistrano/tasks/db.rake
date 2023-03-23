@@ -196,8 +196,8 @@ namespace :db do
         next unless test("[ -s #{stderr_filename} ]")
 
         output_lines = capture(:cat, stderr_filename).split("\n")
-        errors = output_lines.select { |line| line =~ /ERROR/i }
-        warnings = output_lines.select { |line| line =~ /Warning/i }
+        errors = output_lines.grep(/ERROR/i)
+        warnings = output_lines.grep(/Warning/i)
         if errors.size.positive?
           puts "\r\nError(s) intercepted!"
           display_captured_output(errors)

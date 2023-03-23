@@ -25,9 +25,14 @@ Then('I click on the first row to see the details of the first meeting') do
   find('#meeting-show-results table.table thead tr th.mevent-separator', visible: true)
 end
 
+# Uses @chosen_meeting
+Then('I browse to see the selected meeting details') do
+  visit(meeting_show_path(@chosen_meeting.id))
+end
+
 Then('I am at the show page for the details of the meeting') do
   # We don't care which detail row is:
-  expect(current_path).to include(meeting_show_path(-1).gsub('-1', ''))
+  expect(page.current_path.to_s).to include(meeting_show_path(-1).gsub('-1', ''))
 end
 #-- ---------------------------------------------------------------------------
 #++

@@ -4,6 +4,7 @@
 #
 class MeetingsController < ApplicationController
   before_action :authenticate_user!, only: [:index]
+  before_action :prepare_managed_teams, only: [:show]
 
   # GET /meetings/:id
   # Shows "My attended Meetings" grid (just for the current user).
@@ -65,8 +66,8 @@ class MeetingsController < ApplicationController
       redirect_to(root_path) && return
     end
 
-    @managed_team_ids = managed_team_ids
-    @current_swimmer_id = current_swimmer_id
+    @managed_team_ids = @managed_teams.map(&:id) if @managed_teams
+    @current_swimmer_id = current_user.swimmer_id if user_signed_in?
     @meeting_events = @meeting.meeting_events
                               .includes(:meeting_session, :event_type, :stroke_type, season: [:season_type])
                               .joins(:meeting_session, :event_type, :stroke_type, season: [:season_type])
@@ -96,37 +97,6 @@ class MeetingsController < ApplicationController
     # Set default ordering for the datagrid:
     @grid_filter_params.merge(order: :meeting_date) unless @grid_filter_params.key?(:order)
     @grid_filter_params
-  end
-  #-- -------------------------------------------------------------------------
-  #++
-
-  # Returns the list of unique managed team IDs for rendering the row action buttons every time
-  # a MIR is assigned to a team_id in this list.
-  #
-  # Both "lap edit" & "report mistake" row buttons will be rendered if the check is successful.
-  # The check will fail if the list is empty and it will be *totally skipped* if the list is +nil+.
-  #
-  # Returns an empty list if not signed in or if the user can't manage any team.
-  # Returns +nil+ only if the current user is an Admin: this will disable ID checking for all rows,
-  # rendering the "lap edit" button everywhere.
-  #
-  def managed_team_ids
-    return [] unless user_signed_in?
-    # Disable ID checking for all rows by returning nil on purpose:
-    return if GogglesDb::GrantChecker.admin?(current_user)
-
-    GogglesDb::ManagedAffiliation.includes(:team_affiliation)
-                                 .where(user_id: current_user.id,
-                                        'team_affiliations.season_id': parent_meeting.season_id)
-                                 .map { |ma| ma.team_affiliation.team_id }
-                                 .uniq
-  end
-
-  # Returns the current_user#swimmer_id, if any.
-  def current_swimmer_id
-    return unless user_signed_in?
-
-    current_user.swimmer_id
   end
   #-- -------------------------------------------------------------------------
   #++

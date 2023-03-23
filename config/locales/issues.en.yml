@@ -34,6 +34,9 @@ en:
         tooltip: "Report a timing missing from this Meeting results"
         title: "🏴 Report missing result"
         result_label: "Result"
+        notice:
+          cant_manage: "Only Team managers are allowed to select a swimmer from the list."
+          no_associated_swimmer: "Your account does not have an associated swimmer yet, so there is no default swimmer for this form."
     type1b1:
       form:
         tooltip: "Report a mistake spotted in this Meeting result"

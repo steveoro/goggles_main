@@ -1,5 +1,5 @@
 - if expired?
-  %i{ class: "#{css_icon} #{css_highlight} disabled" }
+  %i{ id: "btn-team-star-#{meeting_id}", class: "#{css_icon} #{css_highlight} disabled" }
 - else
   :ruby
     set_id_js = "$('#frm-team-star input#meeting_id').val(#{meeting_id});"
