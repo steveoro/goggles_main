@@ -16,12 +16,7 @@
         - GogglesDb::ImportQueueDecorator.decorate_collection(@queues).each do |queue|
           .row.border
             .col.mt-2.text-left{ id: "main-req#{queue.id}" }
-              - final_result = queue.req&.fetch(queue.root_key, nil)&.fetch('meeting_individual_result', nil) || queue.req&.fetch(queue.root_key, nil)&.fetch('user_result', nil)
-              - if final_result.present?
-                - final_timing = Timing.new(minutes: final_result['minutes'], seconds: final_result['seconds'], hundredths: final_result['hundredths'])
-                %small
-                  ⏱ #{queue.req_event_type&.label}: #{final_timing}, #{queue.req_swimmer_name} (#{queue.req_swimmer_year_of_birth}) #{queue.state_flag}
-                / WAS: queue.text_label
+              = queue.chrono_result_label
               - if queue.sibling_rows.count.positive?
                 = render(Switch::RotatingComponent.new(target_id: "laps#{queue.id}"))
             .col-2.my-1.text-center
@@ -42,10 +37,7 @@
               - decorated = GogglesDb::ImportQueueDecorator.decorate_collection(collection)
               - decorated.sort_by(&:req_length_in_meters).each do |linked_queue|
                 %li.text-left{ id: "lap#{linked_queue.id}" }
-                  - if linked_queue.req_delta_timing
-                    %small
-                      #{linked_queue.req_timing}, #{linked_queue.req_length_in_meters} m (Δt: #{linked_queue.req_delta_timing}) #{linked_queue.state_flag}
-                  / WAS: %small= linked_queue.text_label
+                  = linked_queue.chrono_delta_label
       - else
         .row.list-group-item.text-center
           %small= t('chrono.index.no_data_notice')

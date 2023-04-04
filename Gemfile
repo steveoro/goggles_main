@@ -7,7 +7,7 @@ ruby '2.7.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # [20210128] ActiveRecord 6.1 introduces too many changes for the current version
-gem 'rails', '>= 6.0.4', '< 6.1.0'
+gem 'rails', '>= 6.0.6', '< 6.1.0'
 gem 'rails-i18n', '~> 6.0'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.4.4'
@@ -78,8 +78,6 @@ group :development do
   gem 'haml_lint', require: false
   gem 'inch', require: false # grades source documentation
   gem 'listen', '~> 3.2'
-  # [20210128] Rubocop 1.9.0 seems to have several issues with the current stack
-  # gem 'rubocop', '= 1.8.1', require: false
   gem 'rubocop'
   gem 'rubocop-capybara'
   gem 'rubocop-performance'

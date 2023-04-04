@@ -45,10 +45,10 @@ class ApplicationController < ActionController::Base
     # [Update 20230323] Memoize season member variables as these won't change frequently
     @last_seasons ||= [
       GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin),
-      GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).by_season(:desc).first.season,
+      GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).by_season(:desc).first&.season,
       GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin),
-      GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season).by_season(:desc).first.season
-    ].sort.uniq
+      GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season).by_season(:desc).first&.season
+    ].compact.sort.uniq
     # [!!!] Whenever the above ^^ changes, CHECK & UPDATE ALSO:
     # - features/step_definitions/calendars/calendars_steps.rb:17
     # - features/step_definitions/calendars/given_any_calendars_steps.rb:8:37:56

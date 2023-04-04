@@ -72,7 +72,7 @@ Metrics/PerceivedComplexity:
     - 'bin/bundle'
 
 
-# We use arrays group multiple similar specs under a single implementation
+# We use arrays to group multiple similar specs under a single implementation
 Performance/CollectionLiteralInLoop:
   Exclude:
     - 'spec/**/*'

@@ -34,6 +34,12 @@ class IssuesController < ApplicationController
       redirect_to(issues_my_reports_path) and return
     end
 
+    # TODO:
+    # 1. check GogglesDb::ManagerChecker.new(current_user, season_id).for_team?(team_id)
+    # 2. ignore season_id and skip to next, flag skipped to true & signal at end with flash msg that some
+    #    requests were skipped because you're already a team manager for those seasons/teams
+    # 3. if issue row has to be created, create it
+
     # TODO: => use type0_params
     # params['team_id'] => team ID as str
     # params['team_label'] => team description w/ city
@@ -84,16 +90,7 @@ class IssuesController < ApplicationController
     # Store preselected event type in cookies as we'll use the event_type_options() chrono helper for this:
     cookies[:event_type_id] = type1b_params[:event_type_id].to_i
     @swimmers = managed_swimmers(@parent_meeting.season_id)
-    # TODO: After DB update:
-    # @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, parent_meeting.season)
-    # WIP: remove this afterwards:
-    @can_manage = GogglesDb::GrantChecker.admin?(current_user) ||
-                  GogglesDb::ManagedAffiliation.includes(team_affiliation: %i[team season])
-                                               .joins(team_affiliation: %i[team season])
-                                               .exists?(
-                                                 user_id: current_user.id,
-                                                 'team_affiliations.season_id': @parent_meeting.season_id
-                                               )
+    @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, @parent_meeting.season_id)
     render('new')
   end
   # rubocop:enable Metrics/AbcSize
@@ -138,16 +135,7 @@ class IssuesController < ApplicationController
 
     @type = '1b1'
     @issue_title = I18n.t('issues.type1b1.form.title')
-    # TODO: After DB update:
-    # @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, parent_meeting.season)
-    # WIP: remove this afterwards:
-    @can_manage = GogglesDb::GrantChecker.admin?(current_user) ||
-                  GogglesDb::ManagedAffiliation.includes(team_affiliation: %i[team season])
-                                               .joins(team_affiliation: %i[team season])
-                                               .exists?(
-                                                 user_id: current_user.id,
-                                                 'team_affiliations.season_id': @result_row.parent_meeting.season_id
-                                               )
+    @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, @result_row.parent_meeting.season_id)
     render('new')
   end
   # rubocop:enable Metrics/AbcSize
@@ -190,16 +178,7 @@ class IssuesController < ApplicationController
 
     @type = '2b1'
     @issue_title = I18n.t('issues.type1b1.form.title')
-    # TODO: After DB update:
-    # @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, parent_meeting.season)
-    # WIP: remove this afterwards:
-    @can_manage = GogglesDb::GrantChecker.admin?(current_user) ||
-                  GogglesDb::ManagedAffiliation.includes(team_affiliation: %i[team season])
-                                               .joins(team_affiliation: %i[team season])
-                                               .exists?(
-                                                 user_id: current_user.id,
-                                                 'team_affiliations.season_id': @result_row.parent_meeting.season_id
-                                               )
+    @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, @result_row.parent_meeting.season_id)
     render('new')
   end
   # rubocop:enable Metrics/AbcSize

@@ -25,9 +25,7 @@ class CalendarsGrid < BaseGrid
 
   # Returns the proper CSS background class for the row, depending if the asset row is "expired" or not
   def row_class(asset)
-    expired_or_cancelled = asset&.meeting &&
-                           (asset.meeting.cancelled || asset.meeting.header_date < Time.zone.today)
-    expired_or_cancelled ? 'bg-light-grey' : 'bg-light-cyan2'
+    asset.expired? ? 'bg-light-grey' : 'bg-light-cyan2'
   end
   #-- -------------------------------------------------------------------------
   #++

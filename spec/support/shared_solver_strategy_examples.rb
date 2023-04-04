@@ -250,7 +250,7 @@ shared_examples_for 'Solver strategy, NO bindings, UNSOLVABLE req, after #solve!
 
   describe '#error_messages' do
     it 'is either nil or present' do
-      # (^^ it depends wether the domain has missing data or wrong bindings, but we can't tell from here)
+      # (^^ it depends whether the domain has missing data or wrong bindings, but we can't tell from here)
       expect(subject.error_messages.nil? || subject.error_messages.present?).to be true
     end
   end
