@@ -1,0 +1,21 @@
+%section#meeting-navs
+  .row-fluid.my-2
+    %ul.nav.nav-tabs
+      %li.nav-item
+        - if active_tab == 'results'
+          .nav-link.active
+            = t('meetings.results')
+        - else
+          = link_to(t('meetings.results'), meeting_show_path(@meeting), class: 'nav-link')
+      %li.nav-item
+        - if active_tab == 'team'
+          .nav-link.active
+            = t('meetings.team_results')
+        - else
+          = link_to(t('meetings.team_results'), meeting_team_results_path(meeting), class: 'nav-link')
+      %li.nav-item
+        - if active_tab == 'swimmer'
+          .nav-link.active
+            = t('meetings.swimmer_results')
+        - else
+          = link_to(t('meetings.swimmer_results'), meeting_swimmer_results_path(meeting), class: 'nav-link')

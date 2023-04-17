@@ -52,6 +52,7 @@ Rails.application.routes.draw do
   post 'issues/create_type3b'
   post 'issues/create_type3c'
   post 'issues/create_type4'
+  delete 'issues/destroy/:id', to: 'issues#destroy', as: 'issues_destroy'
 
   post 'laps/edit_modal' # XHR only
   resources :laps, only: %i[create update destroy] # XHR only
@@ -65,6 +66,8 @@ Rails.application.routes.draw do
   get 'meetings/show/:id',        to: 'meetings#show',        as: 'meeting_show'
   get 'meetings/for_swimmer/:id', to: 'meetings#for_swimmer', as: 'meetings_for_swimmer'
   get 'meetings/for_team/:id',    to: 'meetings#for_team',    as: 'meetings_for_team'
+  get 'meetings/team_results/:id',    to: 'meetings#team_results',    as: 'meeting_team_results'
+  get 'meetings/swimmer_results/:id', to: 'meetings#swimmer_results', as: 'meeting_swimmer_results'
 
   get 'swimming_pools/show/:id', to: 'swimming_pools#show', as: 'swimming_pool_show'
 

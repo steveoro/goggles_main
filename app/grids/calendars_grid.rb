@@ -6,10 +6,10 @@
 #
 class CalendarsGrid < BaseGrid
   # To set the managed teams list:
-  # > MyGrid.managed_teams = @managed_teams_list
+  # > MyGrid.managed_teams = @managed_teams
   class_attribute(:managed_teams, default: [])
 
-  # Returns the default scope for the grid. (#assets is the filtered version of it)
+  # Returns the default scope for the grid. ('#assets' is the filtered version of it)
   scope do
     GogglesDb::Calendar.includes(
       meeting: [
@@ -39,7 +39,7 @@ class CalendarsGrid < BaseGrid
   # Required custom column naming. See app/views/datagrid/_row.html.haml:19
   column(:calendar_date, header: I18n.t('calendars.grid.date.title'), html: true, mandatory: true, order: false) do |asset|
     if asset.meeting&.cancelled
-      content_tag(:span, asset.scheduled_date) +
+      content_tag(:span, asset.scheduled_date) <<
         content_tag(:div, I18n.t('activerecord.attributes.goggles_db/meeting.cancelled'), class: 'cancelled-row')
     else
       asset.scheduled_date

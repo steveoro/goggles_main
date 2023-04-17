@@ -8,6 +8,16 @@ it:
     sent_ok: "La tua richiesta è stata inviata!"
     invalid_type: "Tipo di richiesta non valido o non supportato!"
     no_issues_found: "(Nessuna tua segnalazione non risolta è stata trovata)"
+    spam_notice: "Hai già riportato ed accodato molte segnalazioni di problemi: grazie! Per cortesia, porta pazienza ed aspetta che almeno alcune di queste vengano risolte prima di segnalarcene altri."
+    creation_error: "Errore in fase di creazione: %{error}"
+    grid:
+      params:
+        code: 'Tipo'
+        status: 'Stato'
+        priority: 'Priorità'
+      delete_done: "Richiesta di intervento eliminata."
+      delete_error: "Mi spiace: un errore ha impedito di eliminare questa richiesta di intervento."
+      confirm_delete: "Vuoi davvero cancellare dalla coda questa richiesta di intervento? (La segnalazione '%{label}' andrà persa.)"
 
     type0:
       title: "Promuovimi a 'Team Manager'"
@@ -15,6 +25,8 @@ it:
         label: "Vorrei poter gestire la squadra scelta qui sotto per i Campionati disponibili della stagione sportiva in corso:"
         notice: "La squadra che vuoi scegliere deve già esistere fra i nostri dati per comparire in lista"
         season_championship: "Campionato / Stagione:"
+      msg:
+        some_existing_were_skipped: "Eri già impostato come Team Manager di questa squadra per alcune delle stagioni richieste."
 
     type1a:
       label: "Conosco un sito web dove potresti trovare i risultati di un Meeting che manca completamente fra i tuoi dati!"
@@ -31,13 +43,15 @@ it:
       description1: "Se hai notato qualcosa di sbagliato fra i tuoi risultati mentre guardavi un Meeting in particolare, clicca sul link 'Segnala errore' (🚩) a fianco del risultato che pensi sia sbagliato."
       description2: "Per un risultato mancante di cui conosci il tempo esatto, clicca sul link 'Segnala risultato mancante' (🏴) all'inizio della sezione categoria corrispondente che lo dovrebbe includere."
       form:
-        tooltip: "Segnala un risultato mancante fra questo elenco del Meeting"
-        btn_label: "Segnala mancanza"
+        tooltip: "Segnala un risultato mancante per questo evento del Meeting"
+        btn_label: "Segnala"
         title: "🏴 Segnala risultato mancante"
         result_label: "Risultato"
         notice:
           cant_manage: "Solo i Team manager possono selezionare un atleta dall'elenco."
           no_associated_swimmer: "Non hai un nuotatore associato al tuo account, quindi non è possibile preselezionare un atleta."
+      msg:
+        meeting_not_found: "Meeting o Collegiale non trovato!"
     type1b1:
       form:
         tooltip: "Segnala un errore in questo risultato del Meeting"

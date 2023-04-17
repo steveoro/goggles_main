@@ -1,0 +1,20 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content#top-of-page
+    = render(partial: 'meeting_header', locals: { meeting: @meeting })
+    = render(partial: 'meeting_navs', locals: { meeting: @meeting, active_tab: 'team' })
+
+    %section#meeting-team-results
+      = render(partial: 'team_results_header', locals: { team: @team, team_ranks: @team_ranks,
+               team_outstanding_scores: @team_outstanding_scores, team_tot_events: @team_tot_events,
+               top_scores: @top_scores })
+
+      = render(partial: 'team_results_swimmers_grid', locals: { meeting: @meeting,
+               meeting_team_swimmers: @meeting_team_swimmers, events_per_swimmers: @events_per_swimmers })
+
+      = render(partial: 'team_results_event_grid', locals: { meeting: @meeting, team: @team,
+               meeting_events_list: @meeting_events_list, managed_team_ids: @managed_team_ids,
+               current_user_is_admin: @current_user_is_admin })
+
+  .spacer-right

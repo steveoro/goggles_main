@@ -52,3 +52,15 @@ th.ordered.desc a.desc {
   margin-top: 0px;
   margin-bottom: 0px;
 }
+
+#issues-grid table td.code {
+  font-size: 0.80rem;
+}
+#issues-grid table td.priority {
+  font-size: 0.90rem;
+  text-align: center !important;
+}
+#issues-grid table td.status {
+  font-size: 0.80rem;
+  text-align: center !important;
+}

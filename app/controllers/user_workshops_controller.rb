@@ -70,7 +70,7 @@ class UserWorkshopsController < ApplicationController
       redirect_to(root_path) && return
     end
 
-    @managed_team_ids = @managed_teams.map(&:id) if @managed_teams
+    @managed_team_ids = @managed_teams.map(&:id) if @managed_teams.present?
     # Team managers of the Team that created this Workshop can act as Admins and manage any team in this:
     @managed_team_ids = nil if @managed_team_ids.is_a?(Array) && @managed_team_ids.include?(@user_workshop.team_id)
 

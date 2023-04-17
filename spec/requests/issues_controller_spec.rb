@@ -50,6 +50,12 @@ RSpec.describe IssuesController, type: :request do
   #-- -------------------------------------------------------------------------
   #++
 
+  describe 'DELETE /issues/destroy/:id' do
+    # TODO: pending
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
   describe 'GET /issues/new_type1b/' do
     context 'with an unlogged user' do
       it 'is a redirect to the login path' do

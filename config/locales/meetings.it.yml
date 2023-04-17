@@ -7,6 +7,19 @@ it:
     meetings: Meetings
     header_date: Data
     go_to_dashboard: "Vai alla pagina dettagli & risultati per questo meeting"
+    results: "Risultati"
+    team_results: "Risultati squadra"
+    swimmer_results: "Risultati personali"
+    no_results_to_show: "Non ci sono risultati da mostrare (ancora)."
+    standard_points: "Punti"
+    meeting_points: "Punti Meeting"
+    tooltip:
+      tab:
+        team_results: "Mostra il riassunto dei risultati del Meeting per la tua squadra o di quella su cui clicchi"
+        swimmer_results: "Mostra tutti i tuoi risultati personali in questo meeting o dell'atleta su cui clicchi"
+      link:
+        team_results: "Mostra il riassunto dei risultati del Meeting per questa squadra"
+        swimmer_results: "Mostra il riassunto dei risultati del Meeting per questo atleta"
     dashboard:
       title: Meeting
       subtitle: Dettagli
@@ -22,3 +35,15 @@ it:
         workshop_date_label: 'Dalla data'
         workshop_date: 'Dalla data: %{value}'
         workshop_name: 'Nome: ~%{value}'
+    meeting_stats:
+      best_female_score: "Migliore prestaz. femminile"
+      best_male_score: "Migliore prestaz. maschile"
+      team_total_events: "Partecipazione eventi"
+      events_ratio: "%{team_tot} / %{meeting_tot} tot."
+      team_total_athletes: "Tot. atleti in gara: %{value}"
+      team_total_gold_medals: "Tot. medaglie Oro"
+      team_total_silver_medals: "Tot. medaglie Argento"
+      team_total_bronze_medals: "Tot. medaglie Bronzo"
+      team_total_wooden_medals: "Tot. medaglie di Legno"
+      team_total_outstanding_scores: "Tot. punteggi notevoli"
+      best_score_for_cup: "Miglior punteggio %{cup}"

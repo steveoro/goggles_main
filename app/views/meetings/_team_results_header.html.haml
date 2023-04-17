@@ -1,0 +1,57 @@
+#team-results-title
+  .alert.alert-success#team-header-title
+    = render(Title::TeamShowLinkComponent.new(team: team))
+
+#team-results-header
+  .container
+    .row.border-bottom
+      .col-7
+        = I18n.t('meetings.meeting_stats.team_total_events')
+        - if team_outstanding_scores > 0
+          %br/
+          = I18n.t('meetings.meeting_stats.team_total_outstanding_scores')
+        %br/
+        = I18n.t('meetings.meeting_stats.team_total_gold_medals')
+        %br/
+        = I18n.t('meetings.meeting_stats.team_total_silver_medals')
+        %br/
+        = I18n.t('meetings.meeting_stats.team_total_bronze_medals')
+        %br/
+        = I18n.t('meetings.meeting_stats.team_total_wooden_medals')
+      .col
+        = I18n.t('meetings.meeting_stats.events_ratio', team_tot: team_tot_events,
+                meeting_tot: @meeting.meeting_events.count)
+        - if team_outstanding_scores > 0
+          %br/
+          = team_outstanding_scores
+          = tag.small('⭐')
+        - (1..4).to_a.each do |rank|
+          %br/
+          = team_ranks[rank]
+          = render(RankingPosComponent.new(rank: rank)) if rank < 4 && team_ranks[rank].positive?
+          = tag.small('😬') if rank == 4 && team_ranks[4].positive?
+
+    - %w[F-standard_points M-standard_points goggle_cup_points].each do |key|
+      - if top_scores[key]
+        .row.border-bottom
+          .col
+            %small
+              %i
+                - if key.start_with?('F')
+                  = t('meetings.meeting_stats.best_female_score')
+                - elsif key.start_with?('M')
+                  = t('meetings.meeting_stats.best_male_score')
+                - elsif key.start_with?('goggle_cup')
+                  -# TODO/WIP: I18n.t('meetings.meeting_stats.best_score_for_cup', cup: team.get_current_goggle_cup_name_at(@meeting.header_date))
+                  Best GoggleCup points:
+          .col.text-left.d-flex.align-items-center
+            %b= top_scores[key].swimmer.complete_name
+          .col.d-flex.justify-content-between.align-items-center.mx-1
+            %span= top_scores[key].event_type.label
+            &nbsp;
+            %span= top_scores[key].to_timing
+            &nbsp;
+            = tag.small(class: top_scores[key].standard_points.to_f > 800.0 ? 'font-weight-bold' : '') do
+              = sprintf("%02.2f", top_scores[key].standard_points.to_f)
+  .row
+    &nbsp;

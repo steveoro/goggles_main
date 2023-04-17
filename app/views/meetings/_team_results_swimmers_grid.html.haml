@@ -1,0 +1,42 @@
+#team-results-swimmers-grid
+  %table.table.table-sm.table-striped.table-hover
+    %thead
+      %tr.bg-light-yellow
+        %td{ colspan: 3 }
+          %i= I18n.t('meetings.meeting_stats.team_total_athletes', value: meeting_team_swimmers.size)
+    %tbody
+      - meeting_team_swimmers.each do |swimmer|
+        - first_mir = events_per_swimmers[swimmer.id]&.first
+        %tr
+          %td.border-right
+            = render(Title::SwimmerShowLinkComponent.new(swimmer: swimmer, action_link_method: :link_to_results, link_extra_params: meeting.id))
+          %td.border-right
+            = first_mir&.category_type.code
+          %td.text-right
+            .container
+              - events_per_swimmers[swimmer.id].each do |mir|
+                .row.border-bottom
+                  .col.border-right.d-flex.justify-content-around.align-items-baseline.px-0
+                    - if mir.standard_points.to_f > 800.0
+                      = tag.small('⭐')
+                    = render(RankingPosComponent.new(rank: mir.rank))
+                    - event_type = mir.meeting_event.event_type.label
+                    %a{ href: "\##{event_type}", 'data-turbolinks'=>'false' }= event_type
+                  .col.d-flex.justify-content-around.align-items-baseline.px-0
+                    %span{ 'class' => mir.personal_best? ? 'text-success' : '' }
+                      = mir.to_timing
+                    = tag.small(class: mir.standard_points.to_f > 800.0 ? 'font-weight-bold' : '') do
+                      = sprintf("%02.2f", mir.standard_points.to_f)
+                    -# - if mir.standard_points > 0
+                    -#   = format_score(mir.standard_points).html_safe
+                    -# - else
+                    -#   = mir.get_formatted_individual_points
+  .row
+    &nbsp;
+
+-# %script
+-#   $('#headerTeam').tooltip({placement:'bottom'});
+-#   $('body').attr('data-spy', 'scroll');
+-#   $('body').attr('data-target','#goggles-float-list');
+-#   $('#goggles-float-list').scrollspy();
+-#   $('[data-spy="scroll"]').each(function () { var $spy = $(this).scrollspy('refresh') });

@@ -11,14 +11,16 @@ class RankingPosComponent < ViewComponent::Base
   #
   # == Params:
   # - rank: the ranking position
-  def initialize(rank:)
+  # - css: any class customization; default +nil+
+  def initialize(rank:, css: nil)
     super
     @rank = rank
+    @css = css
   end
 
   # Inline rendering
   def call
-    content_tag(:span) do
+    tag.span(class: @css) do
       case @rank
       when 1
         '🥇'

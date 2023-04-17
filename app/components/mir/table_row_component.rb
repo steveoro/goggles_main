@@ -3,7 +3,7 @@
 #
 # = MIR components module
 #
-#   - version:  7-0.4.25
+#   - version:  7-0.5.01
 #   - author:   Steve A.
 #
 module MIR
@@ -38,6 +38,11 @@ module MIR
     end
 
     protected
+
+    # Memoized Meeting#id
+    def meeting_id
+      @meeting_id ||= @mir&.meeting&.id
+    end
 
     # Memoized rank value
     def rank

@@ -37,7 +37,7 @@ RSpec.describe MIR::TableComponent, type: :component do
     end
 
     it 'renders as many table rows as the results specified' do
-      expect(subject.css('tbody.resut-table-row').count).to eq(mirs.count)
+      expect(subject.css('tbody.result-table-row').count).to eq(mirs.count)
     end
 
     it 'does not render the lap edit button (when supplied with an empty list of managed teams)' do

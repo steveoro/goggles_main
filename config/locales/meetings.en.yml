@@ -7,6 +7,19 @@ en:
     meetings: Meetings
     header_date: Date
     go_to_dashboard: "Go to the details & results page for this meeting"
+    results: "Results"
+    team_results: "Team results"
+    swimmer_results: "Swimmer results"
+    no_results_to_show: "No results to show (yet)."
+    standard_points: "Score"
+    meeting_points: "Meeting Score"
+    tooltip:
+      tab:
+        team_results: "Show the meeting results summary for your team or one of your choice by clicking on the name"
+        swimmer_results: "Show the summary of your results for this meeting or a swimmer of your choice by clicking on the name"
+      link:
+        team_results: "Show the meeting results summary for this team"
+        swimmer_results: "Show the meeting results summary for this swimmer"
     dashboard:
       title: Meeting
       subtitle: Details
@@ -22,3 +35,15 @@ en:
         workshop_date_label: 'From date'
         workshop_date: 'From date: %{value}'
         workshop_name: 'Name: ~%{value}'
+    meeting_stats:
+      best_female_score: "Best female performance"
+      best_male_score: "Best male performance"
+      team_total_events: "Events accounted for"
+      events_ratio: "%{team_tot} / %{meeting_tot} tot."
+      team_total_athletes: "Tot. athletes involved: %{value}"
+      team_total_gold_medals: "Tot. Gold medals"
+      team_total_silver_medals: "Tot. Silver medals"
+      team_total_bronze_medals: "Tot. Bronze medals"
+      team_total_wooden_medals: "Tot. 'Wooden' medals"
+      team_total_outstanding_scores: "Tot. outstanding scores"
+      best_score_for_cup: "%{cup}'s best score"

@@ -5,7 +5,7 @@ require 'support/shared_request_examples'
 
 RSpec.describe MeetingsController, type: :request do
   describe 'GET /index' do
-    context 'with an unlogged user' do
+    context 'with an un-logged user' do
       it 'is a redirect to the login path' do
         get(meetings_path)
         expect(response).to redirect_to(new_user_session_path)
@@ -116,6 +116,18 @@ RSpec.describe MeetingsController, type: :request do
 
       it_behaves_like('invalid row id GET request')
     end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  describe 'GET /team_results/:id' do
+    # TODO
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  describe 'GET /swimmer_results/:id' do
+    # TODO
   end
   #-- -------------------------------------------------------------------------
   #++

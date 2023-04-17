@@ -95,7 +95,7 @@ end
 # - @matching_swimmer
 # - @last_seasons_ids => list of valid Season IDs considered as "manageable"
 Given('I have an associated swimmer on a confirmed team manager account') do
-  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:46)
+  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:251)
   @last_seasons_ids = [
     GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin).id,
     GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season).by_season(:desc).first.season_id
@@ -179,7 +179,7 @@ end
 # - @associated_mirs => MIRS associated to the @managed_team
 # - @last_seasons_ids => list of valid Season IDs considered as "manageable"
 Given('I have a confirmed team manager account managing some existing MIRs') do
-  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:46)
+  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:251)
   @last_seasons_ids = [
     GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin).id
   ]
@@ -247,7 +247,7 @@ end
 # - @associated_urs => UserResults associated to the @managed_team
 # - @last_seasons_ids => list of valid Season IDs considered as "manageable"
 Given('I have a confirmed team manager account managing some existing URs') do
-  # NOTE: this must also match app/controllers/application_controller.rb:45
+  # NOTE: this must also match app/controllers/application_controller.rb:251
   @last_seasons_ids = [
     GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season)
                            .by_season(:desc).first.season_id

@@ -6,13 +6,35 @@
 class IssuesController < ApplicationController
   before_action :authenticate_user!
 
+  # Whenever this top limit of currently existing Issues for a single user is hit, the system refuses to create more rows
+  SPAM_LIMIT = 30
+
   # [GET] "HOW-TO"-like landing page with some integrated forms for
   # issues types "1a" (meeting URL), "3b" (swimmer association), "3c" (swimmer edit) & "4" (bug report).
   def faq_index; end
 
   # [GET] Index of actual issues created/reported by the current user
   def my_reports
-    # TODO
+    @issues = GogglesDb::Issue.for_user(current_user)
+    @grid = IssuesGrid.new(grid_filter_params) do |scope|
+      scope.for_user(current_user).page(index_params[:page]).per(8)
+    end
+  end
+
+  # [DELETE /issues/destroy/:id] Free row delete for any generated issue
+  def destroy
+    unless request.delete? && GogglesDb::Issue.exists?(delete_params[:id])
+      flash[:warning] = I18n.t('search_view.errors.invalid_request')
+      redirect_to(issues_my_reports_path) and return
+    end
+
+    row = GogglesDb::Issue.find_by(id: delete_params[:id])
+    if row&.destroy
+      flash[:notice] = t('issues.grid.delete_done')
+    else
+      flash[:error] = t('issues.grid.delete_error')
+    end
+    redirect_to(issues_my_reports_path)
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -29,24 +51,28 @@ class IssuesController < ApplicationController
 
   # [POST] Create issue type "0": request update to 'team manager'.
   def create_type0
-    unless request.post? && type0_params[:team_id].present? && type0_params[:season].present?
+    team_id = type0_params[:team_id]
+    unless request.post? && team_id.present? && GogglesDb::Team.exists?(team_id) && type0_params[:season].present?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(issues_my_reports_path) and return
     end
+    if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
+      flash[:warning] = I18n.t('issues.spam_notice')
+      redirect_to(issues_my_reports_path) and return
+    end
 
-    # TODO:
-    # 1. check GogglesDb::ManagerChecker.new(current_user, season_id).for_team?(team_id)
-    # 2. ignore season_id and skip to next, flag skipped to true & signal at end with flash msg that some
-    #    requests were skipped because you're already a team manager for those seasons/teams
-    # 3. if issue row has to be created, create it
+    skip = false
+    season_ids = type0_params[:season].values
+                                      .map { |id| GogglesDb::Season.exists?(id) ? id : nil }
+                                      .compact
+    season_ids.each do |season_id|
+      (skip = true) && next if GogglesDb::ManagerChecker.new(current_user, season_id).for_team?(team_id)
 
-    # TODO: => use type0_params
-    # params['team_id'] => team ID as str
-    # params['team_label'] => team description w/ city
-    # params['season'].values (to_i) => all checked season IDs
-    # TODO: create issue report
+      create_issue('0', { team_id: team_id, team_label: type0_params[:team_label], season_id: season_id })
+      break if flash[:error].present? # Break out in case of errors
+    end
 
-    flash[:info] = I18n.t('issues.sent_ok')
+    flash[:info] = skip ? I18n.t('issues.type0.msg.some_existing_were_skipped') : I18n.t('issues.sent_ok')
     redirect_to(issues_my_reports_path) and return
   end
   #-- -------------------------------------------------------------------------
@@ -54,21 +80,17 @@ class IssuesController < ApplicationController
 
   # [POST] Create issue type "1a": new Meeting URL for data-import
   def create_type1a
-    unless request.post? && type1a_params[:meeting_id].present? && type1a_params[:results_url].present?
+    meeting_id = type1a_params[:meeting_id]
+    unless request.post? && type1a_params[:results_url].present? && type1a_params[:meeting_label].present?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(issues_my_reports_path) and return
     end
+    if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
+      flash[:warning] = I18n.t('issues.spam_notice')
+      redirect_to(issues_my_reports_path) and return
+    end
 
-    # TODO: => use type1a_params
-    # "meeting_id"=>"19653",
-    # "meeting_label"=>"21^ Trofeo Citta di Ravenna (2023-01-14)",
-    # "city_id"=>"33", "city_label"=>"Pinarella", "city_area"=>"Ravenna",
-    # "city_country_code"=>"[FILTERED]", "event_date"=>"2022-11-14",
-    # "results_url"=>"test-url.org"
-    # TODO
-    # TODO: create issue report
-
-    flash[:info] = I18n.t('issues.sent_ok')
+    create_issue('1a', type1a_params)
     redirect_to(issues_my_reports_path) and return
   end
   #-- -------------------------------------------------------------------------
@@ -105,16 +127,12 @@ class IssuesController < ApplicationController
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(issues_my_reports_path) and return
     end
+    if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
+      flash[:warning] = I18n.t('issues.spam_notice')
+      redirect_to(issues_my_reports_path) and return
+    end
 
-    # TODO: create issue report
-    # {"authenticity_token"=>"...", "event_type_id"=>"20", "event_type_label"=>"100 RANA",
-    #  "swimmer_id"=>"142", "swimmer_label"=>"ALLORO STEFANO (MAS, 1969)",
-    #  "swimmer_complete_name"=>"ALLORO STEFANO", "swimmer_first_name"=>"STEFANO", "swimmer_last_name"=>"ALLORO",
-    #  "swimmer_year_of_birth"=>"1969", "gender_type_id"=>"1",
-    #  "parent_meeting_id"=>"19647", "parent_meeting_class"=>"Meeting",
-    #  "minutes"=>"1", "seconds"=>"24", "hundredths"=>"15" }
-
-    flash[:info] = I18n.t('issues.sent_ok')
+    create_issue('1b', type1b_params)
     redirect_to(issues_my_reports_path) and return
   end
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -151,13 +169,12 @@ class IssuesController < ApplicationController
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(issues_my_reports_path) and return
     end
+    if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
+      flash[:warning] = I18n.t('issues.spam_notice')
+      redirect_to(issues_my_reports_path) and return
+    end
 
-    # TODO
-    # TODO: create issue report
-    # {"authenticity_token"=>"...", "result_id"=>"1022151", "result_class"=>"MeetingIndividualResult",
-    #  "minutes"=>"5", "seconds"=>"27", "hundredths"=>"27"}
-
-    flash[:info] = I18n.t('issues.sent_ok')
+    create_issue('1b1', type1b1_params)
     redirect_to(issues_my_reports_path) and return
   end
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -193,13 +210,12 @@ class IssuesController < ApplicationController
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(issues_my_reports_path) and return
     end
+    if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
+      flash[:warning] = I18n.t('issues.spam_notice')
+      redirect_to(issues_my_reports_path) and return
+    end
 
-    # TODO
-    # TODO: create issue report
-    # {"authenticity_token"=>"...", "result_id"=>"1022151", "result_class"=>"MeetingIndividualResult",
-    #  "wrong_meeting"=>"1", "wrong_team"=>"1"}
-
-    flash[:info] = I18n.t('issues.sent_ok')
+    create_issue('2b1', type1b1_params)
     redirect_to(issues_my_reports_path) and return
   end
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -212,16 +228,12 @@ class IssuesController < ApplicationController
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(issues_my_reports_path) and return
     end
+    if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
+      flash[:warning] = I18n.t('issues.spam_notice')
+      redirect_to(issues_my_reports_path) and return
+    end
 
-    # TODO
-    # "swimmer_id"=>"142", "swimmer_label"=>"ALLORO STEFANO (MAL, 1969)",
-    # "swimmer_complete_name"=>"ALLORO STEFANO", "swimmer_first_name"=>"STEFANO",
-    # "swimmer_last_name"=>"ALLORO", "swimmer_year_of_birth"=>"1969",
-    # "gender_type_id"=>"1"
-    # TODO
-    # TODO: create issue report
-
-    flash[:info] = I18n.t('issues.sent_ok')
+    create_issue('3b', type1b_params)
     redirect_to(issues_my_reports_path) and return
   end
 
@@ -232,14 +244,12 @@ class IssuesController < ApplicationController
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(issues_my_reports_path) and return
     end
+    if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
+      flash[:warning] = I18n.t('issues.spam_notice')
+      redirect_to(issues_my_reports_path) and return
+    end
 
-    # TODO
-    # "type3c_first_name"=>"STEFANO", "type3c_last_name"=>"ALLORO",
-    # "type3c_year_of_birth"=>"1969", "type3c_gender_type_id"=>"1"
-    # TODO
-    # TODO: create issue report
-
-    flash[:info] = I18n.t('issues.sent_ok')
+    create_issue('3c', type3c_params)
     redirect_to(issues_my_reports_path) and return
   end
 
@@ -251,51 +261,71 @@ class IssuesController < ApplicationController
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(issues_my_reports_path) and return
     end
+    if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
+      flash[:warning] = I18n.t('issues.spam_notice')
+      redirect_to(issues_my_reports_path) and return
+    end
 
-    # TODO
-    # "expected"=>"Expected", "outcome"=>"outcome", "reproduce"=>"reproduce"
-    # TODO: create issue report
-
-    flash[:info] = I18n.t('issues.sent_ok')
+    create_issue('4', type4_params)
     redirect_to(issues_my_reports_path) and return
   end
   #-- -------------------------------------------------------------------------
   #++
 
+  protected
+
+  # /index action strong parameters checking
+  def index_params
+    params.permit(:page, :per_page)
+  end
+
+
+  # Default whitelist for datagrid parameters
+  # (NOTE: member variable is needed by the view)
+  def grid_filter_params
+    @grid_filter_params = params.fetch(:issues_grid, {})
+                                .permit(:code, :status, :descending, :order)
+  end
+
   private
+
+  # Parameter checking for DELETE /delete (only :id shall be used)
+  def delete_params
+    params.permit(%w[id authenticity_token commit])
+  end
 
   # Strong parameters checking for form type 0 ("update to 'team manager'")
   def type0_params
-    params.permit(:authenticity_token, :team_id, :team_label, season: {})
+    params.permit(:team_id, :team_label, season: {})
   end
 
   # Strong parameters checking for form type 1a ("new Meeting URL")
   def type1a_params
-    params.permit(:authenticity_token, :meeting_id, :meeting_label, :city_id, :city_label,
+    params.permit(:meeting_id, :meeting_label, :city_id, :city_label,
                   :city_area, :city_country_code, :event_date, :results_url)
   end
 
   # Strong parameters checking for form type 1b & 3b ("report missing" & "change swimmer association")
   def type1b_params
-    params.permit(:authenticity_token, :parent_meeting_id, :parent_meeting_class, :event_type_id, :event_type_label,
+    params.permit(:parent_meeting_id, :parent_meeting_class, :event_type_id, :event_type_label,
                   :minutes, :seconds, :hundredths, :swimmer_id, :swimmer_label, :swimmer_complete_name,
                   :swimmer_first_name, :swimmer_last_name, :swimmer_year_of_birth, :gender_type_id)
   end
 
   # Strong parameters checking for form type 1b1 & 2b1 ("report mistake")
   def type1b1_params
-    params.permit(:authenticity_token, :result_id, :result_class, :wrong_meeting, :wrong_swimmer, :wrong_team,
+    params.permit(:result_id, :result_class, :wrong_meeting, :wrong_swimmer, :wrong_team,
                   :minutes, :seconds, :hundredths)
   end
 
   # Strong parameters checking for form type 3c ("edit swimmer details")
   def type3c_params
-    params.permit(:authenticity_token, :type3c_first_name, :type3c_last_name, :type3c_year_of_birth, :type3c_gender_type_id)
+    params.permit(:type3c_first_name, :type3c_last_name, :type3c_year_of_birth, :type3c_gender_type_id)
   end
 
   # Strong parameters checking for form type 3c ("edit swimmer details")
   def type4_params
-    params.permit(:authenticity_token, :expected, :outcome, :reproduce)
+    params.permit(:expected, :outcome, :reproduce)
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -332,6 +362,19 @@ class IssuesController < ApplicationController
     GogglesDb::Badge.where(season_id: season_id, team_id: managed_teams_ids)
                     .map(&:swimmer)
                     .uniq
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  # Creates a new issue record, checking result and setting a proper flash message.
+  def create_issue(type_code, req_params)
+    issue = GogglesDb::Issue.new(user_id: current_user.id, code: type_code, req: req_params.to_json)
+    unless issue.save
+      error_msg = issue.errors.messages.map{ |col, errs| "'#{col}' #{errs.join(', ')}" }.join('; ')
+      flash[:error] = (I18n.t('issues.creation_error', error: error_msg))
+    else
+      flash[:info] = I18n.t('issues.sent_ok')
+    end
   end
   #-- -------------------------------------------------------------------------
   #++

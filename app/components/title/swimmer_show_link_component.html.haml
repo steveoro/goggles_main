@@ -1,4 +1,4 @@
-#back-to-dashboard= link_to_full_name
-%sup
-  %i.fa.fa-info-circle{ onclick: "$(this).tooltip('toggle')",
-                        data: 'tooltip', title: t('swimmers.go_to_dashboard') }
+%span#back-to-dashboard
+  = link_to_action
+  %sup
+    %i.fa.fa-info-circle{ onclick: "$(this).tooltip('toggle')", data: 'tooltip', title: t(tooltip_key) }

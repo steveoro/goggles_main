@@ -1,0 +1,119 @@
+-# TODO
+- goggle_cup = false # team.goggle_cup_at?(meeting.header_date)
+
+#team-results-events-grid
+  %table.table.table-striped.table-bordered.table-hover.table-condensed
+    - meeting_events_list.each do |meeting_event|
+      - relay = meeting_event.event_type.relay?
+      -# --- Header with unique ID for each starting event_type "group":
+      %thead
+        %tr{ class: "#{relay ? 'bg-light-green' : 'bg-light-blue'}", id: "#{meeting_event.event_type.label}" }
+          %td{ colspan: 1 }
+            %b= meeting_event.event_type.label
+          %td{ colspan: 3 }
+            - if user_signed_in?
+              = render(Issues::ReportMissingButtonComponent.new(parent_meeting: meeting,
+                      event_type: meeting_event.event_type))
+          %td.text-right
+            %i= I18n.t('meetings.standard_points')
+          -# Commented out because meeting_points are currently always zero
+          -# %td.text-right
+          -#   %i= I18n.t('meetings.meeting_points')
+          - if goggle_cup
+            %td.text-right
+              - unless relay
+                GoggleCup
+                -# TODO
+                -# = team.get_current_goggle_cup_name_at(meeting.header_date)
+          - if meeting.startlist and !relay
+            %td.text-right
+              = '(' + t('meeting.entry_time') + ')'
+
+      / Individual results
+      %tbody
+        - unless relay
+          -# TODO: MIR#by_swimmer()
+          - meeting_event.meeting_individual_results.for_team(team).joins(:swimmer, :category_type).includes(:category_type, :laps).order("swimmers.complete_name ASC, meeting_individual_results.rank ASC").each do |mir|
+            - includes_laps = mir.laps.present?
+            %tr
+              %td.col-sm-4
+                = link_to(meeting_swimmer_results_path(id: meeting.id, team_id: team.id, swimmer_id: mir.swimmer_id),
+                          { id: "swimmer#{mir.id}" }, 'data-toggle' => 'tooltip', 'title' => I18n.t('meeting.show_swimmer_results_tooltip')) do
+                  = mir.swimmer.decorate.display_label
+              %td.col-sm-1
+                = tag.small(mir.category_type.code)
+              %td.col-sm-1.text-center
+                = render(RankingPosComponent.new(rank: mir.rank))
+              %td.row-fluid.text-center
+                = mir.to_timing
+                - can_edit_lap = current_user_is_admin || managed_team_ids.nil? || managed_team_ids.include?(team.id)
+                - can_manage = user_signed_in? && current_user.swimmer_id == mir.swimmer_id
+                = render(Switch::RotatingComponent.new(target_id: "laps#{mir.id}")) if includes_laps
+                = render(Laps::EditButtonComponent.new(parent_result: mir, can_manage: can_edit_lap))
+                = render(Issues::ReportMistakeButtonComponent.new(result_row: mir,
+                         can_manage: can_edit_lap || can_manage))
+              %td.col-sm-1.text-right
+                %span{ class: mir.standard_points.to_f > 800.0 ? 'font-weight-bold' : '' }
+                  = sprintf("%02.2f", mir.standard_points.to_f)
+              -# Commented out because meeting_points are currently always zero
+              -# %td.col-sm-1.text-right
+              -#   %span{ class: mir.meeting_points.to_f > 800.0 ? 'font-weight-bold' : '' }
+              -#     = sprintf("%02.2f", mir.meeting_points.to_f)
+              - if goggle_cup
+                %td.col-sm-2.text-right
+                  %span{ class: mir.goggle_cup_points.to_f > 800.0 ? 'font-weight-bold' : '' }
+                    = sprintf("%02.2f", mir.goggle_cup_points.to_f)
+              - if meeting.startlist
+                %td.col-sm-1.text-right
+                  - if meeting.meeting_entries.where(['swimmer_id = ? AND meeting_program_id = ?', mir.swimmer_id, mir.meeting_program_id]).exists?
+                    = meeting.meeting_entries.where(['swimmer_id = ? AND meeting_program_id = ?', mir.swimmer_id, mir.meeting_program_id]).first.to_timing
+            - if includes_laps
+              - last_lap = mir.laps.includes(:meeting_individual_result).by_distance.last
+              - mir.laps.includes(:meeting_individual_result).by_distance.each do |lap|
+                = render(Laps::TableRowComponent.new(lap: lap))
+              - if last_lap && mir
+                - last_delta_timing = mir.to_timing - last_lap.timing_from_start
+                - result_lap = last_lap.dup.from_timing(last_delta_timing)
+                - result_lap.length_in_meters = mir.event_type.length_in_meters
+                - result_lap.minutes_from_start = mir.minutes
+                - result_lap.seconds_from_start = mir.seconds
+                - result_lap.hundredths_from_start = mir.hundredths
+                = render(Laps::TableRowComponent.new(lap: result_lap))
+
+        -# --- Team Relay result rows:
+        - if relay
+          - meeting_event.meeting_relay_results.for_team(team).by_category.each do |relay_result|
+            - mrr = MeetingRelayResultDecorator.decorate(relay_result)
+            %tr
+              %td
+                %b= mrr.get_relay_name
+              %td
+                = mrr.gender_type.label
+                = '-'
+                = mrr.category_type.label
+              %td.text-right
+                = render(RankingPosComponent.new(rank: mrr.rank))
+              %td.text-right
+                = mrr.to_timing
+              %td.text-right
+                = sprintf("%02.2f", mrr.standard_points.to_f)
+              %td.text-right
+                = sprintf("%02.2f", mrr.meeting_points.to_f)
+              - if goggle_cup
+                %td
+              - if mrr.meeting_relay_swimmers.exists?
+                - mrr.meeting_relay_swimmers.by_order.each do |meeting_relay_swimmer|
+                  %tr
+                    %td.text-right{ colspan: 3 }
+                      %i= "#{meeting_relay_swimmer.decorate.display_label} (#{meeting.header_date.year - meeting_relay_swimmer.swimmer.year_of_birth}) - #{meeting_relay_swimmer.stroke_type.label}"
+                    %td.text-right
+                      = meeting_relay_swimmer.to_timing
+                    %td
+                    %td
+                    - if goggle_cup
+                      %td
+                    - if meeting.startlist?
+                      %td
+
+.row
+  &nbsp;

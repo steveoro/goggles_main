@@ -40,24 +40,15 @@ class ApplicationController < ActionController::Base
   #   +true+ if current user can manage any affiliations belonging to the found <tt>@last_seasons</tt>.
   #   Further affiliation filtering (by team) should happen after the user selects any actions which
   #   requires selecting a specific managed team.
+  #
+  # - <tt>@current_user_is_admin</tt>
+  #   +true+ if current user has admin grants
+  #
   def prepare_last_seasons
-    # Retrieve any available latest season(s) by type, but include also those *having* at least some results (this is required by many features)
-    # [Update 20230323] Memoize season member variables as these won't change frequently
-    @last_seasons ||= [
-      GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin),
-      GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).by_season(:desc).first&.season,
-      GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin),
-      GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season).by_season(:desc).first&.season
-    ].compact.sort.uniq
-    # [!!!] Whenever the above ^^ changes, CHECK & UPDATE ALSO:
-    # - features/step_definitions/calendars/calendars_steps.rb:17
-    # - features/step_definitions/calendars/given_any_calendars_steps.rb:8:37:56
-    # - features/step_definitions/devise/given_any_user_steps.rb:99:184:251
-    # - spec/support/shared_team_managers_context.rb:4
+    @last_seasons_ids = last_season_ids
+    @last_seasons ||= GogglesDb::Season.where(id: @last_seasons_ids)
 
-    @last_seasons_ids ||= @last_seasons.pluck(:id)
-
-    # Can we show any related management buttons? (team selection should happen afterwards)
+    # Can we show any management button related to these seasons? (team selection should happen afterwards)
     @current_user_is_admin = GogglesDb::GrantChecker.admin?(current_user)
     @current_user_is_manager = @last_seasons_ids.present? && user_signed_in? &&
                                GogglesDb::ManagedAffiliation.includes(team_affiliation: %i[team season])
@@ -70,8 +61,8 @@ class ApplicationController < ActionController::Base
   #
   # Uses @last_seasons_ids.
   # Sets the internal member:
-  # - <tt>@user_teams</tt> => array of all the GogglesDb::Team rows found for the current_user,
-  #                           (assuming the current user has an associated swimmer)
+  # - <tt>@user_teams</tt> => array of all the GogglesDb::Team rows associated to the current_user,
+  #                           (if the current user has an associated swimmer)
   #
   def prepare_user_teams
     @user_teams = []
@@ -83,17 +74,22 @@ class ApplicationController < ActionController::Base
 
   # Similarly to #prepare_user_teams, this one collects all available and *managed* Teams for the current user (if any)
   # which have an affiliation belonging to one of the last seasons found.
-  # Defaults to an empty array otherwise.
+  # Defaults to an empty array otherwise; +nil+ only for admins (to avoid listing all teams).
   #
   # Uses @last_seasons_ids & @current_user_is_manager.
   #
   # Sets the internal member:
-  # - <tt>@managed_teams</tt>
+  # - <tt>@managed_teams</tt> =>
   #  Array of all unique GogglesDb::Team rows found, managed the current_user and
   #  belonging to any one of the @last_seasons_ids found.
   #
+  # == Possible values:
+  #  row array => managed team rows
+  #  +empty+   => no team managed
+  #  +nil+     => all teams managed (admin: true, skips checks)
+  #
   def prepare_managed_teams
-    @managed_teams = []
+    @managed_teams = @current_user_is_admin ? nil : []
     return unless @current_user_is_manager
 
     mas = GogglesDb::ManagedAffiliation.includes(:team, :season, team_affiliation: %i[team season])
@@ -253,6 +249,31 @@ class ApplicationController < ActionController::Base
         area: cookies[:city_area],
         country_code: cookies[:city_country_code]
       )
+  end
+
+  # Always returns the list of last season IDs, either recomputed or collected from cookies.
+  # The stored cookie shall expire at browser session (each time the user closes the browser).
+  def last_season_ids
+    return cookies[:last_seasons_ids] if cookies[:last_seasons_ids].present?
+
+    # Retrieve any available latest season(s) by type, but include also those *having* at least some results (this is required by many features)
+    # [Update 20230323] Memoize season member variables as these won't change frequently
+    @last_seasons = [
+      GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin),
+      GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).by_season(:desc).first&.season,
+      GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin),
+      GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season).by_season(:desc).first&.season
+    ].compact.sort.uniq
+    # [!!!] Whenever the above ^^ changes, CHECK & UPDATE ALSO:
+    # - features/step_definitions/calendars/calendars_steps.rb:17
+    # - features/step_definitions/calendars/given_any_calendars_steps.rb:8:37:56
+    # - features/step_definitions/devise/given_any_user_steps.rb:99:184:251
+    # - spec/support/shared_team_managers_context.rb:4
+
+    Rails.logger.debug("\r\n\r\n----> BEFORE @last_seasons_ids, elapsed: #{Time.zone.now - start}")
+    @last_seasons_ids = @last_seasons.pluck(:id)
+    # Prevent recompute on each page load:
+    cookies[:last_seasons_ids] = @last_seasons_ids
   end
   #-- -------------------------------------------------------------------------
   #++

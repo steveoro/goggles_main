@@ -6,14 +6,20 @@ document.querySelector('#laps-table-body').innerHTML = "<%=
     )
   )
 %>";
-document.querySelector('#result-row-delta').innerHTML = "Δt: <%=
-  escape_javascript(@last_delta_timing.to_s)
-%>"
+document.querySelector('#result-row-delta').innerHTML = "Δt: <%= escape_javascript(@last_delta_timing.to_s) %>"
 document.querySelector('#lap-modal-alert-text').innerHTML = "<%= escape_javascript(@alert_msg) %>"
 
-$('#lap-modal-alert').show().removeClass('d-none').delay(1500).fadeOut(1000)
+$('#lap-modal-alert').show().removeClass('d-none').delay(1500).fadeOut(1000);
 
-// Replace also the lap-show subtable if present:
-document.querySelector("#laps-show<%= @parent_result.id %>").outerHTML = "<%=
-  escape_javascript(render(Laps::TableComponent.new(laps: @parent_result.laps)))
-%>";
+// Clear lap-show subtable:
+if (document.querySelector("#laps-show<%= @parent_result.id %>")) {
+  document.querySelector("#laps-show<%= @parent_result.id %>").outerHTML = ''
+}
+// Replace MIR row (includes re-rendering of the #laps-showID subtable):
+if (document.querySelector("#mir<%= @parent_result.id %>")) {
+  document.querySelector("#mir<%= @parent_result.id %>").outerHTML = "<%=
+    escape_javascript(
+      render(MIR::TableRowComponent.new(mir: @parent_result, lap_edit: true, report_mistake: true))
+    )
+  %>";
+}

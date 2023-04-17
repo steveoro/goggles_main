@@ -8,6 +8,16 @@ en:
     sent_ok: "Your request has been sent!"
     invalid_type: "Invalid or unsupported request type!"
     no_issues_found: "(No unsolved issues reported by you were found)"
+    spam_notice: "You have already reported an enqueued a lot of issues: thank you! Please, be patient and wait until some of these gets sorted out before reporting new ones."
+    creation_error: "Creation error: %{error}"
+    grid:
+      params:
+        code: 'Type'
+        status: 'Status'
+        priority: 'Priority'
+      delete_done: "Issue report deleted."
+      delete_error: "Sorry: an error prevented this issue report to be deleted."
+      confirm_delete: "Do you really want to erase from the queue this issue request? (The '%{label}' report will be lost.)"
 
     type0:
       title: "Promote my account to 'Team Manager'"
@@ -15,6 +25,8 @@ en:
         label: "I'd like to be allowed to manage the following team for the current sport season in the available Championships:"
         notice: "The team you want to choose must be already existing in our data for it to appear on the list"
         season_championship: "Championship / Season:"
+      msg:
+        some_existing_were_skipped: "You were already set as Team Manager of this team for some of the Seasons you requested."
 
     type1a:
       label: "I know a website where you can find the results of a Meeting that is totally missing from your data!"
@@ -31,12 +43,15 @@ en:
       description1: "If you have noticed a wrong result of yours when browsing a specific Meeting, look for the 'Report mistake' link (🚩) right beside your result that you think is wrong."
       description2: "For a missing one for which you know the exact timing, look for the 'Report missing result' link (🏴) at the top of the corresponding category section that should contain the missing result."
       form:
-        tooltip: "Report a timing missing from this Meeting results"
+        tooltip: "Report a missing result timing for this Meeting event"
+        btn_label: "Report"
         title: "🏴 Report missing result"
         result_label: "Result"
         notice:
           cant_manage: "Only Team managers are allowed to select a swimmer from the list."
           no_associated_swimmer: "Your account does not have an associated swimmer yet, so there is no default swimmer for this form."
+      msg:
+        meeting_not_found: "Meeting or Workshop not found!"
     type1b1:
       form:
         tooltip: "Report a mistake spotted in this Meeting result"

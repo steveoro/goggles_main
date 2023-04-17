@@ -4,7 +4,7 @@
 Given('there are at least {int} calendar rows available') do |tot_calendar_rows|
   @unexpired_calendars ||= []
   @expired_calendars ||= []
-  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:46)
+  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:251)
   last_season = GogglesDb::Season.joins(meetings: :meeting_individual_results)
                                  .last_season_by_type(GogglesDb::SeasonType.mas_fin)
   GogglesDb::Calendar.for_season(last_season).each do |calendar|
@@ -33,7 +33,7 @@ end
 # Fills @unexpired_calendars with any additional row
 Given('at least {int} calendar rows are not expired') do |tot_calendar_rows|
   @unexpired_calendars ||= []
-  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:46)
+  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:251)
   last_season = GogglesDb::Season.joins(meetings: :meeting_individual_results)
                                  .last_season_by_type(GogglesDb::SeasonType.mas_fin)
   remaining_required_rows = tot_calendar_rows - @unexpired_calendars.count
@@ -52,7 +52,7 @@ end
 # Fills @expired_calendars with any additional row
 Given('at least {int} calendar rows are expired') do |tot_calendar_rows|
   @expired_calendars ||= []
-  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:46)
+  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:251)
   last_season = GogglesDb::Season.joins(meetings: :meeting_individual_results)
                                  .last_season_by_type(GogglesDb::SeasonType.mas_fin)
   remaining_required_rows = tot_calendar_rows - @expired_calendars.count

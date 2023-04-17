@@ -1,4 +1,4 @@
-%tbody.resut-table-row
+%tbody.result-table-row{ id: "mir#{@mir.id}" }
   %tr
     %td.text-right
       = render(RankingPosComponent.new(rank: rank))
@@ -13,13 +13,13 @@
       = render(Laps::EditButtonComponent.new(parent_result: @mir, can_manage: @lap_edit))
       = render(Issues::ReportMistakeButtonComponent.new(result_row: @mir, can_manage: @report_mistake))
     %td
-      = swimmer&.complete_name
+      = SwimmerDecorator.decorate(swimmer).link_to_results(meeting_id)
       %br/
       %small.text-muted
         = swimmer&.year_of_birth
         - if team
           %i
-            &nbsp;-&nbsp;#{TeamDecorator.decorate(team).link_to_full_name}
+            &nbsp;-&nbsp;#{TeamDecorator.decorate(team).link_to_results(meeting_id)}
         - elsif swimming_pool
           &nbsp;-&nbsp;#{SwimmingPoolDecorator.decorate(swimming_pool).link_to_full_name}
     %td

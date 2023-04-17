@@ -17,10 +17,25 @@
               = t('issues.my_reports_title')
 
     %section#issues-grid
-      .container.mt-2
-        .row-fluid.text-center
-          %p.mt-4
-            %i= t('issues.no_issues_found')
+      .container.my-2
+        = datagrid_form_for(@grid, method: :get, url: issues_my_reports_path)
+        .row.my-2#datagrid-top-row
+          .col-auto
+            #filter-show-btn= render(Grid::FilterShowButtonComponent.new)
+            - filter_labels = grid_filter_to_labels('issues.grid', @grid_filter_params)
+            - if filter_labels.present?
+              %small#filter-labels
+                = t('swimmers.history.filter')
+                &nbsp;
+                %span.text-muted= filter_labels
+          .col
+            #pagination-top= paginate(@grid.assets)
+          .col-auto
+            %small#datagrid-total
+              = t('datagrid.total')
+              = page_entries_info(@grid.assets, entry_name: t('datagrid.rows'))
+        = datagrid_table(@grid, html: { class: 'table table-hover table-sm' })
+        #pagination-bottom= paginate(@grid.assets)
 
     .row-fluid
       %p &nbsp;

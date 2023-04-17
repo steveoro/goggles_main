@@ -22,6 +22,13 @@ class SwimmerDecorator < Draper::Decorator
     h.link_to(text_label, h.swimmer_show_path(id: object.id))
   end
 
+  # Returns the link to /meetings/swimmer_results/:id using the complete name as link label.
+  # NOTE: +SwimmerShowLinkComponent+ adds a tooltip to the link.
+  #
+  def link_to_results(meeting_id)
+    h.link_to(complete_name, h.meeting_swimmer_results_path(id: meeting_id, swimmer_id: object.id))
+  end
+
   # Returns a comma-separated string text mapping all the distinct team
   # names associated with the object row.
   #

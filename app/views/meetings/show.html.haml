@@ -2,18 +2,10 @@
   .spacer-left
 
   .main-content#top-of-page
-    #meeting-show-title
-      = render(Meeting::TitleComponent.new(meeting: @meeting))
-    #meeting-show-details
-      %table.table.table-striped.table-sm
-        %tbody
-          = render(Meeting::HeaderBodyComponent.new(meeting: @meeting))
-          = render(Meeting::MoreBodyComponent.new(meeting: @meeting))
+    = render(partial: 'meeting_header', locals: { meeting: @meeting })
+    = render(partial: 'meeting_navs', locals: { meeting: @meeting, active_tab: 'results' })
 
-    / (only 1 modal container per page)
-    #lap-edit-modal-container
-
-    #meeting-show-results
+    %section#meeting-show-results
       %table.table.table-striped.table-sm
         - @meeting_events&.includes(:event_type, meeting_session: :meeting)&.joins(:event_type,
               meeting_session: :meeting)&.by_order&.each_with_index do |meeting_event, index|
@@ -32,7 +24,7 @@
               - if mprg.relay?
                 = render(MRR::TableComponent.new(mrrs: mprg.meeting_relay_results.includes(:team)))
               - else
-                = render(MIR::TableComponent.new(mirs: mprg.meeting_individual_results.includes(:swimmer, :team),
+                = render(MIR::TableComponent.new(mirs: mprg.meeting_individual_results.includes(:meeting, :swimmer, :team),
                          managed_team_ids: @managed_team_ids, current_swimmer_id: @current_swimmer_id))
 
   .spacer-right

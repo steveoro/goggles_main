@@ -1,0 +1,10 @@
+#meeting-show-title
+  = render(Meeting::TitleComponent.new(meeting: meeting))
+#meeting-show-details
+  %table.table.table-striped.table-sm
+    %tbody
+      = render(Meeting::HeaderBodyComponent.new(meeting: meeting))
+      = render(Meeting::MoreBodyComponent.new(meeting: meeting))
+
+/ (only 1 modal container per page)
+%section#lap-edit-modal-container
