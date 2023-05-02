@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'search/_search_results.html.haml', type: :view do
+RSpec.describe 'search/_search_results.html.haml' do
   shared_examples_for 'search result table showing a matching list page' do |result_table_css, base_link_path, matching_name|
     # Verify node content with Nokogiri:
     it 'renders the matching list' do

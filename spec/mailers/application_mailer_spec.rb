@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ApplicationMailer, type: :mailer do
+RSpec.describe ApplicationMailer do
   include ActiveJob::TestHelper
 
   let(:user) { GogglesDb::User.first(50).sample }

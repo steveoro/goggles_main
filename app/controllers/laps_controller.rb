@@ -82,7 +82,7 @@ class LapsController < ApplicationController
     @curr_lap.seconds_from_start = rows_params[:seconds_from_start]&.values&.first || 0
     @curr_lap.hundredths_from_start = rows_params[:hundredths_from_start]&.values&.first || 0
 
-    # Recompute current delta giving precendence to #timing_from_start:
+    # Recompute current delta giving precedence to #timing_from_start:
     previous_lap = lap_class_from_row_params.related_laps(@curr_lap)
                                             .where('length_in_meters < ?', @curr_lap.length_in_meters)
                                             .last
@@ -134,13 +134,13 @@ class LapsController < ApplicationController
 
   # Strong parameters checking the main modal/header operations
   def modal_params
-    params.permit(:authenticity_token, :result_id, :result_class, :step)
+    params.permit(:authenticity_token, :result_id, :result_class, :step, :show_category, :show_team)
   end
 
   # Strong parameters checking all row actions
   def rows_params
-    params.permit(:authenticity_token, :id, result_id: {}, result_class: {}, length_in_meters: {},
-                                            minutes_from_start: {}, seconds_from_start: {}, hundredths_from_start: {})
+    params.permit(:authenticity_token, :id, result_id: {}, result_class: {}, show_category: {}, show_team: {},
+                                            length_in_meters: {}, minutes_from_start: {}, seconds_from_start: {}, hundredths_from_start: {})
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -198,14 +198,21 @@ class LapsController < ApplicationController
   # Validates the request type and the required parameters for the main modal operations.
   # Sets the <tt>@parent_result</tt> member.
   # Redirects to root_path otherwise.
+  #
+  # rubocop:disable Metrics/AbcSize
   def validate_modal_request
     handle_invalid_request unless request.xhr? && request.post? && modal_params[:result_id].present? &&
                                   modal_params[:result_class].present? &&
                                   result_class_from_params.exists?(modal_params[:result_id])
 
+    # Display customizations for the parent MIR component from pass-through parameters:
+    @show_category = modal_params[:show_category]
+    @show_team = modal_params[:show_team]
+
     @parent_result = result_class_from_params.includes(lap_class_from_params.table_name.to_sym, :event_type)
                                              .find_by(id: modal_params[:result_id])
   end
+  # rubocop:enable Metrics/AbcSize
 
   # Validates the request type and the required parameters for a row update or delete.
   # Sets both <tt>@parent_result</tt> & <tt>@curr_lap</tt> members.
@@ -219,6 +226,11 @@ class LapsController < ApplicationController
                                   rows_params[:result_class]&.values&.first&.present? &&
                                   result_class_from_row_params.exists?(rows_params[:result_id].values.first)
 
+    # Display customizations for the parent MIR component from pass-through parameters:
+    @show_category = rows_params[:show_category]&.values&.first == '1' || false
+    @show_team = rows_params[:show_team]&.values&.first == '1' || rows_params[:show_team]&.values&.first.nil? # default: true
+
+    # Required row request members:
     @curr_lap = lap_class_from_row_params.find_by(id: rows_params[:id])
     @parent_result = result_class_from_row_params.includes(lap_class_from_row_params.table_name.to_sym, :event_type)
                                                  .find_by(id: rows_params[:result_id].values.first)

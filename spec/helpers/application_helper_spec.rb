@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ApplicationHelper, type: :helper do
+RSpec.describe ApplicationHelper do
   describe '#grid_filter_to_labels' do
     let(:main_namespace) { 'user_workshops.dashboard' }
     let(:grid_filter_params) do

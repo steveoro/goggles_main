@@ -2,7 +2,8 @@ document.querySelector('#laps-table-body').innerHTML = "<%=
   escape_javascript(
     render(
       partial: 'laps/edit_table_body',
-      locals: { parent_result: @parent_result, laps: @parent_result.laps.by_distance }
+      locals: { parent_result: @parent_result, laps: @parent_result.laps.by_distance,
+                show_category: @show_category, show_team: @show_team }
     )
   )
 %>";
@@ -11,15 +12,32 @@ document.querySelector('#lap-modal-alert-text').innerHTML = "<%= escape_javascri
 
 $('#lap-modal-alert').show().removeClass('d-none').delay(1500).fadeOut(1000);
 
-// Clear lap-show subtable:
-if (document.querySelector("#laps-show<%= @parent_result.id %>")) {
-  document.querySelector("#laps-show<%= @parent_result.id %>").outerHTML = ''
-}
-// Replace MIR row (includes re-rendering of the #laps-showID subtable):
+/*
+   Replace MIR row if present:
+   (this includes re-rendering the #laps-showID sub-table):
+*/
 if (document.querySelector("#mir<%= @parent_result.id %>")) {
+  // Clear lap-show subtable before creating a duplicate:
+  if (document.querySelector("#laps-show<%= @parent_result.id %>")) {
+    document.querySelector("#laps-show<%= @parent_result.id %>").outerHTML = ''
+  }
   document.querySelector("#mir<%= @parent_result.id %>").outerHTML = "<%=
     escape_javascript(
-      render(MIR::TableRowComponent.new(mir: @parent_result, lap_edit: true, report_mistake: true))
+      render(MIR::TableRowComponent.new(mir: @parent_result, lap_edit: true, report_mistake: true,
+             show_category: @show_category, show_team: @show_team))
     )
   %>";
 }
+/*
+  MIR table row missing but lap table present?
+  When MIR parent row is missing, we assume another custom table body is present as previous sibling
+  (as in meeting/swimmer_results), so the MIR::TableRowComponent table rendering above won't work.
+  We proceed replacing just the uncollapsed Laps::TableComponent.
+*/
+else if (document.querySelector("#laps-show<%= @parent_result.id %>")) {
+  $("#laps-show<%= @parent_result.id %>").replaceWith("<%=
+    escape_javascript(
+      render(Laps::TableComponent.new(laps: @parent_result.laps, collapsed: false))
+    )
+  %>")
+};

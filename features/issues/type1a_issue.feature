@@ -16,7 +16,7 @@ Feature: Reporting an issue of type "1a"
     And I see the nav tab with the link to my issues grid
     And I see the expandable section for issues 'type1a'
     When I click to expand the issues section 'type1a'
-    Then I can see the issue form 'frm-type1a'
+    Then I see the issue form 'frm-type1a'
 
     When I type '18° Trofeo De Akker' as selection for the 'meeting' Select2 field
     And I type 'Bologna' as selection for the 'city' Select2 field
@@ -27,4 +27,4 @@ Feature: Reporting an issue of type "1a"
     And I click on '#issues-type1a-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present
-    # And I can see my newly created issue
+    And I see my newly created issue

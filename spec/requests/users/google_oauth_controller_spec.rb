@@ -2,8 +2,8 @@
 
 require 'rails_helper'
 
-RSpec.describe Users::GoogleOauthController, type: :request do
-  let(:valid_identity) { instance_double('GoogleSignIn::Identity') }
+RSpec.describe Users::GoogleOauthController do
+  let(:valid_identity) { instance_double(GoogleSignIn::Identity) }
   let(:returned_uid) { '1234567890' }
 
   # Requires:

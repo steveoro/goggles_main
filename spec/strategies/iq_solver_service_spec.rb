@@ -88,7 +88,7 @@ RSpec.describe IqSolverService, type: :service do
     it_behaves_like('IqSolverService valid instance')
 
     it 'ignores the row (returning nil)' do
-      expect(subject.call(solved_row)).to be nil
+      expect(subject.call(solved_row)).to be_nil
     end
   end
   #-- -------------------------------------------------------------------------

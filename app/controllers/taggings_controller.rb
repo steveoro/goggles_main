@@ -19,7 +19,7 @@ class TaggingsController < ApplicationController
     @saved_ok = @meeting.save
     logger.info("---> Tag #{already_starred ? 'OFF' : 'ON'}") && return if @saved_ok
 
-    flash[:error] = I18n.t('tags.error_during_save')
+    flash.now[:error] = I18n.t('tags.error_during_save')
   end
 
   # XHR POST /by_team(:team_id, :meeting_id)
@@ -35,7 +35,7 @@ class TaggingsController < ApplicationController
     @saved_ok = @meeting.save
     logger.info("---> Tag #{already_starred ? 'OFF' : 'ON'}") && return if @saved_ok
 
-    flash[:error] = I18n.t('tags.error_during_save')
+    flash.now[:error] = I18n.t('tags.error_during_save')
   end
 
   private

@@ -80,8 +80,8 @@ RSpec.describe SwimmingPoolDecorator, type: :decorator do
 
     context 'with a pool that includes latitude & longitude but not plus_code or maps_uri' do
       subject do
-        expect(model_obj.plus_code).to be nil
-        expect(model_obj.maps_uri).to be nil
+        expect(model_obj.plus_code).to be_nil
+        expect(model_obj.maps_uri).to be_nil
         described_class.decorate(model_obj)
       end
 
@@ -93,10 +93,10 @@ RSpec.describe SwimmingPoolDecorator, type: :decorator do
 
     context 'with a pool that includes just its city (no address)' do
       subject do
-        expect(model_obj.latitude).to be nil
-        expect(model_obj.longitude).to be nil
-        expect(model_obj.plus_code).to be nil
-        expect(model_obj.maps_uri).to be nil
+        expect(model_obj.latitude).to be_nil
+        expect(model_obj.longitude).to be_nil
+        expect(model_obj.plus_code).to be_nil
+        expect(model_obj.maps_uri).to be_nil
         described_class.decorate(model_obj)
       end
 
@@ -109,10 +109,10 @@ RSpec.describe SwimmingPoolDecorator, type: :decorator do
     # Both city_id & address missing and no coordinates at all:
     context 'with a pool for which is known just by the name' do
       subject do
-        expect(model_obj.latitude).to be nil
-        expect(model_obj.longitude).to be nil
-        expect(model_obj.plus_code).to be nil
-        expect(model_obj.maps_uri).to be nil
+        expect(model_obj.latitude).to be_nil
+        expect(model_obj.longitude).to be_nil
+        expect(model_obj.plus_code).to be_nil
+        expect(model_obj.maps_uri).to be_nil
         described_class.decorate(model_obj)
       end
 

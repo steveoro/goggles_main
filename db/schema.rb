@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_08_140700) do
+ActiveRecord::Schema.define(version: 2023_04_24_140046) do
 
   create_table "achievement_rows", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci", force: :cascade do |t|
     t.integer "lock_version", default: 0
@@ -46,8 +46,8 @@ ActiveRecord::Schema.define(version: 2022_08_08_140700) do
   end
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci", force: :cascade do |t|
-    t.string "name", null: false, collation: "utf8mb4_general_ci"
-    t.string "record_type", null: false, collation: "utf8mb4_general_ci"
+    t.string "name", null: false
+    t.string "record_type", null: false
     t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 2022_08_08_140700) do
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
-  create_table "active_storage_blobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+  create_table "active_storage_blobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci", force: :cascade do |t|
     t.string "key", null: false
     t.string "filename", null: false
     t.string "content_type"
@@ -164,7 +164,7 @@ ActiveRecord::Schema.define(version: 2022_08_08_140700) do
     t.decimal "amount", precision: 10, scale: 2
     t.date "payment_date"
     t.text "notes"
-    t.boolean "manual"
+    t.boolean "manual", default: false, null: false
     t.bigint "badge_id"
     t.bigint "user_id"
     t.datetime "created_at", null: false
@@ -241,7 +241,7 @@ ActiveRecord::Schema.define(version: 2022_08_08_140700) do
     t.text "program_import_text"
     t.integer "meeting_id"
     t.boolean "read_only", default: false, null: false
-    t.boolean "cancelled", default: false
+    t.boolean "cancelled", default: false, null: false
     t.index ["cancelled"], name: "index_calendars_on_cancelled"
     t.index ["meeting_code"], name: "index_calendars_on_meeting_code"
     t.index ["meeting_id"], name: "index_calendars_on_meeting_id"
@@ -577,7 +577,7 @@ ActiveRecord::Schema.define(version: 2022_08_08_140700) do
     t.string "bindings_left_list"
     t.text "error_messages"
     t.integer "import_queue_id"
-    t.boolean "batch_sql", default: false
+    t.boolean "batch_sql", default: false, null: false
     t.index ["batch_sql"], name: "index_import_queues_on_batch_sql"
     t.index ["done"], name: "index_import_queues_on_done"
     t.index ["import_queue_id"], name: "index_import_queues_on_import_queue_id"
@@ -613,6 +613,20 @@ ActiveRecord::Schema.define(version: 2022_08_08_140700) do
     t.index ["season_id"], name: "idx_individual_records_season"
     t.index ["swimmer_id"], name: "idx_individual_records_swimmer"
     t.index ["team_id"], name: "idx_individual_records_team"
+  end
+
+  create_table "issues", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "code", limit: 3, null: false
+    t.text "req", null: false
+    t.integer "priority", limit: 1, default: 0
+    t.integer "status", limit: 1, default: 0
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["code"], name: "index_issues_on_code"
+    t.index ["priority"], name: "index_issues_on_priority"
+    t.index ["status"], name: "index_issues_on_status"
+    t.index ["user_id"], name: "index_issues_on_user_id"
   end
 
   create_table "laps", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci", force: :cascade do |t|
@@ -1622,12 +1636,12 @@ ActiveRecord::Schema.define(version: 2022_08_08_140700) do
     t.integer "edition_type_id", default: 3, null: false
     t.integer "timing_type_id", default: 1, null: false
     t.integer "swimming_pool_id"
-    t.boolean "autofilled"
-    t.boolean "off_season"
-    t.boolean "confirmed"
-    t.boolean "cancelled"
-    t.boolean "pb_acquired"
-    t.boolean "read_only"
+    t.boolean "autofilled", default: false, null: false
+    t.boolean "off_season", default: false, null: false
+    t.boolean "confirmed", default: false, null: false
+    t.boolean "cancelled", default: false, null: false
+    t.boolean "pb_acquired", default: false, null: false
+    t.boolean "read_only", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["code"], name: "index_user_workshops_on_code"
@@ -1706,6 +1720,7 @@ ActiveRecord::Schema.define(version: 2022_08_08_140700) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "issues", "users"
   add_foreign_key "laps", "meeting_individual_results"
   add_foreign_key "laps", "swimmers"
   add_foreign_key "laps", "teams"

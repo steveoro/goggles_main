@@ -361,7 +361,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
 
         describe '#root_request_hash' do
           it 'is nil if the root_key is not present is the source request' do
-            expect(subject.root_request_hash).to be nil
+            expect(subject.root_request_hash).to be_nil
           end
         end
 
@@ -385,7 +385,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
 
         describe '#header_year' do
           it 'is nil if the header_year is not present is the source request' do
-            expect(subject.header_year).to be nil
+            expect(subject.header_year).to be_nil
           end
         end
       end
@@ -396,7 +396,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
 
   shared_examples_for '#update_rec_detail_data or #update_result_data with no #request_hash' do
     it 'has a nil #request_hash' do
-      expect(subject.request_hash).to be nil
+      expect(subject.request_hash).to be_nil
     end
 
     it 'updates or overwrites #rec_data with the timing data specified into rec_data_hash' do
@@ -414,7 +414,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
 
       before do
         expect(subject.rec_data).to be_an(Hash).and be_empty
-        expect(subject.request_hash).to be nil
+        expect(subject.request_hash).to be_nil
         # Run the update method:
         subject.update_rec_detail_data({ order: 1 })
       end
@@ -422,7 +422,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       it 'does nothing (not changing #rec_data nor #request_hash)' do
         # No changes in result:
         expect(subject.rec_data).to be_an(Hash).and be_empty
-        expect(subject.request_hash).to be nil
+        expect(subject.request_hash).to be_nil
       end
     end
 
@@ -454,7 +454,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       subject { described_class.new(current_user, fixture_params, fixture_rec_data) }
 
       before do
-        expect(subject.request_hash).to be nil
+        expect(subject.request_hash).to be_nil
         expect(subject.rec_data).to be_an(Hash).and be_present
         # Domain check:
         fixture_rec_data.each do |key, value|
@@ -479,7 +479,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
 
       before do
         expect(subject.rec_data).to be_an(Hash).and be_empty
-        expect(subject.request_hash).to be nil
+        expect(subject.request_hash).to be_nil
         # Run the update method:
         subject.update_result_data({ order: 1 })
       end
@@ -487,7 +487,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       it 'does nothing (not changing #rec_data nor #request_hash)' do
         # No changes in result:
         expect(subject.rec_data).to be_an(Hash).and be_empty
-        expect(subject.request_hash).to be nil
+        expect(subject.request_hash).to be_nil
       end
     end
 
@@ -523,7 +523,7 @@ RSpec.describe IqRequest::ChronoRecParamAdapter do
       subject { described_class.new(current_user, fixture_params, fixture_rec_data) }
 
       before do
-        expect(subject.request_hash).to be nil
+        expect(subject.request_hash).to be_nil
         expect(subject.rec_data).to be_an(Hash).and be_present
         # Domain check:
         fixture_rec_data.each do |key, value|

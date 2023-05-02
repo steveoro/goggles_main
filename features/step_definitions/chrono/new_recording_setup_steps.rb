@@ -45,6 +45,9 @@ end
 # on the JS Select2 widget and are using a dedicated Stimulus JS controller that does multiple API fetches
 # and presets all linked fields for the final form POST.
 # The scripts are needed to preset the needed values even if the API lookups silently fail.
+#
+# SETS/SAVES:
+# @select2_input_text as manual_input_label
 When('I type {string} as selection for the {string} Select2 field') do |manual_input_label, field_camelcase_name|
   # Add programmatically a custom Option to the dropdown and pre-select it:
   execute_script("var currOption = new Option(\"#{manual_input_label}\", 0, true, true); $('##{field_camelcase_name}_select').append(currOption).trigger('change');")
@@ -59,6 +62,7 @@ When('I type {string} as selection for the {string} Select2 field') do |manual_i
   # Select the custom Option:
   expect(page).to have_css(select2_search_box)
   find(select2_search_box).send_keys(manual_input_label, :enter)
+  @select2_input_text = manual_input_label # (for possible later reference)
 
   # Close the dropdown (will also clear the search input, but who cares given we're faking it anyway)
   find(select2_search_field).click if page.has_css?(select2_search_box)

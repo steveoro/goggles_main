@@ -2,10 +2,11 @@
 
 require 'rails_helper'
 
-RSpec.describe 'chrono/index.html.haml', type: :view do
+RSpec.describe 'chrono/index.html.haml' do
   let(:current_user) { GogglesDb::User.first(50).sample }
   let(:fixture_swimmer) { GogglesDb::Swimmer.first(150).sample }
   let(:fixture_event) { GogglesDb::EventsByPoolType.eventable.individuals.sample.event_type }
+  let(:queues) { GogglesDb::ImportQueue.for_user(current_user).for_uid('chrono') }
   let(:minutes) { (rand * 5).to_i }
   let(:seconds) { (rand * 59).to_i }
   let(:hundredths) { (rand * 99).to_i }
@@ -13,6 +14,9 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
 
   before do
     expect(current_user).to be_a(GogglesDb::User).and be_valid
+    expect(queues).to all be_a(GogglesDb::ImportQueue)
+    # Prepare the view member that is used during rendering:
+    @queues = queues
     expect(fixture_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
     expect(fixture_event).to be_an(GogglesDb::EventType).and be_valid
   end
@@ -47,7 +51,6 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
 
     before do
       expect(fixture_row).to be_a(GogglesDb::ImportQueue).and be_valid
-      @queues = GogglesDb::ImportQueue.for_user(current_user).for_uid('chrono')
       # [Steve A.] Stub Devise controller helper method before rendering because
       #            view specs do not have the @controller variable set.
       #            Also, sign-in the user using the included integration test helpers:
@@ -93,7 +96,6 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
     before do
       expect(request_data).to be_an(Hash).and be_present
       expect(fixture_rows).to all be_a(GogglesDb::ImportQueue).and be_valid
-      @queues = GogglesDb::ImportQueue.for_user(current_user).for_uid('chrono')
       # [Steve A.] Stub Devise controller helper method before rendering because
       #            view specs do not have the @controller variable set.
       #            Also, sign-in the user using the included integration test helpers:
@@ -106,17 +108,18 @@ RSpec.describe 'chrono/index.html.haml', type: :view do
 
     it 'displays the same list of filtered IQ rows available to the user' do
       expect(subject.css('.main-content .container .row.border').count)
-        .to eq(@queues.count)
+        .to eq(queues.count)
     end
 
     it 'includes the list of IQ decorated rows' do
-      GogglesDb::ImportQueueDecorator.decorate_collection(@queues).each do |queue|
-        expect(subject.css('.main-content .container .row.border').text).to include(queue.text_label)
+      GogglesDb::ImportQueueDecorator.decorate_collection(queues).each do |queue|
+        expect(subject.css('.main-content .container .row.border').text)
+          .to include(ERB::Util.html_escape(queue.text_label))
       end
     end
 
     it 'includes the delete button for the IQ rows' do
-      @queues.each do |queue|
+      queues.each do |queue|
         expect(subject.css(".main-content .container .row.border #frm-delete-row-#{queue.id}")).to be_present
       end
     end

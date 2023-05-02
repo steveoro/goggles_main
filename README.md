@@ -4,6 +4,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/5179d7eefd4cd93bfba1/maintainability)](https://codeclimate.com/github/steveoro/goggles_main/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/5179d7eefd4cd93bfba1/test_coverage)](https://codeclimate.com/github/steveoro/goggles_main/test_coverage)
 [![codecov](https://codecov.io/gh/steveoro/goggles_main/branch/main/graph/badge.svg?token=47SXT4CXGP)](https://codecov.io/gh/steveoro/goggles_main)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsteveoro%2Fgoggles_main.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fsteveoro%2Fgoggles_main?ref=badge_shield)
 
 
 Main client UI app for version 7 and onward.

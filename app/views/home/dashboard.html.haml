@@ -25,7 +25,7 @@
             %i.fixed-size-48x48.fa.fa-3x.fa-calendar
             %br/
             = t('home.dashboard.plan_meeting_btn')
-        - if @current_user_is_manager
+        - if @current_user_is_manager || @current_user_is_admin
           .col.d-flex
             = link_to('#', id: 'btn-team-reservations', method: :get,
                       class: 'btn btn-block btn-info py-2 my-2 align-vertical-center disabled', role: 'button') do

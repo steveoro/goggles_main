@@ -3,7 +3,7 @@
 #
 # = MIR components module
 #
-#   - version:  7-0.5.01
+#   - version:  7-0.5.02
 #   - author:   Steve A.
 #
 module MIR
@@ -19,17 +19,24 @@ module MIR
   class TableRowComponent < ViewComponent::Base
     # Creates a new ViewComponent
     #
-    # == Params
-    # - mir: the GogglesDb::MeetingIndividualResult model instance to be displayed
-    # - index: the current MIR index, spanning the event context (can substitute rank when rank is missing)
-    # - lap_edit: when +true+, it will render the "lap edit" row-action button
-    # - report_mistake: when +true+, it will render the "report mistake" row-action button
-    def initialize(mir:, index: 0, lap_edit: false, report_mistake: false)
+    # == Supported options:
+    # All optional except +mir+:
+    #
+    # - :mir            => [required] the GogglesDb::MeetingIndividualResult model instance to be displayed
+    # - :index          => the current MIR index, spanning the event context (can substitute rank when rank is missing)
+    # - :lap_edit       => when +true+, it will render the "lap edit" row-action button
+    # - :report_mistake => when +true+, it will render the "report mistake" row-action button
+    # - :show_category  => when +true+, it will render the category name after the year of birth
+    # - :show_team => when +true+ (default), it will render the link to the team results page associated with this MIR row
+    #
+    def initialize(options = {})
       super
-      @mir = mir
-      @index = index
-      @lap_edit = lap_edit
-      @report_mistake = report_mistake
+      @mir = options[:mir]
+      @index = options[:index] || 0
+      @lap_edit = options[:lap_edit] || false
+      @report_mistake = options[:report_mistake] || false
+      @show_category = options[:show_category] || false
+      @show_team = options[:show_team] || options[:show_team].nil? # (default true)
     end
 
     # Skips rendering unless the member is properly set
@@ -41,7 +48,12 @@ module MIR
 
     # Memoized Meeting#id
     def meeting_id
-      @meeting_id ||= @mir&.meeting&.id
+      @meeting_id ||= @mir&.parent_meeting&.id
+    end
+
+    # Memoized associated CategoryType code
+    def category_code
+      @category_code ||= @mir&.category_type&.code
     end
 
     # Memoized rank value

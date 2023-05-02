@@ -3,20 +3,20 @@
 require 'rails_helper'
 
 RSpec.describe MIR::TableRowComponent, type: :component do
+  # Select an abstract lap for the parent result, so that we're sure we have existing
+  # lap rows (although not required, makes the test more complete)
+  let(:parent_result) do
+    lap = [GogglesDb::Lap, GogglesDb::UserLap].sample.last(500).sample
+    lap.parent_result
+  end
+
+  before do
+    expect(parent_result).to be_an(GogglesDb::AbstractResult).and be_valid
+    expect(parent_result.laps.count).to be_positive
+  end
+
   context 'with a valid parameter,' do
     subject { render_inline(described_class.new(mir: parent_result)) }
-
-    # Select an abstract lap for the parent result, so that we're sure we have existing
-    # lap rows (although not required, makes the test more complete)
-    let(:parent_result) do
-      lap = [GogglesDb::Lap.last(500).sample, GogglesDb::UserLap.last(500).sample].sample
-      lap.parent_result
-    end
-
-    before do
-      expect(parent_result).to be_an(GogglesDb::AbstractResult).and be_valid
-      expect(parent_result.laps.count).to be_positive
-    end
 
     it 'renders a table row with 4 cells' do
       expect(subject.css('tbody:first-child tr')).to be_present
@@ -43,7 +43,7 @@ RSpec.describe MIR::TableRowComponent, type: :component do
     end
 
     it 'includes the swimmer\'s year of birth' do
-      expect(subject.css('tbody:first-child tr td').text).to include(parent_result.swimmer&.year_of_birth.to_s)
+      expect(subject.css('tbody:first-child tr td span.year-of-birth').text).to include(parent_result.swimmer&.year_of_birth.to_s)
     end
 
     it 'includes the result score' do
@@ -84,6 +84,25 @@ RSpec.describe MIR::TableRowComponent, type: :component do
       it 'renders the report mistake button' do
         expect(subject.at_css("a#type1b1-btn-#{parent_result.id}")).to be_present
       end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  context 'with the same valid parameter but setting show_category: true,' do
+    subject { render_inline(described_class.new(mir: parent_result, show_category: true)) }
+
+    it 'renders the category code from the parent result' do
+      expect(subject.css('td span.category-code')).to be_present
+      expect(subject.css('td span.category-code').text).to include(parent_result&.category_type&.code)
+    end
+  end
+
+  context 'with the same valid parameter but setting show_team: true,' do
+    subject { render_inline(described_class.new(mir: parent_result, show_team: true)) }
+
+    it 'renders the team result link from the parent meeting' do
+      expect(subject.css('td i.team-result-link a')).to be_present
     end
   end
   #-- -------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe TaggingsController, type: :request do
+RSpec.describe TaggingsController do
   let(:fixture_meeting_id) { GogglesDb::Meeting.last(100).sample.id }
   let(:fixture_team_id) { GogglesDb::Team.first(100).sample.id }
 

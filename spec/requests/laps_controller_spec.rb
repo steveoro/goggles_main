@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe LapsController, type: :request do
+RSpec.describe LapsController do
   let(:parent_result) do
     [
       GogglesDb::MeetingIndividualResult.last(500).sample,

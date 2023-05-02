@@ -15,7 +15,7 @@ Feature: Reporting an issue of type "1b"
     And I can see the 'report missing' ('type1b') buttons on the results of the page
     When I click a random 'type1b' button on the page
     Then I am at the new issue 'type1b' page
-    And I can see the issue form 'frm-type1b'
+    And I see the issue form 'frm-type1b'
     And I see that the 'swimmer' Select2 field is disabled
     And the issue 'type1b' form 'notice.no_associated_swimmer' text is visible
     And the issue 'type1b' form 'notice.cant_manage' text is visible
@@ -31,7 +31,7 @@ Feature: Reporting an issue of type "1b"
     And I can see the 'report missing' ('type1b') buttons on the results of the page
     When I click a random 'type1b' button on the page
     Then I am at the new issue 'type1b' page
-    And I can see the issue form 'frm-type1b'
+    And I see the issue form 'frm-type1b'
     And I see that the 'swimmer' Select2 field is disabled
     And the issue 'type1b' form 'notice.cant_manage' text is visible
     But the issue 'type1b' form 'notice.no_associated_swimmer' text is not visible
@@ -42,7 +42,7 @@ Feature: Reporting an issue of type "1b"
     And I click on '#issues-type1b-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present
-    # And I can see my newly created issue
+    And I see my newly created issue
 
   Scenario: signed-in team manager issues a new type "1b" request in free-form
     Given I have a confirmed team manager account managing some existing MIRs
@@ -55,7 +55,7 @@ Feature: Reporting an issue of type "1b"
     And I can see the 'report missing' ('type1b') buttons on the results of the page
     When I click a random 'type1b' button on the page
     Then I am at the new issue 'type1b' page
-    And I can see the issue form 'frm-type1b'
+    And I see the issue form 'frm-type1b'
     But the issue 'type1b' form 'notice.cant_manage' text is not visible
     And I see that the 'swimmer' Select2 field is enabled
 
@@ -65,4 +65,4 @@ Feature: Reporting an issue of type "1b"
     And I click on '#issues-type1b-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present
-    # And I can see my newly created issue
+    And I see my newly created issue

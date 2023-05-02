@@ -14,33 +14,33 @@ class IssuesGrid < BaseGrid
   end
 
   filter(:code, :enum, header: I18n.t('issues.grid.params.code'),
-                            select: proc {
-                                      [
-                                        [I18n.t('issues.label_0'), '0'],
-                                        [I18n.t('issues.label_1a'), '1a'],
-                                        [I18n.t('issues.label_1b'), '1b'],
-                                        [I18n.t('issues.label_1b1'), '1b1'],
-                                        [I18n.t('issues.label_2b1'), '2b1'],
-                                        [I18n.t('issues.label_3b'), '3b'],
-                                        [I18n.t('issues.label_3c'), '3c'],
-                                        [I18n.t('issues.label_4'), '4']
-                                      ]
-                                    }) do |value, scope|
+                       select: proc {
+                                 [
+                                   [I18n.t('issues.label_0'), '0'],
+                                   [I18n.t('issues.label_1a'), '1a'],
+                                   [I18n.t('issues.label_1b'), '1b'],
+                                   [I18n.t('issues.label_1b1'), '1b1'],
+                                   [I18n.t('issues.label_2b1'), '2b1'],
+                                   [I18n.t('issues.label_3b'), '3b'],
+                                   [I18n.t('issues.label_3c'), '3c'],
+                                   [I18n.t('issues.label_4'), '4']
+                                 ]
+                               }) do |value, scope|
     scope.where(code: value)
   end
 
   filter(:status, :enum, header: I18n.t('issues.grid.params.status'),
-                            select: proc {
-                                      [
-                                        [I18n.t('issues.status_0'), 0],
-                                        [I18n.t('issues.status_1'), 1],
-                                        [I18n.t('issues.status_2'), 2],
-                                        [I18n.t('issues.status_3'), 3],
-                                        [I18n.t('issues.status_4'), 4],
-                                        [I18n.t('issues.status_5'), 5],
-                                        [I18n.t('issues.status_6'), 6],
-                                      ]
-                                    }) do |value, scope|
+                         select: proc {
+                                   [
+                                     [I18n.t('issues.status_0'), 0],
+                                     [I18n.t('issues.status_1'), 1],
+                                     [I18n.t('issues.status_2'), 2],
+                                     [I18n.t('issues.status_3'), 3],
+                                     [I18n.t('issues.status_4'), 4],
+                                     [I18n.t('issues.status_5'), 5],
+                                     [I18n.t('issues.status_6'), 6]
+                                   ]
+                                 }) do |value, scope|
     scope.where(status: value)
   end
 
@@ -54,10 +54,12 @@ class IssuesGrid < BaseGrid
   #-- -------------------------------------------------------------------------
   #++
 
+  # rubocop:disable Rails/OutputSafety
   column(:code, header: I18n.t('issues.grid.params.code'), html: true, mandatory: true, order: :code) do |asset|
     asset.decorate.code_flag << '&nbsp;'.html_safe << asset.decorate.long_label <<
       "<br/><small><code class='text-secondary'>#{asset.req}</code></small>".html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
   column(:priority, header: I18n.t('issues.grid.params.priority'), html: true, mandatory: true, order: :priority) do |asset|
     asset.decorate.priority_flag
@@ -71,8 +73,8 @@ class IssuesGrid < BaseGrid
 
   column(:destroy, header: '', html: true, order: false, mandatory: true) do |asset|
     button_to(issues_destroy_path(id: asset.id), id: "frm-delete-row-#{asset.id}", method: :delete,
-              class: 'btn btn-sm btn-outline-danger my-1',
-              data: { confirm: t('issues.grid.confirm_delete', label: asset.decorate.label) }) do
+                                                 class: 'btn btn-sm btn-outline-danger my-1',
+                                                 data: { confirm: t('issues.grid.confirm_delete', label: asset.decorate.label) }) do
       tag.i(class: 'fa fa-trash-o')
     end
   end

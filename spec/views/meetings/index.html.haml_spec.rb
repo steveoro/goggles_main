@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'meetings/index.html.haml', type: :view do
+RSpec.describe 'meetings/index.html.haml' do
   # Test basic/required content:
   context 'when rendering with valid data,' do
     subject(:parsed_node) { Nokogiri::HTML.fragment(rendered) }

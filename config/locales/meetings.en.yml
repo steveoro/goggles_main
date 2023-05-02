@@ -11,6 +11,8 @@ en:
     team_results: "Team results"
     swimmer_results: "Swimmer results"
     no_results_to_show: "No results to show (yet)."
+    no_results_to_show_for_team: "There are no results in this meeting for the team %{team}. You have to click on a specific name from the result list."
+    no_results_to_show_for_swimmer: "There are no results in this meeting for %{swimmer}. You have to click on a specific name from the result list ."
     standard_points: "Score"
     meeting_points: "Meeting Score"
     tooltip:

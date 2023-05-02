@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'chrono/rec.html.haml', type: :view do
+RSpec.describe 'chrono/rec.html.haml' do
   # Min case:
   context 'even without the parameter adapter,' do
     subject { Nokogiri::HTML.fragment(rendered) }

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'lookup/matching_swimmers.html.haml', type: :view do
+RSpec.describe 'lookup/matching_swimmers.html.haml' do
   context 'when there are matches to show,' do
     let(:matches) { GogglesDb::Swimmer.limit(50).sample(5) }
     # Verify content with Nokogiri:

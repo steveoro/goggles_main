@@ -29,4 +29,14 @@ module MeetingHelper
     )
   end
   # rubocop:enable Rails/OutputSafety
+  #-- -------------------------------------------------------------------------
+  #++
+
+  # Returns a unique string viable as a cache key for page fragments involving
+  # the specified <tt>action</tt> of this controller.
+  def cache_key_for_meeting(action:, meeting_id:, max_updated_at:, team_id: nil, swimmer_id: nil)
+    [action, meeting_id, max_updated_at.to_i.to_s, I18n.locale.to_s, team_id, swimmer_id].compact.join('-')
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 end

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe IssuesController, type: :request do
+RSpec.describe IssuesController do
   %i[
     issues_faq_index_path issues_my_reports_path issues_new_type0_path
   ].each do |path_to_be_tested|
@@ -51,7 +51,50 @@ RSpec.describe IssuesController, type: :request do
   #++
 
   describe 'DELETE /issues/destroy/:id' do
-    # TODO: pending
+    let(:deletable_row) { FactoryBot.create(:issue) }
+
+    before { expect(deletable_row).to be_a(GogglesDb::Issue).and be_valid }
+
+    context 'with an unlogged user' do
+      it 'is a redirect to the login path' do
+        delete(issues_destroy_path(id: deletable_row.id))
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'with a logged-in user' do
+      context 'but with an invalid row ID' do
+        before do
+          user = GogglesDb::User.first(50).sample
+          sign_in(user)
+          delete(issues_destroy_path(id: -1))
+        end
+
+        it 'is a redirect to the \'my reports\' page' do
+          expect(response).to redirect_to(issues_my_reports_path)
+        end
+
+        it 'sets an invalid request flash warning message' do
+          expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+        end
+      end
+
+      context 'and valid parameters' do
+        before do
+          user = GogglesDb::User.first(50).sample
+          sign_in(user)
+          delete(issues_destroy_path(id: deletable_row.id))
+        end
+
+        it 'redirects to the \'my reports\' page' do
+          expect(response).to redirect_to(issues_my_reports_path)
+        end
+
+        it 'sets a successful flash notice' do
+          expect(flash[:notice]).to eq(I18n.t('issues.grid.delete_done'))
+        end
+      end
+    end
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -201,7 +244,11 @@ RSpec.describe IssuesController, type: :request do
 
       context 'and valid parameters' do
         before do
-          user = GogglesDb::User.first(50).sample
+          # Choosing from the latest users so that we may skip over any existing
+          # team managers, which may fail creation of an issue type '0' if the user
+          # is already a TM for the same requested team (improbable but already happened with
+          # the first(50)).
+          user = GogglesDb::User.last(50).sample
           sign_in(user)
           post(
             path_to_be_tested,
@@ -215,8 +262,8 @@ RSpec.describe IssuesController, type: :request do
         end
 
         it 'sets the ok flash info message' do
-          expect(flash[:warning]).to be_blank # (as counterproof)
           expect(flash[:info]).to eq(I18n.t('issues.sent_ok'))
+          expect(flash[:warning]).to be_blank # (as counterproof)
         end
       end
     end
@@ -235,9 +282,18 @@ RSpec.describe IssuesController, type: :request do
 
   describe 'POST /issues/create_type1a' do
     let(:path_to_be_tested) { issues_create_type1a_path }
-    let(:params) { { meeting_id: parent_meeting.id, results_url: FFaker::Internet.http_url } }
 
-    it_behaves_like('issues POST request w/ varying parameters and context')
+    context 'when specifying an existing meeting_id' do
+      let(:params) { { meeting_id: parent_meeting.id, results_url: FFaker::Internet.http_url } }
+
+      it_behaves_like('issues POST request w/ varying parameters and context')
+    end
+
+    context 'when specifying just a meeting label' do
+      let(:params) { { meeting_label: "Won't care which Meeting description I use", results_url: FFaker::Internet.http_url } }
+
+      it_behaves_like('issues POST request w/ varying parameters and context')
+    end
   end
   #-- -------------------------------------------------------------------------
   #++

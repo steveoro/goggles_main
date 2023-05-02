@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'user_workshops/show.html.haml', type: :view do
+RSpec.describe 'user_workshops/show.html.haml' do
   # Test basic/required content:
   context 'when rendering with valid data,' do
     subject { rendered }

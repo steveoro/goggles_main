@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ChronoController, type: :request do
+RSpec.describe ChronoController do
   let(:fixture_user) { FactoryBot.create(:user) }
 
   describe 'GET /chrono/index' do

@@ -12,11 +12,11 @@ Feature: Reporting an issue of type "0"
     Then I get redirected to '/users/sign_in'
     When I fill the log-in form as the confirmed user
     Then I am at the '/issues/new_type0' page
-    And I can see the issue form 'frm-type0'
+    And I see the issue form 'frm-type0'
 
-    When I type 'CSI Ober Ferrari' as selection for the 'team' Select2 field
+    When I type 'Lake Ramiro Swimming Club ASD' as selection for the 'team' Select2 field
     And I choose to manage season at index 0 in form type0
     And I click on '#issues-type0-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present
-    # And I can see my newly created issue
+    And I see my newly created issue

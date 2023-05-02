@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'goggles/_flash_messages.html.haml', type: :view do
+RSpec.describe 'goggles/_flash_messages.html.haml' do
   let(:test_message) { FFaker::Lorem.sentence }
 
   FlashAlertComponent::SUPPORTED_SYMS.each do |flash_sym|

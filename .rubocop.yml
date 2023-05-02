@@ -46,6 +46,7 @@ Metrics/BlockLength:
   Max: 40
   CountAsOne: ['array', 'heredoc']
   Exclude:
+    - 'db/schema.rb'
     - 'lib/capistrano/tasks/db.rake'
     - 'lib/capistrano/tasks/status.rake'
     - 'lib/tasks/stats.rake'
@@ -55,6 +56,7 @@ Metrics/ClassLength:
   Max: 120
   Exclude:
   - 'app/controllers/chrono_controller.rb'
+  - 'app/controllers/meetings_controller.rb'
   - 'app/controllers/swimmers_controller.rb'
 
 Metrics/CyclomaticComplexity:
@@ -78,6 +80,14 @@ Performance/CollectionLiteralInLoop:
     - 'spec/**/*'
 
 
+# Excluded files here were already corrected in later migrations:
+Rails/ThreeStateBooleanColumn:
+  Exclude:
+    - 'db/migrate/20210513113601_create_goggles_db_user_workshops.rb'
+    - 'db/migrate/20220228114607_add_cancelled_to_calendars.rb'
+    - 'db/migrate/20220801110842_add_sql_batch_field_to_import_queues.rb'
+
+
 Rake/Desc:
   Exclude:
     - 'lib/tasks/cucumber.rake'
@@ -92,7 +102,13 @@ Rake/MethodDefinitionInTask:
     - 'lib/tasks/stats.rake'
 
 
-RSpec/Capybara/CurrentPathExpectation:
+RSpec/IndexedLet:
+  Enabled: false
+
+RSpec/ExpectInHook:
+  Enabled: false
+
+RSpec/FactoryBot/SyntaxMethods:
   Enabled: false
 
 RSpec/InstanceVariable:
@@ -106,6 +122,7 @@ RSpec/MultipleMemoizedHelpers:
   Exclude:
     - 'spec/decorators/iq_request/chrono_rec_param_adapter_spec.rb'
     - 'spec/requests/tools_controller_spec.rb'
+
 
 Style/ClassAndModuleChildren:
   Exclude:

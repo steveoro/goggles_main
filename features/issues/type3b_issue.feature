@@ -16,10 +16,10 @@ Feature: Reporting an issue of type "3b"
     And I see the nav tab with the link to my issues grid
     And I see the expandable section for issues 'type3b'
     When I click to expand the issues section 'type3b'
-    Then I can see the issue form 'frm-type3b'
+    Then I see the issue form 'frm-type3b'
 
     When I type 'LIGABUE MARCO' as selection for the 'swimmer' Select2 field
     And I click on '#issues-type3b-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present
-    # And I can see my newly created issue
+    And I see my newly created issue

@@ -24,16 +24,37 @@ RSpec.describe Laps::EditButtonComponent, type: :component do
         expect(rendered_button).to be_present
       end
 
-      it 'includes the target URL with the correct parameters' do
+      it 'includes the target URL with the correct parameters (which includes the show_team: true option by default)' do
         target_href = laps_edit_modal_path(
           result_id: parent_result.id,
-          result_class: parent_result.class.name.split('::').last
+          result_class: parent_result.class.name.split('::').last,
+          show_category: false, # default value
+          show_team: true # default value
         )
         expect(rendered_button['href']).to include(target_href.to_s)
       end
 
       it 'renders a pencil icon' do
         expect(rendered_button.at('i.fa.fa-pencil-square-o')).to be_present
+      end
+    end
+
+    context 'and the current user can manage the laps while using the show_category: true option,' do
+      subject { render_inline(described_class.new(parent_result: parent_result, can_manage: true, show_category: true)) }
+
+      let(:rendered_button) { subject.at_css("a#lap-req-edit-modal-#{parent_result.id}") }
+
+      it 'renders the button' do
+        expect(rendered_button).to be_present
+      end
+
+      it 'includes the custom target URL with the pass-through show_category parameter' do
+        target_href = laps_edit_modal_path(
+          result_id: parent_result.id,
+          result_class: parent_result.class.name.split('::').last,
+          show_category: true
+        )
+        expect(rendered_button['href']).to include(target_href.to_s)
       end
     end
 

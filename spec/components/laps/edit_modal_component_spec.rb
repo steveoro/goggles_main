@@ -52,20 +52,22 @@ RSpec.describe Laps::EditModalComponent, type: :component do
         expect(header_row.at('h6').text).to include(parent_result.swimmer.complete_name)
       end
 
-      it 'renders the link to add a new row with a step distance of 25 meters' do
+      it 'renders the link to add a new row with a step distance of 25 meters (including default values for show_team & show_category)' do
         rendered_button = header_row.at("a#lap-new25-#{parent_result.id}")
         expect(rendered_button).to be_present
         target_href = laps_path(
-          result_id: parent_result.id, result_class: parent_result.class.name.split('::').last, step: 25
+          result_id: parent_result.id, result_class: parent_result.class.name.split('::').last,
+          show_category: false, show_team: true, step: 25
         )
         expect(rendered_button['href']).to include(target_href.to_s)
       end
 
-      it 'renders the link to add a new row with a step distance of 50 meters' do
+      it 'renders the link to add a new row with a step distance of 50 meters (including default values for show_team & show_category)' do
         rendered_button = header_row.at("a#lap-new50-#{parent_result.id}")
         expect(rendered_button).to be_present
         target_href = laps_path(
-          result_id: parent_result.id, result_class: parent_result.class.name.split('::').last, step: 50
+          result_id: parent_result.id, result_class: parent_result.class.name.split('::').last,
+          show_category: false, show_team: true, step: 50
         )
         expect(rendered_button['href']).to include(target_href.to_s)
       end

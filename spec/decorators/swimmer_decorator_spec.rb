@@ -7,17 +7,8 @@ RSpec.describe SwimmerDecorator, type: :decorator do
   subject { described_class.decorate(model_obj) }
 
   let(:model_obj) { GogglesDb::Swimmer.limit(50).sample }
-  let(:swimmer_with_badge) { new_badge.swimmer }
   let(:new_swimmer) { FactoryBot.create(:swimmer) }
-  #-- -------------------------------------------------------------------------
-  #++
-
   let(:new_badge)   { FactoryBot.create(:badge) }
-  #-- -------------------------------------------------------------------------
-  #++
-
-  let(:new_badge)   { FactoryBot.create(:badge) }
-  let(:new_swimmer) { FactoryBot.create(:swimmer) }
   let(:swimmer_with_badge) { new_badge.swimmer }
 
   before do
@@ -66,28 +57,22 @@ RSpec.describe SwimmerDecorator, type: :decorator do
     end
   end
 
-  # describe '#associated_team_ids' do
-  #   context 'with a swimmer with existing badges,' do
-  #     let(:result) { described_class.decorate(swimmer_with_badge).associated_team_ids }
+  describe '#link_to_results(meeting_id)' do
+    let(:meeting_id) { [GogglesDb::Meeting, GogglesDb::UserWorkshop].sample.last(150).sample.id }
+    let(:result) { subject.link_to_results(meeting_id) }
 
-  #     it 'is a non-empty Array' do
-  #       expect(result).to be_an(Array)
-  #       expect(result.count).to be_positive
-  #     end
+    it 'is a non-empty String' do
+      expect(result).to be_a(String).and be_present
+    end
 
-  #     it 'contains only valid associations with Teams' do
-  #       expect(GogglesDb::Team.where(id: result)).to all be_a(GogglesDb::Team)
-  #     end
-  #   end
+    it 'includes the complete name' do
+      expect(result).to include(ERB::Util.html_escape(model_obj.complete_name))
+    end
 
-  #   context 'with a swimmer without any badge,' do
-  #     let(:result) { described_class.decorate(new_swimmer).associated_team_ids }
-
-  #     it 'is an empty Array' do
-  #       expect(result).to be_an(Array).and be_empty
-  #     end
-  #   end
-  # end
+    it 'includes the path to the swimmer results page' do
+      expect(result).to include(h.meeting_swimmer_results_path(id: meeting_id, swimmer_id: model_obj.id))
+    end
+  end
   #-- -------------------------------------------------------------------------
   #++
 
@@ -133,4 +118,6 @@ RSpec.describe SwimmerDecorator, type: :decorator do
   end
   #-- -------------------------------------------------------------------------
   #++
+
+  it_behaves_like('#decorated for a core model with a core decorator', GogglesDb::SwimmerDecorator)
 end

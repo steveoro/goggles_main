@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'teams/show.html.haml', type: :view do
+RSpec.describe 'teams/show.html.haml' do
   let(:fixture_row) { GogglesDb::Team.first(80).sample }
   let(:stats_row) { GogglesDb::TeamStat.new(fixture_row) }
 
@@ -57,7 +57,7 @@ RSpec.describe 'teams/show.html.haml', type: :view do
     context 'for each returned stat member,' do
       it 'shows the federation name' do
         names = Nokogiri::HTML.fragment(rendered).css('section#team-stats table b.federation-name').map(&:text)
-        expect(names).to match_array(stats_row.results.map { |r| r['federation_name'] })
+        expect(names).to match_array(stats_row.results.pluck('federation_name'))
       end
 
       it 'shows the affiliation count' do

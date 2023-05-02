@@ -1,0 +1,11 @@
+%span{ 'class' => mir.personal_best? ? 'text-success' : '' }
+  - if mir.reaction_time > 0.0
+    %small.text-muted
+      R: #{mir.reaction_time}
+    &nbsp;
+  = mir.to_timing
+&nbsp;
+= render(Laps::EditButtonComponent.new(parent_result: mir, can_manage: can_edit_lap || can_manage,
+          show_category: true, show_team: false))
+= render(Issues::ReportMistakeButtonComponent.new(result_row: mir,
+        can_manage: can_edit_lap || can_manage))

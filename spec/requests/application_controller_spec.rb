@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ApplicationController, type: :request do
+RSpec.describe ApplicationController do
   # Request Locale setter
   [nil, :it, :en, :invalid].each do |locale_sym|
     context "when setting the locale parameter as '#{locale_sym}'," do

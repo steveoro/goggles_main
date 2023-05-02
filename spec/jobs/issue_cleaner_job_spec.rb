@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe IssueCleanerJob, type: :job do
+RSpec.describe IssueCleanerJob do
   shared_examples_for 'IssueCleanerJob properly enqueued' do
     it "enqueues the job on the 'issues' queue" do
       expect { described_class.perform_later }.to have_enqueued_job.on_queue('issues')
@@ -24,8 +24,8 @@ RSpec.describe IssueCleanerJob, type: :job do
       5.times do
         FactoryBot.create(
           issue_factory,
-          status: (GogglesDb::Issue::MAX_PROCESSABLE_STATE+1..6).to_a.sample,
-          updated_at: IssueCleanerJob::OBSOLESCENCE_MARK - 1.minute
+          status: (GogglesDb::Issue::MAX_PROCESSABLE_STATE + 1..6).to_a.sample,
+          updated_at: IssueCleanerJob::OBSOLESCENCE_MARK.ago - 1.minute
         )
       end
       expect(GogglesDb::Issue.count).to be >= 10
@@ -34,9 +34,9 @@ RSpec.describe IssueCleanerJob, type: :job do
 
     it_behaves_like('IssueCleanerJob properly enqueued')
 
-    context 'and some of them are already processed and older than the OBSOLESCENCE_MARK,' do
+    context 'and some of them are already processed and older than the OBSOLESCENCE_MARK(.ago),' do
       it 'deletes those rows' do
-        expect { described_class.perform_now }.to change { GogglesDb::Issue.count }.by(-5)
+        expect { described_class.perform_now }.to change(GogglesDb::Issue, :count).by(-5)
       end
     end
   end

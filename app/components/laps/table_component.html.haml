@@ -1,4 +1,4 @@
 %tbody.table.table-sm{ id: dom_id }
   - @laps.includes(parent_association_name).by_distance.each do |lap|
-    = render(Laps::TableRowComponent.new(lap: lap))
-  = render(Laps::TableRowComponent.new(lap: closing_result_lap))
+    = render(Laps::TableRowComponent.new(lap: lap, collapsed: @collapsed))
+  = render(Laps::TableRowComponent.new(lap: closing_result_lap, collapsed: @collapsed))

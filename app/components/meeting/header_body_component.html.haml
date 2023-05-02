@@ -1,5 +1,5 @@
 %tbody
-  - if @swimming_pool
+  - if @swimming_pool.present?
     %tr{ scope: 'row', colspan: 4 }
       %th{ colspan: 2 }
         = t('meetings.dashboard.swimming_pool')

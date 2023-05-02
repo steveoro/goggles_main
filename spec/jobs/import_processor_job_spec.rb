@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # rubocop:disable RSpec/BeforeAfterAll
-RSpec.describe ImportProcessorJob, type: :job do
+RSpec.describe ImportProcessorJob do
   shared_examples_for 'ImportProcessorJob properly enqueued' do
     it "enqueues the job on the 'iq' queue" do
       expect { described_class.perform_later }.to have_enqueued_job.on_queue('iq')
@@ -45,7 +45,7 @@ RSpec.describe ImportProcessorJob, type: :job do
 
     context 'when there are rows marked as "done" (deletable),' do
       it 'consumes those IQ rows' do
-        expect { described_class.perform_now }.to change { GogglesDb::ImportQueue.count }.by(-1)
+        expect { described_class.perform_now }.to change(GogglesDb::ImportQueue, :count).by(-1)
       end
     end
   end

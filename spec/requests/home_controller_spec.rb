@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe HomeController, type: :request do
+RSpec.describe HomeController do
   include ActiveJob::TestHelper
 
   before { expect(fixture_user).to be_a(GogglesDb::User).and be_valid }

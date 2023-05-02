@@ -3,7 +3,7 @@
 #
 # = Laps components module
 #
-#   - version:  7-0.4.25
+#   - version:  7-0.5.01
 #   - author:   Steve A.
 #
 module Laps
@@ -17,15 +17,20 @@ module Laps
     # Creates a new ViewComponent
     #
     # == Params
-    # - <tt>parent_result</tt>: a valid instance of an associated parent <tt>GogglesDb::AbstractResult</tt>.
-    #   must be already serialized (not new)
+    # - <tt>:parent_result</tt>  => [required] a valid instance of an associated parent <tt>GogglesDb::AbstractResult</tt>;
+    #                               must be already serialized (not new) since the ID is needed.
     #
-    # - <tt>add_row</tt>: when present and positive, a new row will be added to the table rendering, if
-    #   and only if the overall total length is less then the result total distance.
+    # - <tt>:show_category</tt>  => when +true+, passes the render option for displaying the category name
+    #                               after the year of birth when refreshing the parent MIR component;
     #
-    def initialize(parent_result:)
+    # - <tt>:show_team</tt> => when +true+ (default), passes the render option to the parent MIR component for
+    #                               displaying the link to the team results page associated with this MIR row.
+    #
+    def initialize(parent_result:, show_category: false, show_team: true)
       super
       @parent_result = parent_result
+      @show_category = show_category
+      @show_team = show_team
     end
 
     # Skips rendering unless the required parameters are set

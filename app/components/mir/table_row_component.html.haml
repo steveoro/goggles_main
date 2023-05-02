@@ -1,4 +1,6 @@
-%tbody.result-table-row{ id: "mir#{@mir.id}" }
+-# Pass-over the display customization parameters as data fields so that the modal can setup using these:
+%tbody.result-table-row{ id: "mir#{@mir.id}", data: { category: @show_category ? '1' : '0',
+                         team: @show_team ? '1' : '0' } }
   %tr
     %td.text-right
       = render(RankingPosComponent.new(rank: rank))
@@ -7,23 +9,27 @@
         %small.text-muted
           R: #{@mir.reaction_time}
         &nbsp;
-      = @mir.to_timing.to_s
+      = @mir.to_timing
       %br/
       = render(Switch::RotatingComponent.new(target_id: "laps#{@mir.id}")) if includes_laps?
-      = render(Laps::EditButtonComponent.new(parent_result: @mir, can_manage: @lap_edit))
+      = render(Laps::EditButtonComponent.new(parent_result: @mir, can_manage: @lap_edit,
+               show_category: @show_category, show_team: @show_team))
       = render(Issues::ReportMistakeButtonComponent.new(result_row: @mir, can_manage: @report_mistake))
     %td
-      = SwimmerDecorator.decorate(swimmer).link_to_results(meeting_id)
+      %span.swimmer-results-link= SwimmerDecorator.decorate(swimmer).link_to_results(meeting_id)
       %br/
       %small.text-muted
-        = swimmer&.year_of_birth
-        - if team
-          %i
+        %span.year-of-birth
+          = swimmer&.year_of_birth
+        - if @show_category && category_code
+          %span.category-code= category_code
+        - if @show_team && team
+          %i.team-result-link
             &nbsp;-&nbsp;#{TeamDecorator.decorate(team).link_to_results(meeting_id)}
         - elsif swimming_pool
           &nbsp;-&nbsp;#{SwimmingPoolDecorator.decorate(swimming_pool).link_to_full_name}
     %td
-      .text-muted
+      .text-muted.text-right
         = result_score
 
 - if includes_laps?

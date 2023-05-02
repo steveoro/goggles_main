@@ -58,16 +58,16 @@ module Meeting
     # TODO: use meeting.decorate.meeting_pool
 
     # Sets the @swimming_pool member
-    # rubocop:disable Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
     def choose_abstract_meeting_pool(meeting)
       if meeting.respond_to?(:meeting_sessions)
         msession = meeting&.meeting_sessions&.by_order&.first
-        SwimmingPoolDecorator.decorate(msession&.swimming_pool)
+        SwimmingPoolDecorator.decorate(msession&.swimming_pool) if msession&.swimming_pool
 
       elsif meeting.respond_to?(:swimming_pool) && meeting.swimming_pool
         SwimmingPoolDecorator.decorate(meeting.swimming_pool)
       end
     end
-    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
   end
 end

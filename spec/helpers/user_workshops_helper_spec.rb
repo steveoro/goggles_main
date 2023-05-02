@@ -2,6 +2,6 @@
 
 require 'rails_helper'
 
-RSpec.describe UserWorkshopsHelper, type: :helper do
+RSpec.describe UserWorkshopsHelper do
   # (unused for the moment)
 end

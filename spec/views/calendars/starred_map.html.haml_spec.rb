@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'calendars/starred_map.html.haml', type: :view do
+RSpec.describe 'calendars/starred_map.html.haml' do
   # Test basic/required content:
   subject(:parsed_node) { Nokogiri::HTML.fragment(rendered) }
 

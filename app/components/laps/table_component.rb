@@ -3,7 +3,7 @@
 #
 # = Laps components module
 #
-#   - version:  7-0.4.25
+#   - version:  7-0.5.01
 #   - author:   Steve A.
 #
 module Laps
@@ -25,9 +25,11 @@ module Laps
     #
     # == Params
     # - laps: the GogglesDb::Lap relation holding the list of laps to be displayed
-    def initialize(laps:)
+    # - collapsed: (default: true) when +false+, it won't hide/collapse the lap sub-table at start
+    def initialize(laps:, collapsed: true)
       super
       @laps = laps
+      @collapsed = collapsed
     end
 
     # Skips rendering unless @laps is enumerable and orderable :by_distance

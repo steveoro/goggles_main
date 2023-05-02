@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe APISessionsController, type: :request do
+RSpec.describe APISessionsController do
   describe 'POST /jwt' do
     context 'with an unlogged user requesting JSON format' do
       it 'is a redirect to the login path' do
@@ -44,7 +44,7 @@ RSpec.describe APISessionsController, type: :request do
         end
 
         it 'returns the new JWT as JSON' do
-          json = JSON.parse(response.body)
+          json = response.parsed_body
           expect(json).to have_key('jwt')
           expect(json['jwt']).to be_present
         end

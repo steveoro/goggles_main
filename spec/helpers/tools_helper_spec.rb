@@ -2,6 +2,6 @@
 
 require 'rails_helper'
 
-RSpec.describe ToolsHelper, type: :helper do
+RSpec.describe ToolsHelper do
   # (unused for the moment)
 end

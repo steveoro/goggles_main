@@ -9,9 +9,9 @@ RSpec.describe Solver::UserLap, type: :integration do
   # (some parent entities are new, some are existing => bind all laps to same UR)
   #
   context 'when solving a group of multi-user_lap chrono requests from a fixture,' do
-    let(:array_of_req_hash) { JSON.parse(File.read('spec/fixtures/7x_swimmer-23_chrono.json')) }
-    # ****************** TODO: after DB engine update, use this instead: ***************************
-    # JSON.parse(File.read("#{GogglesDb::Engine.root}/spec/fixtures/7x_swimmer-23_chrono.json"))
+    let(:array_of_req_hash) do
+      JSON.parse(File.read("#{GogglesDb::Engine.root}/spec/fixtures/7x_swimmer-23_chrono.json"))
+    end
 
     before do
       expect(array_of_req_hash).to be_an(Array).and be_present

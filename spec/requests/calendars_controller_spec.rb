@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe CalendarsController, type: :request do
+RSpec.describe CalendarsController do
   describe 'GET /current' do
     context 'for an unlogged user' do
       it 'redirects to the login path' do

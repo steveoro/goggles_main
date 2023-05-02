@@ -3,6 +3,6 @@
 require 'rails_helper'
 
 # end
-RSpec.describe TeamHelper, type: :helper do
+RSpec.describe TeamHelper do
   # (unused for the moment)
 end

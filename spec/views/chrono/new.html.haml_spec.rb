@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'chrono/new.html.haml', type: :view do
+RSpec.describe 'chrono/new.html.haml' do
   # Min case:
   context "when there's no associated swimmer for the current_user and there aren't any previous stored choices," do
     subject { Nokogiri::HTML.fragment(rendered) }

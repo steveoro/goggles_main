@@ -5,7 +5,7 @@ require 'rails_helper'
 # NOTE: there's no functional difference between 'current' & 'starred' views, except for the domain setup.
 #       Provided they both use the same list of fixture calendar rows, this example should be identical
 #       to spec/views/calendars/current.html.haml_spec.rb
-RSpec.describe 'calendars/starred.html.haml', type: :view do
+RSpec.describe 'calendars/starred.html.haml' do
   context 'when the current user does not manage any available team and the season is *old*,' do
     include_context('calendar_grid rendered with only expired but valid meeting data')
 

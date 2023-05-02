@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'maintenance/index.html.haml', type: :view do
+RSpec.describe 'maintenance/index.html.haml' do
   before do
     GogglesDb::AppParameter.maintenance = true
     render

@@ -34,7 +34,7 @@ RSpec.describe Title::UserDashboardLinkComponent, type: :component do
 
     before do
       expect(fixture_row).to be_a(GogglesDb::User).and be_valid
-      expect(fixture_row.swimmer).to be nil
+      expect(fixture_row.swimmer).to be_nil
     end
 
     it 'renders the link to current user\'s dashboard page using the description of the user' do

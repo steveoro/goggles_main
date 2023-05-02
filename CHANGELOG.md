@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.5.02** [Steve A.] added meeting/team_results & meeting/swimmer_results; plus additional specs & feature files & various stability fixes
 - **0.5.01** [Steve A.] full support for reported issues for signed-in users; fixed microtransactions data-import for laps
 - **0.4.25** [Steve A.] descending order for calendars; scaffolding support for reported issues w/ related view components; smart search now matches at least the results from the swimmers API; misc improvements, bugfixes & additional specs
 - **0.4.21** [Steve A.] resync w/ base engine; calendar views & map; support for meeting tag by user or by team in calendars with dedicated components; additional specs

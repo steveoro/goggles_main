@@ -7,7 +7,7 @@
 class IssueCleanerJob < ApplicationJob
   queue_as { arguments&.first || 'issues' }
 
-  OBSOLESCENCE_MARK = 1.week.ago
+  OBSOLESCENCE_MARK = 1.week
 
   # DJ error handler callback.
   #
@@ -21,6 +21,6 @@ class IssueCleanerJob < ApplicationJob
 
   # Performs the Job; parameters are currently ignored here.
   def perform(*_args)
-    GogglesDb::Issue.deletable.where('updated_at < ?', OBSOLESCENCE_MARK).delete_all
+    GogglesDb::Issue.deletable.where('updated_at < ?', OBSOLESCENCE_MARK.ago).delete_all
   end
 end

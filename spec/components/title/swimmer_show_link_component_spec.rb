@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe Title::SwimmerShowLinkComponent, type: :component do
+  let(:fixture_row) { GogglesDb::Swimmer.first(200).sample }
+
+  before { expect(fixture_row).to be_a(GogglesDb::Swimmer).and be_valid }
+
   context 'with a valid GogglesDb::Swimmer parameter,' do
     subject { render_inline(described_class.new(swimmer: fixture_row)) }
-
-    let(:fixture_row) { GogglesDb::Swimmer.first(200).sample }
-
-    before { expect(fixture_row).to be_a(GogglesDb::Swimmer).and be_valid }
 
     it 'renders the #link_to_full_name for the swimmer radiography page' do
       expect(subject.at('a')).to be_present
@@ -20,6 +20,28 @@ RSpec.describe Title::SwimmerShowLinkComponent, type: :component do
     it 'renders the tooltip that explains the go-to-dashboard behavior of the link' do
       expect(subject.at('i.fa.fa-info-circle')).to be_present
       expect(subject.at('i.fa.fa-info-circle').attributes['title'].value).to eq(I18n.t('swimmers.go_to_dashboard'))
+      expect(subject.at('i.fa.fa-info-circle').attributes['data'].value).to eq('tooltip')
+      expect(subject.at('i.fa.fa-info-circle').attributes['onclick'].value).to eq("$(this).tooltip('toggle')")
+    end
+  end
+
+  context 'with a valid GogglesDb::Swimmer parameter + custom action link options,' do
+    subject { render_inline(described_class.new(swimmer: fixture_row, action_link_method: :link_to_results, link_extra_params: extra_params)) }
+
+    let(:custom_action) { :link_to_results }
+    let(:extra_params) { (rand * 10_000).to_i }
+    let(:link_extra_params) { :link_to_results }
+
+    it 'renders the #link_to_results for the meeting/swimmer_result page (which includes the meeting ID as extra params)' do
+      expect(subject.at('a')).to be_present
+      decorated = SwimmerDecorator.decorate(fixture_row)
+      expect(subject.at('a').text).to eq(fixture_row.complete_name)
+      expect(subject.to_html).to include(decorated.send(custom_action, extra_params))
+    end
+
+    it 'renders the tooltip that explains the go-to-dashboard behavior of the link' do
+      expect(subject.at('i.fa.fa-info-circle')).to be_present
+      expect(subject.at('i.fa.fa-info-circle').attributes['title'].value).to eq(I18n.t('meetings.tooltip.link.swimmer_results'))
       expect(subject.at('i.fa.fa-info-circle').attributes['data'].value).to eq('tooltip')
       expect(subject.at('i.fa.fa-info-circle').attributes['onclick'].value).to eq("$(this).tooltip('toggle')")
     end

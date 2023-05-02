@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'home/index.html.haml', type: :view do
+RSpec.describe 'home/index.html.haml' do
   before do
     assign(:app_settings_row, GogglesDb::AppParameter.versioning_row)
     render

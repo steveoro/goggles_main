@@ -4,7 +4,7 @@ require 'rails_helper'
 
 # NOTE: specs in this file have access to a helper object that includes
 #       the ChronoHelper as in 'helper.<METHOD_NAME>'.
-RSpec.describe ChronoHelper, type: :helper do
+RSpec.describe ChronoHelper do
   # ASSERT / needs:
   # - subject => already existing & rendered
   shared_examples_for 'chrono helper with an empty or nil parameter' do
@@ -13,7 +13,7 @@ RSpec.describe ChronoHelper, type: :helper do
     end
 
     it 'renders nil' do
-      expect(subject).to be nil
+      expect(subject).to be_nil
     end
   end
 

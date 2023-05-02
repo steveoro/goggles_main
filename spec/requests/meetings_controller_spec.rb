@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'support/shared_request_examples'
 
-RSpec.describe MeetingsController, type: :request do
+RSpec.describe MeetingsController do
   describe 'GET /index' do
     context 'with an un-logged user' do
       it 'is a redirect to the login path' do
@@ -121,13 +121,179 @@ RSpec.describe MeetingsController, type: :request do
   #++
 
   describe 'GET /team_results/:id' do
-    # TODO
+    # Make sure we select a meeting with actual results, at least:
+    let(:meeting_id) do
+      GogglesDb::Meeting.includes(:meeting_individual_results)
+                        .joins(:meeting_individual_results)
+                        .first(250).pluck(:id)
+                        .sample
+    end
+
+    # Logged or unlogged, the result is the same:
+    context 'with an invalid row id' do
+      before { get(meeting_team_results_path(meeting_id)) }
+
+      it_behaves_like('invalid row id GET request')
+    end
+
+    # From all the rest of the describe, 'with a valid row id' is implied for brevity:
+    context 'with an un-logged user' do
+      context 'when using a valid row id,' do
+        before { get(meeting_team_results_path(meeting_id)) }
+
+        it_behaves_like('invalid row id GET request')
+      end
+    end
+
+    context 'with a logged-in user without an associated swimmer,' do
+      before do
+        user = FactoryBot.create(:user)
+        sign_in(user)
+        get(meeting_team_results_path(meeting_id))
+      end
+
+      it_behaves_like('invalid row id GET request')
+    end
+
+    context 'with a logged-in user linked to a swimmer & team but not present in the results,' do
+      let(:fixture_season) { GogglesDb::Meeting.find(meeting_id).season }
+      let(:fixture_badge)  { FactoryBot.create(:badge, season: fixture_season) }
+
+      before do
+        # Creating the badge from scratch will make sure that we won't have any meeting results
+        # for this team & swimmer combo:
+        expect(fixture_season).to be_a(GogglesDb::Season).and be_valid
+        expect(fixture_badge).to be_a(GogglesDb::Badge).and be_valid
+        user = FactoryBot.create(:user)
+        user.associate_to_swimmer!(fixture_badge.swimmer)
+        sign_in(user)
+        get(meeting_team_results_path(meeting_id))
+      end
+
+      it 'redirects to the meetings/show page' do
+        expect(response).to redirect_to(meeting_show_path(meeting_id))
+      end
+
+      it 'sets a flash warning for the invalid request' do
+        expect(flash[:warning]).to eq(I18n.t('meetings.no_results_to_show_for_team', team: fixture_badge.team.editable_name))
+      end
+    end
+
+    context 'with a logged-in user linked to a swimmer & team AND present in the chosen results,' do
+      let(:fixture_mir) do
+        GogglesDb::MeetingIndividualResult.includes(:meeting, :swimmer, :team)
+                                          .joins(:meeting, :swimmer, :team)
+                                          .where('meetings.id': meeting_id)
+                                          .sample
+      end
+      let(:fixture_swimmer) { fixture_mir.swimmer }
+      let(:fixture_team)    { fixture_mir.team }
+
+      before do
+        expect(meeting_id).to be_positive
+        expect(fixture_mir).to be_a(GogglesDb::MeetingIndividualResult).and be_valid
+        expect(fixture_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
+        expect(fixture_team).to be_a(GogglesDb::Team).and be_valid
+
+        user = FactoryBot.create(:user)
+        user.associate_to_swimmer!(fixture_swimmer)
+        sign_in(user)
+        get(meeting_team_results_path(meeting_id), params: { team_id: fixture_mir.team_id })
+      end
+
+      it 'returns http success' do
+        expect(response).to have_http_status(:success)
+      end
+    end
   end
   #-- -------------------------------------------------------------------------
   #++
 
   describe 'GET /swimmer_results/:id' do
-    # TODO
+    # Make sure we select a meeting with actual results, at least:
+    let(:meeting_id) do
+      GogglesDb::Meeting.includes(:meeting_individual_results)
+                        .joins(:meeting_individual_results)
+                        .first(250).pluck(:id)
+                        .sample
+    end
+
+    # Logged or unlogged, the result is the same:
+    context 'with an invalid row id' do
+      before { get(meeting_swimmer_results_path(meeting_id)) }
+
+      it_behaves_like('invalid row id GET request')
+    end
+
+    # From all the rest of the describe, 'with a valid row id' is implied for brevity:
+    context 'with an un-logged user' do
+      context 'when using a valid row id,' do
+        before { get(meeting_swimmer_results_path(meeting_id)) }
+
+        it_behaves_like('invalid row id GET request')
+      end
+    end
+
+    context 'with a logged-in user without an associated swimmer,' do
+      before do
+        user = FactoryBot.create(:user)
+        sign_in(user)
+        get(meeting_swimmer_results_path(meeting_id))
+      end
+
+      it_behaves_like('invalid row id GET request')
+    end
+
+    context 'with a logged-in user linked to a swimmer & team but not present in the results,' do
+      let(:fixture_season) { GogglesDb::Meeting.find(meeting_id).season }
+      let(:fixture_badge)  { FactoryBot.create(:badge, season: fixture_season) }
+
+      before do
+        # Creating the badge from scratch will make sure that we won't have any meeting results
+        # for this team & swimmer combo:
+        expect(fixture_season).to be_a(GogglesDb::Season).and be_valid
+        expect(fixture_badge).to be_a(GogglesDb::Badge).and be_valid
+        user = FactoryBot.create(:user)
+        user.associate_to_swimmer!(fixture_badge.swimmer)
+        sign_in(user)
+        get(meeting_swimmer_results_path(meeting_id))
+      end
+
+      it 'redirects to the meetings/show page' do
+        expect(response).to redirect_to(meeting_show_path(meeting_id))
+      end
+
+      it 'sets a flash warning for the invalid request' do
+        expect(flash[:warning]).to eq(I18n.t('meetings.no_results_to_show_for_swimmer', swimmer: fixture_badge.swimmer.complete_name))
+      end
+    end
+
+    context 'with a logged-in user linked to a swimmer & team AND present in the chosen results,' do
+      let(:fixture_mir) do
+        GogglesDb::MeetingIndividualResult.includes(:meeting, :swimmer, :team)
+                                          .joins(:meeting, :swimmer, :team)
+                                          .where('meetings.id': meeting_id)
+                                          .sample
+      end
+      let(:fixture_swimmer) { fixture_mir.swimmer }
+      let(:fixture_team)    { fixture_mir.team }
+
+      before do
+        expect(meeting_id).to be_positive
+        expect(fixture_mir).to be_a(GogglesDb::MeetingIndividualResult).and be_valid
+        expect(fixture_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
+        expect(fixture_team).to be_a(GogglesDb::Team).and be_valid
+
+        user = FactoryBot.create(:user)
+        user.associate_to_swimmer!(fixture_swimmer)
+        sign_in(user)
+        get(meeting_swimmer_results_path(meeting_id), params: { swimmer_id: fixture_mir.swimmer_id })
+      end
+
+      it 'returns http success' do
+        expect(response).to have_http_status(:success)
+      end
+    end
   end
   #-- -------------------------------------------------------------------------
   #++

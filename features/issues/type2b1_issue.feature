@@ -16,11 +16,11 @@ Feature: Reporting an issue of type "2b1"
     When I click a random 'type1b1' button on the page
     Then I am at the new issue 'type1b1' page
     And the active nav tab is 'type1b1'
-    And I can see the issue form 'frm-type1b1'
+    And I see the issue form 'frm-type1b1'
     When I select 'type2b1' as the active nav tab
     Then I am at the new issue 'type2b1' page
     And the active nav tab is 'type2b1'
-    And I can see the issue form 'frm-type2b1'
+    And I see the issue form 'frm-type2b1'
 
     When I check 'wrong_swimmer' as a selected checkbox
     And I check 'wrong_meeting' as a selected checkbox
@@ -32,4 +32,4 @@ Feature: Reporting an issue of type "2b1"
     When I click on '#issues-type2b1-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present
-    # And I can see my newly created issue
+    And I see my newly created issue

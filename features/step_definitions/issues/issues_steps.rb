@@ -35,7 +35,7 @@ end
 
 Then('I can see the empty grid of my issues') do
   grid_node = find('section#issues-grid .container', visible: true)
-  expect(grid_node.text).to include(I18n.t('issues.no_issues_found'))
+  expect(grid_node.text).to include(I18n.t('datagrid.no_results'))
 end
 # -----------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ Then('I am at the new issue {string} page') do |issue_type|
 end
 # -----------------------------------------------------------------------------
 
-Then('I can see the issue form {string}') do |issue_type|
+Then('I see the issue form {string}') do |issue_type|
   expect(page).to have_css("form##{issue_type}")
 end
 
@@ -101,4 +101,50 @@ end
 
 Then('I select {string} as the active nav tab') do |issue_type|
   find("li.nav-item##{issue_type}-nav-item a.nav-link", visible: true).click
+end
+# -----------------------------------------------------------------------------
+
+# USES (if present):
+# - @select2_input_text => manual input for the select2 search dropdown, only if set
+#   (see features/step_definitions/chrono/new_recording_setup_steps.rb:51)
+# ASSUMES/SETS:
+# - @latest_issue = GogglesDb::Issue.last
+When('I see my newly created issue') do
+  sleep(1) && wait_for_ajax
+  expect(GogglesDb::Issue.count).to be_positive
+  @latest_issue = GogglesDb::Issue.last
+  # In case we come from a select2 drop-down input box, the label should be in the request text too:
+  expect(@latest_issue.req.to_s).to include(@select2_input_text) if @select2_input_text.present?
+
+  issue_grid = find('section#issues-grid table tbody', visible: true)
+  last_row = issue_grid.find_all('tr', visible: true).last
+  expect(last_row.text).to include(@latest_issue.req.to_s)
+end
+
+# USES:
+# - @current_user
+When('I see the grid with the issues created by me') do
+  first_page_issues = GogglesDb::Issue.for_user(@current_user).first(8)
+  expect(first_page_issues.count).to be_positive
+
+  issue_grid = find('section#issues-grid table tbody', visible: true)
+  expect(issue_grid.find_all('tr', visible: true).count).to eq(first_page_issues.count)
+end
+
+# USES:
+# - @current_user
+# SETS:
+# - @chosen_issue_row_id from any Issue of the current user from the first page of the grid
+When('I choose an issue row to be deleted, accepting the confirmation request') do
+  @chosen_issue_row_id = GogglesDb::Issue.for_user(@current_user).first(8).sample.id
+  delete_btn = find("#frm-delete-row-#{@chosen_issue_row_id}")
+  expect(delete_btn).to be_visible
+  accept_confirm { delete_btn.click }
+end
+
+# USES:
+# - @chosen_issue_row_id
+When('I can see that the chosen issue row has been deleted') do
+  expect(find('section#issues-grid table tbody', visible: true))
+    .not_to have_selector("#frm-delete-row-#{@chosen_issue_row_id}")
 end

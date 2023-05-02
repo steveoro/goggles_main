@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'swimming_pools/show.html.haml', type: :view do
+RSpec.describe 'swimming_pools/show.html.haml' do
   # Test basic/required content:
   context 'when rendering with data,' do
     let(:fixture_row) { GogglesDb::SwimmingPool.first(100).sample }

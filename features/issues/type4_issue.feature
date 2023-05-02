@@ -16,7 +16,7 @@ Feature: Reporting an issue of type "4"
     And I see the nav tab with the link to my issues grid
     And I see the expandable section for issues 'type4'
     When I click to expand the issues section 'type4'
-    Then I can see the issue form 'frm-type4'
+    Then I see the issue form 'frm-type4'
 
     When I fill the 'expected' field with 'Simple result browsing'
     And I fill the 'outcome' field with 'Everything exploded'
@@ -24,4 +24,4 @@ Feature: Reporting an issue of type "4"
     And I click on '#issues-type4-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present
-    # And I can see my newly created issue
+    And I see my newly created issue

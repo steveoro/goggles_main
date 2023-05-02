@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SearchController, type: :request do
+RSpec.describe SearchController do
   describe 'GET XHR /smart' do
     context 'without a query parameter' do
       it 'is a redirect to root_path' do

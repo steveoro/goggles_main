@@ -28,6 +28,17 @@ end
 # Uses @chosen_meeting
 Then('I browse to see the selected meeting details') do
   visit(meeting_show_path(@chosen_meeting.id))
+  sleep(1)
+end
+
+# Uses @chosen_meeting
+Then('I browse to see the selected meeting team results page') do
+  visit(meeting_team_results_path(@chosen_meeting.id))
+end
+
+# Uses @chosen_meeting
+Then('I browse to see the selected meeting swimmer results page') do
+  visit(meeting_swimmer_results_path(@chosen_meeting.id))
 end
 
 Then('I am at the show page for the details of the meeting') do
@@ -99,3 +110,73 @@ Then('I see the applied filter in the top row label and at least the first meeti
 end
 #-- ---------------------------------------------------------------------------
 #++
+
+# Designed for Meetings
+# Uses @chosen_meeting
+# Sets @chosen_mir
+Given('I have chosen a random result among the current meeting details') do
+  @chosen_mir = @chosen_meeting.meeting_individual_results.sample
+end
+
+# Designed for Meetings
+# Uses @chosen_meeting, @associated_team_id
+# Sets @chosen_mir
+Given('I have chosen a random row from the results of my associated team') do
+  expect(@chosen_meeting).to be_a(GogglesDb::Meeting)
+  expect(@associated_team_id).to be_positive
+  @chosen_mir = @chosen_meeting.meeting_individual_results.where(team_id: @associated_team_id).sample
+end
+#-- ---------------------------------------------------------------------------
+#++
+
+# Uses @chosen_mir
+When('I click on the team name on the chosen result row, selecting it') do
+  find("tbody.result-table-row#mir#{@chosen_mir.id} .team-result-link a").click
+  sleep(1) && wait_for_ajax
+end
+
+# Uses @chosen_mir
+When('I click on the swimmer name on the chosen result row, selecting it') do
+  find("tbody.result-table-row#mir#{@chosen_mir.id} span.swimmer-results-link a").click
+  sleep(1) && wait_for_ajax
+end
+
+# Uses @chosen_meeting
+Then('I am at the chosen team results page for the current meeting') do
+  sleep(1) && wait_for_ajax
+  expect(page.current_path.to_s).to include(meeting_team_results_path(@chosen_meeting.id))
+  find('section#meeting-team-results')
+end
+
+# Uses @chosen_meeting
+Then('I am at the chosen swimmer results page for the current meeting') do
+  sleep(1) && wait_for_ajax
+  expect(page.current_path.to_s).to include(meeting_swimmer_results_path(@chosen_meeting.id))
+  find('section#meeting-swimmer-results')
+end
+#-- ---------------------------------------------------------------------------
+#++
+
+Then('I see the title with the link to go to the team radiography') do
+  find('#team-header-title span#back-to-dashboard a', visible: true)
+end
+
+Then('I see the team results header') do
+  find_by_id('team-results-header', visible: true)
+end
+
+Then('I see the team swimmers grid') do
+  find_by_id('team-results-swimmers-grid', visible: true)
+end
+
+Then('I see the team events grid') do
+  find_by_id('team-results-events-grid', visible: true)
+end
+
+Then('I see the title with the link to go to the swimmer radiography') do
+  find('#swimmer-header-title span#back-to-dashboard a', visible: true)
+end
+
+Then('I see the swimmer results header table') do
+  find('#swimmer-results-header table', visible: true)
+end

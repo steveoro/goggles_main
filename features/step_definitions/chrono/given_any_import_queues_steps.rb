@@ -4,9 +4,7 @@
 # Uses @current_user
 Given('there is a chrono recording request from the current_user with sibling rows') do
   expect(@current_user).to be_a(GogglesDb::User).and be_valid
-  array_of_requests = JSON.parse(File.read('spec/fixtures/3x_swimmer-142_chrono.json'))
-  # ****************** TODO: after DB engine update, use this instead: ***************************
-  # array_of_requests = JSON.parse(File.read("#{GogglesDb::Engine.root}/spec/fixtures/3x_swimmer-142_chrono.json"))
+  array_of_requests = JSON.parse(File.read("#{GogglesDb::Engine.root}/spec/fixtures/3x_swimmer-142_chrono.json"))
 
   master_row = FactoryBot.create(
     :import_queue,

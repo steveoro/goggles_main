@@ -94,7 +94,7 @@ shared_examples_for 'an AbstractMeeting detail page rendering the collapsed \'mo
 end
 
 # REQUIRES/ASSUMES:
-# - subject.......: result from #render_inline (renders a Nokogiri::HTML.fragment)
+# - subject.......: result from #render_inline pr #render (renders a Nokogiri::HTML.fragment)
 # - fixture_row...: an AbstractMeeting instance
 shared_examples_for 'an AbstractMeeting detail page rendering main \'header\' details' do
   let(:parsed_node) { Nokogiri::HTML.fragment(subject) }

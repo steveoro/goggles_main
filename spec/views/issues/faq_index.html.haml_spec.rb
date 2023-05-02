@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'issues/faq_index.html.haml', type: :view do
+RSpec.describe 'issues/faq_index.html.haml' do
   # Test basic/required content:
   context 'with a successful rendering,' do
     subject { Nokogiri::HTML.fragment(rendered) }

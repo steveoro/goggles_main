@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'tools/fin_score.html.haml', type: :view do
+RSpec.describe 'tools/fin_score.html.haml' do
   subject { Nokogiri::HTML.fragment(rendered) }
 
   before do

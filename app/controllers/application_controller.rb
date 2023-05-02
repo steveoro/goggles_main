@@ -253,28 +253,34 @@ class ApplicationController < ActionController::Base
 
   # Always returns the list of last season IDs, either recomputed or collected from cookies.
   # The stored cookie shall expire at browser session (each time the user closes the browser).
+  #
+  # rubocop:disable Metrics/AbcSize
   def last_season_ids
+    # Last Seasons member variables won't change frequently, so we store them:
     return cookies[:last_seasons_ids] if cookies[:last_seasons_ids].present?
 
-    # Retrieve any available latest season(s) by type, but include also those *having* at least some results (this is required by many features)
-    # [Update 20230323] Memoize season member variables as these won't change frequently
+    start = Time.zone.now # compute elapsed time
+    # Retrieve any available latest season(s) by type, but include also those *having* at least some results
+    # (this is required by many features):
     @last_seasons = [
       GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin),
       GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).by_season(:desc).first&.season,
       GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin),
       GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season).by_season(:desc).first&.season
     ].compact.sort.uniq
+
     # [!!!] Whenever the above ^^ changes, CHECK & UPDATE ALSO:
     # - features/step_definitions/calendars/calendars_steps.rb:17
     # - features/step_definitions/calendars/given_any_calendars_steps.rb:8:37:56
     # - features/step_definitions/devise/given_any_user_steps.rb:99:184:251
     # - spec/support/shared_team_managers_context.rb:4
 
-    Rails.logger.debug("\r\n\r\n----> BEFORE @last_seasons_ids, elapsed: #{Time.zone.now - start}")
+    Rails.logger.info("\r\n\r\n----> @last_seasons_ids recomputed. Elapsed time: #{Time.zone.now - start}")
     @last_seasons_ids = @last_seasons.pluck(:id)
     # Prevent recompute on each page load:
     cookies[:last_seasons_ids] = @last_seasons_ids
   end
+  # rubocop:enable Metrics/AbcSize
   #-- -------------------------------------------------------------------------
   #++
 end

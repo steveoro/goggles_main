@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'swimmers/history.html.haml', type: :view do
+RSpec.describe 'swimmers/history.html.haml' do
   # Test basic/required content:
   context 'when rendering with data,' do
     subject { Nokogiri::HTML.fragment(rendered) }

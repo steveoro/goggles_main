@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'support/shared_request_examples'
 
-RSpec.describe UserWorkshopsController, type: :request do
+RSpec.describe UserWorkshopsController do
   describe 'GET /index' do
     context 'with an unlogged user' do
       it 'is a redirect to the login path' do

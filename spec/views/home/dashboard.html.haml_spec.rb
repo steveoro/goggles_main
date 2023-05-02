@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'home/dashboard.html.haml', type: :view do
+RSpec.describe 'home/dashboard.html.haml' do
   context 'when rendering with valid data,' do
     context 'with a logged-in user without an associated swimmer,' do
       subject(:parsed_node) { Nokogiri::HTML.fragment(rendered) }
@@ -10,7 +10,7 @@ RSpec.describe 'home/dashboard.html.haml', type: :view do
       let(:current_user) { FactoryBot.create(:user) }
 
       before do
-        expect(current_user.swimmer).to be nil
+        expect(current_user.swimmer).to be_nil
         sign_in(current_user)
         allow(view).to receive(:current_user).and_return(current_user)
         assign(:swimmer, nil)

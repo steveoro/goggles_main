@@ -38,3 +38,11 @@ Given('I have a chosen a random team with existing user results') do
                                  .first(300).sample
   @chosen_team = GogglesDb::Team.find(team_id)
 end
+
+# Designed for Meetings
+# Sets @chosen_team
+# Uses @chosen_meeting
+Given('I have a chosen a random team from the results of the current meeting') do
+  team_id = @chosen_meeting.meeting_individual_results.distinct(:team_id).pluck(:team_id).sample
+  @chosen_team = GogglesDb::Team.find(team_id)
+end

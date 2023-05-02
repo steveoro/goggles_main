@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'swimmers/show.html.haml', type: :view do
+RSpec.describe 'swimmers/show.html.haml' do
   let(:fixture_row) { GogglesDb::Swimmer.first(150).sample }
   let(:stats_row) { GogglesDb::SwimmerStat.new(fixture_row) }
 

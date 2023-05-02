@@ -15,7 +15,6 @@ class IssuesController < ApplicationController
 
   # [GET] Index of actual issues created/reported by the current user
   def my_reports
-    @issues = GogglesDb::Issue.for_user(current_user)
     @grid = IssuesGrid.new(grid_filter_params) do |scope|
       scope.for_user(current_user).page(index_params[:page]).per(8)
     end
@@ -40,6 +39,7 @@ class IssuesController < ApplicationController
   #++
 
   # [GET] Form setup for issue type "0": request update to 'team manager'.
+  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def new_type0
     @type = '0'
     @issue_title = I18n.t('issues.type0.title')
@@ -50,9 +50,11 @@ class IssuesController < ApplicationController
   end
 
   # [POST] Create issue type "0": request update to 'team manager'.
+  # WARNING: allows to create a type0 even if team_id doesn't match exactly with the manually input :team_label
+  #          => Admin must check that the corresponding team ID actually is the same one as requested.
   def create_type0
-    team_id = type0_params[:team_id]
-    unless request.post? && team_id.present? && GogglesDb::Team.exists?(team_id) && type0_params[:season].present?
+    team_id = GogglesDb::Team.find_by(id: type0_params[:team_id])&.id || GogglesDb::Team.for_name(type0_params[:team_label]).first&.id
+    unless request.post? && team_id.present? && type0_params[:season].present?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(issues_my_reports_path) and return
     end
@@ -63,8 +65,8 @@ class IssuesController < ApplicationController
 
     skip = false
     season_ids = type0_params[:season].values
-                                      .map { |id| GogglesDb::Season.exists?(id) ? id : nil }
-                                      .compact
+                                      .filter_map { |id| GogglesDb::Season.exists?(id) ? id : nil }
+
     season_ids.each do |season_id|
       (skip = true) && next if GogglesDb::ManagerChecker.new(current_user, season_id).for_team?(team_id)
 
@@ -80,8 +82,8 @@ class IssuesController < ApplicationController
 
   # [POST] Create issue type "1a": new Meeting URL for data-import
   def create_type1a
-    meeting_id = type1a_params[:meeting_id]
-    unless request.post? && type1a_params[:results_url].present? && type1a_params[:meeting_label].present?
+    unless request.post? && type1a_params[:results_url].present? &&
+           (type1a_params[:meeting_id].present? || type1a_params[:meeting_label].present?)
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(issues_my_reports_path) and return
     end
@@ -98,12 +100,11 @@ class IssuesController < ApplicationController
 
   # [GET] Form setup for issue type "1b": missing result in existing Meeting.
   #
-  # rubocop:disable Metrics/AbcSize
   def new_type1b
     @parent_meeting = meeting_class_from_params.includes(:event_types, :pool_types)
                                                .find_by(id: type1b_params[:parent_meeting_id])
     unless @parent_meeting
-      flash[:warning] = I18n.t('search_view.errors.invalid_request')
+      flash.now[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(root_path) and return
     end
 
@@ -115,11 +116,9 @@ class IssuesController < ApplicationController
     @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, @parent_meeting.season_id)
     render('new')
   end
-  # rubocop:enable Metrics/AbcSize
 
   # [POST] Create issue type "1b": missing result in existing Meeting.
   #
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def create_type1b
     unless request.post? && type1b_params[:event_type_id].present? && type1b_params[:swimmer_id].present? &&
            type1b_params[:parent_meeting_id].present? && type1b_params[:parent_meeting_class].present? &&
@@ -135,19 +134,17 @@ class IssuesController < ApplicationController
     create_issue('1b', type1b_params)
     redirect_to(issues_my_reports_path) and return
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   #-- -------------------------------------------------------------------------
   #++
 
   # [GET] Form setup for issue type "1b1": wrong result in existing Meeting.
   #
-  # rubocop:disable Metrics/AbcSize
   def new_type1b1
     @result_row = result_class_from_params.includes(:swimmer, :event_type)
     @result_row = @result_row.includes(:team) if result_class_from_params.new.respond_to?(:team)
     @result_row = @result_row.find_by(id: type1b1_params[:result_id])
     unless @result_row
-      flash[:warning] = I18n.t('search_view.errors.invalid_request')
+      flash.now[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(root_path) and return
     end
 
@@ -156,11 +153,9 @@ class IssuesController < ApplicationController
     @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, @result_row.parent_meeting.season_id)
     render('new')
   end
-  # rubocop:enable Metrics/AbcSize
 
   # [POST] Create issue type "1b1": wrong result in existing Meeting.
   #
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def create_type1b1
     unless request.post? &&
            type1b1_params[:result_id].present? && type1b1_params[:result_class].present? &&
@@ -177,19 +172,17 @@ class IssuesController < ApplicationController
     create_issue('1b1', type1b1_params)
     redirect_to(issues_my_reports_path) and return
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   #-- -------------------------------------------------------------------------
   #++
 
   # [GET] Form setup for issue type "2b1": wrong team, swimmer or meeting
   #
-  # rubocop:disable Metrics/AbcSize
   def new_type2b1
     @result_row = result_class_from_params.includes(:swimmer, :event_type)
     @result_row = @result_row.includes(:team) if result_class_from_params.new.respond_to?(:team)
     @result_row = @result_row.find_by(id: type1b1_params[:result_id])
     unless @result_row
-      flash[:warning] = I18n.t('search_view.errors.invalid_request')
+      flash.now[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(root_path) and return
     end
 
@@ -198,10 +191,8 @@ class IssuesController < ApplicationController
     @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, @result_row.parent_meeting.season_id)
     render('new')
   end
-  # rubocop:enable Metrics/AbcSize
 
   # [POST] Create issue type "2b1": wrong team, swimmer or meeting
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def create_type2b1
     unless request.post? &&
            type1b1_params[:result_id].present? && type1b1_params[:result_class].present? &&
@@ -218,7 +209,6 @@ class IssuesController < ApplicationController
     create_issue('2b1', type1b1_params)
     redirect_to(issues_my_reports_path) and return
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   #-- -------------------------------------------------------------------------
   #++
 
@@ -269,6 +259,7 @@ class IssuesController < ApplicationController
     create_issue('4', type4_params)
     redirect_to(issues_my_reports_path) and return
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   #-- -------------------------------------------------------------------------
   #++
 
@@ -278,7 +269,6 @@ class IssuesController < ApplicationController
   def index_params
     params.permit(:page, :per_page)
   end
-
 
   # Default whitelist for datagrid parameters
   # (NOTE: member variable is needed by the view)
@@ -369,11 +359,11 @@ class IssuesController < ApplicationController
   # Creates a new issue record, checking result and setting a proper flash message.
   def create_issue(type_code, req_params)
     issue = GogglesDb::Issue.new(user_id: current_user.id, code: type_code, req: req_params.to_json)
-    unless issue.save
-      error_msg = issue.errors.messages.map{ |col, errs| "'#{col}' #{errs.join(', ')}" }.join('; ')
-      flash[:error] = (I18n.t('issues.creation_error', error: error_msg))
-    else
+    if issue.save
       flash[:info] = I18n.t('issues.sent_ok')
+    else
+      error_msg = issue.errors.messages.map { |col, errs| "'#{col}' #{errs.join(', ')}" }.join('; ')
+      flash[:error] = I18n.t('issues.creation_error', error: error_msg)
     end
   end
   #-- -------------------------------------------------------------------------

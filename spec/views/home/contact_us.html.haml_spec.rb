@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'home/contact_us.html.haml', type: :view do
+RSpec.describe 'home/contact_us.html.haml' do
   # Test basic/required content:
   context 'when rendering with data,' do
     before { render }

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'calendars/current.html.haml', type: :view do
+RSpec.describe 'calendars/current.html.haml' do
   context 'when the current user does not manage any available team and the season is *old*,' do
     include_context('calendar_grid rendered with only expired but valid meeting data')
 

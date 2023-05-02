@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'goggles/_main_navbar.html.haml', type: :view do
+RSpec.describe 'goggles/_main_navbar.html.haml' do
   let(:navbar_content) { Nokogiri::HTML.fragment(rendered).at_css('#navbar-content ul') }
 
   shared_examples_for 'main_navbar generic features' do

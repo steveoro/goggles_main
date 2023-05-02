@@ -59,7 +59,7 @@ gem 'rest-client'
 gem 'scenic'
 gem 'scenic-mysql_adapter'
 gem 'stimulus-rails'
-gem 'view_component', require: 'view_component/engine'
+gem 'view_component'
 
 group :development do
   gem 'better_errors'

@@ -25,21 +25,24 @@
                       %h6.mark= swimmer.complete_name
                     .col-auto.text-center
                       = link_to(laps_path(result_id: @parent_result.id,
-                                result_class: @parent_result.class.name.split('::').last, step: 25),
+                                result_class: @parent_result.class.name.split('::').last, step: 25,
+                                show_category: @show_category, show_team: @show_team),
                                 method: :post, remote: true, id: "lap-new25-#{@parent_result.id}",
                                 class: 'btn btn-sm btn-outline-secondary m-1') do
                         %span
                           %i.fa.fa-plus
                           25m
                       = link_to(laps_path(result_id: @parent_result.id,
-                                result_class: @parent_result.class.name.split('::').last, step: 50),
+                                result_class: @parent_result.class.name.split('::').last, step: 50,
+                                show_category: @show_category, show_team: @show_team),
                                 method: :post, remote: true, id: "lap-new50-#{@parent_result.id}",
                                 class: 'btn btn-sm btn-outline-secondary my-1') do
                         %span
                           %i.fa.fa-plus
                           50m
             %tbody#laps-table-body
-              = render(partial: 'laps/edit_table_body', locals: { parent_result: @parent_result, laps: laps })
+              = render(partial: 'laps/edit_table_body', locals: { parent_result: @parent_result, laps: laps,
+                       show_category: @show_category, show_team: @show_team })
 
         .modal-footer
           %button#modal-close.btn.btn-sm.btn-outline-secondary{ 'aria-label' => t('datagrid.edit_modal.close_btn'),

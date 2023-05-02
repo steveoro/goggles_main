@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'teams/current_swimmers.html.haml', type: :view do
+RSpec.describe 'teams/current_swimmers.html.haml' do
   # Test basic/required content:
   context 'when rendering with valid data and a valid user logged-in,' do
     subject(:parsed_node) { Nokogiri::HTML.fragment(rendered) }

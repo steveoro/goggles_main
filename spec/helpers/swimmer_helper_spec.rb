@@ -2,6 +2,6 @@
 
 require 'rails_helper'
 
-RSpec.describe SwimmerHelper, type: :helper do
+RSpec.describe SwimmerHelper do
   # (unused for the moment)
 end

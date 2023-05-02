@@ -7,7 +7,7 @@ require 'rails_helper'
 # We'll just stick to plain route checking for RSpec request examples.
 #
 # rubocop:disable Metrics/BlockLength
-RSpec.describe Users::OmniauthCallbacksController, type: :request do
+RSpec.describe Users::OmniauthCallbacksController do
   let(:existing_user) { GogglesDb::User.first(50).sample }
   let(:new_user) { FactoryBot.build(:user) }
 
@@ -109,7 +109,8 @@ RSpec.describe Users::OmniauthCallbacksController, type: :request do
         end
         # (Read the previous note ^^^)
 
-        xit 'sets the flash to the notice msg for a successful authentication' do
+        it 'sets the flash to the notice msg for a successful authentication' do
+          pending("Currently FB omniauth isn't setup properly, so this check is skipped")
           expect(flash[:notice]).to eq(I18n.t('devise.omniauth_callbacks.success', kind: provider.to_s.titleize))
         end
       end

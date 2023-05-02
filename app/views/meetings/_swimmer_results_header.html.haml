@@ -1,48 +1,46 @@
 -# TODO
-- first_mir = @mir_list.includes(:team).first
+- first_mir = @mir_list&.includes(:team)&.first
 - goggle_cup = false # first_mir.team.goggle_cup_at?(meeting.header_date)
 
-#swimmer-results-title
-  .alert.alert-success#swimmer-header-title
+.card#swimmer-results-title
+  .card-body.alert-info.py-3#swimmer-header-title
     = render(Title::SwimmerShowLinkComponent.new(swimmer: swimmer))
 
-#swimmer-results-header
-  %table.table.table-sm.table-striped.table-hover
+.my-3#swimmer-results-header
+  %table.table.table-sm.table-hover
     %thead
       %tr
         %th{ colspan: 5 }
-          = first_mir.category_type.code
-    %tbody
-      - @mir_list.each do |mir|
-        %tr.text-right
-          %td
-            = mir.meeting_event.event_type.long_label
-
-          %td
-            - can_edit_lap = current_user_is_admin || managed_team_ids.nil? || managed_team_ids.include?(team.id)
-            - can_manage = user_signed_in? && current_user.swimmer_id == mir.swimmer_id
-            %span{ 'class' => mir.personal_best? ? 'text-success' : '' }
-              = mir.to_timing
-              = render(Issues::ReportMistakeButtonComponent.new(result_row: mir,
-                       can_manage: can_edit_lap || can_manage))
-
-          %td
-            - if mir.standard_points.to_f > 800.0
-              = tag.small('⭐')
-            = render(RankingPosComponent.new(rank: mir.rank))
-
-          %td
-            - if goggle_cup
-              %span{ class: mir.goggle_cup_points.to_f > 800.0 ? 'font-weight-bold' : '' }
-                = sprintf("%02.2f", mir.goggle_cup_points.to_f)
-            - else
+          = first_mir&.category_type&.code
+      - @mir_list&.each do |mir|
+        %tbody
+          %tr.text-right
+            %td.pt-2{ colspan: 2 }
+              %b= link_to(mir.meeting_event.event_type.long_label, meeting_show_path(id: meeting.id,
+                          anchor: "mevent-#{mir.meeting_event.id}"), { 'data-turbolinks' => 'false' })
               &nbsp;
+              - if mir.standard_points.to_f > 800.0
+                = tag.small('⭐')
+              = render(RankingPosComponent.new(rank: mir.rank))
 
-          %td
-            - if meeting.startlist && meeting.meeting_entries.where(['swimmer_id = ? AND meeting_program_id = ?', mir.swimmer_id, mir.meeting_program_id]).exists?
-              = meeting.meeting_entries.where(['swimmer_id = ? AND meeting_program_id = ?', mir.swimmer_id, mir.meeting_program_id]).first.to_timing
-            - else
-              &nbsp;
+            %td.pt-2
+              - can_edit_lap = current_user_is_admin || managed_team_ids.nil? || managed_team_ids.include?(mir.team_id)
+              - can_manage = user_signed_in? && current_user.swimmer_id == mir.swimmer_id
+              = render(partial: 'swimmer_results_header_timing_cell.html', locals: { mir: mir,
+                       can_edit_lap: can_edit_lap, can_manage: can_manage })
+
+            %td.pt-2
+              .container.row.px-0
+                - if goggle_cup
+                  .col.px-0
+                    %span{ class: mir.goggle_cup_points.to_f > 800.0 ? 'font-weight-bold' : '' }
+                      = sprintf("%02.2f", mir.goggle_cup_points.to_f)
+                - if meeting.startlist && meeting.meeting_entries.where(['swimmer_id = ? AND meeting_program_id = ?', mir.swimmer_id, mir.meeting_program_id]).exists?
+                  .col.px-0
+                    = meeting.meeting_entries.where(['swimmer_id = ? AND meeting_program_id = ?', mir.swimmer_id, mir.meeting_program_id]).first.to_timing
+
+        - if mir.laps.count.positive?
+          = render(Laps::TableComponent.new(laps: mir.laps, collapsed: false))
 
   .row
     &nbsp;

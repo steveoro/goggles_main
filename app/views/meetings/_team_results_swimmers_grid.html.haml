@@ -3,10 +3,10 @@
     %thead
       %tr.bg-light-yellow
         %td{ colspan: 3 }
-          %i= I18n.t('meetings.meeting_stats.team_total_athletes', value: meeting_team_swimmers.size)
+          %i= I18n.t('meetings.meeting_stats.team_total_athletes', value: meeting_team_swimmers&.size || 0)
     %tbody
-      - meeting_team_swimmers.each do |swimmer|
-        - first_mir = events_per_swimmers[swimmer.id]&.first
+      - meeting_team_swimmers&.each do |swimmer|
+        - first_mir = events_per_swimmers&.fetch(swimmer.id, nil)&.first
         %tr
           %td.border-right
             = render(Title::SwimmerShowLinkComponent.new(swimmer: swimmer, action_link_method: :link_to_results, link_extra_params: meeting.id))
@@ -14,7 +14,8 @@
             = first_mir&.category_type.code
           %td.text-right
             .container
-              - events_per_swimmers[swimmer.id].each do |mir|
+              - events_x_curr_swimmer = events_per_swimmers&.fetch(swimmer.id, nil)
+              - events_x_curr_swimmer&.each do |mir|
                 .row.border-bottom
                   .col.border-right.d-flex.justify-content-around.align-items-baseline.px-0
                     - if mir.standard_points.to_f > 800.0
@@ -27,13 +28,11 @@
                       = mir.to_timing
                     = tag.small(class: mir.standard_points.to_f > 800.0 ? 'font-weight-bold' : '') do
                       = sprintf("%02.2f", mir.standard_points.to_f)
-                    -# - if mir.standard_points > 0
-                    -#   = format_score(mir.standard_points).html_safe
-                    -# - else
-                    -#   = mir.get_formatted_individual_points
+                    -# TODO: implement some kind of format_score(mir.standard_points).html_safe for the core decorators
   .row
     &nbsp;
 
+-# TODO: Scrollspy still useful?
 -# %script
 -#   $('#headerTeam').tooltip({placement:'bottom'});
 -#   $('body').attr('data-spy', 'scroll');

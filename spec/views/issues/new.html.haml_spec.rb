@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'issues/new.html.haml', type: :view do
+RSpec.describe 'issues/new.html.haml' do
   let(:current_user) { GogglesDb::User.last(50).sample }
 
   context "when the issue type is '0' ('promote to team manager')," do

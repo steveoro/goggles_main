@@ -3,7 +3,7 @@
 #
 # = Title components module
 #
-#   - version:  7-0.5.01
+#   - version:  7-0.5.02
 #   - author:   Steve A.
 #
 module Title

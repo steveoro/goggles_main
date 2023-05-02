@@ -5,9 +5,11 @@
     = render(partial: 'meeting_header', locals: { meeting: @meeting })
     = render(partial: 'meeting_navs', locals: { meeting: @meeting, active_tab: 'swimmer' })
 
-    %section#meeting-swimmer-results
-      = render(partial: 'swimmer_results_header', locals: { meeting: @meeting, swimmer: @swimmer,
-               mir_list: @mir_list, managed_team_ids: @managed_team_ids,
-               current_user_is_admin: @current_user_is_admin })
+    - cache(cache_key_for_meeting(action: 'meeting_swimmer_results', meeting_id: @meeting.id, max_updated_at: @max_updated_at,
+            team_id: @team&.id, swimmer_id: @swimmer&.id)) do
+      %section#meeting-swimmer-results
+        = render(partial: 'swimmer_results_header', locals: { meeting: @meeting, swimmer: @swimmer,
+                mir_list: @mir_list, managed_team_ids: @managed_team_ids,
+                current_user_is_admin: @current_user_is_admin })
 
   .spacer-right

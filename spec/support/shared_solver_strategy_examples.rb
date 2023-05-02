@@ -15,7 +15,7 @@ shared_examples_for 'unsolved Solver strategy (#solved? & #entity)' do
 
   describe '#entity' do
     it 'is nil' do
-      expect(subject.entity).to be nil
+      expect(subject.entity).to be_nil
     end
   end
 end
@@ -157,7 +157,7 @@ shared_examples_for 'Solver strategy, NO bindings, finder ONLY, before #solve!' 
 
   describe '#error_messages' do
     it 'is nil' do
-      expect(subject.error_messages).to be nil
+      expect(subject.error_messages).to be_nil
     end
   end
 
@@ -188,7 +188,7 @@ shared_examples_for 'Solver strategy, bindings, finder ONLY, before #solve!' do 
 
   describe '#error_messages' do
     it 'is nil' do
-      expect(subject.error_messages).to be nil
+      expect(subject.error_messages).to be_nil
     end
   end
 
@@ -219,7 +219,7 @@ shared_examples_for 'Solver strategy, bindings, finder & creator, before #solve!
 
   describe '#error_messages' do
     it 'is nil' do
-      expect(subject.error_messages).to be nil
+      expect(subject.error_messages).to be_nil
     end
   end
 

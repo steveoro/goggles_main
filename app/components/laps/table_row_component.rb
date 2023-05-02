@@ -3,7 +3,7 @@
 #
 # = Laps components module
 #
-#   - version:  7.3.05
+#   - version:  7-0.5.01
 #   - author:   Steve A.
 #
 module Laps
@@ -25,9 +25,11 @@ module Laps
     #
     # == Params
     # - lap: the GogglesDb::Lap model instance to be displayed
-    def initialize(lap:)
+    # - collapsed: (default: true) when +false+, it won't hide/collapse the lap row at start
+    def initialize(lap:, collapsed: true)
       super
       @lap = lap
+      @collapsed = collapsed
     end
 
     # Skips rendering unless the lap instance is properly set
