@@ -151,7 +151,7 @@ Then('the team star modal appears') do
 end
 
 When('I select the first team on the list to be tagged for the calendar') do
-  find_by_id('team_id').select(0)
+  find_by_id('team_id').set(find_by_id('team_id').value) # accept preselection
 end
 
 When('I click the team selection modal to confirm the default selection') do
