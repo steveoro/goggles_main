@@ -58,7 +58,7 @@ blocks:
             - GIT_LFS_SKIP_SMUDGE=1 bundle install
             - yarn
             - bundle exec rubocop
-            - bundle exec brakeman -c .brakeman.cfg
+            - bundle exec brakeman -A6 -c .brakeman.cfg
 
   - name: RSpec tests
     task:
