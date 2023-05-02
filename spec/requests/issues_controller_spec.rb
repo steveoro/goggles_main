@@ -304,10 +304,9 @@ RSpec.describe IssuesController do
       {
         event_type_id: parent_meeting.event_types.pluck(:id).sample,
         swimmer_id: fixture_swimmer.id,
-        gender_type_id: fixture_swimmer.gender_type_id,
         parent_meeting_id: parent_meeting.id,
         parent_meeting_class: parent_meeting.class.name.split('::').last,
-        minutes: 0, seconds: 0, hundredths: 0
+        minutes: 0, seconds: (rand * 50).to_i, hundredths: (rand * 80).to_i
       }
     end
 
@@ -322,7 +321,7 @@ RSpec.describe IssuesController do
       {
         result_id: parent_result.id,
         result_class: parent_result.class.name.split('::').last,
-        minutes: 0, seconds: 0, hundredths: 0
+        minutes: 0, seconds: (rand * 50).to_i, hundredths: (rand * 80).to_i
       }
     end
 

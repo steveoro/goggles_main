@@ -53,7 +53,9 @@ class IssuesController < ApplicationController
   # WARNING: allows to create a type0 even if team_id doesn't match exactly with the manually input :team_label
   #          => Admin must check that the corresponding team ID actually is the same one as requested.
   def create_type0
-    team_id = GogglesDb::Team.find_by(id: type0_params[:team_id])&.id || GogglesDb::Team.for_name(type0_params[:team_label]).first&.id
+    team_id = type0_params[:team_id] if type0_params[:team_id].present? && GogglesDb::Team.exists?(id: type0_params[:team_id])
+    # Allow non-existing partial matches to be used too, in case the name is wrong:
+    team_id ||= GogglesDb::Team.for_name(type0_params[:team_label]).first&.id if type0_params[:team_label].present?
     unless request.post? && team_id.present? && type0_params[:season].present?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(issues_my_reports_path) and return
@@ -164,6 +166,7 @@ class IssuesController < ApplicationController
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(issues_my_reports_path) and return
     end
+
     if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
       flash[:warning] = I18n.t('issues.spam_notice')
       redirect_to(issues_my_reports_path) and return
