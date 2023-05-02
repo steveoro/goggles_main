@@ -149,9 +149,6 @@ blocks:
         - name: Cucumber desktop, large
           commands:
             - 'bundle exec cucumber --publish-quiet'
-        - name: Cucumber mobile, iPhone5
-          commands:
-            - 'CAPYBARA_DRV="headless_chrome_iphone5" bundle exec cucumber --publish-quiet'
         - name: Cucumber mobile, iPhone6
           commands:
             - 'CAPYBARA_DRV="headless_chrome_iphone6" bundle exec cucumber --publish-quiet'
