@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Title::SwimmerShowLinkComponent, type: :component do
+  include Rails.application.routes.url_helpers
+
   let(:fixture_row) { GogglesDb::Swimmer.first(200).sample }
 
   before { expect(fixture_row).to be_a(GogglesDb::Swimmer).and be_valid }
@@ -14,7 +16,7 @@ RSpec.describe Title::SwimmerShowLinkComponent, type: :component do
       expect(subject.at('a')).to be_present
       decorated = SwimmerDecorator.decorate(fixture_row)
       expect(subject.at('a').text).to eq(decorated.text_label)
-      expect(subject.to_html).to include(decorated.link_to_full_name)
+      expect(subject.at('a').attributes['href'].value).to include(swimmer_show_path(id: fixture_row.id))
     end
 
     it 'renders the tooltip that explains the go-to-dashboard behavior of the link' do
