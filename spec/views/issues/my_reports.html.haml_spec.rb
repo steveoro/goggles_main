@@ -43,7 +43,7 @@ RSpec.describe 'issues/my_reports.html.haml' do
   #-- -------------------------------------------------------------------------
   #++
 
-  let(:current_user) { GogglesDb::User.last(50).sample }
+  let(:current_user) { FactoryBot.create(:user) }
   let(:issue_factories) do
     %i[
       issue_type0 issue_type1a issue_type1b issue_type1b1

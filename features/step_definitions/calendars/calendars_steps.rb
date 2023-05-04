@@ -167,14 +167,19 @@ Then('I can see the pagination controls on the calendar starred page when there 
   end
 end
 
-Then('I can only see starred calendar rows') do
+Then('I can only see starred or expired calendar rows') do
   find('#data-grid table.table tbody tr', visible: true)
   find_all('#data-grid table.table tbody tr td.text-center span.user-star').each do |star_node|
     row_id = star_node['data-row-id'].to_i
     btn = find("#btn-row-star-#{row_id}")
     expect(btn).to be_present
-    expect(btn).not_to have_css('disabled')
-    expect(btn[:href]).to include(taggings_by_user_path(meeting_id: row_id))
+    # Btn disabled due to expired meeting?
+    if btn[:href].blank?
+      expect(btn[:class]).to be_present
+      expect(btn[:class]).to include('fa fa-minus').and include('disabled')
+    else
+      expect(btn[:href]).to include(taggings_by_user_path(meeting_id: row_id))
+    end
   end
 end
 # -----------------------------------------------------------------------------

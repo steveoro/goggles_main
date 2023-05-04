@@ -74,4 +74,4 @@ Feature: Chrono time recording setup
     # Sub-scenario: SAVING / COMMITING
     When I click on the timer save button accepting the confirmation request
     Then I am redirected to the Chrono index page
-    And I can see the chrono index page with an expandable row with details
+    And I can see the chrono index page including the latest request row with details

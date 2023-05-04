@@ -47,15 +47,17 @@ RSpec.describe 'chrono/index.html.haml' do
   context 'with a logged-in user, when there are *no* IQ rows for the current_user,' do
     subject { Nokogiri::HTML.fragment(rendered) }
 
-    let(:fixture_row) { FactoryBot.create(:import_queue, user: current_user) }
+    let(:new_user) { FactoryBot.create(:user) }
 
     before do
-      expect(fixture_row).to be_a(GogglesDb::ImportQueue).and be_valid
+      expect(new_user).to be_a(GogglesDb::User).and be_valid
+      expect(GogglesDb::ImportQueue.for_user(new_user).count).to be_zero
       # [Steve A.] Stub Devise controller helper method before rendering because
       #            view specs do not have the @controller variable set.
       #            Also, sign-in the user using the included integration test helpers:
-      sign_in(current_user)
+      sign_in(new_user)
       allow(view).to receive(:user_signed_in?).and_return(true)
+      allow(view).to receive(:current_user).and_return(new_user)
       render
     end
 

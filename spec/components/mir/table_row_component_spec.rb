@@ -101,8 +101,12 @@ RSpec.describe MIR::TableRowComponent, type: :component do
   context 'with the same valid parameter but setting show_team: true,' do
     subject { render_inline(described_class.new(mir: parent_result, show_team: true)) }
 
-    it 'renders the team result link from the parent meeting' do
-      expect(subject.css('td i.team-result-link a')).to be_present
+    it 'renders the meeting team-results link for a MIR, or the pool link for a UserResult' do
+      if parent_result.is_a?(GogglesDb::UserResult)
+        expect(subject.css('td i.pool-link a')).to be_present
+      else
+        expect(subject.css('td i.team-result-link a')).to be_present
+      end
     end
   end
   #-- -------------------------------------------------------------------------

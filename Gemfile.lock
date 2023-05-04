@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 249e16da158318da0ec9f84596cb44302d674ad7
+  revision: 088bf8d671314f319f7204fde337dba2e799cee4
   specs:
-    goggles_db (0.5.02)
+    goggles_db (0.5.03)
       acts-as-taggable-on
       acts_as_votable
       cities
@@ -26,6 +26,7 @@ GIT
       plus_codes
       rails (>= 6.0.6.1, < 6.1.0)
       rails-i18n (~> 6.0)
+      sass-rails
       scenic
       simple_command
       tzinfo
@@ -304,7 +305,7 @@ GEM
     http-accept (1.7.0)
     http-cookie (1.0.5)
       domain_name (~> 0.5)
-    i18n (1.12.0)
+    i18n (1.13.0)
       concurrent-ruby (~> 1.0)
     inch (0.8.0)
       pry
@@ -409,7 +410,7 @@ GEM
     puma (6.2.2)
       nio4r (~> 2.0)
     racc (1.6.2)
-    rack (2.2.6.4)
+    rack (2.2.7)
     rack-protection (3.0.6)
       rack
     rack-proxy (0.7.6)
@@ -618,7 +619,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.34)
-    zeitwerk (2.6.7)
+    zeitwerk (2.6.8)
 
 PLATFORMS
   x86_64-linux

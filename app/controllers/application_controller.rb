@@ -46,7 +46,7 @@ class ApplicationController < ActionController::Base
   #
   def prepare_last_seasons
     @last_seasons_ids = last_season_ids
-    @last_seasons ||= GogglesDb::Season.where(id: @last_seasons_ids)
+    @last_seasons = GogglesDb::Season.where(id: @last_seasons_ids) if @last_seasons.blank?
 
     # Can we show any management button related to these seasons? (team selection should happen afterwards)
     @current_user_is_admin = GogglesDb::GrantChecker.admin?(current_user)
@@ -83,19 +83,23 @@ class ApplicationController < ActionController::Base
   #  Array of all unique GogglesDb::Team rows found, managed the current_user and
   #  belonging to any one of the @last_seasons_ids found.
   #
-  # == Possible values:
-  #  row array => managed team rows
+  # - <tt>@managed_team_ids</tt> =>
+  #  Same as above, but lists just the IDs for convenience.
+  #
+  # == Possible values for both:
+  #  row array => managed team rows / lists which exact IDs are managed
   #  +empty+   => no team managed
   #  +nil+     => all teams managed (admin: true, skips checks)
   #
   def prepare_managed_teams
-    @managed_teams = @current_user_is_admin ? nil : []
+    @managed_teams = @managed_team_ids = @current_user_is_admin ? nil : []
     return unless @current_user_is_manager
 
     mas = GogglesDb::ManagedAffiliation.includes(:team, :season, team_affiliation: %i[team season])
                                        .joins(team_affiliation: %i[team season])
                                        .where(user_id: current_user.id, 'seasons.id': @last_seasons_ids)
     @managed_teams = mas.map(&:team).uniq
+    @managed_team_ids = @managed_teams.present? ? @managed_teams.map(&:id) : []
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -257,7 +261,7 @@ class ApplicationController < ActionController::Base
   # rubocop:disable Metrics/AbcSize
   def last_season_ids
     # Last Seasons member variables won't change frequently, so we store them:
-    return cookies[:last_seasons_ids] if cookies[:last_seasons_ids].present?
+    return JSON.parse(cookies[:last_seasons_ids]) if cookies[:last_seasons_ids].present?
 
     start = Time.zone.now # compute elapsed time
     # Retrieve any available latest season(s) by type, but include also those *having* at least some results
@@ -278,7 +282,7 @@ class ApplicationController < ActionController::Base
     Rails.logger.info("\r\n\r\n----> @last_seasons_ids recomputed. Elapsed time: #{Time.zone.now - start}")
     @last_seasons_ids = @last_seasons.pluck(:id)
     # Prevent recompute on each page load:
-    cookies[:last_seasons_ids] = @last_seasons_ids
+    cookies[:last_seasons_ids] = @last_seasons_ids.to_json
   end
   # rubocop:enable Metrics/AbcSize
   #-- -------------------------------------------------------------------------

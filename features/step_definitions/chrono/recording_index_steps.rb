@@ -1,37 +1,55 @@
 # frozen_string_literal: true
 
-Then('I can see the chrono index page with an expandable row with details') do
-  iq = GogglesDb::ImportQueueDecorator.decorate(GogglesDb::ImportQueue.for_user(@current_user).for_uid('chrono').first)
+Then('I can see the chrono index page including the latest request row with details') do
+  iq = GogglesDb::ImportQueueDecorator.decorate(GogglesDb::ImportQueue.for_user(@current_user).for_uid('chrono').last)
   expect(iq.sibling_rows.count).to be_positive
   master_container = find("#main-req#{iq.id}")
-
   expect(master_container).to be_visible
-  final_result = iq.req&.fetch(iq.root_key, nil)&.fetch('meeting_individual_result', nil) ||
-                 iq.req&.fetch(iq.root_key, nil)&.fetch('user_result', nil)
-  final_timing = Timing.new(minutes: final_result['minutes'], seconds: final_result['seconds'], hundredths: final_result['hundredths'])
-  text_contents = "⏱ #{iq.req_event_type&.label}: #{final_timing}, #{iq.req_swimmer_name} (#{iq.req_swimmer_year_of_birth}) #{iq.state_flag}"
-  expect(master_container.text).to include(text_contents.strip)
 
   # Show detail laps (collapsed by default:
   master_container.find('label.switch-sm').click
   sleep(1) && wait_for_ajax
-  iq.sibling_rows.each do |sibling_row|
+
+  # The IQ decorator outputs directly HTML tags with escaped text in it, so here the check is somewhat reversed:
+  expect(iq.chrono_result_label).to include(ERB::Util.html_escape(master_container.text))
+
+  collection = iq.sibling_rows.or(GogglesDb::ImportQueue.where(id: iq.id)).includes(:import_queues)
+  decorated = GogglesDb::ImportQueueDecorator.decorate_collection(collection)
+  decorated.sort_by(&:req_length_in_meters).each do |sibling_row|
     expect(find("li#lap#{sibling_row.id} small")).to be_visible
-    expect(find("li#lap#{sibling_row.id} small").text).to include(sibling_row.decorate.text_label.strip)
+    # (Same as above: "reversed" check)
+    expect(sibling_row.decorate.chrono_delta_label.strip)
+      .to include(ERB::Util.html_escape(find("li#lap#{sibling_row.id} small").text))
   end
 end
 
-Then('I can see the empty chrono index page') do
-  expect(find('.main-content .container .row.list-group-item').text).to include(I18n.t('chrono.index.no_data_notice'))
-  # Make sure the "no data" notice is also due to an empty domain:
-  expect(GogglesDb::ImportQueue.for_user(@current_user).for_uid('chrono').count).to be_zero
+Then('I see the chrono index container with any remaining row for my user') do
+  container_node = find('.main-content .container#chrono-rows', visible: true)
+  expect(container_node).to be_present
+  # Empty domain => no data rows notice
+  domain_size = GogglesDb::ImportQueue.for_user(@current_user).for_uid('chrono').count
+  if domain_size.zero?
+    expect(container_node.find('.row').text).to include(I18n.t('chrono.index.no_data_notice'))
+  else
+    expect(container_node.find_all('.row.border').count).to eq(domain_size)
+  end
 end
 
-When('I delete the pending chrono request') do
-  iq = GogglesDb::ImportQueue.for_user(@current_user).for_uid('chrono').first
+# Sets: @deleted_row_id
+When('I delete the latest pending chrono request') do
+  iq = GogglesDb::ImportQueue.for_user(@current_user).for_uid('chrono').last
+  expect(iq).to be_a(GogglesDb::ImportQueue).and be_valid
+  @deleted_row_id = iq.id
   delete_btn = find("#frm-delete-row-#{iq.id}")
   expect(delete_btn).to be_visible
   accept_confirm { delete_btn.click }
+end
+
+# Uses: @deleted_row_id
+Then('I see that the deleted request is missing from the index') do
+  container_node = find('.main-content .container#chrono-rows', visible: true)
+  expect(container_node).to be_present
+  expect(container_node).not_to have_css(".col#main-req#{@deleted_row_id}")
 end
 
 When('I download the chrono request as a JSON file') do

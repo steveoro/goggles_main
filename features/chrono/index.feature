@@ -38,20 +38,21 @@ Feature: Chrono index
   Scenario: no pending requests from the current user
     Given I have an associated swimmer on a team manager account and have already signed-in
     When I browse to '/chrono'
-    Then I can see the empty chrono index page
+    Then I see the chrono index container with any remaining row for my user
 
   Scenario: some pending requests from the current user
     Given I have an associated swimmer on a team manager account and have already signed-in
     And there is a chrono recording request from the current_user with sibling rows
     When I browse to '/chrono'
-    Then I can see the chrono index page with an expandable row with details
-    When I delete the pending chrono request
-    Then I can see the empty chrono index page
+    Then I can see the chrono index page including the latest request row with details
+    When I delete the latest pending chrono request
+    Then I see the chrono index container with any remaining row for my user
+    And I see that the deleted request is missing from the index
 
   Scenario: some pending requests from the current user with Admin grants
     Given I have Admin grants and have already signed-in and at the root page
     And there is a chrono recording request from the current_user with sibling rows
     When I browse to '/chrono'
-    Then I can see the chrono index page with an expandable row with details
+    Then I can see the chrono index page including the latest request row with details
     When I download the chrono request as a JSON file
     Then I can see the chrono request details in the JSON file structure

@@ -24,10 +24,13 @@
         - if @show_category && category_code
           %span.category-code= category_code
         - if @show_team && team
+          &nbsp;-&nbsp;
           %i.team-result-link
-            &nbsp;-&nbsp;#{TeamDecorator.decorate(team).link_to_results(meeting_id)}
+            #{TeamDecorator.decorate(team).link_to_results(meeting_id)}
         - elsif swimming_pool
-          &nbsp;-&nbsp;#{SwimmingPoolDecorator.decorate(swimming_pool).link_to_full_name}
+          &nbsp;-&nbsp;
+          %i.pool-link
+            #{SwimmingPoolDecorator.decorate(swimming_pool).link_to_full_name}
     %td
       .text-muted.text-right
         = result_score

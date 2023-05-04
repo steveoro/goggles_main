@@ -6,18 +6,21 @@ class UserWorkshopsController < ApplicationController
   before_action :authenticate_user!, only: [:index]
   before_action :prepare_managed_teams, only: [:show]
 
+  before_action :validate_workshop, only: %i[show]
+  before_action :validate_team, only: %i[show]
+  before_action :validate_swimmer, only: %i[index show]
+
   # GET /user_workshops/:id
   # Shows "My attended Workshops" grid.
   # Selects all the workshops created or attended by the current user,
   # Requires authentication & a valid associated swimmer.
   #
   def index
-    if current_user.swimmer.blank?
+    unless @swimmer
       flash[:warning] = I18n.t('home.my.errors.no_associated_swimmer')
       redirect_to(root_path) && return
     end
 
-    @swimmer = current_user.swimmer
     @grid = UserWorkshopsGrid.new(grid_filter_params) do |scope|
       scope.where('(user_workshops.user_id = ?) OR (user_results.swimmer_id = ?)', current_user.id, @swimmer.id)
            .page(index_params[:page]).per(20)
@@ -64,19 +67,16 @@ class UserWorkshopsController < ApplicationController
   # == Params
   # - :id => Workshop ID, required
   def show
-    @user_workshop = GogglesDb::UserWorkshop.where(id: user_workshop_params[:id]).first
     if @user_workshop.nil?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(root_path) && return
     end
 
-    @managed_team_ids = @managed_teams.map(&:id) if @managed_teams.present?
-    # Team managers of the Team that created this Workshop can act as Admins and manage any team in this:
-    @managed_team_ids = nil if @managed_team_ids.is_a?(Array) && @managed_team_ids.include?(@user_workshop.team_id)
-
-    @current_swimmer_id = current_user.swimmer_id if user_signed_in?
     @user_workshop_events = @user_workshop.event_types.uniq
     @user_workshop_results = @user_workshop.user_results.includes(:event_type)
+
+    # Get page timestamp for cache key:
+    set_max_updated_at_for_workshop
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -85,7 +85,7 @@ class UserWorkshopsController < ApplicationController
 
   # Strong parameters checking
   def user_workshop_params
-    params.permit(:id, :page, :per_page)
+    params.permit(:id, :team_id, :swimmer_id, :page, :per_page)
   end
 
   # /index action strong parameters checking
@@ -101,5 +101,41 @@ class UserWorkshopsController < ApplicationController
     # Set default ordering for the datagrid:
     @grid_filter_params.merge(order: :workshop_date) unless @grid_filter_params.key?(:order)
     @grid_filter_params
+  end
+
+  private
+
+  # Prepares the internal @user_workshop variable according to params[:id]
+  def validate_workshop
+    @user_workshop = GogglesDb::UserWorkshop.includes(:user_results, :event_types)
+                                            .where(id: user_workshop_params[:id])
+                                            .first
+  end
+
+  # Prepares the internal @team variable; falls backs to the first associated team found for the current swimmer if
+  # available and not already filtered by :team_id.
+  def validate_team
+    @team = GogglesDb::Team.where(id: user_workshop_params[:team_id]).first
+    return unless user_signed_in? && current_user
+
+    @team = current_user.swimmer&.associated_teams&.first if @team.nil?
+  end
+
+  # Prepares the internal @swimmer & @current_swimmer_id variables
+  # - <tt>@swimmer</tt> => filtered swimmer or defaults to current user's swimmer if none
+  # - <tt>@current_swimmer_id</tt> => always referred to current user's swimmer (when available)
+  def validate_swimmer
+    @swimmer = GogglesDb::Swimmer.where(id: user_workshop_params[:swimmer_id]).first || current_user&.swimmer
+    return unless user_signed_in?
+
+    @current_swimmer_id = current_user.swimmer_id
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  # Sets the internal <tt>@max_updated_at</tt> value that will be used as main cache timestamp for the current <tt>@user_workshop</tt>.
+  def set_max_updated_at_for_workshop
+    # Get a timestamp from last updated result:
+    @max_updated_at = @user_workshop.user_results.select('user_results.updated_at').order(:updated_at).last&.updated_at.to_i
   end
 end

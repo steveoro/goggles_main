@@ -11,7 +11,7 @@
         %small
           %i= t('chrono.index.queue_notice')
 
-    .container.mt-2
+    .container.mt-2#chrono-rows
       - if @queues.count.positive?
         - GogglesDb::ImportQueueDecorator.decorate_collection(@queues).each do |queue|
           .row.border

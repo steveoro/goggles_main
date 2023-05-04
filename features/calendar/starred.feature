@@ -20,7 +20,7 @@ Feature: Current season Calendar "starred" meetings
     And I can see the pagination controls on the calendar starred page when there are enough rows
     And I can see the calendar row star button enabled or disabled depending on the row status
     But I cannot see the team row tag button available in any row
-    And I can only see starred calendar rows
+    And I can only see starred or expired calendar rows
     When I choose a row from the displayed calendar page to be unstarred
     And I click to tag for myself the chosen calendar row
     Then I can see the chosen calendar row has been unstarred for me
@@ -33,7 +33,7 @@ Feature: Current season Calendar "starred" meetings
     When I browse to '/calendars/starred'
     Then I am at the Calendars 'starred' page
     And I can see the pagination controls on the calendar starred page when there are enough rows
-    And I can only see starred calendar rows
+    And I can only see starred or expired calendar rows
     And I can see the calendar team star button enabled or disabled depending on the row status
     When I choose a row from the displayed calendar page for team tagging
     And I click to tag the chosen calendar row for one of my teams

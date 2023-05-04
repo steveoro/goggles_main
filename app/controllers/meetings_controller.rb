@@ -92,8 +92,8 @@ class MeetingsController < ApplicationController
     end
 
     @mir_list = @meeting.meeting_individual_results.for_team(@team)
-                        .includes(:swimmer, meeting_event: [:event_type])
-                        .joins(:swimmer, meeting_event: [:event_type])
+                        .includes(:swimmer, :meeting_event, :event_type)
+                        .joins(:swimmer, :meeting_event, :event_type)
     @mrr_list = @meeting.meeting_relay_results.for_team(@team)
                         .includes(:team, :meeting_program, :gender_type, :category_type, meeting_event: [:event_type])
                         .joins(:team, :meeting_program, :gender_type, :category_type, meeting_event: [:event_type])
@@ -184,12 +184,10 @@ class MeetingsController < ApplicationController
   private
 
   # Prepares the internal @meeting variable according to params[:id]
-  # Sets also @managed_team_ids assuming the :prepare_managed_teams callback has been run before.
   def validate_meeting
     @meeting = GogglesDb::Meeting.includes(:meeting_individual_results)
                                  .where(id: meeting_params[:id])
                                  .first
-    @managed_team_ids = @managed_teams.present? ? @managed_teams.map(&:id) : []
   end
 
   # Prepares the internal @team variable; falls backs to the first associated team found for the current swimmer if

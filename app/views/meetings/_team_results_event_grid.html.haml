@@ -68,7 +68,7 @@
                 - mrr.meeting_relay_swimmers.by_order.each do |meeting_relay_swimmer|
                   %tr
                     %td.text-right{ colspan: 3 }
-                      %i= "#{meeting_relay_swimmer.decorate.display_label} (#{meeting.header_date.year - meeting_relay_swimmer.swimmer.year_of_birth}) - #{meeting_relay_swimmer.stroke_type.label}"
+                      %i= "#{meeting_relay_swimmer.swimmer.complete_name} (#{meeting.header_date.year - meeting_relay_swimmer.swimmer.year_of_birth}) - #{meeting_relay_swimmer.stroke_type.label}"
                     %td.text-right
                       = meeting_relay_swimmer.to_timing
                     %td
