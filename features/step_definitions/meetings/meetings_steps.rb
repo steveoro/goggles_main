@@ -126,6 +126,17 @@ Given('I have chosen a random row from the results of my associated team') do
   expect(@associated_team_id).to be_positive
   @chosen_mir = @chosen_meeting.meeting_individual_results.where(team_id: @associated_team_id).sample
 end
+
+# Designed for Meetings
+# Uses: @chosen_meeting & @current_user
+# Sets: @chosen_mir
+Given('I have chosen a random row from my own results') do
+  expect(@chosen_meeting).to be_a(GogglesDb::Meeting)
+  expect(@current_user.swimmer_id).to be_present
+  @chosen_mir = @chosen_meeting.meeting_individual_results
+                               .where(swimmer_id: @current_user.swimmer_id)
+                               .sample
+end
 #-- ---------------------------------------------------------------------------
 #++
 
@@ -145,14 +156,14 @@ end
 Then('I am at the chosen team results page for the current meeting') do
   sleep(1) && wait_for_ajax
   expect(page.current_path.to_s).to include(meeting_team_results_path(@chosen_meeting.id))
-  find('section#meeting-team-results')
+  find('section#meeting-team-results', visible: true)
 end
 
 # Uses @chosen_meeting
 Then('I am at the chosen swimmer results page for the current meeting') do
   sleep(1) && wait_for_ajax
   expect(page.current_path.to_s).to include(meeting_swimmer_results_path(@chosen_meeting.id))
-  find('section#meeting-swimmer-results')
+  find('section#meeting-swimmer-results', visible: true)
 end
 #-- ---------------------------------------------------------------------------
 #++

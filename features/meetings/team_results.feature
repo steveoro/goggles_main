@@ -19,6 +19,7 @@ Feature: Show specific team results for a specific meeting
     When I browse to see the selected meeting details
     And I have chosen a random result among the current meeting details
     And I click on the team name on the chosen result row, selecting it
+    And I wait until the slow-rendered page portion 'section#meeting-team-results' is visible
     Then I am at the chosen team results page for the current meeting
     And I see the title with the link to go to the team radiography
     And I see the team results header
@@ -34,6 +35,7 @@ Feature: Show specific team results for a specific meeting
     When I browse to see the selected meeting details
     And I have chosen a random result among the current meeting details
     And I click on the team name on the chosen result row, selecting it
+    And I wait until the slow-rendered page portion 'section#meeting-team-results' is visible
     Then I am at the chosen team results page for the current meeting
     And I see the title with the link to go to the team radiography
     And I see the team results header
@@ -50,6 +52,7 @@ Feature: Show specific team results for a specific meeting
     When I browse to see the selected meeting details
     And I have chosen a random row from the results of my associated team
     And I click on the team name on the chosen result row, selecting it
+    And I wait until the slow-rendered page portion 'section#meeting-team-results' is visible
     Then I am at the chosen team results page for the current meeting
     And I see the title with the link to go to the team radiography
     And I see the team results header
@@ -66,6 +69,7 @@ Feature: Show specific team results for a specific meeting
     When I browse to see the selected meeting details
     And I have chosen a random row from the results of my associated team
     And I click on the team name on the chosen result row, selecting it
+    And I wait until the slow-rendered page portion 'section#meeting-team-results' is visible
     Then I am at the chosen team results page for the current meeting
     And I see the title with the link to go to the team radiography
     And I see the team results header

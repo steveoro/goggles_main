@@ -91,14 +91,8 @@ class MeetingsController < ApplicationController
       redirect_to(root_path) && return
     end
 
-    @mir_list = @meeting.meeting_individual_results.for_team(@team)
-                        .includes(:swimmer, :event_type, meeting_event: [:event_type])
-                        .joins(:swimmer, :event_type, meeting_event: [:event_type])
-    @mrr_list = @meeting.meeting_relay_results.for_team(@team)
-                        .includes(:team, :meeting_program, :gender_type, :category_type,
-                                  :event_type, meeting_event: [:event_type], meeting_relay_swimmers: [:swimmer])
-                        .joins(:team, :meeting_program, :gender_type, :category_type,
-                               meeting_event: [:event_type], meeting_relay_swimmers: [:swimmer])
+    @mir_list = collect_team_mirs(@meeting, @team)
+    @mrr_list = collect_team_mrrs(@meeting, @team)
     if @mir_list.empty? && @mrr_list.empty?
       flash[:warning] = I18n.t('meetings.no_results_to_show_for_team', team: @team.editable_name)
       redirect_to(meeting_show_path(@meeting)) && return
@@ -297,6 +291,25 @@ class MeetingsController < ApplicationController
                                                .map(&:meeting_program_id)
                                                .uniq
     (ind_prg_ids + rel_prg_ids).uniq.sort
+  end
+
+  # Collects and returns all the MIR rows from the specified Meeting & Team tuple.
+  def collect_team_mirs(meeting, team)
+    meeting.meeting_individual_results.for_team(team)
+           .includes(:swimmer, :event_type, laps: [:swimmer], meeting_event: [:event_type],
+                                            meeting_program: %i[gender_type category_type])
+           .joins(:swimmer, :event_type, meeting_event: [:event_type],
+                                         meeting_program: %i[gender_type category_type])
+  end
+
+  # Collects and returns all the MRR rows from the specified Meeting & Team tuple.
+  def collect_team_mrrs(meeting, team)
+    meeting.meeting_relay_results.for_team(team)
+           .includes(:team, :meeting_program, :gender_type, :category_type, :event_type,
+                     meeting_event: [:event_type], meeting_program: %i[gender_type category_type],
+                     meeting_relay_swimmers: [:swimmer])
+           .joins(:team, :meeting_program, :gender_type, :category_type,
+                  meeting_event: [:event_type], meeting_program: %i[gender_type category_type])
   end
 
   # Maps the top scores for each gender & custom (Goggle-) cup.

@@ -155,3 +155,26 @@ Then('I select {string} for the {string} select field') do |string_value, input_
   find("##{input_id}").set(string_value)
 end
 # -----------------------------------------------------------------------------
+
+Then('I wait until the slow-rendered page portion {string} is visible') do |css_selector|
+  10.times do
+    target_node = begin
+      find(css_selector, visible: true)
+    rescue StandardError
+      nil
+    end
+    if target_node
+      wait_for_ajax
+      putc '+'
+      break
+    end
+    begin
+      wait_for_ajax
+      sleep(0.5)
+      putc '-'
+    rescue StandardError
+      nil
+    end
+  end
+end
+# -----------------------------------------------------------------------------

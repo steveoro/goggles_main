@@ -1,5 +1,5 @@
 -# TODO
-- first_mir = @mir_list&.includes(:team)&.first
+- first_mir = mir_list&.includes(:team)&.first
 - goggle_cup = false # first_mir.team.goggle_cup_at?(meeting.header_date)
 
 .card#swimmer-results-title
@@ -12,7 +12,7 @@
       %tr
         %th{ colspan: 5 }
           = first_mir&.category_type&.code
-      - @mir_list&.each do |mir|
+      - mir_list&.includes(:laps)&.each do |mir|
         %tbody
           %tr.text-right
             %td.pt-2{ colspan: 2 }
