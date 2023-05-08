@@ -297,7 +297,7 @@ class MeetingsController < ApplicationController
   def collect_team_mirs(meeting, team)
     meeting.meeting_individual_results.for_team(team)
            .includes(:swimmer, :event_type, laps: [:swimmer], meeting_event: [:event_type],
-                                            meeting_program: %i[gender_type category_type])
+                                            meeting_program: %i[gender_type event_type category_type])
            .joins(:swimmer, :event_type, meeting_event: [:event_type],
                                          meeting_program: %i[gender_type category_type])
   end
@@ -306,8 +306,8 @@ class MeetingsController < ApplicationController
   def collect_team_mrrs(meeting, team)
     meeting.meeting_relay_results.for_team(team)
            .includes(:team, :meeting_program, :gender_type, :category_type, :event_type,
-                     meeting_event: [:event_type], meeting_program: %i[gender_type category_type],
-                     meeting_relay_swimmers: [:swimmer])
+                     meeting_event: [:event_type], meeting_program: %i[gender_type event_type category_type],
+                     meeting_relay_swimmers: %i[swimmer stroke_type])
            .joins(:team, :meeting_program, :gender_type, :category_type,
                   meeting_event: [:event_type], meeting_program: %i[gender_type category_type])
   end

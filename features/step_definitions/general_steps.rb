@@ -157,7 +157,7 @@ end
 # -----------------------------------------------------------------------------
 
 Then('I wait until the slow-rendered page portion {string} is visible') do |css_selector|
-  10.times do
+  5.times do
     target_node = begin
       find(css_selector, visible: true)
     rescue StandardError
