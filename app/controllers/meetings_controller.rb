@@ -92,11 +92,13 @@ class MeetingsController < ApplicationController
     end
 
     @mir_list = @meeting.meeting_individual_results.for_team(@team)
-                        .includes(:swimmer, :meeting_event, :event_type)
-                        .joins(:swimmer, :meeting_event, :event_type)
+                        .includes(:swimmer, :event_type, meeting_event: [:event_type])
+                        .joins(:swimmer, :event_type, meeting_event: [:event_type])
     @mrr_list = @meeting.meeting_relay_results.for_team(@team)
-                        .includes(:team, :meeting_program, :gender_type, :category_type, meeting_event: [:event_type])
-                        .joins(:team, :meeting_program, :gender_type, :category_type, meeting_event: [:event_type])
+                        .includes(:team, :meeting_program, :gender_type, :category_type,
+                                  :event_type, meeting_event: [:event_type], meeting_relay_swimmers: [:swimmer])
+                        .joins(:team, :meeting_program, :gender_type, :category_type,
+                               meeting_event: [:event_type], meeting_relay_swimmers: [:swimmer])
     if @mir_list.empty? && @mrr_list.empty?
       flash[:warning] = I18n.t('meetings.no_results_to_show_for_team', team: @team.editable_name)
       redirect_to(meeting_show_path(@meeting)) && return
