@@ -38,4 +38,16 @@ RSpec.shared_context('current_user is a team manager on last FIN season ID') do
     user.save!
     user
   end
+
+  before do
+    expect(last_season_id).to be_positive
+    expect(meeting_with_results).to be_a(GogglesDb::Meeting).and be_valid
+    expect(managed_team).to be_a(GogglesDb::Team).and be_valid
+    expect(associated_mirs.count).to be_positive
+    expect(team_affiliation).to be_a(GogglesDb::TeamAffiliation).and be_valid
+    expect(managed_aff).to be_a(GogglesDb::ManagedAffiliation).and be_valid
+    expect(associated_mirs).to be_present
+    expect(current_user).to be_a(GogglesDb::User).and be_valid
+    expect(current_user).to eq(managed_aff.manager)
+  end
 end

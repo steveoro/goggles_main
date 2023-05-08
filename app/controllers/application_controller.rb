@@ -283,6 +283,7 @@ class ApplicationController < ActionController::Base
     @last_seasons_ids = @last_seasons.pluck(:id)
     # Prevent recompute on each page load:
     cookies[:last_seasons_ids] = @last_seasons_ids.to_json
+    @last_seasons_ids
   end
   # rubocop:enable Metrics/AbcSize
   #-- -------------------------------------------------------------------------

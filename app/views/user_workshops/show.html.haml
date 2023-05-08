@@ -18,7 +18,7 @@
       %section#workshop-show-results
         %table.table.table-striped.table-sm
           - @user_workshop_events&.each_with_index do |event_type, index|
-            - results = @user_workshop_results&.where(event_type_id: event_type.id)
+            - results = @user_workshop_results.includes(:user_workshop)&.where(event_type_id: event_type.id)
             %thead
               = render(Mevent::RowSeparatorComponent.new) if index.positive? # skip first separator
               = render(Mevent::RowTitleComponent.new(event_container: results.first, can_manage: user_signed_in?))
