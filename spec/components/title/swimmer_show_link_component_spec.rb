@@ -36,7 +36,6 @@ RSpec.describe Title::SwimmerShowLinkComponent, type: :component do
 
     it 'renders the #link_to_results for the meeting/swimmer_result page (which includes the meeting ID as extra params)' do
       expect(subject.at('a')).to be_present
-      decorated = SwimmerDecorator.decorate(fixture_row)
       expect(subject.at('a').text).to eq(fixture_row.complete_name)
       expect(subject.at('a').attributes['href'].value).to eq(meeting_swimmer_results_path(id: extra_params, swimmer_id: fixture_row.id))
     end
