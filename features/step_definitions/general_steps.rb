@@ -76,6 +76,7 @@ end
 
 When('I click on {string} waiting for the {string} to be ready') do |string_css, section_css|
   step("I click on '#{string_css}'")
+  step("I wait until the slow-rendered page portion '#{section_css}' is visible")
   find(section_css, visible: true)
 end
 
