@@ -16,7 +16,7 @@ RSpec.describe Title::SwimmerShowLinkComponent, type: :component do
       expect(subject.at('a')).to be_present
       decorated = SwimmerDecorator.decorate(fixture_row)
       expect(subject.at('a').text).to eq(decorated.text_label)
-      expect(subject.at('a').attributes['href'].value).to include(swimmer_show_path(id: fixture_row.id))
+      expect(subject.at('a').attributes['href'].value).to eq(swimmer_show_path(id: fixture_row.id))
     end
 
     it 'renders the tooltip that explains the go-to-dashboard behavior of the link' do
@@ -38,7 +38,7 @@ RSpec.describe Title::SwimmerShowLinkComponent, type: :component do
       expect(subject.at('a')).to be_present
       decorated = SwimmerDecorator.decorate(fixture_row)
       expect(subject.at('a').text).to eq(fixture_row.complete_name)
-      expect(subject.to_html).to include(decorated.send(custom_action, extra_params))
+      expect(subject.at('a').attributes['href'].value).to eq(meeting_swimmer_results_path(id: extra_params, swimmer_id: fixture_row.id))
     end
 
     it 'renders the tooltip that explains the go-to-dashboard behavior of the link' do

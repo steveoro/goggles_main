@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Title::TeamShowLinkComponent, type: :component do
+  include Rails.application.routes.url_helpers
+
   let(:fixture_row) { GogglesDb::Team.first(100).sample }
 
   before { expect(fixture_row).to be_a(GogglesDb::Team).and be_valid }
@@ -14,7 +16,7 @@ RSpec.describe Title::TeamShowLinkComponent, type: :component do
       expect(subject.at('a')).to be_present
       decorated = TeamDecorator.decorate(fixture_row)
       expect(subject.at('a').text).to eq(decorated.text_label)
-      expect(subject.to_html).to include(decorated.link_to_full_name)
+      expect(subject.at('a').attributes['href'].value).to eq(team_show_path(id: fixture_row.id))
     end
 
     it 'renders the tooltip that explains the go-to-dashboard behavior of the link' do
@@ -36,7 +38,7 @@ RSpec.describe Title::TeamShowLinkComponent, type: :component do
       expect(subject.at('a')).to be_present
       decorated = TeamDecorator.decorate(fixture_row)
       expect(subject.at('a').text).to eq(decorated.text_label)
-      expect(subject.to_html).to include(decorated.send(custom_action, extra_params))
+      expect(subject.at('a').attributes['href'].value).to eq(meeting_team_results_path(id: extra_params, team_id: fixture_row.id))
     end
 
     it 'renders the tooltip that explains the go-to-dashboard behavior of the link' do
