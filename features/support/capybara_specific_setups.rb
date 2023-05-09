@@ -140,26 +140,13 @@ Capybara.register_driver(:headless_chrome_iphone5) do |app|
   )
 end
 
-Capybara.register_driver(:headless_chrome_iphone6) do |app|
+Capybara.register_driver(:headless_chrome_iphone678) do |app|
   Capybara::Selenium::Driver.new(
     app,
     browser: :chrome,
     options: Selenium::WebDriver::Chrome::Options.new(
       args: %w[headless disable-gpu disable-extensions enable-features=NetworkService,NetworkServiceInProcess],
-      mobileEmulation: { deviceName: 'iPhone 6' },
-      prefs: chrome_prefs
-    ),
-    http_client: http_client
-  )
-end
-
-Capybara.register_driver(:headless_chrome_iphone8) do |app|
-  Capybara::Selenium::Driver.new(
-    app,
-    browser: :chrome,
-    options: Selenium::WebDriver::Chrome::Options.new(
-      args: %w[headless disable-gpu disable-extensions enable-features=NetworkService,NetworkServiceInProcess],
-      mobileEmulation: { deviceName: 'iPhone 8' },
+      mobileEmulation: { deviceName: 'iPhone 6/7/8' },
       prefs: chrome_prefs
     ),
     http_client: http_client
