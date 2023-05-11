@@ -1,3 +1,17 @@
 # frozen_string_literal: true
 
-# TODO: FUTUREDEV
+# = MeetingStats module
+#
+# Container for statical views operations
+#
+module MeetingStats
+  #
+  # = Category strategy object
+  #
+  #   - version:  7-0.5.03
+  #   - author:   Steve A.
+  #
+  class Event
+    # TODO
+  end
+end
