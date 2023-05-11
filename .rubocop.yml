@@ -26,6 +26,9 @@ AllCops:
     - 'vendor/**/*'
     - 'node_modules/**/*'
 
+FactoryBot:
+  Enabled: false
+
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
@@ -106,9 +109,6 @@ RSpec/IndexedLet:
   Enabled: false
 
 RSpec/ExpectInHook:
-  Enabled: false
-
-RSpec/FactoryBot/SyntaxMethods:
   Enabled: false
 
 RSpec/InstanceVariable:
