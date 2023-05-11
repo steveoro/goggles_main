@@ -12,6 +12,18 @@ module MeetingStats
   #   - author:   Steve A.
   #
   class Team
+    # Target GogglesDb::Meeting instance
+    attr_reader :meeting
+
+    # Creates a new Solver strategy.
+    #
+    # == Options:
+    # - <tt>:meeting</tt> => target GogglesDb::Meeting instance
+    #
+    def initialize(options = {})
+      @meeting = options[:meeting]
+    end
+
     # TODO
   end
 end
