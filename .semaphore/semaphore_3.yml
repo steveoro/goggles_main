@@ -1,0 +1,84 @@
+version: v1.0
+name: Goggles Main
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+fail_fast:
+  stop:
+    when: 'true'
+auto_cancel:
+  running:
+    when: 'true'
+
+global_job_config:
+  # Connect secrets to all jobs in the pipeline:
+  # (actual values can be edited on Semaphore 2.0 org dashboard)
+  secrets:
+    - name: DockerHub-steveoro-login
+    - name: GogglesMain
+
+  # Execute at the start of every job in the pipeline:
+  prologue:
+    commands:
+      - checkout
+      - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+      - echo $RAILS_MASTER_KEY > config/master.key
+      - mkdir -pv tmp coverage
+      # Make sure we are using Bundler 2+:
+      - gem i bundler
+      # Use GogglesDb::VERSION as master reference here, or force a minor version change to rebuild the cache:
+      - cache restore bundle-3.30-$(checksum Gemfile.lock yarn.lock)
+
+blocks:
+  - name: Bundle cache store
+    task:
+      jobs:
+        - name: Bundle with cache store
+          commands:
+            - sem-version ruby 2.7
+            # Bundler requires 'install' to run even though cache has been restored.
+            # Installation will not actually run and command and will finish quickly if the cache has been hit:
+            - bundle config set path 'vendor/bundle'
+            - GIT_LFS_SKIP_SMUDGE=1 bundle install
+            # Use this to log the actual bundle destination path for Semaphore 2.0 (currently uses Rbenv):
+            # - bundle info rake --path
+            - yarn
+            # The cache will be updated with the new content just once for all blocks in the pipeline:
+            - cache store bundle-3.30-$(checksum Gemfile.lock yarn.lock) vendor/bundle
+
+  - name: Cucumber large & medium screens
+    task:
+      prologue:
+        commands:
+          - sem-version ruby 2.7
+          - sem-service start mysql
+          - bundle config set path 'vendor/bundle'
+          - GIT_LFS_SKIP_SMUDGE=1 bundle install
+          - yarn
+          - cp config/database.semaphore_2.yml config/database.yml
+          - 'curl -L -o db/dump/test.sql.bz2 "https://github.com/steveoro/goggles_db/raw/master/spec/dummy/db/dump/test.sql.bz2"'
+          - 'RAILS_ENV=test bin/rails db:rebuild from=test to=test'
+          - 'RAILS_ENV=test bin/rails db:migrate'
+          - 'RAILS_ENV=test bundle exec bin/webpack'
+      jobs:
+        - name: Cucumber desktop, large
+          commands:
+            - 'bundle exec cucumber --publish-quiet'
+        - name: Cucumber mobile, iPad
+          commands:
+            - 'CAPYBARA_DRV="headless_chrome_ipad" bundle exec cucumber --publish-quiet'
+        - name: Cucumber mobile, iPadPro
+          commands:
+            - 'CAPYBARA_DRV="headless_chrome_ipadpro" bundle exec cucumber --publish-quiet'
+
+promotions:
+  - name: Cucumber remainder
+    pipeline_file: semaphore_4.yml
+    auto_promote:
+      when: result = 'passed'
+  - name: Docker images
+    pipeline_file: semaphore_docker_build.yml
+    auto_promote:
+      when: result = 'passed'

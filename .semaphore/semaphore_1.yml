@@ -60,7 +60,7 @@ blocks:
             - bundle exec rubocop
             - bundle exec brakeman -A6 -c .brakeman.cfg
 
-  - name: RSpec tests
+  - name: RSpec base
     task:
       prologue:
         commands:
@@ -105,21 +105,6 @@ blocks:
             - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-mailer.json
             - cache store cc-mailer-goggles_main coverage/cc-mailer.json
 
-        - name: RSpec - requests
-          commands:
-            - 'bundle exec rspec -t type:request'
-            - cache delete cc-request-goggles_main
-            - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-request.json
-            - cache store cc-request-goggles_main coverage/cc-request.json
-
-        - name: RSpec - strategies & services
-          commands:
-            - 'bundle exec rspec -t type:strategy'
-            - 'bundle exec rspec -t type:service'
-            - cache delete cc-strategy-goggles_main
-            - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-strategy.json
-            - cache store cc-strategy-goggles_main coverage/cc-strategy.json
-
         - name: RSpec - views
           commands:
             - 'bundle exec rspec -t type:view'
@@ -131,49 +116,8 @@ blocks:
         # - name: RSpec - commands
         # - name: RSpec - helpers
 
-  - name: Cucumber integration tests
-    task:
-      prologue:
-        commands:
-          - sem-version ruby 2.7
-          - sem-service start mysql
-          - bundle config set path 'vendor/bundle'
-          - GIT_LFS_SKIP_SMUDGE=1 bundle install
-          - yarn
-          - cp config/database.semaphore_2.yml config/database.yml
-          - 'curl -L -o db/dump/test.sql.bz2 "https://github.com/steveoro/goggles_db/raw/master/spec/dummy/db/dump/test.sql.bz2"'
-          - 'RAILS_ENV=test bin/rails db:rebuild from=test to=test'
-          - 'RAILS_ENV=test bin/rails db:migrate'
-          - 'RAILS_ENV=test bundle exec bin/webpack'
-      jobs:
-        - name: Cucumber desktop, large
-          commands:
-            - 'bundle exec cucumber --publish-quiet'
-        - name: Cucumber mobile, iPhone6/7/8
-          commands:
-            - 'CAPYBARA_DRV="headless_chrome_iphone678" bundle exec cucumber --publish-quiet'
-        - name: Cucumber mobile, iPhoneX
-          commands:
-            - 'CAPYBARA_DRV="headless_chrome_iphonex" bundle exec cucumber --publish-quiet'
-        - name: Cucumber mobile, Galaxy5
-          commands:
-            - 'CAPYBARA_DRV="headless_chrome_galaxys5" bundle exec cucumber --publish-quiet'
-        - name: Cucumber mobile, Pixel2
-          commands:
-            - 'CAPYBARA_DRV="headless_chrome_pixel2" bundle exec cucumber --publish-quiet'
-        - name: Cucumber mobile, iPad
-          commands:
-            - 'CAPYBARA_DRV="headless_chrome_ipad" bundle exec cucumber --publish-quiet'
-        - name: Cucumber mobile, iPadPro
-          commands:
-            - 'CAPYBARA_DRV="headless_chrome_ipadpro" bundle exec cucumber --publish-quiet'
-
 promotions:
-  - name: Code coverage
-    pipeline_file: semaphore_coverage_upload.yml
-    auto_promote:
-      when: branch = 'main' AND result = 'passed'
-  - name: Docker images
-    pipeline_file: semaphore_docker_build.yml
+  - name: RSpec remainder
+    pipeline_file: semaphore_2.yml
     auto_promote:
       when: result = 'passed'

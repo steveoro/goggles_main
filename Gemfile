@@ -115,6 +115,7 @@ group :test do
   # (Bullet works best just on development). Do not use memoized values for testing.
   # Example:
   #          expect { get :index }.to perform_constant_number_of_queries"
+  gem 'rspec_junit_formatter' # required by new Semaphore test reports
   gem 'selenium-webdriver'
   gem 'simplecov', '= 0.13.0', require: false
   # Easy installation and use of web drivers to run system tests with browsers
