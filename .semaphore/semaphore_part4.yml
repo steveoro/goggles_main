@@ -63,21 +63,33 @@ blocks:
           - 'RAILS_ENV=test bin/rails db:migrate'
           - 'RAILS_ENV=test bundle exec bin/webpack'
       jobs:
-        - name: Cucumber mobile, iPhone6/7/8
+        - name: Cucumber mobiles
+          matrix:
+            - env_var: DRV_NAME
+              values: [ "headless_chrome_iphone678", "headless_chrome_iphonex", "headless_chrome_galaxys5", "headless_chrome_pixel2" ]
           commands:
-            - 'CAPYBARA_DRV="headless_chrome_iphone678" bundle exec cucumber --publish-quiet'
-        - name: Cucumber mobile, iPhoneX
-          commands:
-            - 'CAPYBARA_DRV="headless_chrome_iphonex" bundle exec cucumber --publish-quiet'
-        - name: Cucumber mobile, Galaxy5
-          commands:
-            - 'CAPYBARA_DRV="headless_chrome_galaxys5" bundle exec cucumber --publish-quiet'
-        - name: Cucumber mobile, Pixel2
-          commands:
-            - 'CAPYBARA_DRV="headless_chrome_pixel2" bundle exec cucumber --publish-quiet'
+            - 'CAPYBARA_DRV=$DRV_NAME bundle exec cucumber --publish-quiet --color --format pretty --format junit --out coverage/cucumber_mobile.xml'
+        # - name: Cucumber mobile, iPhone6/7/8
+        #   commands:
+        #     - 'CAPYBARA_DRV="headless_chrome_iphone678" bundle exec cucumber --publish-quiet'
+        # - name: Cucumber mobile, iPhoneX
+        #   commands:
+        #     - 'CAPYBARA_DRV="headless_chrome_iphonex" bundle exec cucumber --publish-quiet'
+        # - name: Cucumber mobile, Galaxy5
+        #   commands:
+        #     - 'CAPYBARA_DRV="headless_chrome_galaxys5" bundle exec cucumber --publish-quiet'
+        # - name: Cucumber mobile, Pixel2
+        #   commands:
+        #     - 'CAPYBARA_DRV="headless_chrome_pixel2" bundle exec cucumber --publish-quiet'
 
-promotions:
-  - name: Code coverage
-    pipeline_file: semaphore_coverage_upload.yml
-    auto_promote:
-      when: branch = 'main' AND result = 'passed'
+      # Publish all test results from /coverage/*.xml on Semaphore
+      epilogue:
+        always:
+          commands:
+            - test-results publish /coverage
+
+# promotions:
+#   - name: Code coverage
+#     pipeline_file: semaphore_coverage_upload.yml
+#     auto_promote:
+#       when: branch = 'main' AND result = 'passed'

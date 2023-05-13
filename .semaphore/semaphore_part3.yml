@@ -65,20 +65,32 @@ blocks:
       jobs:
         - name: Cucumber desktop, large
           commands:
-            - 'bundle exec cucumber --publish-quiet'
-        - name: Cucumber mobile, iPad
+            - 'bundle exec cucumber --publish-quiet --color --format pretty --format junit --out coverage/cucumber_large.xml'
+        - name: Cucumber tablets
+          matrix:
+            - env_var: DRV_NAME
+              values: [ "headless_chrome_ipad", "headless_chrome_ipadpro" ]
           commands:
-            - 'CAPYBARA_DRV="headless_chrome_ipad" bundle exec cucumber --publish-quiet'
-        - name: Cucumber mobile, iPadPro
+            - 'CAPYBARA_DRV=$DRV_NAME bundle exec cucumber --publish-quiet --color --format pretty --format junit --out coverage/cucumber_tablet.xml'
+        # - name: Cucumber mobile, iPad
+        #   commands:
+        #     - 'CAPYBARA_DRV="headless_chrome_ipad" bundle exec cucumber --publish-quiet'
+        # - name: Cucumber mobile, iPadPro
+        #   commands:
+        #     - 'CAPYBARA_DRV="headless_chrome_ipadpro" bundle exec cucumber --publish-quiet'
+
+      # Publish all test results from /coverage/*.xml on Semaphore
+      epilogue:
+        always:
           commands:
-            - 'CAPYBARA_DRV="headless_chrome_ipadpro" bundle exec cucumber --publish-quiet'
+            - test-results publish /coverage
 
 promotions:
   - name: Cucumber remainder
     pipeline_file: semaphore_part4.yml
     auto_promote:
       when: result = 'passed'
-  - name: Docker images
-    pipeline_file: semaphore_docker_build.yml
-    auto_promote:
-      when: result = 'passed'
+  # - name: Docker images
+  #   pipeline_file: semaphore_docker_build.yml
+  #   auto_promote:
+  #     when: result = 'passed'

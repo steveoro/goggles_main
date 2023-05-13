@@ -67,18 +67,24 @@ blocks:
       jobs:
         - name: RSpec - requests
           commands:
-            - 'bundle exec rspec -t type:request'
+            - 'bundle exec rspec -t type:request --format RspecJunitFormatter --out coverage/request.xml'
             - cache delete cc-request-goggles_main
             - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-request.json
             - cache store cc-request-goggles_main coverage/cc-request.json
 
         - name: RSpec - strategies & services
           commands:
-            - 'bundle exec rspec -t type:strategy'
-            - 'bundle exec rspec -t type:service'
+            - 'bundle exec rspec -t type:strategy --format RspecJunitFormatter --out coverage/strategy.xml'
+            - 'bundle exec rspec -t type:service --format RspecJunitFormatter --out coverage/service.xml'
             - cache delete cc-strategy-goggles_main
             - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-strategy.json
             - cache store cc-strategy-goggles_main coverage/cc-strategy.json
+
+      # Publish all test results from /coverage/*.xml on Semaphore
+      epilogue:
+        always:
+          commands:
+            - test-results publish /coverage
 
 promotions:
   - name: Cucumber base

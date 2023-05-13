@@ -29,7 +29,7 @@ global_job_config:
       # Make sure we are using Bundler 2+:
       - gem i bundler
       # Use GogglesDb::VERSION as master reference here, or force a minor version change to rebuild the cache:
-      - cache restore bundle-3.30-$(checksum Gemfile.lock yarn.lock)
+      - cache restore bundle-5.03-$(checksum Gemfile.lock yarn.lock)
 
 blocks:
   - name: Bundle cache store
@@ -46,7 +46,7 @@ blocks:
             # - bundle info rake --path
             - yarn
             # The cache will be updated with the new content just once for all blocks in the pipeline:
-            - cache store bundle-3.30-$(checksum Gemfile.lock yarn.lock) vendor/bundle
+            - cache store bundle-5.03-$(checksum Gemfile.lock yarn.lock) vendor/bundle
 
   - name: Code scanning
     task:
@@ -79,45 +79,57 @@ blocks:
       jobs:
         - name: RSpec - components
           commands:
-            - 'bundle exec rspec -t type:component'
+            - 'bundle exec rspec -t type:component --format RspecJunitFormatter --out coverage/component.xml'
             - cache delete cc-component-goggles_main
             - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-component.json
             - cache store cc-component-goggles_main coverage/cc-component.json
 
         - name: RSpec - decorators
           commands:
-            - 'bundle exec rspec -t type:decorator'
+            - 'bundle exec rspec -t type:decorator --format RspecJunitFormatter --out coverage/decorator.xml'
             - cache delete cc-decorator-goggles_main
             - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-decorator.json
             - cache store cc-decorator-goggles_main coverage/cc-decorator.json
 
         - name: RSpec - jobs
           commands:
-            - 'bundle exec rspec -t type:job'
+            - 'bundle exec rspec -t type:job --format RspecJunitFormatter --out coverage/job.xml'
             - cache delete cc-job-goggles_main
             - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-job.json
             - cache store cc-job-goggles_main coverage/cc-job.json
 
         - name: RSpec - mailers
           commands:
-            - 'bundle exec rspec -t type:mailer'
+            - 'bundle exec rspec -t type:mailer --format RspecJunitFormatter --out coverage/mailer.xml'
             - cache delete cc-mailer-goggles_main
             - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-mailer.json
             - cache store cc-mailer-goggles_main coverage/cc-mailer.json
 
         - name: RSpec - views
           commands:
-            - 'bundle exec rspec -t type:view'
+            - 'bundle exec rspec -t type:view --format RspecJunitFormatter --out coverage/view.xml'
             - cache delete cc-view-goggles_main
             - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-view.json
             - cache store cc-view-goggles_main coverage/cc-view.json
-
         # Not currently used:
         # - name: RSpec - commands
         # - name: RSpec - helpers
+
+      # Publish all test results from /coverage/*.xml on Semaphore
+      epilogue:
+        always:
+          commands:
+            - test-results publish /coverage
 
 promotions:
   - name: RSpec remainder
     pipeline_file: semaphore_part2.yml
     auto_promote:
       when: result = 'passed'
+
+after_pipeline:
+  task:
+    jobs:
+      - name: Publish Results
+        commands:
+          - test-results gen-pipeline-report
