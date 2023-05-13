@@ -29,7 +29,7 @@ global_job_config:
       # Make sure we are using Bundler 2+:
       - gem i bundler
       # Use GogglesDb::VERSION as master reference here, or force a minor version change to rebuild the cache:
-      - cache restore bundle-3.30-$(checksum Gemfile.lock yarn.lock)
+      - cache restore bundle-5.03-$(checksum Gemfile.lock yarn.lock)
 
 blocks:
   - name: Bundle cache store
@@ -46,7 +46,7 @@ blocks:
             # - bundle info rake --path
             - yarn
             # The cache will be updated with the new content just once for all blocks in the pipeline:
-            - cache store bundle-3.30-$(checksum Gemfile.lock yarn.lock) vendor/bundle
+            - cache store bundle-5.03-$(checksum Gemfile.lock yarn.lock) vendor/bundle
 
   - name: RSpec base
     task:
@@ -80,11 +80,18 @@ blocks:
             - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-strategy.json
             - cache store cc-strategy-goggles_main coverage/cc-strategy.json
 
-      # Publish all test results from /coverage/*.xml on Semaphore
+      # Publish all test results from coverage/*.xml on Semaphore
       epilogue:
         always:
           commands:
-            - test-results publish /coverage
+            - test-results publish coverage
+
+after_pipeline:
+  task:
+    jobs:
+      - name: Publish Results
+        commands:
+          - test-results gen-pipeline-report
 
 promotions:
   - name: Cucumber base

@@ -115,17 +115,11 @@ blocks:
         # - name: RSpec - commands
         # - name: RSpec - helpers
 
-      # Publish all test results from /coverage/*.xml on Semaphore
+      # Publish all test results from coverage/*.xml on Semaphore
       epilogue:
         always:
           commands:
-            - test-results publish /coverage
-
-promotions:
-  - name: RSpec remainder
-    pipeline_file: semaphore_part2.yml
-    auto_promote:
-      when: result = 'passed'
+            - test-results publish coverage
 
 after_pipeline:
   task:
@@ -133,3 +127,9 @@ after_pipeline:
       - name: Publish Results
         commands:
           - test-results gen-pipeline-report
+
+promotions:
+  - name: RSpec remainder
+    pipeline_file: semaphore_part2.yml
+    auto_promote:
+      when: result = 'passed'
