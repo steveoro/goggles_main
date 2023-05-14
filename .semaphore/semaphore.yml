@@ -48,19 +48,7 @@ blocks:
             # The cache will be updated with the new content just once for all blocks in the pipeline:
             - cache store bundle-5.03-$(checksum Gemfile.lock yarn.lock) vendor/bundle
 
-  - name: Code scanning
-    task:
-      jobs:
-        - name: check style + security
-          commands:
-            - sem-version ruby 2.7
-            - bundle config set path 'vendor/bundle'
-            - GIT_LFS_SKIP_SMUDGE=1 bundle install
-            - yarn
-            - bundle exec rubocop
-            - bundle exec brakeman -A6 -c .brakeman.cfg
-
-  - name: RSpec base
+  - name: DEBUG - Cucumber medium screens
     task:
       prologue:
         commands:
@@ -69,57 +57,91 @@ blocks:
           - bundle config set path 'vendor/bundle'
           - GIT_LFS_SKIP_SMUDGE=1 bundle install
           - yarn
-          - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-          - chmod +x ./cc-test-reporter
           - cp config/database.semaphore_2.yml config/database.yml
           - 'curl -L -o db/dump/test.sql.bz2 "https://github.com/steveoro/goggles_db/raw/master/spec/dummy/db/dump/test.sql.bz2"'
           - 'RAILS_ENV=test bin/rails db:rebuild from=test to=test'
           - 'RAILS_ENV=test bin/rails db:migrate'
-          - ./cc-test-reporter before-build
+          - 'RAILS_ENV=test bundle exec bin/webpack'
       jobs:
-        - name: RSpec - components
+        - name: Cucumber tablets
+          matrix:
+            - env_var: DRV_NAME
+              values: [ "headless_chrome_ipad", "headless_chrome_ipadpro" ]
           commands:
-            - 'bundle exec rspec -t type:component --format RspecJunitFormatter --out coverage/component.xml'
-            - cache delete cc-component-goggles_main
-            - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-component.json
-            - cache store cc-component-goggles_main coverage/cc-component.json
+            - 'CAPYBARA_DRV=$DRV_NAME AUTO_ARTIFACTS=1 bundle exec cucumber --publish-quiet --color --format pretty --format junit --out coverage/cucumber_tablet.xml'
 
-        - name: RSpec - decorators
-          commands:
-            - 'bundle exec rspec -t type:decorator --format RspecJunitFormatter --out coverage/decorator.xml'
-            - cache delete cc-decorator-goggles_main
-            - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-decorator.json
-            - cache store cc-decorator-goggles_main coverage/cc-decorator.json
+  # - name: Code scanning
+  #   task:
+  #     jobs:
+  #       - name: check style + security
+  #         commands:
+  #           - sem-version ruby 2.7
+  #           - bundle config set path 'vendor/bundle'
+  #           - GIT_LFS_SKIP_SMUDGE=1 bundle install
+  #           - yarn
+  #           - bundle exec rubocop
+  #           - bundle exec brakeman -A6 -c .brakeman.cfg
 
-        - name: RSpec - jobs
-          commands:
-            - 'bundle exec rspec -t type:job --format RspecJunitFormatter --out coverage/job.xml'
-            - cache delete cc-job-goggles_main
-            - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-job.json
-            - cache store cc-job-goggles_main coverage/cc-job.json
+  # - name: RSpec base
+  #   task:
+  #     prologue:
+  #       commands:
+  #         - sem-version ruby 2.7
+  #         - sem-service start mysql
+  #         - bundle config set path 'vendor/bundle'
+  #         - GIT_LFS_SKIP_SMUDGE=1 bundle install
+  #         - yarn
+  #         - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  #         - chmod +x ./cc-test-reporter
+  #         - cp config/database.semaphore_2.yml config/database.yml
+  #         - 'curl -L -o db/dump/test.sql.bz2 "https://github.com/steveoro/goggles_db/raw/master/spec/dummy/db/dump/test.sql.bz2"'
+  #         - 'RAILS_ENV=test bin/rails db:rebuild from=test to=test'
+  #         - 'RAILS_ENV=test bin/rails db:migrate'
+  #         - ./cc-test-reporter before-build
+  #     jobs:
+  #       - name: RSpec - components
+  #         commands:
+  #           - 'bundle exec rspec -t type:component --format RspecJunitFormatter --out coverage/component.xml'
+  #           - cache delete cc-component-goggles_main
+  #           - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-component.json
+  #           - cache store cc-component-goggles_main coverage/cc-component.json
 
-        - name: RSpec - mailers
-          commands:
-            - 'bundle exec rspec -t type:mailer --format RspecJunitFormatter --out coverage/mailer.xml'
-            - cache delete cc-mailer-goggles_main
-            - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-mailer.json
-            - cache store cc-mailer-goggles_main coverage/cc-mailer.json
+  #       - name: RSpec - decorators
+  #         commands:
+  #           - 'bundle exec rspec -t type:decorator --format RspecJunitFormatter --out coverage/decorator.xml'
+  #           - cache delete cc-decorator-goggles_main
+  #           - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-decorator.json
+  #           - cache store cc-decorator-goggles_main coverage/cc-decorator.json
 
-        - name: RSpec - views
-          commands:
-            - 'bundle exec rspec -t type:view --format RspecJunitFormatter --out coverage/view.xml'
-            - cache delete cc-view-goggles_main
-            - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-view.json
-            - cache store cc-view-goggles_main coverage/cc-view.json
-        # Not currently used:
-        # - name: RSpec - commands
-        # - name: RSpec - helpers
+  #       - name: RSpec - jobs
+  #         commands:
+  #           - 'bundle exec rspec -t type:job --format RspecJunitFormatter --out coverage/job.xml'
+  #           - cache delete cc-job-goggles_main
+  #           - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-job.json
+  #           - cache store cc-job-goggles_main coverage/cc-job.json
 
-      # Publish all test results from coverage/*.xml on Semaphore
-      epilogue:
-        always:
-          commands:
-            - test-results publish coverage
+  #       - name: RSpec - mailers
+  #         commands:
+  #           - 'bundle exec rspec -t type:mailer --format RspecJunitFormatter --out coverage/mailer.xml'
+  #           - cache delete cc-mailer-goggles_main
+  #           - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-mailer.json
+  #           - cache store cc-mailer-goggles_main coverage/cc-mailer.json
+
+  #       - name: RSpec - views
+  #         commands:
+  #           - 'bundle exec rspec -t type:view --format RspecJunitFormatter --out coverage/view.xml'
+  #           - cache delete cc-view-goggles_main
+  #           - ./cc-test-reporter format-coverage -t simplecov -o coverage/cc-view.json
+  #           - cache store cc-view-goggles_main coverage/cc-view.json
+  #       # Not currently used:
+  #       # - name: RSpec - commands
+  #       # - name: RSpec - helpers
+
+  #     # Publish all test results from coverage/*.xml on Semaphore
+  #     epilogue:
+  #       always:
+  #         commands:
+  #           - test-results publish coverage
 
 after_pipeline:
   task:
@@ -128,8 +150,8 @@ after_pipeline:
         commands:
           - test-results gen-pipeline-report
 
-promotions:
-  - name: RSpec remainder
-    pipeline_file: semaphore_part2.yml
-    auto_promote:
-      when: result = 'passed'
+# promotions:
+#   - name: RSpec remainder
+#     pipeline_file: semaphore_part2.yml
+#     auto_promote:
+#       when: result = 'passed'

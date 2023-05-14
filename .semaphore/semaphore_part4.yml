@@ -25,7 +25,7 @@ global_job_config:
       - checkout
       - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
       - echo $RAILS_MASTER_KEY > config/master.key
-      - mkdir -pv tmp coverage
+      - mkdir -pv tmp tmp/cucumber coverage
       # Make sure we are using Bundler 2+:
       - gem i bundler
       # Use GogglesDb::VERSION as master reference here, or force a minor version change to rebuild the cache:
@@ -68,19 +68,7 @@ blocks:
             - env_var: DRV_NAME
               values: [ "headless_chrome_iphone678", "headless_chrome_iphonex", "headless_chrome_galaxys5", "headless_chrome_pixel2" ]
           commands:
-            - 'CAPYBARA_DRV=$DRV_NAME bundle exec cucumber --publish-quiet --color --format pretty --format junit --out coverage/cucumber_mobile.xml'
-        # - name: Cucumber mobile, iPhone6/7/8
-        #   commands:
-        #     - 'CAPYBARA_DRV="headless_chrome_iphone678" bundle exec cucumber --publish-quiet'
-        # - name: Cucumber mobile, iPhoneX
-        #   commands:
-        #     - 'CAPYBARA_DRV="headless_chrome_iphonex" bundle exec cucumber --publish-quiet'
-        # - name: Cucumber mobile, Galaxy5
-        #   commands:
-        #     - 'CAPYBARA_DRV="headless_chrome_galaxys5" bundle exec cucumber --publish-quiet'
-        # - name: Cucumber mobile, Pixel2
-        #   commands:
-        #     - 'CAPYBARA_DRV="headless_chrome_pixel2" bundle exec cucumber --publish-quiet'
+            - 'CAPYBARA_DRV=$DRV_NAME AUTO_ARTIFACTS=1 bundle exec cucumber --publish-quiet --color --format pretty --format junit --out coverage/cucumber_mobile.xml'
 
       # Publish all test results from coverage/*.xml on Semaphore
       epilogue:
@@ -95,8 +83,8 @@ after_pipeline:
         commands:
           - test-results gen-pipeline-report
 
-# promotions:
-#   - name: Code coverage
-#     pipeline_file: semaphore_coverage_upload.yml
-#     auto_promote:
-#       when: branch = 'main' AND result = 'passed'
+promotions:
+  - name: Code coverage
+    pipeline_file: semaphore_coverage_upload.yml
+    auto_promote:
+      when: branch = 'main' AND result = 'passed'
