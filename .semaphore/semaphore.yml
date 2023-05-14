@@ -68,13 +68,14 @@ blocks:
             - env_var: DRV_NAME
               values: [ "headless_chrome_ipad", "headless_chrome_ipadpro" ]
           commands:
-            - 'CAPYBARA_DRV=$DRV_NAME AUTO_ARTIFACTS=1 bundle exec cucumber --publish-quiet --color --format pretty --format junit --out coverage/cucumber_tablet.xml'
+            - 'CAPYBARA_DRV=$DRV_NAME AUTO_ARTIFACTS=1 bundle exec cucumber --publish-quiet --color --format pretty --format junit --out coverage/cucumber_tablet.xml features/issues/my_reports.feature features/swimmers/history_recap.feature'
 
       # Publish all test results from coverage/*.xml on Semaphore
       epilogue:
         always:
           commands:
             - test-results publish coverage
+            - artifact push workflow tmp/cucumber
 
   # - name: Code scanning
   #   task:
