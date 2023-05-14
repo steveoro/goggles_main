@@ -68,13 +68,13 @@ blocks:
             - env_var: DRV_NAME
               values: [ "headless_chrome_iphonex", "headless_chrome_iphone678" ]
           commands:
-            - 'CAPYBARA_DRV=$DRV_NAME AUTO_ARTIFACTS=1 bundle exec cucumber --publish-quiet --color --format pretty --format junit --out coverage/cucumber_tablet.xml features/issues/my_reports.feature features/swimmers/history_recap.feature'
+            - 'CAPYBARA_DRV=$DRV_NAME AUTO_ARTIFACTS=1 bundle exec cucumber --publish-quiet --color --format pretty --format junit --out coverage/cucumber_tablet.xml'
 
       # Publish all test results from coverage/*.xml or screenshots from tmp/cucumber/* on Semaphore
       epilogue:
         always:
           commands:
-            - artifact push workflow tmp/cucumber
+            - artifact push workflow tmp/cucumber --force
             - test-results publish coverage
 
   # - name: Code scanning
@@ -156,6 +156,7 @@ after_pipeline:
       - name: Publish Results
         commands:
           - test-results gen-pipeline-report
+          - artifact pull workflow tmp/cucumber
 
 # promotions:
 #   - name: RSpec remainder
