@@ -8,14 +8,14 @@
         - else
           = link_to(t('meetings.results'), meeting_show_path(@meeting), class: 'nav-link')
       %li.nav-item
-        - if active_tab == 'team'
-          .nav-link.active
-            = t('meetings.team_results')
-        - else
+        - if active_tab != 'team' && can_tap_to_results # disable link unless we have defaults
           = link_to(t('meetings.team_results'), meeting_team_results_path(meeting), class: 'nav-link')
-      %li.nav-item
-        - if active_tab == 'swimmer'
-          .nav-link.active
-            = t('meetings.swimmer_results')
         - else
+          .nav-link{ class: active_tab == 'team' ? 'active' : '' }
+            = t('meetings.team_results')
+      %li.nav-item
+        - if active_tab != 'swimmer' && can_tap_to_results # same as above
           = link_to(t('meetings.swimmer_results'), meeting_swimmer_results_path(meeting), class: 'nav-link')
+        - else
+          .nav-link{ class: active_tab == 'swimmer' ? 'active' : '' }
+            = t('meetings.swimmer_results')

@@ -26,15 +26,16 @@ global_job_config:
       - checkout
       - echo $DOCKERHUB_PASSWORD | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
       - echo $RAILS_MASTER_KEY > config/master.key
-      - mkdir -pv tmp
-      - gem i bundler
-      - cache restore bundle-3.30-$(checksum Gemfile.lock yarn.lock)
+      - mkdir -pv tmp coverage
+      - export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")
+      - gem i bundler -v $BUNDLER_VERSION
+      - echo "Current Bundler with version:" && which bundler && bundle --version
+      - cache restore bundle-5.20-$(checksum Gemfile.lock yarn.lock)
       - sem-version ruby 2.7
-      - bundle config set path 'vendor/bundle'
+      - bundle config set path "vendor/bundle"
       - GIT_LFS_SKIP_SMUDGE=1 bundle install
-      - cp config/database.semaphore_2.yml config/database.yml
       # The first pull will build the local cache for all the layers so that the build will act on the diff:
-      - 'docker pull $DOCKERHUB_USERNAME/goggles-main:latest || true'
+      - docker pull $DOCKERHUB_USERNAME/goggles-main:latest || true
 
 blocks:
   # Skip if there's a tag
@@ -46,8 +47,8 @@ blocks:
         - name: Docker latest
           commands:
             - RAILS_ENV=production bundle exec rails assets:precompile
-            - 'docker build -t $DOCKERHUB_USERNAME/goggles-main:latest --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.staging .'
-            - 'docker push $DOCKERHUB_USERNAME/goggles-main:latest'
+            - docker build -t $DOCKERHUB_USERNAME/goggles-main:latest --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.staging .
+            - docker push $DOCKERHUB_USERNAME/goggles-main:latest
 
   # Run only if there's a tag
   - name: Build versioned images
@@ -56,24 +57,24 @@ blocks:
     task:
       prologue:
         commands:
-          - echo 'Current TAG $SEMAPHORE_GIT_TAG_NAME'
+          - echo "Current TAG $SEMAPHORE_GIT_TAG_NAME"
       jobs:
         - name: Docker dev
           commands:
-            - 'docker build -t $DOCKERHUB_USERNAME/goggles-main:dev-$SEMAPHORE_GIT_TAG_NAME --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.dev .'
-            - 'docker push $DOCKERHUB_USERNAME/goggles-main:dev-$SEMAPHORE_GIT_TAG_NAME'
+            - docker build -t $DOCKERHUB_USERNAME/goggles-main:dev-$SEMAPHORE_GIT_TAG_NAME --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.dev .
+            - docker push $DOCKERHUB_USERNAME/goggles-main:dev-$SEMAPHORE_GIT_TAG_NAME
 
         - name: Docker staging
           commands:
             - RAILS_ENV=staging bundle exec rails assets:precompile
-            - 'docker build -t $DOCKERHUB_USERNAME/goggles-main:staging-$SEMAPHORE_GIT_TAG_NAME --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.staging .'
-            - 'docker push $DOCKERHUB_USERNAME/goggles-main:staging-$SEMAPHORE_GIT_TAG_NAME'
+            - docker build -t $DOCKERHUB_USERNAME/goggles-main:staging-$SEMAPHORE_GIT_TAG_NAME --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.staging .
+            - docker push $DOCKERHUB_USERNAME/goggles-main:staging-$SEMAPHORE_GIT_TAG_NAME
 
         - name: Docker prod
           commands:
             - RAILS_ENV=production bundle exec rails assets:precompile
-            - 'docker build -t $DOCKERHUB_USERNAME/goggles-main:prod-$SEMAPHORE_GIT_TAG_NAME --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.prod .'
-            - 'docker push $DOCKERHUB_USERNAME/goggles-main:prod-$SEMAPHORE_GIT_TAG_NAME'
+            - docker build -t $DOCKERHUB_USERNAME/goggles-main:prod-$SEMAPHORE_GIT_TAG_NAME --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.prod .
+            - docker push $DOCKERHUB_USERNAME/goggles-main:prod-$SEMAPHORE_GIT_TAG_NAME
 
 promotions:
   - name: Deploy

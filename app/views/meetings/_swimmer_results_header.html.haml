@@ -4,7 +4,10 @@
 
 .card#swimmer-results-title
   .card-body.alert-info.py-3#swimmer-header-title
-    = render(Title::SwimmerShowLinkComponent.new(swimmer: swimmer))
+    %b= render(Title::SwimmerShowLinkComponent.new(swimmer: swimmer))
+    %br/
+    = render(Title::TeamShowLinkComponent.new(team: first_mir.team, action_link_method: :link_to_results,
+             link_extra_params: meeting.id))
 
 .my-3#swimmer-results-header
   %table.table.table-sm.table-hover

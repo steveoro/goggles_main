@@ -17,5 +17,11 @@ module Users
       resource.update_columns(uid: nil, provider: nil)
       super
     end
+
+    # DELETE /resource/sign_out
+    def destroy
+      super
+      reset_session
+    end
   end
 end

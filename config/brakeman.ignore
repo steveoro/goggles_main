@@ -25,18 +25,18 @@
     },
     {
       "warning_type": "Unmaintained Dependency",
-      "warning_code": 122,
-      "fingerprint": "98b26f60d776fd41ee6f088c833725145be9aac2d7c5b33780241c273622db42",
+      "warning_code": 120,
+      "fingerprint": "d84924377155b41e094acae7404ec2e521629d86f97b0ff628e3d1b263f8101c",
       "check_name": "EOLRails",
-      "message": "Support for Rails 6.0.6.1 ends on 2023-06-01",
+      "message": "Support for Rails 6.0.6.1 ended on 2023-06-01",
       "file": "Gemfile.lock",
-      "line": 419,
+      "line": 422,
       "link": "https://brakemanscanner.org/docs/warning_types/unmaintained_dependency/",
       "code": null,
       "render_path": null,
       "location": null,
       "user_input": null,
-      "confidence": "Medium",
+      "confidence": "High",
       "cwe_id": [
         1104
       ],
@@ -62,6 +62,6 @@
       "note": ""
     }
   ],
-  "updated": "2023-05-02 11:45:04 +0200",
+  "updated": "2023-06-13 19:34:57 +0200",
   "brakeman_version": "5.4.1"
 }

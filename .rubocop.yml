@@ -1,4 +1,5 @@
 require:
+  - rubocop-factory_bot
   - rubocop-capybara
   - rubocop-performance
   - rubocop-rails
@@ -26,7 +27,7 @@ AllCops:
     - 'vendor/**/*'
     - 'node_modules/**/*'
 
-FactoryBot:
+FactoryBot/SyntaxMethods:
   Enabled: false
 
 # Cop supports --auto-correct.
@@ -90,6 +91,11 @@ Rails/ThreeStateBooleanColumn:
     - 'db/migrate/20220228114607_add_cancelled_to_calendars.rb'
     - 'db/migrate/20220801110842_add_sql_batch_field_to_import_queues.rb'
 
+Rails/SkipsModelValidations:
+  Exclude:
+    - 'app/controllers/users/sessions_controller.rb'
+    - 'db/migrate/20230530165750_clear_non_existing_associated_user_id.rb'
+    - 'db/migrate/20210630154722_data_fix_badges_with_null_entry_time_type.rb'
 
 Rake/Desc:
   Exclude:

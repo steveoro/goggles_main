@@ -3,7 +3,7 @@
 
   .main-content#top-of-page
     = render(partial: 'meeting_header', locals: { meeting: @meeting })
-    = render(partial: 'meeting_navs', locals: { meeting: @meeting, active_tab: 'team' })
+    = render(partial: 'meeting_navs', locals: { meeting: @meeting, active_tab: 'team', can_tap_to_results: @default_team_or_swimmer_in_meeting })
 
     - cache(cache_key_for_meeting(action: 'meeting_team_results', meeting_id: @meeting.id, max_updated_at: @max_updated_at,
             team_id: @team&.id, swimmer_id: @swimmer&.id)) do

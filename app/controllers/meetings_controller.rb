@@ -4,11 +4,9 @@
 #
 class MeetingsController < ApplicationController
   before_action :authenticate_user!, only: [:index]
-  before_action :prepare_managed_teams, only: %i[show team_results swimmer_results]
-
-  before_action :validate_meeting, only: %i[show team_results swimmer_results]
-  before_action :validate_team, only: %i[show team_results swimmer_results]
-  before_action :validate_swimmer, only: %i[index show team_results swimmer_results]
+  before_action :prepare_user_teams, :prepare_managed_teams, :validate_meeting, :validate_team,
+                only: %i[show team_results swimmer_results]
+  before_action :validate_swimmer, except: %i[for_swimmer for_team]
 
   # GET /meetings/:id
   # Shows "My attended Meetings" grid (just for the current user).
@@ -73,9 +71,9 @@ class MeetingsController < ApplicationController
                               .joins(:meeting_session, :event_type, :stroke_type, season: [:season_type])
                               .unscope(:order)
                               .order('meeting_sessions.session_order, meeting_events.event_order')
-
     # Get page timestamp for cache key:
     set_max_updated_at_for_meeting
+    check_default_team_or_swimmer_in_meeting
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -125,6 +123,7 @@ class MeetingsController < ApplicationController
 
     # Get page timestamp for cache key:
     set_max_updated_at_for_meeting
+    check_default_team_or_swimmer_in_meeting
   end
   # rubocop:enable Metrics/AbcSize
   #-- -------------------------------------------------------------------------
@@ -149,6 +148,7 @@ class MeetingsController < ApplicationController
 
     # Get page timestamp for cache key:
     set_max_updated_at_for_meeting
+    check_default_team_or_swimmer_in_meeting
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -341,6 +341,25 @@ class MeetingsController < ApplicationController
   end
   #-- -------------------------------------------------------------------------
   #++
+
+  # Sets <tt>@default_team_or_swimmer_in_meeting</tt> to +true+ only if the default current swimmer & team
+  # are present in the current @meeting.
+  #
+  # Requires to be called after:
+  # 1. ApplicationController#prepare_user_teams
+  # 2. this#validate_meeting
+  # 3. this#validate_swimmer
+  #
+  def check_default_team_or_swimmer_in_meeting
+    # True whenever we can switch to the result tabs without having a filtering parameter:
+    @default_team_or_swimmer_in_meeting = GogglesDb::Meeting.includes(meeting_individual_results: %i[swimmer team])
+                                                            .joins(meeting_individual_results: %i[swimmer team])
+                                                            .exists?(
+                                                              id: @meeting.id,
+                                                              'teams.id': @user_teams.map(&:id),
+                                                              'swimmers.id': @current_swimmer_id
+                                                            )
+  end
 
   # Sets the internal <tt>@max_updated_at</tt> value that will be used as main cache timestamp for the current <tt>@meeting</tt>.
   def set_max_updated_at_for_meeting

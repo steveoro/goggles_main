@@ -28,6 +28,8 @@ Rails.application.routes.draw do
   get 'home/about'
   get 'home/contact_us'
   post 'home/contact_us'
+  get 'home/reactivate'
+  post 'home/reactivate'
   get 'home/dashboard'
 
   get 'chrono', to: 'chrono#index'

@@ -12,11 +12,9 @@ default: &default
 
 development:
   <<: *default
-  database: goggles_development
 
 test:
   <<: *default
-  database: goggles_test
 
 production:
   <<: *default

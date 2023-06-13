@@ -26,12 +26,14 @@ global_job_config:
       - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
       - chmod +x ./cc-test-reporter
       - cache restore cc-component-goggles_main
+      - cache restore cc-helper-goggles_main
       - cache restore cc-decorator-goggles_main
       - cache restore cc-job-goggles_main
       - cache restore cc-mailer-goggles_main
+      - cache restore cc-view-goggles_main
       - cache restore cc-request-goggles_main
       - cache restore cc-strategy-goggles_main
-      - cache restore cc-view-goggles_main
+      - cache restore cc-service-goggles_main
 
 blocks:
   - name: Code coverage upload

@@ -96,10 +96,12 @@ end
 # - @last_seasons_ids => list of valid Season IDs considered as "manageable"
 Given('I have an associated swimmer on a confirmed team manager account') do
   # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:251)
-  @last_seasons_ids = [
-    GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin).id,
-    GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season).by_season(:desc).first.season_id
-  ].uniq
+  @last_seasons_ids = GogglesDb::LastSeasonId.all.map(&:id)
+  # [Steve, 20230608] WAS:
+  # @last_seasons_ids = [
+  #   GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin).id,
+  #   GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season).by_season(:desc).first.season_id
+  # ].uniq
   last_season_id = @last_seasons_ids.first
 
   team_affiliation = GogglesDb::TeamAffiliation.where(season_id: last_season_id).first ||

@@ -12,3 +12,11 @@ en:
         auth_error: "Google authentication error: %{error}"
         empty_response: "Google returned an empty response: cannot proceed. (Did you select valid credentials?)"
         invalid_data: "Invalid Google OAuth response data!"
+      reactivation:
+        title: 'Request account re-activation'
+        link_to_instructions: 'Request account re-activation if deactivated'
+        msg:
+          error_email_empty: 'Missing an email address to search!'
+          error_not_existing: 'Account not found.'
+          error_not_deactivated: 'This account is not deactivated.'
+          ok_sent: 'Request sent to the server Admins. It will be handled as soon as possible.'

@@ -37,7 +37,7 @@
       - unless relay
         -# TODO: MIR#by_swimmer()
         - can_edit_lap = current_user_is_admin || managed_team_ids.nil? || managed_team_ids.include?(team.id)
-        - meeting_event.meeting_individual_results.for_team(team).joins(:swimmer, :category_type).includes(:category_type, :laps).order("swimmers.complete_name ASC, meeting_individual_results.rank ASC").each do |mir|
+        - meeting_event.meeting_individual_results.for_team(team).joins(:swimmer, :category_type).includes(:category_type, :laps).by_swimmer.by_rank.each do |mir|
           - can_manage = user_signed_in? && current_user.swimmer_id.present? && current_user.swimmer_id == mir.swimmer_id
           = render(MIR::TableRowComponent.new(mir: mir, lap_edit: can_edit_lap, report_mistake: can_edit_lap || can_manage,
                    show_category: true, show_team: false))

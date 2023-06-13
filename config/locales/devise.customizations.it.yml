@@ -12,3 +12,11 @@ it:
         auth_error: "Errore di autenticazione con Google: %{error}"
         empty_response: "Google non ha risposto o la risposta era vuota: impossible procedere. (Hai usato credenziali valide?)"
         invalid_data: "Dati della risposta OAuth di Google non validi!"
+      reactivation:
+        title: 'Richiedi riattivazione account'
+        link_to_instructions: 'Richiedi di riattivare il tuo account se ti è stato disattivato'
+        msg:
+          error_email_empty: 'Manca un indirizzo Email da cercare!'
+          error_not_existing: 'Account non trovato.'
+          error_not_deactivated: 'Questo account non risulta disattivato.'
+          ok_sent: 'Richiesta inoltrata agli amministratori del server. Verrà gestita appena possibile.'

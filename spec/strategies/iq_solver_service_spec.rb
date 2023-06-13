@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe IqSolverService, type: :service do
   shared_examples_for 'IqSolverService valid instance' do
     it 'is an instance of the service' do
-      expect(subject).to be_an(described_class)
+      expect(subject).to be_a(described_class)
     end
 
     it 'responds to call' do

@@ -258,7 +258,6 @@ class ApplicationController < ActionController::Base
   # Always returns the list of last season IDs, either recomputed or collected from cookies.
   # The stored cookie shall expire at browser session (each time the user closes the browser).
   #
-  # rubocop:disable Metrics/AbcSize
   def last_season_ids
     # Last Seasons member variables won't change frequently, so we store them:
     return JSON.parse(cookies[:last_seasons_ids]) if cookies[:last_seasons_ids].present?
@@ -266,12 +265,15 @@ class ApplicationController < ActionController::Base
     start = Time.zone.now # compute elapsed time
     # Retrieve any available latest season(s) by type, but include also those *having* at least some results
     # (this is required by many features):
-    @last_seasons = [
-      GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin),
-      GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).by_season(:desc).first&.season,
-      GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin),
-      GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season).by_season(:desc).first&.season
-    ].compact.sort.uniq
+    @last_seasons_ids = GogglesDb::LastSeasonId.all.map(&:id)
+    @last_seasons = GogglesDb::Season.where(id: @last_seasons_ids)
+    # [Steve, 20230608] WAS:
+    # [
+    #   GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin),
+    #   GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).by_season(:desc).first&.season,
+    #   GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin),
+    #   GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season).by_season(:desc).first&.season
+    # ].compact.sort.uniq
 
     # [!!!] Whenever the above ^^ changes, CHECK & UPDATE ALSO:
     # - features/step_definitions/calendars/calendars_steps.rb:17
@@ -280,12 +282,10 @@ class ApplicationController < ActionController::Base
     # - spec/support/shared_team_managers_context.rb:4
 
     Rails.logger.info("\r\n\r\n----> @last_seasons_ids recomputed. Elapsed time: #{Time.zone.now - start}")
-    @last_seasons_ids = @last_seasons.pluck(:id)
     # Prevent recompute on each page load:
     cookies[:last_seasons_ids] = @last_seasons_ids.to_json
     @last_seasons_ids
   end
-  # rubocop:enable Metrics/AbcSize
   #-- -------------------------------------------------------------------------
   #++
 end

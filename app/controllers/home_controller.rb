@@ -30,6 +30,30 @@ class HomeController < ApplicationController
     redirect_to root_path and return
   end
 
+  # [GET/POST] Show the '#reactivate' form, only for de-activated users.
+  # rubocop:disable Metrics/AbcSize
+  def reactivate
+    email = nil
+    if request.post?
+      email = params.require('user').permit('email')['email']
+      flash[:warning] = I18n.t('devise.customizations.reactivation.msg.error_email_empty') if email.blank?
+    end
+    return if email.blank?
+
+    user = GogglesDb::User.find_by(email: email)
+    if user.nil?
+      flash[:warning] = I18n.t('devise.customizations.reactivation.msg.error_not_existing')
+    elsif user.active?
+      flash[:warning] = I18n.t('devise.customizations.reactivation.msg.error_not_deactivated')
+    else
+      GogglesDb::Issue.create!(user_id: user.id, code: '5', req: '{}')
+      flash[:info] = I18n.t('devise.customizations.reactivation.msg.ok_sent')
+    end
+
+    redirect_to root_path and return
+  end
+  # rubocop:enable Metrics/AbcSize
+
   # [GET] Current users's '#dashboard' page.
   # Requires authentication.
   def dashboard
