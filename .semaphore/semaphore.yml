@@ -101,8 +101,7 @@ blocks:
         - name: RSpec / type
           matrix:
             - env_var: SPECS
-              values: [ "component", "view" ]
-              # values: [ "component", "helper", "decorator", "job", "mailer", "view" ]
+              values: [ "component", "helper", "decorator", "job", "mailer", "view" ]
           commands:
             - bundle exec rspec -t type:$SPECS --order rand -f RspecPacmanFormatter::Pacman -f RspecJunitFormatter --out coverage/$SPECS.xml
             - cache delete cc-$SPECS-goggles_main
