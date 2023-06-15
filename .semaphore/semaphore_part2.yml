@@ -54,6 +54,8 @@ blocks:
         commands:
           - sem-version ruby 2.7
           - sem-service start mysql 5.7
+          - sudo apt-get install -y -qq mysql-client
+          - mysql --host=0.0.0.0 -uroot -e "SET GLOBAL sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';"
           - bundle config set path "vendor/bundle"
           - GIT_LFS_SKIP_SMUDGE=1 bundle install
           - yarn
