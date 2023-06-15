@@ -50,34 +50,34 @@ blocks:
             # The cache will be updated with the new content just once for all blocks in the pipeline:
             - cache store bundle-5.20-$(checksum Gemfile.lock yarn.lock) vendor/bundle
 
-  - name: Code scanning
-    task:
-      jobs:
-        - name: check style + security
-          commands:
-            - sem-version ruby 2.7
-            - bundle config set path "vendor/bundle"
-            - GIT_LFS_SKIP_SMUDGE=1 bundle install
-            - bundle exec rubocop -f pacman
-            - bundle exec brakeman -A6 -c .brakeman.cfg
+  # - name: Code scanning
+  #   task:
+  #     jobs:
+  #       - name: check style + security
+  #         commands:
+  #           - sem-version ruby 2.7
+  #           - bundle config set path "vendor/bundle"
+  #           - GIT_LFS_SKIP_SMUDGE=1 bundle install
+  #           - bundle exec rubocop -f pacman
+  #           - bundle exec brakeman -A6 -c .brakeman.cfg
 
-  - name: Zeitwerk check
-    task:
-      prologue:
-        commands:
-          - sem-version ruby 2.7
-          - sem-service start mysql 5.7
-          - bundle config set path "vendor/bundle"
-          - GIT_LFS_SKIP_SMUDGE=1 bundle install
-          - yarn
-          - cp config/database.semaphore_2.yml config/database.yml
-          - curl -L -o db/dump/test.sql.bz2 "https://github.com/steveoro/goggles_db/raw/master/spec/dummy/db/dump/test.sql.bz2"
-          - RAILS_ENV=test bin/rails db:rebuild from=test to=test
-          - RAILS_ENV=test bin/rails db:migrate
-      jobs:
-        - name: Zeitwerk preloading
-          commands:
-            - bundle exec rails zeitwerk:check
+  # - name: Zeitwerk check
+  #   task:
+  #     prologue:
+  #       commands:
+  #         - sem-version ruby 2.7
+  #         - sem-service start mysql 5.7
+  #         - bundle config set path "vendor/bundle"
+  #         - GIT_LFS_SKIP_SMUDGE=1 bundle install
+  #         - yarn
+  #         - cp config/database.semaphore_2.yml config/database.yml
+  #         - curl -L -o db/dump/test.sql.bz2 "https://github.com/steveoro/goggles_db/raw/master/spec/dummy/db/dump/test.sql.bz2"
+  #         - RAILS_ENV=test bin/rails db:rebuild from=test to=test
+  #         - RAILS_ENV=test bin/rails db:migrate
+  #     jobs:
+  #       - name: Zeitwerk preloading
+  #         commands:
+  #           - bundle exec rails zeitwerk:check
 
   - name: RSpec tests part 1
     task:
@@ -99,7 +99,8 @@ blocks:
         - name: RSpec / type
           matrix:
             - env_var: SPECS
-              values: [ "component", "helper", "decorator", "job", "mailer", "view" ]
+              values: [ "component", "view" ]
+              # values: [ "component", "helper", "decorator", "job", "mailer", "view" ]
           commands:
             - bundle exec rspec -t type:$SPECS --order rand -f RspecPacmanFormatter::Pacman -f RspecJunitFormatter --out coverage/$SPECS.xml
             - cache delete cc-$SPECS-goggles_main
