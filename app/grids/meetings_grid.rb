@@ -9,8 +9,8 @@ class MeetingsGrid < BaseGrid
   scope do
     GogglesDb::Meeting.includes(:meeting_sessions)
                       .joins(:meeting_sessions)
-                      .by_date(:desc)
                       .distinct
+                      .by_date(:desc)
   end
 
   filter(:meeting_date, :date, header: I18n.t('meetings.dashboard.params.meeting_date_label'),
