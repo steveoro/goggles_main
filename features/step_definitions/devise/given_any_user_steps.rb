@@ -21,6 +21,13 @@ Given('I have a locked account') do
   expect(@current_user.current_sign_in_at).to be nil
 end
 
+# Sets @current_user
+Given('I have a deactivated account') do
+  @current_user = FactoryBot.create(:user, active: false, current_sign_in_at: nil)
+  expect(@current_user.active).to be false
+  expect(@current_user.current_sign_in_at).to be nil
+end
+
 # Sets @current_user with Admin grants (any entity)
 Given('I have a confirmed account with admin grants') do
   @current_user = FactoryBot.create(:user, current_sign_in_at: nil)

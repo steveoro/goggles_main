@@ -66,7 +66,7 @@ class ApplicationController < ActionController::Base
   #
   def prepare_user_teams
     @user_teams = []
-    return unless @last_seasons_ids.present? && current_user.swimmer
+    return unless user_signed_in? && @last_seasons_ids.present? && current_user.swimmer
 
     @user_teams = GogglesDb::Badge.where(season_id: @last_seasons_ids, swimmer_id: current_user.swimmer_id)
                                   .map(&:team).uniq

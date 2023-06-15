@@ -3,7 +3,7 @@
 
   .main-content
     .row-fluid.m-4
-      #unlock-account-box
+      #reactivate-account-box
         %h2= t('devise.customizations.reactivation.title')
         - user = GogglesDb::User.new
         = form_for(user, url: home_reactivate_path, html: { method: :post }) do |f|
@@ -19,8 +19,5 @@
             .form-group.actions.col-md-7.col-sm-12
               = f.submit(t('devise.customizations.send_request_button'), id: 'send-request-btn',
                            class: 'btn btn-primary')
-
-    -# .row-fluid.mx-4
-    -#   = render('devise/shared/links', locals: { resource_name: 'user' })
 
   .spacer-right

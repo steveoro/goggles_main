@@ -19,4 +19,5 @@ it:
           error_email_empty: 'Manca un indirizzo Email da cercare!'
           error_not_existing: 'Account non trovato.'
           error_not_deactivated: 'Questo account non risulta disattivato.'
+          error_already_requested: 'La richiesta di riattivazione era già stata accodata. Per cortesia, porta pazienza.'
           ok_sent: 'Richiesta inoltrata agli amministratori del server. Verrà gestita appena possibile.'

@@ -3,7 +3,7 @@
 #
 # == Versioning codes
 #
-#   - version:  7-0.5.10
+#   - version:  7-0.5.20
 #   - author:   Steve A.
 #
 # Framework version number usually differs from core engine versioning number.
@@ -29,10 +29,10 @@ module Version
   MINOR = '5'
 
   # Patch version.
-  PATCH = '10'
+  PATCH = '20'
 
   # Current build version.
-  BUILD = '20230601'
+  BUILD = '20230615'
 
   # Full versioning for the current release.
   FULL = "#{MAJOR}.#{MINOR}.#{PATCH} (#{CORE}-#{BUILD})"
@@ -41,5 +41,5 @@ module Version
   SEMANTIC = "#{MAJOR}.#{MINOR}.#{PATCH}"
 
   # Current internal DB version (independent from migrations and framework release)
-  DB = '1.99.0'
+  DB = '2.00.0'
 end

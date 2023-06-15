@@ -31,28 +31,17 @@ class HomeController < ApplicationController
   end
 
   # [GET/POST] Show the '#reactivate' form, only for de-activated users.
-  # rubocop:disable Metrics/AbcSize
   def reactivate
     email = nil
     if request.post?
-      email = params.require('user').permit('email')['email']
+      email = params.permit(user: :email)[:user]&.fetch(:email, nil)
       flash[:warning] = I18n.t('devise.customizations.reactivation.msg.error_email_empty') if email.blank?
     end
     return if email.blank?
 
-    user = GogglesDb::User.find_by(email: email)
-    if user.nil?
-      flash[:warning] = I18n.t('devise.customizations.reactivation.msg.error_not_existing')
-    elsif user.active?
-      flash[:warning] = I18n.t('devise.customizations.reactivation.msg.error_not_deactivated')
-    else
-      GogglesDb::Issue.create!(user_id: user.id, code: '5', req: '{}')
-      flash[:info] = I18n.t('devise.customizations.reactivation.msg.ok_sent')
-    end
-
+    process_reactivate_email(email)
     redirect_to root_path and return
   end
-  # rubocop:enable Metrics/AbcSize
 
   # [GET] Current users's '#dashboard' page.
   # Requires authentication.
@@ -71,5 +60,26 @@ class HomeController < ApplicationController
       subject_text: "Msg from '#{current_user.name}'",
       content_body: params['body']
     ).deliver_later
+  end
+
+  # Processes a reactivation request for an account email and sets the resulting flash message accordingly.
+  # Creates a new Issue type 5 request if and only if the email is found existing and associated to a
+  # deactivated account. Does nothing otherwise (apart from setting a flash message).
+  #
+  # == Params:
+  # - email: a User#email string
+  #
+  def process_reactivate_email(email)
+    user = GogglesDb::User.find_by(email: email)
+    if user.nil?
+      flash[:warning] = I18n.t('devise.customizations.reactivation.msg.error_not_existing')
+    elsif user.active?
+      flash[:warning] = I18n.t('devise.customizations.reactivation.msg.error_not_deactivated')
+    elsif GogglesDb::Issue.exists?(user_id: user.id, code: '5')
+      flash[:warning] = I18n.t('devise.customizations.reactivation.msg.error_already_requested')
+    else
+      GogglesDb::Issue.create!(user_id: user.id, code: '5', req: '{}')
+      flash[:info] = I18n.t('devise.customizations.reactivation.msg.ok_sent')
+    end
   end
 end
