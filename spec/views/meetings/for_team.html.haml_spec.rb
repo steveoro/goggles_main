@@ -11,8 +11,7 @@ RSpec.describe 'meetings/for_team.html.haml' do
     # We have to make sure the chosen team does have a meeting otherwise the
     # decorator for the label will throw an error:
     let(:team_id_with_meetings) do
-      GogglesDb::MeetingIndividualResult.includes(:team).select(:team_id)
-                                        .distinct(:team_id).first(500)
+      GogglesDb::MeetingIndividualResult.includes(:team).distinct(:team_id).first(500)
                                         .pluck(:team_id)
                                         .sample
     end
