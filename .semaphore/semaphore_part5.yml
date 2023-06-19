@@ -72,7 +72,7 @@ blocks:
           commands:
             - CAPYBARA_DRV=$DRV_NAME AUTO_ARTIFACTS=1 bundle exec cucumber --publish-quiet --color --format pretty --format junit --out coverage/$DRV_NAME.xml
 
-      # Publish all test results from coverage/*.xml on Semaphore
+      # Publish all test results from coverage/*.xml & any screenshot from Cucumber on Semaphore
       epilogue:
         always:
           commands:
@@ -85,6 +85,7 @@ after_pipeline:
       - name: Publish Results
         commands:
           - test-results gen-pipeline-report
+          - artifact pull workflow tmp/cucumber
 
 promotions:
   - name: Code coverage
