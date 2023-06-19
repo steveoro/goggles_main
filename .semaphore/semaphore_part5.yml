@@ -82,7 +82,7 @@ blocks:
 after_pipeline:
   task:
     jobs:
-      - name: Publish Results
+      - name: Publish Results & pull artifacts
         commands:
           - test-results gen-pipeline-report
           - artifact pull workflow tmp/cucumber

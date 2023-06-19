@@ -6,6 +6,9 @@ Then('I can\'t see any of the lap edit buttons on the whole page') do
 end
 
 Then('I can see the lap edit buttons on the page') do
+  # WARNING: meeting show page could take a while to get rendered
+  sleep(1) && wait_for_ajax
+  find('.main-content#top-of-page', visible: true)
   expect(page).to have_css('a.btn.lap-edit-btn')
 end
 # -----------------------------------------------------------------------------

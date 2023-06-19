@@ -82,6 +82,13 @@ blocks:
             - if ls tmp/cucumber/* > /dev/null 2> /dev/null ; then artifact push workflow tmp/cucumber --force ; fi
             - test-results publish coverage
 
+after_pipeline:
+  task:
+    jobs:
+      - name: Pull artifacts
+        commands:
+          - artifact pull workflow tmp/cucumber
+
 promotions:
   - name: Cucumber part 2
     pipeline_file: semaphore_part4.yml
