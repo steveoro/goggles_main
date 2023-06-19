@@ -232,6 +232,11 @@ Given('I have a confirmed account with associated swimmer and existing user resu
                                     .joins(swimmer: [:associated_user])
                                     .distinct(:swimmer_id).pluck(:swimmer_id)
                                     .first(300).sample
+  unless swimmer_id
+    swimmer_id = GogglesDb::Swimmer.joins(:associated_user).first(20).sample.id
+    FactoryBot.create_list(:user_result_with_laps, 3, swimmer_id: swimmer_id)
+  end
+  expect(swimmer_id).to be_positive
   @matching_swimmer = GogglesDb::Swimmer.find(swimmer_id)
   expect(@matching_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
   expect(@matching_swimmer.associated_user).to be_a(GogglesDb::User).and be_valid

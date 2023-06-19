@@ -83,24 +83,16 @@ class LapsController < ApplicationController
     @curr_lap.hundredths_from_start = rows_params[:hundredths_from_start]&.values&.first || 0
 
     # Recompute current delta giving precedence to #timing_from_start:
-    previous_lap = lap_class_from_row_params.related_laps(@curr_lap)
-                                            .where('length_in_meters < ?', @curr_lap.length_in_meters)
-                                            .last
+    previous_lap = @curr_lap.previous_lap
     delta_timing = previous_lap ? @curr_lap.timing_from_start - previous_lap.timing_from_start : @curr_lap.timing_from_start
     @curr_lap.from_timing(delta_timing)
     handle_error_request unless @curr_lap.save
 
     # Recompute & update all subsequent deltas:
-    following_laps = lap_class_from_row_params.related_laps(@curr_lap)
-                                              .includes(
-                                                result_class_from_row_params.table_name.singularize.to_sym,
-                                                :swimmer, :event_type
-                                              )
-                                              .where('length_in_meters > ?', @curr_lap.length_in_meters)
-
+    following_laps = lap_class_from_row_params.following_laps(@curr_lap)
     following_laps = following_laps.includes(:team) if @curr_lap.respond_to?(:team)
     following_laps.each do |lap|
-      previous_lap = lap_class_from_row_params.related_laps(lap).where('length_in_meters < ?', lap.length_in_meters).last
+      previous_lap = lap.previous_lap
       delta_timing = previous_lap ? lap.timing_from_start - previous_lap.timing_from_start : lap.timing_from_start
       lap.from_timing(delta_timing)
       handle_error_request unless lap.save
@@ -248,7 +240,7 @@ class LapsController < ApplicationController
   # - <tt>length_in_meters</tt>: overall length in meters from the start
   #
   def new_zeroed_lap(length_in_meters)
-    if @parent_result.is_a?(GogglesDb::MeetingIndividualResult)
+    if @parent_result.class.name.include?('IndividualResult')
       return GogglesDb::Lap.new(
         meeting_individual_result_id: @parent_result.id,
         meeting_program_id: @parent_result.meeting_program_id,

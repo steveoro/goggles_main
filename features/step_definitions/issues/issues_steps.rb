@@ -116,6 +116,11 @@ When('I see my newly created issue') do
   # In case we come from a select2 drop-down input box, the label should be in the request text too:
   expect(@latest_issue.req.to_s).to include(@select2_input_text) if @select2_input_text.present?
 
+  # If there's a link to a last page, go to the last page:
+  if page.has_css?('li.page-item span.last a.page-link')
+    find('li.page-item span.last a.page-link').click
+    sleep(0.5) && wait_for_ajax
+  end
   issue_grid = find('section#issues-grid table tbody', visible: true)
   last_row = issue_grid.find_all('tr', visible: true).last
   expect(last_row.text).to include(@latest_issue.req.to_s)
