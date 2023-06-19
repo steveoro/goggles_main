@@ -112,8 +112,6 @@ blocks:
       epilogue:
         always:
           commands:
-            # This won't be needed here as we won't have any:
-            # - artifact push workflow tmp/cucumber --force
             - test-results publish coverage
 
 promotions:

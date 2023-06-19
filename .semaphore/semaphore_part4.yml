@@ -76,6 +76,7 @@ blocks:
       epilogue:
         always:
           commands:
+            - if ls tmp/cucumber/* > /dev/null 2> /dev/null ; then artifact push workflow tmp/cucumber --force ; fi
             - test-results publish coverage
 
 promotions:
