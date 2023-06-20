@@ -84,6 +84,10 @@ blocks:
             - test-results publish coverage
 
 promotions:
+  - name: Docker images
+    pipeline_file: semaphore_docker_build.yml
+    auto_promote:
+      when: result = 'passed'
   - name: Cucumber part 1
     pipeline_file: semaphore_part3.yml
     auto_promote:

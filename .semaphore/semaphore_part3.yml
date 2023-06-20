@@ -94,7 +94,3 @@ promotions:
     pipeline_file: semaphore_part4.yml
     auto_promote:
       when: result = 'passed'
-  - name: Docker images
-    pipeline_file: semaphore_docker_build.yml
-    auto_promote:
-      when: result = 'passed'

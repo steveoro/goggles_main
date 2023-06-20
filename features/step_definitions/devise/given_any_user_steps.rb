@@ -276,10 +276,7 @@ Given('I have a confirmed team manager account managing some existing URs') do
                                                 .sample
   @managed_team = meeting_with_results.team
   expect(@managed_team).to be_a(GogglesDb::Team).and be_valid
-  all_worshops_ids = GogglesDb::UserWorkshop.includes(:season).joins(:season)
-                                            .where(team_id: @managed_team.id, season_id: last_season_id)
-                                            .pluck(:id)
-  @associated_urs = GogglesDb::UserResult.where(user_workshop_id: all_worshops_ids)
+  @associated_urs = meeting_with_results.user_results
   expect(@associated_urs.count).to be_positive
 
   team_affiliation = GogglesDb::TeamAffiliation.where(team_id: @managed_team.id, season_id: last_season_id).first ||

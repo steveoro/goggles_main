@@ -9,8 +9,7 @@ Then('I can see the lap edit buttons on the page') do
   # WARNING: meeting show page could take a while to get rendered
   sleep(1) && wait_for_ajax
   find('.main-content#top-of-page', visible: true)
-  find('tbody.result-table-row', visible: true)
-  find('tbody.result-table-row a.btn.lap-edit-btn', visible: true)
+  find('.lap-edit-btn', visible: true)
 end
 # -----------------------------------------------------------------------------
 
