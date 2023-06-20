@@ -9,7 +9,8 @@ Then('I can see the lap edit buttons on the page') do
   # WARNING: meeting show page could take a while to get rendered
   sleep(1) && wait_for_ajax
   find('.main-content#top-of-page', visible: true)
-  expect(page).to have_css('a.btn.lap-edit-btn')
+  find('tbody.result-table-row', visible: true)
+  find('tbody.result-table-row a.btn.lap-edit-btn', visible: true)
 end
 # -----------------------------------------------------------------------------
 
@@ -63,14 +64,14 @@ end
 # Sets:
 # - @chosen_lap_idx
 When('I see another empty lap row is added \(only if the last distance is less than the goal)') do
-  last_lap_row = find_all('tbody#laps-table-body tr td .lap-row').last
+  find('tbody#laps-table-body tr td .lap-row', visible: true)
   @chosen_lap_idx = find_all('tbody#laps-table-body tr td .lap-row').count - 1
   # No empty lap will be created if we've selected a random result that already has laps
   # that fill all the available step distances:
   if @chosen_mir.laps.by_distance.last.length_in_meters + 25 < @chosen_mir.event_type.length_in_meters
-    expect(last_lap_row.find("input#minutes_from_start_#{@chosen_lap_idx}").value).to eq('0')
-    expect(last_lap_row.find("input#seconds_from_start_#{@chosen_lap_idx}").value).to eq('0')
-    expect(last_lap_row.find("input#hundredths_from_start_#{@chosen_lap_idx}").value).to eq('0')
+    expect(find("input#minutes_from_start_#{@chosen_lap_idx}").value).to eq('0')
+    expect(find("input#seconds_from_start_#{@chosen_lap_idx}").value).to eq('0')
+    expect(find("input#hundredths_from_start_#{@chosen_lap_idx}").value).to eq('0')
   end
 end
 
@@ -90,12 +91,12 @@ end
 # Sets:
 # - @chosen_lap, set as a generic Lap, not serialized, just used as a wrapper to the timings
 When('I click to save my edited lap') do
-  lap_form_row = find("tbody#laps-table-body tr td form#frm-lap-row-#{@chosen_lap_idx + 1}")
+  find("tbody#laps-table-body tr td form#frm-lap-row-#{@chosen_lap_idx + 1}", visible: true)
   @chosen_lap = GogglesDb::Lap.new(
-    length_in_meters: lap_form_row.find("input#length_in_meters_#{@chosen_lap_idx}").value,
-    minutes: lap_form_row.find("input#minutes_from_start_#{@chosen_lap_idx}").value,
-    seconds: lap_form_row.find("input#seconds_from_start_#{@chosen_lap_idx}").value,
-    hundredths: lap_form_row.find("input#hundredths_from_start_#{@chosen_lap_idx}").value
+    length_in_meters: find("input#length_in_meters_#{@chosen_lap_idx}").value,
+    minutes: find("input#minutes_from_start_#{@chosen_lap_idx}").value,
+    seconds: find("input#seconds_from_start_#{@chosen_lap_idx}").value,
+    hundredths: find("input#hundredths_from_start_#{@chosen_lap_idx}").value
   )
   find("#lap-save-row-#{@chosen_lap_idx}").click
   wait_for_ajax && sleep(1)
@@ -105,11 +106,11 @@ end
 # - @chosen_lap_idx
 # - @chosen_lap (can be an AbstractLap)
 When('I see my chosen lap has been correctly saved') do
-  lap_form_row = find("tbody#laps-table-body tr td form#frm-lap-row-#{@chosen_lap_idx + 1}")
-  expect(lap_form_row.find("input#length_in_meters_#{@chosen_lap_idx}").value).to eq(@chosen_lap.length_in_meters.to_s)
-  expect(lap_form_row.find("input#minutes_from_start_#{@chosen_lap_idx}").value).to eq(@chosen_lap.minutes.to_s)
-  expect(lap_form_row.find("input#seconds_from_start_#{@chosen_lap_idx}").value).to eq(@chosen_lap.seconds.to_s)
-  expect(lap_form_row.find("input#hundredths_from_start_#{@chosen_lap_idx}").value).to eq(@chosen_lap.hundredths.to_s)
+  find("tbody#laps-table-body tr td form#frm-lap-row-#{@chosen_lap_idx + 1}", visible: true)
+  expect(find("input#length_in_meters_#{@chosen_lap_idx}").value).to eq(@chosen_lap.length_in_meters.to_s)
+  expect(find("input#minutes_from_start_#{@chosen_lap_idx}").value).to eq(@chosen_lap.minutes.to_s)
+  expect(find("input#seconds_from_start_#{@chosen_lap_idx}").value).to eq(@chosen_lap.seconds.to_s)
+  expect(find("input#hundredths_from_start_#{@chosen_lap_idx}").value).to eq(@chosen_lap.hundredths.to_s)
 end
 
 When('I dismiss the lap modal editor by clicking on the close button') do
@@ -126,7 +127,10 @@ When('I click to delete my chosen lap and confirm the deletion') do
   before_deletion = find_all('tbody#laps-table-body tr td .lap-row').count
   delete_btn = find("#lap-delete-row-#{@chosen_lap_idx}", visible: true)
   expect(delete_btn).to be_visible
-  accept_confirm { delete_btn.click }
+  accept_confirm do
+    delete_btn.click
+    sleep(1)
+  end
   # XJS partial re-rending is pretty slow:
   20.times do
     wait_for_ajax && sleep(1)

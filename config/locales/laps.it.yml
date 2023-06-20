@@ -5,13 +5,13 @@ it:
       tooltip: "Aggiungi o modifica i passaggi gara"
     modal:
       form:
-        title: "Modifica passaggi"
+        title: "Modifica passaggi intertempi"
         timing_label: "Tempo"
         end_result_label: "Risultato (%{distance} m.)"
         submit_save_btn: "Salva"
       msgs:
-        create_successful: "Passaggio created."
-        submit_successful: "Passaggio salvato: OK!"
-        destroy_successful: "Riga passaggio eliminata!"
+        create_successful: "Intertempo passaggio creato."
+        submit_successful: "Intertempo passaggio salvato: OK!"
+        destroy_successful: "Intertempo passaggio eliminato!"
         submit_delete_confirm: "Sicuri di voler eliminare il passaggio a %{lap_length} m.?"
         submit_generic_failure: "Qualcosa è andato storto: per favore, porta pazienza e riprova più tardi."
