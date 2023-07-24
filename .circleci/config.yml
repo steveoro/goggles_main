@@ -211,7 +211,7 @@ jobs:
           command: |
             bundle exec rspec --profile 10 --color --order rand \
                         -f RspecJunitFormatter --out ~/test-results/rspec-jobs.xml \
-                        -f doc -- "spec/jobs/**/*_spec.rb"
+                        -f doc -P spec/jobs/**/*_spec.rb
             ./tmp/cc-test-reporter format-coverage -t simplecov \
                                    -o "./tmp/codeclimate.rspec-jobs.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
@@ -241,7 +241,7 @@ jobs:
           command: |
             bundle exec rspec --profile 10 --color --order rand \
                         -f RspecJunitFormatter --out ~/test-results/rspec-mailers.xml \
-                        -f doc -- "spec/mailers/**/*_spec.rb"
+                        -f doc -P spec/mailers/**/*_spec.rb
             ./tmp/cc-test-reporter format-coverage -t simplecov \
                                    -o "./tmp/codeclimate.rspec-mailers.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
@@ -364,7 +364,7 @@ jobs:
           command: |
             bundle exec rspec --profile 10 --color --order rand \
                         -f RspecJunitFormatter --out ~/test-results/rspec-integration.xml \
-                        -f doc -- "spec/integration/**/*_spec.rb"
+                        -f doc -P spec/integration/**/*_spec.rb
             ./tmp/cc-test-reporter format-coverage -t simplecov \
                                    -o "./tmp/codeclimate.rspec-integration.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
