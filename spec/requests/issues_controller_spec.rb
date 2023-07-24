@@ -212,7 +212,7 @@ RSpec.describe IssuesController do
       before do
         post(
           path_to_be_tested,
-          params: params,
+          params:,
           headers: { 'HTTP_REFERER' => issues_faq_index_path } # (Not needed & not tested: kept just for reference)
         )
       end
@@ -252,7 +252,7 @@ RSpec.describe IssuesController do
           sign_in(user)
           post(
             path_to_be_tested,
-            params: params,
+            params:,
             headers: { 'HTTP_REFERER' => issues_faq_index_path } # (Not needed & not tested: kept just for reference)
           )
         end

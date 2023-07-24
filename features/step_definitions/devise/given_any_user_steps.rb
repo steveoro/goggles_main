@@ -114,7 +114,7 @@ Given('I have an associated swimmer on a confirmed team manager account') do
   team_affiliation = GogglesDb::TeamAffiliation.where(season_id: last_season_id).first ||
                      FactoryBot.create(:team_affiliation, season: GogglesDb::Season.find(last_season_id))
   managed_aff = GogglesDb::ManagedAffiliation.where(team_affiliation_id: team_affiliation.id).first ||
-                FactoryBot.create(:managed_affiliation, team_affiliation: team_affiliation)
+                FactoryBot.create(:managed_affiliation, team_affiliation:)
   expect(managed_aff.team).to be_valid
   expect(managed_aff.season).to be_valid
 
@@ -144,7 +144,7 @@ Given('I have an associated swimmer on a confirmed team manager account') do
   @last_seasons_ids[1..].each do |season_id|
     next unless managed_aff.season.id != season_id
 
-    additional_team_aff = GogglesDb::TeamAffiliation.where(season_id: season_id).first ||
+    additional_team_aff = GogglesDb::TeamAffiliation.where(season_id:).first ||
                           FactoryBot.create(:team_affiliation, season: GogglesDb::Season.find(season_id))
     GogglesDb::ManagedAffiliation.where(team_affiliation_id: additional_team_aff.id, user_id: @current_user.id).first ||
       FactoryBot.create(:managed_affiliation, team_affiliation: additional_team_aff, manager: @current_user)
@@ -176,7 +176,7 @@ Given('I have a confirmed account with associated swimmer and existing MIRs') do
 
   expect(@current_user.confirmed_at).to be_present
   expect(@current_user.swimmer_id).to eq(@matching_swimmer.id)
-  @associated_mirs = GogglesDb::MeetingIndividualResult.where(swimmer_id: swimmer_id)
+  @associated_mirs = GogglesDb::MeetingIndividualResult.where(swimmer_id:)
   expect(@associated_mirs.count).to be_positive
 end
 
@@ -209,7 +209,7 @@ Given('I have a confirmed team manager account managing some existing MIRs') do
   team_affiliation = GogglesDb::TeamAffiliation.where(team_id: @managed_team.id, season_id: last_season_id).first ||
                      FactoryBot.create(:team_affiliation, season: GogglesDb::Season.find(last_season_id))
   managed_aff = GogglesDb::ManagedAffiliation.where(team_affiliation_id: team_affiliation.id).first ||
-                FactoryBot.create(:managed_affiliation, team_affiliation: team_affiliation)
+                FactoryBot.create(:managed_affiliation, team_affiliation:)
 
   @current_user = managed_aff.manager
   @current_user.confirmed_at = Time.zone.now if @current_user.confirmed_at.blank?
@@ -234,7 +234,7 @@ Given('I have a confirmed account with associated swimmer and existing user resu
                                     .first(300).sample
   unless swimmer_id
     swimmer_id = GogglesDb::Swimmer.joins(:associated_user).first(20).sample.id
-    FactoryBot.create_list(:user_result_with_laps, 3, swimmer_id: swimmer_id)
+    FactoryBot.create_list(:user_result_with_laps, 3, swimmer_id:)
   end
   expect(swimmer_id).to be_positive
   @matching_swimmer = GogglesDb::Swimmer.find(swimmer_id)
@@ -249,7 +249,7 @@ Given('I have a confirmed account with associated swimmer and existing user resu
 
   expect(@current_user.confirmed_at).to be_present
   expect(@current_user.swimmer_id).to eq(@matching_swimmer.id)
-  @associated_urs = GogglesDb::UserResult.where(swimmer_id: swimmer_id)
+  @associated_urs = GogglesDb::UserResult.where(swimmer_id:)
   expect(@associated_urs.count).to be_positive
 end
 
@@ -282,7 +282,7 @@ Given('I have a confirmed team manager account managing some existing URs') do
   team_affiliation = GogglesDb::TeamAffiliation.where(team_id: @managed_team.id, season_id: last_season_id).first ||
                      FactoryBot.create(:team_affiliation, team: @managed_team, season: GogglesDb::Season.find(last_season_id))
   managed_aff = GogglesDb::ManagedAffiliation.where(team_affiliation_id: team_affiliation.id).first ||
-                FactoryBot.create(:managed_affiliation, team_affiliation: team_affiliation)
+                FactoryBot.create(:managed_affiliation, team_affiliation:)
 
   @current_user = managed_aff.manager
   @current_user.confirmed_at = Time.zone.now if @current_user.confirmed_at.blank?

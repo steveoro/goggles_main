@@ -12,7 +12,7 @@ RSpec.describe Grid::TeamStarModalComponent, type: :component do
   end
 
   context 'with a valid current user and user teams list,' do
-    subject { render_inline(described_class.new(current_user: user, user_teams: user_teams)) }
+    subject { render_inline(described_class.new(current_user: user, user_teams:)) }
 
     it 'renders the \'frm-team-star\' form inside the team star modal' do
       expect(subject.at('.modal#team-star-modal #frm-team-star')).to be_present
@@ -42,7 +42,7 @@ RSpec.describe Grid::TeamStarModalComponent, type: :component do
 
   context 'with a invalid current user,' do
     subject do
-      render_inline(described_class.new(current_user: 'not-a-user', user_teams: user_teams))
+      render_inline(described_class.new(current_user: 'not-a-user', user_teams:))
         .to_html
     end
 
@@ -51,7 +51,7 @@ RSpec.describe Grid::TeamStarModalComponent, type: :component do
 
   context 'with a nil current user,' do
     subject do
-      render_inline(described_class.new(current_user: nil, user_teams: user_teams))
+      render_inline(described_class.new(current_user: nil, user_teams:))
         .to_html
     end
 

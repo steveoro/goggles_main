@@ -56,7 +56,7 @@ module OmniAuthTools
     OmniAuth::AuthHash.new(
       {
         provider: provider_name,
-        uid: uid,
+        uid:,
         info: {
           email: user_instance.email,
           name: user_instance.name,

@@ -22,7 +22,7 @@ class LookupController < ApplicationController
 
     if permitted.key?(:first_name) && permitted.key?(:last_name) && permitted.key?(:year_of_birth)
       matches = GogglesDb::User.new(permitted).matching_swimmers
-      render(partial: 'matching_swimmers', locals: { matches: matches })
+      render(partial: 'matching_swimmers', locals: { matches: })
     else
       render(plain: '')
     end

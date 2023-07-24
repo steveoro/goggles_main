@@ -20,7 +20,7 @@ module ApplicationHelper
 
     grid_filter_params.reject { |key, value| value.blank? || key == 'order' || key == 'descending' }
                       .to_hash
-                      .map { |key, value| I18n.t("#{main_namespace}.params.#{key}", value: value) }
+                      .map { |key, value| I18n.t("#{main_namespace}.params.#{key}", value:) }
                       .join(', ')
   end
 end

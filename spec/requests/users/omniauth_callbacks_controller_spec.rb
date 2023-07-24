@@ -24,8 +24,8 @@ RSpec.describe Users::OmniauthCallbacksController do
   def valid_auth(provider, uid, user)
     OmniAuth::AuthHash.new(
       {
-        provider: provider,
-        uid: uid,
+        provider:,
+        uid:,
         info: {
           email: user.email,
           name: user.name,

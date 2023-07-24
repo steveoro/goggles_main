@@ -1,5 +1,4 @@
-# Allow full customization when building a new Docker image:
-default: &default
+development:
   adapter: mysql2
   encoding: utf8mb4
   username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
@@ -7,17 +6,26 @@ default: &default
   host: <%= ENV.fetch("DATABASE_HOST") { 'localhost' } %>
   port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-
-development:
-  <<: *default
   database: goggles_development
 
 test:
-  <<: *default
+  adapter: mysql2
+  encoding: utf8mb4
+  username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
+  password: <%= ENV.fetch("MYSQL_ROOT_PASSWORD") { '' } %>
+  host: <%= ENV.fetch("DATABASE_HOST") { 'localhost' } %>
+  port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   database: goggles_test
 
 production:
-  <<: *default
+  adapter: mysql2
+  encoding: utf8mb4
+  username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
+  password: <%= ENV.fetch("MYSQL_ROOT_PASSWORD") { '' } %>
+  host: <%= ENV.fetch("DATABASE_HOST") { 'localhost' } %>
+  port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   database: goggles
 
 # [Steve A.]
@@ -36,5 +44,11 @@ production:
 #   $> RAILS_ENV=staging rails db:rebuild from=test to=staging
 #
 staging:
-  <<: *default
+  adapter: mysql2
+  encoding: utf8mb4
+  username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
+  password: <%= ENV.fetch("MYSQL_ROOT_PASSWORD") { '' } %>
+  host: <%= ENV.fetch("DATABASE_HOST") { 'localhost' } %>
+  port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   database: goggles

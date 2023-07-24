@@ -72,7 +72,7 @@ class IssuesController < ApplicationController
     season_ids.each do |season_id|
       (skip = true) && next if GogglesDb::ManagerChecker.new(current_user, season_id).for_team?(team_id)
 
-      create_issue('0', { team_id: team_id, team_label: type0_params[:team_label], season_id: season_id })
+      create_issue('0', { team_id:, team_label: type0_params[:team_label], season_id: })
       break if flash[:error].present? # Break out in case of errors
     end
 
@@ -352,7 +352,7 @@ class IssuesController < ApplicationController
                                                             'team_affiliations.season_id': season_id)
                                                      .map { |ma| ma.team_affiliation.team_id }
                                                      .uniq
-    GogglesDb::Badge.where(season_id: season_id, team_id: managed_teams_ids)
+    GogglesDb::Badge.where(season_id:, team_id: managed_teams_ids)
                     .map(&:swimmer)
                     .uniq
   end

@@ -54,7 +54,7 @@ RSpec.describe 'search/_search_results.html.haml' do
       render(
         partial: 'search_results',
         locals: {
-          swimmers: swimmers,
+          swimmers:,
           teams: nil,
           meetings: nil,
           user_workshops: nil,
@@ -87,7 +87,7 @@ RSpec.describe 'search/_search_results.html.haml' do
       render(
         partial: 'search_results',
         locals: {
-          swimmers: swimmers,
+          swimmers:,
           teams: nil,
           meetings: nil,
           user_workshops: nil,
@@ -122,7 +122,7 @@ RSpec.describe 'search/_search_results.html.haml' do
         partial: 'search_results',
         locals: {
           swimmers: nil,
-          teams: teams,
+          teams:,
           meetings: nil,
           user_workshops: nil,
           swimming_pools: nil
@@ -154,7 +154,7 @@ RSpec.describe 'search/_search_results.html.haml' do
         locals: {
           swimmers: nil,
           teams: nil,
-          meetings: meetings,
+          meetings:,
           user_workshops: nil,
           swimming_pools: nil
         }
@@ -218,7 +218,7 @@ RSpec.describe 'search/_search_results.html.haml' do
           teams: nil,
           meetings: nil,
           user_workshops: nil,
-          swimming_pools: swimming_pools
+          swimming_pools:
         }
       )
     end

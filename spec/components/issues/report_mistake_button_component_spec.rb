@@ -16,7 +16,7 @@ RSpec.describe Issues::ReportMistakeButtonComponent, type: :component do
 
   context 'when specifying a valid parent result' do
     context 'and the current user can manage the result,' do
-      subject { render_inline(described_class.new(result_row: result_row, can_manage: true)) }
+      subject { render_inline(described_class.new(result_row:, can_manage: true)) }
 
       let(:rendered_button) { subject.at_css("a#type1b1-btn-#{result_row.id}") }
 
@@ -38,7 +38,7 @@ RSpec.describe Issues::ReportMistakeButtonComponent, type: :component do
     end
 
     context 'but the current user cannot manage the result,' do
-      subject { render_inline(described_class.new(result_row: result_row, can_manage: false)).to_html }
+      subject { render_inline(described_class.new(result_row:, can_manage: false)).to_html }
 
       it_behaves_like('any subject that renders nothing')
     end

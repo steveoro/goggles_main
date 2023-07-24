@@ -16,7 +16,7 @@ RSpec.describe Laps::EditButtonComponent, type: :component do
 
   context 'when specifying a valid parent result' do
     context 'and the current user can manage the laps,' do
-      subject { render_inline(described_class.new(parent_result: parent_result, can_manage: true)) }
+      subject { render_inline(described_class.new(parent_result:, can_manage: true)) }
 
       let(:rendered_button) { subject.at_css("a#lap-req-edit-modal-#{parent_result.id}") }
 
@@ -40,7 +40,7 @@ RSpec.describe Laps::EditButtonComponent, type: :component do
     end
 
     context 'and the current user can manage the laps while using the show_category: true option,' do
-      subject { render_inline(described_class.new(parent_result: parent_result, can_manage: true, show_category: true)) }
+      subject { render_inline(described_class.new(parent_result:, can_manage: true, show_category: true)) }
 
       let(:rendered_button) { subject.at_css("a#lap-req-edit-modal-#{parent_result.id}") }
 
@@ -59,7 +59,7 @@ RSpec.describe Laps::EditButtonComponent, type: :component do
     end
 
     context 'but the current user cannot manage the laps,' do
-      subject { render_inline(described_class.new(parent_result: parent_result, can_manage: false)).to_html }
+      subject { render_inline(described_class.new(parent_result:, can_manage: false)).to_html }
 
       it_behaves_like('any subject that renders nothing')
     end

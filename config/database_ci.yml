@@ -1,0 +1,21 @@
+development:
+  adapter: mysql2
+  encoding: utf8mb4
+  database: <%= ENV.fetch("DATABASE_NAME") { 'goggles_test' } %>
+  username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
+  password:
+  socket: /var/run/mysqld/mysqld.sock
+  host: <%= ENV.fetch("DATABASE_HOST") { '127.0.0.1' } %>
+  port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+test:
+  adapter: mysql2
+  encoding: utf8mb4
+  database: <%= ENV.fetch("DATABASE_NAME") { 'goggles_test' } %>
+  username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
+  password:
+  socket: /var/run/mysqld/mysqld.sock
+  host: <%= ENV.fetch("DATABASE_HOST") { '127.0.0.1' } %>
+  port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>

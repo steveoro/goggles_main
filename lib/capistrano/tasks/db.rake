@@ -176,7 +176,7 @@ namespace :db do
     display_common_header
     source_folder = args[:source_folder] || 'tmp'
     puts "- Source.......: #{source_folder}/*.sql"
-    sql_filenames = Dir.glob([File.join('.', source_folder, '*.sql')]).sort
+    sql_filenames = Dir.glob([File.join('.', source_folder, '*.sql')])
     puts "  => #{sql_filenames.size} total SQL files to be processed."
     # Use a custom temp file for stderr redirection:
     stderr_filename = '/tmp/stderr_log.txt'

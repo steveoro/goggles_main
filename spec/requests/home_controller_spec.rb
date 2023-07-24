@@ -149,7 +149,7 @@ RSpec.describe HomeController do
     end
 
     context 'with a valid email but from an account which is still active,' do
-      before { post(home_reactivate_path, params: params) }
+      before { post(home_reactivate_path, params:) }
 
       let(:params) { { user: { email: GogglesDb::User.first.email } } }
 
@@ -161,7 +161,7 @@ RSpec.describe HomeController do
     end
 
     context 'with a non-existing email,' do
-      before { post(home_reactivate_path, params: params) }
+      before { post(home_reactivate_path, params:) }
 
       let(:params) { { user: { email: 'not-an-email@for-sure' } } }
 
@@ -176,7 +176,7 @@ RSpec.describe HomeController do
       before do
         deactivated_user.active = false
         deactivated_user.save!
-        post(home_reactivate_path, params: params)
+        post(home_reactivate_path, params:)
       end
 
       let(:deactivated_user) { GogglesDb::User.last(10).sample }
@@ -194,7 +194,7 @@ RSpec.describe HomeController do
         deactivated_user.active = false
         deactivated_user.save!
         GogglesDb::Issue.create!(user_id: deactivated_user.id, code: '5', req: '{}')
-        post(home_reactivate_path, params: params)
+        post(home_reactivate_path, params:)
       end
 
       let(:deactivated_user) { GogglesDb::User.last(10).sample }

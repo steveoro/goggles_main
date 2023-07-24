@@ -1,6 +1,7 @@
 # Goggles Main
 
-[![Build Status](https://steveoro.semaphoreci.com/badges/goggles_main/branches/main.svg?style=shields)](https://steveoro.semaphoreci.com/projects/goggles_main)
+[![Build Status](https://steveoro.semaphoreci.com/badges/goggles_main/branches/main.svg?style=shields)](https://steveoro.semaphoreci.com/projects/goggles_main) _(Branch not setup on Semaphore)_
+
 [![Maintainability](https://api.codeclimate.com/v1/badges/5179d7eefd4cd93bfba1/maintainability)](https://codeclimate.com/github/steveoro/goggles_main/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/5179d7eefd4cd93bfba1/test_coverage)](https://codeclimate.com/github/steveoro/goggles_main/test_coverage)
 [![codecov](https://codecov.io/gh/steveoro/goggles_main/branch/main/graph/badge.svg?token=47SXT4CXGP)](https://codecov.io/gh/steveoro/goggles_main)
@@ -19,9 +20,9 @@ Main client UI app for version 7 and onward.
 
 ## Requires
 
-- Ruby 2.7.2
+- Ruby 3.1.4
 - Rails 6.0.6.1+
-- MariaDb 10.3.25+ or any other MySql equivalent version
+- MariaDb 10.6.12+ or any other MySql equivalent version
 
 
 ## Configuration

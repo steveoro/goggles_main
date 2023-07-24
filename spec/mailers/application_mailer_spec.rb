@@ -94,9 +94,9 @@ RSpec.describe ApplicationMailer do
     context 'when using all parameters,' do
       let(:mail) do
         described_class.system_message(
-          user: user,
-          to_address: to_address,
-          cc_address: cc_address,
+          user:,
+          to_address:,
+          cc_address:,
           subject_text: email_subject,
           content_body: email_content
         )
@@ -119,8 +119,8 @@ RSpec.describe ApplicationMailer do
       let(:mail) do
         described_class.system_message(
           user: nil,
-          to_address: to_address,
-          cc_address: cc_address,
+          to_address:,
+          cc_address:,
           subject_text: email_subject,
           content_body: email_content
         )

@@ -28,7 +28,7 @@ RSpec.shared_context('current_user is a team manager on last FIN season ID') do
 
   let(:managed_aff) do
     GogglesDb::ManagedAffiliation.where(team_affiliation_id: team_affiliation.id).first ||
-      FactoryBot.create(:managed_affiliation, team_affiliation: team_affiliation)
+      FactoryBot.create(:managed_affiliation, team_affiliation:)
   end
 
   let(:current_user) do

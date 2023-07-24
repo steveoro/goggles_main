@@ -24,9 +24,9 @@ RSpec.describe 'swimmers/history_recap.html.haml' do
         {
           id: event_type.id,
           label: event_type.long_label, # I18n
-          count25: count25,
+          count25:,
           count50: count - count25,
-          count: count
+          count:
         }
       end
       events.compact!

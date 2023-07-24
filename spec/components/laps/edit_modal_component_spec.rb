@@ -21,7 +21,7 @@ RSpec.describe Laps::EditModalComponent, type: :component do
   end
 
   context 'when specifying a valid parent result' do
-    subject { render_inline(described_class.new(parent_result: parent_result)) }
+    subject { render_inline(described_class.new(parent_result:)) }
 
     let(:rendered_modal) { subject.at_css('#lap-edit-modal.modal.fade') }
 

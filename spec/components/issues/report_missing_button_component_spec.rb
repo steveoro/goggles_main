@@ -20,7 +20,7 @@ RSpec.describe Issues::ReportMissingButtonComponent, type: :component do
   end
 
   context 'when specifying valid parameters,' do
-    subject { render_inline(described_class.new(parent_meeting: parent_meeting, event_type: event_type)) }
+    subject { render_inline(described_class.new(parent_meeting:, event_type:)) }
 
     let(:rendered_button) { subject.at_css("a#type1b-btn-#{parent_meeting.id}-#{event_type.id}") }
 

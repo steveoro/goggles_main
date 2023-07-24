@@ -111,7 +111,7 @@ Capybara.register_driver(:headless_chrome) do |app|
   #                                 behavior: 'allow',
   #                                 downloadPath: ENV['downloads_folder'] || DownloadHelpers::PATH
   #                               })
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: chrome_options, http_client: http_client)
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: chrome_options, http_client:)
 end
 
 Capybara.register_driver(:headless_chrome_iphone4) do |app|
@@ -123,7 +123,7 @@ Capybara.register_driver(:headless_chrome_iphone4) do |app|
       mobileEmulation: { deviceName: 'iPhone 4' },
       prefs: chrome_prefs
     ),
-    http_client: http_client
+    http_client:
   )
 end
 
@@ -136,7 +136,7 @@ Capybara.register_driver(:headless_chrome_iphone5) do |app|
       mobileEmulation: { deviceName: 'iPhone 5' },
       prefs: chrome_prefs
     ),
-    http_client: http_client
+    http_client:
   )
 end
 
@@ -149,7 +149,7 @@ Capybara.register_driver(:headless_chrome_iphone678) do |app|
       mobileEmulation: { deviceName: 'iPhone 6/7/8' },
       prefs: chrome_prefs
     ),
-    http_client: http_client
+    http_client:
   )
 end
 
@@ -162,7 +162,7 @@ Capybara.register_driver(:headless_chrome_iphonex) do |app|
       mobileEmulation: { deviceName: 'iPhone X' },
       prefs: chrome_prefs
     ),
-    http_client: http_client
+    http_client:
   )
 end
 
@@ -175,7 +175,7 @@ Capybara.register_driver(:headless_chrome_galaxys5) do |app|
       mobileEmulation: { deviceName: 'Galaxy S5' },
       prefs: chrome_prefs
     ),
-    http_client: http_client
+    http_client:
   )
 end
 
@@ -188,7 +188,7 @@ Capybara.register_driver(:headless_chrome_pixel2) do |app|
       mobileEmulation: { deviceName: 'Pixel 2' },
       prefs: chrome_prefs
     ),
-    http_client: http_client
+    http_client:
   )
 end
 
@@ -201,7 +201,7 @@ Capybara.register_driver(:headless_chrome_ipad) do |app|
       mobileEmulation: { deviceName: 'iPad' },
       prefs: chrome_prefs
     ),
-    http_client: http_client
+    http_client:
   )
 end
 
@@ -214,7 +214,7 @@ Capybara.register_driver(:headless_chrome_ipadpro) do |app|
       mobileEmulation: { deviceName: 'iPad Pro' },
       prefs: chrome_prefs
     ),
-    http_client: http_client
+    http_client:
   )
 end
 #-- ---------------------------------------------------------------------------

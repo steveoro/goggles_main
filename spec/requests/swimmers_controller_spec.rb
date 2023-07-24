@@ -59,7 +59,7 @@ RSpec.describe SwimmersController do
 
     context 'with an unlogged user' do
       it 'is a redirect to the login path' do
-        get(swimmer_history_path(id: fixture_row_id, event_type_id: event_type_id))
+        get(swimmer_history_path(id: fixture_row_id, event_type_id:))
         expect(response).to redirect_to(new_user_session_path)
       end
     end
@@ -72,13 +72,13 @@ RSpec.describe SwimmersController do
 
       context 'with valid parameters' do
         it 'is successful' do
-          get(swimmer_history_path(id: fixture_row_id, event_type_id: event_type_id))
+          get(swimmer_history_path(id: fixture_row_id, event_type_id:))
           expect(response).to have_http_status(:success)
         end
       end
 
       context 'with an invalid swimmer id' do
-        before { get(swimmer_history_path(id: -1, event_type_id: event_type_id)) }
+        before { get(swimmer_history_path(id: -1, event_type_id:)) }
 
         it_behaves_like('invalid row id GET request')
       end
