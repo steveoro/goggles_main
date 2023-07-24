@@ -377,6 +377,20 @@ jobs:
             - codeclimate.rspec-integration.*.json
 
 
+  upload-coverage:
+    <<: *common-config
+    # parallelism: 1 (no actual need here)
+    steps:
+      - attach_workspace:
+          at: ~/goggles_main/tmp
+      - run:
+          name: CodeClimate upload
+          command: |
+            echo "*** Persisted contents: ***"
+            ls -l ./tmp
+            ./tmp/cc-test-reporter sum-coverage -o - tmp/codeclimate.*.json | ./tmp/cc-test-reporter upload-coverage --debug --input -
+
+
   cucumber-desktop:
     <<: *common-config
     parallelism: 3
@@ -394,7 +408,7 @@ jobs:
           command: |
             TEST_FILES=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings)
             AUTO_ARTIFACTS=1 RAILS_ENV=test bundle exec cucumber --color --format pretty \
-                        --format junit ~/test-results/cucumber-large.xml ${TEST_FILES}
+                        --format junit --out ~/test-results/cucumber-large.xml ${TEST_FILES}
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
@@ -418,7 +432,7 @@ jobs:
           command: |
             TEST_FILES=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings)
             CAPYBARA_DRV=headless_chrome_iphonex AUTO_ARTIFACTS=1 RAILS_ENV=test bundle exec cucumber --color --format pretty \
-                        --format junit ~/test-results/cucumber-narrow.xml ${TEST_FILES}
+                        --format junit --out ~/test-results/cucumber-narrow.xml ${TEST_FILES}
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
@@ -442,25 +456,11 @@ jobs:
           command: |
             TEST_FILES=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings)
             CAPYBARA_DRV=headless_chrome_ipad AUTO_ARTIFACTS=1 RAILS_ENV=test bundle exec cucumber --color --format pretty \
-                        --format junit ~/test-results/cucumber-tablet.xml ${TEST_FILES}
+                        --format junit --out ~/test-results/cucumber-tablet.xml ${TEST_FILES}
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-artifacts
-
-
-  upload-coverage:
-    <<: *common-config
-    # parallelism: 1 (no actual need here)
-    steps:
-      - attach_workspace:
-          at: ~/goggles_main/tmp
-      - run:
-          name: CodeClimate upload
-          command: |
-            echo "*** Persisted contents: ***"
-            ls -l ./tmp
-            ./tmp/cc-test-reporter sum-coverage -o - tmp/codeclimate.*.json | ./tmp/cc-test-reporter upload-coverage --debug --input -
 
 
   docker-build:
@@ -553,53 +553,51 @@ workflows:
             - brakeman
             - rubocop
             - zeitwerk
-      - rspec-helpers:
-          requires:
-            - brakeman
-            - rubocop
-            - zeitwerk
-      - rspec-mailers:
-          requires:
-            - brakeman
-            - rubocop
-            - zeitwerk
-      - rspec-views:
-          requires:
-            - brakeman
-            - rubocop
-            - zeitwerk
-
-      - rspec-jobs:
-          requires:
-            - rspec-views
       - rspec-requests:
           requires:
-            - rspec-jobs
+            - brakeman
+            - rubocop
+            - zeitwerk
 
-      - rspec-strategies:
+      - rspec-helpers:
           requires:
             - rspec-components
             - rspec-decorators
+      - rspec-mailers:
+          requires:
+            - rspec-components
+            - rspec-decorators
+      - rspec-views:
+          requires:
+            - rspec-components
+            - rspec-decorators
+
+      - rspec-jobs:
+          requires:
             - rspec-helpers
+      - rspec-strategies:
+          requires:
             - rspec-mailers
       - rspec-integration:
           requires:
-            - rspec-strategies
+            - rspec-views
 
       - upload-coverage:
           requires:
             - rspec-requests
+            - rspec-jobs
+            - rspec-strategies
             - rspec-integration
 
       - cucumber-desktop:
           requires:
-            - upload-coverage
+            - rspec-requests
       - cucumber-narrow:
           requires:
-            - upload-coverage
+            - rspec-requests
       - cucumber-tablet:
           requires:
-            - upload-coverage
+            - rspec-requests
 
       - docker-build:
           requires:
