@@ -32,9 +32,11 @@ common-db-setup: &common-db-setup
     echo $RAILS_MASTER_KEY > config/master.key
     cp ./tmp/test.sql.bz2 db/dump/test.sql.bz2
     mv config/database_ci.yml config/database.yml
+    yarn
     dockerize -wait tcp://localhost:3306 -timeout 1m
     RAILS_ENV=test bin/rails db:rebuild from=test to=test
     RAILS_ENV=test bin/rails db:migrate
+    RAILS_ENV=test bundle exec bin/webpack
     ./tmp/cc-test-reporter before-build
 
 jobs:
@@ -99,7 +101,7 @@ jobs:
             bundle exec rake zeitwerk:check
 
 
-  rspec-A-F:
+  rspec-components:
     <<: *common-config
     parallelism: 3
     steps:
@@ -112,14 +114,14 @@ jobs:
       - run:
           <<: *common-db-setup
       - run:
-          name: RSpec - A..F
+          name: RSpec - Components
           command: |
-            TEST_FILES=$(circleci tests glob "spec/**/a*_spec.rb,spec/**/b*_spec.rb,spec/**/c*_spec.rb,spec/**/f*_spec.rb" | circleci tests split --split-by=timings)
+            TEST_FILES=$(circleci tests glob "spec/components/**/*_spec.rb" | circleci tests split --split-by=timings)
             bundle exec rspec --profile 10 --color --order rand \
-                        -f RspecJunitFormatter --out ~/test-results/rspec-a-f.xml \
+                        -f RspecJunitFormatter --out ~/test-results/rspec-components.xml \
                         -f doc -- ${TEST_FILES}
             ./tmp/cc-test-reporter format-coverage -t simplecov \
-                                   -o "./tmp/codeclimate.rspec-a-f.$CIRCLE_NODE_INDEX.json"
+                                   -o "./tmp/codeclimate.rspec-components.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
@@ -127,41 +129,10 @@ jobs:
       - persist_to_workspace:
           root: tmp
           paths:
-            - codeclimate.rspec-a-f.*.json
+            - codeclimate.rspec-components.*.json
 
 
-  rspec-I-L:
-    <<: *common-config
-    parallelism: 2
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/goggles_main/tmp
-      - ruby/install-deps:
-          app-dir: ~/goggles_main
-          key: goggles_main-v0600
-      - run:
-          <<: *common-db-setup
-      - run:
-          name: RSpec - I..L
-          command: |
-            TEST_FILES=$(circleci tests glob "spec/**/i*_spec.rb,spec/**/l*_spec.rb" | circleci tests split --split-by=timings)
-            bundle exec rspec --profile 10 --color --order rand \
-                        -f RspecJunitFormatter --out ~/test-results/rspec-i-l.xml \
-                        -f doc -- ${TEST_FILES}
-            ./tmp/cc-test-reporter format-coverage -t simplecov \
-                                   -o "./tmp/codeclimate.rspec-i-l.$CIRCLE_NODE_INDEX.json"
-      - store_test_results:
-          path: ~/test-results
-      - store_artifacts:
-          path: ~/test-artifacts
-      - persist_to_workspace:
-          root: tmp
-          paths:
-            - codeclimate.rspec-i-l.*.json
-
-
-  rspec-M:
+  rspec-decorators:
     <<: *common-config
     parallelism: 3
     steps:
@@ -174,14 +145,14 @@ jobs:
       - run:
           <<: *common-db-setup
       - run:
-          name: RSpec - M
+          name: RSpec - Components
           command: |
-            TEST_FILES=$(circleci tests glob "spec/**/m*_spec.rb" | circleci tests split --split-by=timings)
+            TEST_FILES=$(circleci tests glob "spec/decorators/**/*_spec.rb" | circleci tests split --split-by=timings)
             bundle exec rspec --profile 10 --color --order rand \
-                        -f RspecJunitFormatter --out ~/test-results/rspec-m.xml \
+                        -f RspecJunitFormatter --out ~/test-results/rspec-decorators.xml \
                         -f doc -- ${TEST_FILES}
             ./tmp/cc-test-reporter format-coverage -t simplecov \
-                                   -o "./tmp/codeclimate.rspec-m.$CIRCLE_NODE_INDEX.json"
+                                   -o "./tmp/codeclimate.rspec-decorators.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
@@ -189,10 +160,10 @@ jobs:
       - persist_to_workspace:
           root: tmp
           paths:
-            - codeclimate.rspec-m.*.json
+            - codeclimate.rspec-decorators.*.json
 
 
-  rspec-S-T:
+  rspec-helpers:
     <<: *common-config
     parallelism: 3
     steps:
@@ -205,14 +176,14 @@ jobs:
       - run:
           <<: *common-db-setup
       - run:
-          name: RSpec - S..T
+          name: RSpec - Components
           command: |
-            TEST_FILES=$(circleci tests glob "spec/**/s*_spec.rb,spec/**/t*_spec.rb" | circleci tests split --split-by=timings)
+            TEST_FILES=$(circleci tests glob "spec/helpers/**/*_spec.rb" | circleci tests split --split-by=timings)
             bundle exec rspec --profile 10 --color --order rand \
-                        -f RspecJunitFormatter --out ~/test-results/rspec-s-t.xml \
+                        -f RspecJunitFormatter --out ~/test-results/rspec-helpers.xml \
                         -f doc -- ${TEST_FILES}
             ./tmp/cc-test-reporter format-coverage -t simplecov \
-                                   -o "./tmp/codeclimate.rspec-s-t.$CIRCLE_NODE_INDEX.json"
+                                   -o "./tmp/codeclimate.rspec-helpers.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
@@ -220,12 +191,12 @@ jobs:
       - persist_to_workspace:
           root: tmp
           paths:
-            - codeclimate.rspec-s-t.*.json
+            - codeclimate.rspec-helpers.*.json
 
 
-  rspec-U:
+  rspec-jobs:
     <<: *common-config
-    parallelism: 2
+    parallelism: 3
     steps:
       - checkout
       - attach_workspace:
@@ -236,14 +207,14 @@ jobs:
       - run:
           <<: *common-db-setup
       - run:
-          name: RSpec - U
+          name: RSpec - Components
           command: |
-            TEST_FILES=$(circleci tests glob "spec/**/u*_spec.rb" | circleci tests split --split-by=timings)
+            TEST_FILES=$(circleci tests glob "spec/jobs/**/*_spec.rb" | circleci tests split --split-by=timings)
             bundle exec rspec --profile 10 --color --order rand \
-                        -f RspecJunitFormatter --out ~/test-results/rspec-u.xml \
+                        -f RspecJunitFormatter --out ~/test-results/rspec-jobs.xml \
                         -f doc -- ${TEST_FILES}
             ./tmp/cc-test-reporter format-coverage -t simplecov \
-                                   -o "./tmp/codeclimate.rspec-u.$CIRCLE_NODE_INDEX.json"
+                                   -o "./tmp/codeclimate.rspec-jobs.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
@@ -251,7 +222,234 @@ jobs:
       - persist_to_workspace:
           root: tmp
           paths:
-            - codeclimate.rspec-u.*.json
+            - codeclimate.rspec-jobs.*.json
+
+
+  rspec-mailers:
+    <<: *common-config
+    parallelism: 3
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/goggles_main/tmp
+      - ruby/install-deps:
+          app-dir: ~/goggles_main
+          key: goggles_main-v0600
+      - run:
+          <<: *common-db-setup
+      - run:
+          name: RSpec - Components
+          command: |
+            TEST_FILES=$(circleci tests glob "spec/mailers/**/*_spec.rb" | circleci tests split --split-by=timings)
+            bundle exec rspec --profile 10 --color --order rand \
+                        -f RspecJunitFormatter --out ~/test-results/rspec-mailers.xml \
+                        -f doc -- ${TEST_FILES}
+            ./tmp/cc-test-reporter format-coverage -t simplecov \
+                                   -o "./tmp/codeclimate.rspec-mailers.$CIRCLE_NODE_INDEX.json"
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-artifacts
+      - persist_to_workspace:
+          root: tmp
+          paths:
+            - codeclimate.rspec-mailers.*.json
+
+
+  rspec-requests:
+    <<: *common-config
+    parallelism: 3
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/goggles_main/tmp
+      - ruby/install-deps:
+          app-dir: ~/goggles_main
+          key: goggles_main-v0600
+      - run:
+          <<: *common-db-setup
+      - run:
+          name: RSpec - Components
+          command: |
+            TEST_FILES=$(circleci tests glob "spec/requests/**/*_spec.rb" | circleci tests split --split-by=timings)
+            bundle exec rspec --profile 10 --color --order rand \
+                        -f RspecJunitFormatter --out ~/test-results/rspec-requests.xml \
+                        -f doc -- ${TEST_FILES}
+            ./tmp/cc-test-reporter format-coverage -t simplecov \
+                                   -o "./tmp/codeclimate.rspec-requests.$CIRCLE_NODE_INDEX.json"
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-artifacts
+      - persist_to_workspace:
+          root: tmp
+          paths:
+            - codeclimate.rspec-requests.*.json
+
+
+  rspec-strategies:
+    <<: *common-config
+    parallelism: 3
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/goggles_main/tmp
+      - ruby/install-deps:
+          app-dir: ~/goggles_main
+          key: goggles_main-v0600
+      - run:
+          <<: *common-db-setup
+      - run:
+          name: RSpec - Components
+          command: |
+            TEST_FILES=$(circleci tests glob "spec/strategies/**/*_spec.rb" | circleci tests split --split-by=timings)
+            bundle exec rspec --profile 10 --color --order rand \
+                        -f RspecJunitFormatter --out ~/test-results/rspec-strategies.xml \
+                        -f doc -- ${TEST_FILES}
+            ./tmp/cc-test-reporter format-coverage -t simplecov \
+                                   -o "./tmp/codeclimate.rspec-strategies.$CIRCLE_NODE_INDEX.json"
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-artifacts
+      - persist_to_workspace:
+          root: tmp
+          paths:
+            - codeclimate.rspec-strategies.*.json
+
+
+  rspec-views:
+    <<: *common-config
+    parallelism: 3
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/goggles_main/tmp
+      - ruby/install-deps:
+          app-dir: ~/goggles_main
+          key: goggles_main-v0600
+      - run:
+          <<: *common-db-setup
+      - run:
+          name: RSpec - Components
+          command: |
+            TEST_FILES=$(circleci tests glob "spec/views/**/*_spec.rb" | circleci tests split --split-by=timings)
+            bundle exec rspec --profile 10 --color --order rand \
+                        -f RspecJunitFormatter --out ~/test-results/rspec-views.xml \
+                        -f doc -- ${TEST_FILES}
+            ./tmp/cc-test-reporter format-coverage -t simplecov \
+                                   -o "./tmp/codeclimate.rspec-views.$CIRCLE_NODE_INDEX.json"
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-artifacts
+      - persist_to_workspace:
+          root: tmp
+          paths:
+            - codeclimate.rspec-views.*.json
+
+
+  rspec-integration:
+    <<: *common-config
+    parallelism: 3
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/goggles_main/tmp
+      - ruby/install-deps:
+          app-dir: ~/goggles_main
+          key: goggles_main-v0600
+      - run:
+          <<: *common-db-setup
+      - run:
+          name: RSpec - Components
+          command: |
+            TEST_FILES=$(circleci tests glob "spec/integration/**/*_spec.rb" | circleci tests split --split-by=timings)
+            bundle exec rspec --profile 10 --color --order rand \
+                        -f RspecJunitFormatter --out ~/test-results/rspec-integration.xml \
+                        -f doc -- ${TEST_FILES}
+            ./tmp/cc-test-reporter format-coverage -t simplecov \
+                                   -o "./tmp/codeclimate.rspec-integration.$CIRCLE_NODE_INDEX.json"
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-artifacts
+      - persist_to_workspace:
+          root: tmp
+          paths:
+            - codeclimate.rspec-integration.*.json
+
+
+  cucumber-desktop:
+    <<: *common-config
+    parallelism: 3
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/goggles_main/tmp
+      - ruby/install-deps:
+          app-dir: ~/goggles_main
+          key: goggles_main-v0600
+      - run:
+          <<: *common-db-setup
+      - run:
+          name: Cucumber - desktop
+          command: |
+            TEST_FILES=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings)
+            AUTO_ARTIFACTS=1 RAILS_ENV=test bundle exec cucumber --color --format pretty \
+                        --format junit ~/test-results/cucumber-large.xml ${TEST_FILES}
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-artifacts
+
+
+  cucumber-narrow:
+    <<: *common-config
+    parallelism: 3
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/goggles_main/tmp
+      - ruby/install-deps:
+          app-dir: ~/goggles_main
+          key: goggles_main-v0600
+      - run:
+          <<: *common-db-setup
+      - run:
+          name: Cucumber - mobile/narrow
+          command: |
+            TEST_FILES=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings)
+            CAPYBARA_DRV=headless_chrome_iphonex AUTO_ARTIFACTS=1 RAILS_ENV=test bundle exec cucumber --color --format pretty \
+                        --format junit ~/test-results/cucumber-narrow.xml ${TEST_FILES}
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-artifacts
+
+
+  cucumber-tablet:
+    <<: *common-config
+    parallelism: 3
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/goggles_main/tmp
+      - ruby/install-deps:
+          app-dir: ~/goggles_main
+          key: goggles_main-v0600
+      - run:
+          <<: *common-db-setup
+      - run:
+          name: Cucumber - mobile/tablet
+          command: |
+            TEST_FILES=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings)
+            CAPYBARA_DRV=headless_chrome_ipad AUTO_ARTIFACTS=1 RAILS_ENV=test bundle exec cucumber --color --format pretty \
+                        --format junit ~/test-results/cucumber-tablet.xml ${TEST_FILES}
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-artifacts
 
 
   upload-coverage:
@@ -287,6 +485,7 @@ jobs:
                   echo "Git Tag << pipeline.git.tag >>"
                   echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
                   docker pull $DOCKERHUB_USERNAME/goggles-main:latest
+                  RAILS_ENV=production bundle exec rails assets:precompile
                   docker build -t $DOCKERHUB_USERNAME/goggles-main:prod-<< pipeline.git.tag >> --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.prod .
                   docker push $DOCKERHUB_USERNAME/goggles-main:prod-<< pipeline.git.tag >>
       - unless:
@@ -297,8 +496,40 @@ jobs:
                 command: |
                   echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
                   docker pull $DOCKERHUB_USERNAME/goggles-main:latest
+                  RAILS_ENV=staging bundle exec rails assets:precompile
                   docker build -t $DOCKERHUB_USERNAME/goggles-main:latest --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.staging .
                   docker push $DOCKERHUB_USERNAME/goggles-main:latest
+
+
+  deploy:
+    <<: *common-config
+    steps:
+      - run:
+          name: Setup deploy server login
+          command: |
+            mkdir -p .ssh
+            ssh-keyscan -H $SSH_SERVER >> ~/.ssh/known_hosts
+            echo Host $SSH_SERVER >> .ssh/config
+            echo 'IdentityFile ~/.ssh/id_rsa_deploy' >> .ssh/config
+            echo $id_rsa >> ~/.ssh/id_rsa_deploy
+            echo $id_rsa_pub >> ~/.ssh/id_rsa_deploy.pub
+            chmod 600 ~/.ssh/id_rsa_deploy
+            chmod 644 ~/.ssh/id_rsa_deploy.pub
+      - when:
+          condition: << pipeline.git.tag >>
+          steps:
+            - run:
+                name: Production DEPLOY
+                command: |
+                  echo "Git Tag << pipeline.git.tag >>"
+                  ssh deploy@$SSH_SERVER "TAG=<< pipeline.git.tag >> MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_prod.sh"
+      - unless:
+          condition: << pipeline.git.tag >>
+          steps:
+            - run:
+                name: Staging DEPLOY
+                command: |
+                  ssh deploy@$SSH_SERVER "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_staging.sh"
 
 
 workflows:
@@ -315,34 +546,70 @@ workflows:
           requires:
             - persisted-data
 
-      - rspec-A-F:
+      - rspec-components:
+          requires:
+            - brakeman
+            - rubocop
+            - zeitwerk
+      - rspec-decorators:
+          requires:
+            - brakeman
+            - rubocop
+            - zeitwerk
+      - rspec-helpers:
+          requires:
+            - brakeman
+            - rubocop
+            - zeitwerk
+      - rspec-mailers:
+          requires:
+            - brakeman
+            - rubocop
+            - zeitwerk
+      - rspec-views:
           requires:
             - brakeman
             - rubocop
             - zeitwerk
 
-      - rspec-I-L:
+      - rspec-jobs:
           requires:
-            - brakeman
-            - rubocop
-            - zeitwerk
+            - rspec-views
+      - rspec-requests:
+          requires:
+            - rspec-jobs
 
-      - rspec-M:
+      - rspec-strategies:
           requires:
-            - rspec-A-F
-      - rspec-S-T:
+            - rspec-components
+            - rspec-decorators
+            - rspec-helpers
+            - rspec-mailers
+      - rspec-integration:
           requires:
-            - rspec-I-L
-      - rspec-U:
-          requires:
-            - rspec-A-F
+            - rspec-strategies
 
       - upload-coverage:
           requires:
-            - rspec-M
-            - rspec-S-T
-            - rspec-U
+            - rspec-requests
+            - rspec-integration
+
+      - cucumber-desktop:
+          requires:
+            - upload-coverage
+      - cucumber-narrow:
+          requires:
+            - upload-coverage
+      - cucumber-tablet:
+          requires:
+            - upload-coverage
 
       - docker-build:
           requires:
-            - upload-coverage
+            - cucumber-desktop
+            - cucumber-narrow
+            - cucumber-tablet
+
+      - deploy:
+          requires:
+            - docker-build
