@@ -134,7 +134,7 @@ jobs:
 
   rspec-decorators:
     <<: *common-config
-    parallelism: 3
+    parallelism: 2
     steps:
       - checkout
       - attach_workspace:
@@ -165,7 +165,7 @@ jobs:
 
   rspec-helpers:
     <<: *common-config
-    parallelism: 3
+    parallelism: 2
     steps:
       - checkout
       - attach_workspace:
@@ -196,7 +196,7 @@ jobs:
 
   rspec-jobs:
     <<: *common-config
-    parallelism: 3
+    # parallelism: 1
     steps:
       - checkout
       - attach_workspace:
@@ -209,10 +209,9 @@ jobs:
       - run:
           name: RSpec - Components
           command: |
-            TEST_FILES=$(circleci tests glob "spec/jobs/**/*_spec.rb" | circleci tests split --split-by=timings)
             bundle exec rspec --profile 10 --color --order rand \
                         -f RspecJunitFormatter --out ~/test-results/rspec-jobs.xml \
-                        -f doc -- ${TEST_FILES}
+                        -f doc -- "spec/jobs/**/*_spec.rb"
             ./tmp/cc-test-reporter format-coverage -t simplecov \
                                    -o "./tmp/codeclimate.rspec-jobs.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
@@ -227,7 +226,7 @@ jobs:
 
   rspec-mailers:
     <<: *common-config
-    parallelism: 3
+    # parallelism: 1
     steps:
       - checkout
       - attach_workspace:
@@ -240,10 +239,9 @@ jobs:
       - run:
           name: RSpec - Components
           command: |
-            TEST_FILES=$(circleci tests glob "spec/mailers/**/*_spec.rb" | circleci tests split --split-by=timings)
             bundle exec rspec --profile 10 --color --order rand \
                         -f RspecJunitFormatter --out ~/test-results/rspec-mailers.xml \
-                        -f doc -- ${TEST_FILES}
+                        -f doc -- "spec/mailers/**/*_spec.rb"
             ./tmp/cc-test-reporter format-coverage -t simplecov \
                                    -o "./tmp/codeclimate.rspec-mailers.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
@@ -351,7 +349,7 @@ jobs:
 
   rspec-integration:
     <<: *common-config
-    parallelism: 3
+    # parallelism: 1
     steps:
       - checkout
       - attach_workspace:
@@ -364,10 +362,9 @@ jobs:
       - run:
           name: RSpec - Components
           command: |
-            TEST_FILES=$(circleci tests glob "spec/integration/**/*_spec.rb" | circleci tests split --split-by=timings)
             bundle exec rspec --profile 10 --color --order rand \
                         -f RspecJunitFormatter --out ~/test-results/rspec-integration.xml \
-                        -f doc -- ${TEST_FILES}
+                        -f doc -- "spec/integration/**/*_spec.rb"
             ./tmp/cc-test-reporter format-coverage -t simplecov \
                                    -o "./tmp/codeclimate.rspec-integration.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
