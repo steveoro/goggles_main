@@ -2,6 +2,7 @@ version: 2.1
 orbs:
   ruby: circleci/ruby@2.1.0
   browser-tools: circleci/browser-tools@1.4.3
+  node: circleci/node@5.1.0
 
 common-config: &common-config
   working_directory: ~/goggles_main
@@ -274,6 +275,10 @@ jobs:
           key: goggles_main-v0600
       - run:
           <<: *common-db-setup
+
+      - node/install:
+          install-yarn: true
+          node-version: '16.13'
       - restore_cache:
           keys:
             - yarn-cache-v1-{{ checksum "yarn.lock" }}
@@ -283,6 +288,7 @@ jobs:
           key: yarn-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - public/packs-test
+
       - run:
           name: RSpec - Components
           command: |
@@ -420,6 +426,10 @@ jobs:
           key: goggles_main-v0600
       - run:
           <<: *common-db-setup
+
+      - node/install:
+          install-yarn: true
+          node-version: '16.13'
       - restore_cache:
           keys:
             - yarn-cache-v1-{{ checksum "yarn.lock" }}
@@ -429,6 +439,7 @@ jobs:
           key: yarn-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - public/packs-test
+
       - run:
           name: Cucumber - desktop
           command: |
