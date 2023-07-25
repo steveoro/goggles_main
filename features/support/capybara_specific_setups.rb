@@ -5,6 +5,9 @@ require 'capybara/cucumber'
 require 'capybara/session'
 require 'webdrivers'
 
+# [Steve, 20230725] As of this writing, the following is the latest production version of
+# Chromedriver supported by Webdrivers (even though we actually have v.115 manually installed)
+Webdrivers::Chromedriver.required_version = '114.0.5735.90'
 require_relative 'download_helpers'
 
 # Add factories directly from core engine:

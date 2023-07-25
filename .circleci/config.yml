@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
-  ruby: circleci/ruby@2.0.1
+  ruby: circleci/ruby@2.1.0
+  browser-tools: circleci/browser-tools@1.4.3
 
 common-config: &common-config
   working_directory: ~/goggles_main
@@ -9,9 +10,10 @@ common-config: &common-config
   #       for CodeClimate test coverage upload!
   #       (Otherwise the 'upload-coverage' step will fail.)
   docker:
-    - image: cimg/ruby:3.1.4-node
+    - image: cimg/ruby:3.1.4-browsers
       environment:
         RAILS_ENV: test
+        NODE_ENV: test
         BUNDLE_JOBS: 2
         BUNDLE_RETRY: 2
         BUNDLE_PATH: vendor/bundle
@@ -23,6 +25,13 @@ common-config: &common-config
         DATABASE_USER: root
         PAGER: cat
 
+web-assets: &web-assets
+  name: Webpacker/Yarn assets
+  command: |
+    RAILS_ENV=test bin/rails yarn:install
+    RAILS_ENV=test bin/rails assets:precompile
+    RAILS_ENV=test bin/rails webpacker:compile
+
 common-db-setup: &common-db-setup
   name: DB setup
   command: |
@@ -32,13 +41,11 @@ common-db-setup: &common-db-setup
     echo $RAILS_MASTER_KEY > config/master.key
     cp ./tmp/test.sql.bz2 db/dump/test.sql.bz2
     mv config/database_ci.yml config/database.yml
-    RAILS_ENV=test rails yarn:install
-    RAILS_ENV=test rails webpacker:compile
     dockerize -wait tcp://localhost:3306 -timeout 1m
     RAILS_ENV=test bin/rails db:rebuild from=test to=test
     RAILS_ENV=test bin/rails db:migrate
-    RAILS_ENV=test bundle exec rails assets:precompile
     ./tmp/cc-test-reporter before-build
+
 
 jobs:
   persisted-data:
@@ -104,7 +111,7 @@ jobs:
 
   rspec-components:
     <<: *common-config
-    parallelism: 3
+    parallelism: 2
     steps:
       - checkout
       - attach_workspace:
@@ -257,7 +264,7 @@ jobs:
 
   rspec-requests:
     <<: *common-config
-    parallelism: 3
+    parallelism: 2
     steps:
       - checkout
       - attach_workspace:
@@ -265,6 +272,15 @@ jobs:
       - ruby/install-deps:
           app-dir: ~/goggles_main
           key: goggles_main-v0600
+      - restore_cache:
+          keys:
+            - yarn-cache-v1-{{ checksum "yarn.lock" }}
+      - run:
+          <<: *web-assets
+      - save_cache:
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}
+          paths:
+            - public/packs-test
       - run:
           <<: *common-db-setup
       - run:
@@ -288,7 +304,7 @@ jobs:
 
   rspec-strategies:
     <<: *common-config
-    parallelism: 3
+    parallelism: 2
     steps:
       - checkout
       - attach_workspace:
@@ -319,7 +335,7 @@ jobs:
 
   rspec-views:
     <<: *common-config
-    parallelism: 3
+    parallelism: 2
     steps:
       - checkout
       - attach_workspace:
@@ -402,6 +418,15 @@ jobs:
       - ruby/install-deps:
           app-dir: ~/goggles_main
           key: goggles_main-v0600
+      - restore_cache:
+          keys:
+            - yarn-cache-v1-{{ checksum "yarn.lock" }}
+      - run:
+          <<: *web-assets
+      - save_cache:
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}
+          paths:
+            - public/packs-test
       - run:
           <<: *common-db-setup
       - run:
@@ -534,78 +559,102 @@ workflows:
   full-build:
     jobs:
       - persisted-data
-      - brakeman:
-          requires:
-            - persisted-data
-      - rubocop:
-          requires:
-            - persisted-data
-      - zeitwerk:
-          requires:
-            - persisted-data
+      # - brakeman:
+      #     requires:
+      #       - persisted-data
+      # - rubocop:
+      #     requires:
+      #       - persisted-data
+      # - zeitwerk:
+      #     requires:
+      #       - persisted-data
 
-      - rspec-components:
-          requires:
-            - brakeman
-            - rubocop
-            - zeitwerk
-      - rspec-decorators:
-          requires:
-            - brakeman
-            - rubocop
-            - zeitwerk
+      # - rspec-components:
+      #     requires:
+      #       - brakeman
+      #       - rubocop
+      #       - zeitwerk
+      # - rspec-decorators:
+      #     requires:
+      #       - brakeman
+      #       - rubocop
+      #       - zeitwerk
+
       - rspec-requests:
           requires:
-            - brakeman
-            - rubocop
-            - zeitwerk
+            - persisted-data
+            # - brakeman
+            # - rubocop
+            # - zeitwerk
+          pre-steps:
+            - browser-tools/install-browser-tools:
+                chrome-version: 114.0.5735.90
+            - browser-tools/install-chromedriver
+            - run:
+                name: Check install
+                command: |
+                  google-chrome --version
+                  chromedriver --version
+                  node -v
 
-      - rspec-helpers:
-          requires:
-            - rspec-components
-            - rspec-decorators
-      - rspec-mailers:
-          requires:
-            - rspec-components
-            - rspec-decorators
-      - rspec-views:
-          requires:
-            - rspec-components
-            - rspec-decorators
 
-      - rspec-jobs:
-          requires:
-            - rspec-helpers
-      - rspec-strategies:
-          requires:
-            - rspec-mailers
-      - rspec-integration:
-          requires:
-            - rspec-views
+      # - rspec-helpers:
+      #     requires:
+      #       - rspec-components
+      #       - rspec-decorators
+      # - rspec-mailers:
+      #     requires:
+      #       - rspec-components
+      #       - rspec-decorators
+      # - rspec-views:
+      #     requires:
+      #       - rspec-components
+      #       - rspec-decorators
 
-      - upload-coverage:
-          requires:
-            - rspec-requests
-            - rspec-jobs
-            - rspec-strategies
-            - rspec-integration
+      # - rspec-jobs:
+      #     requires:
+      #       - rspec-helpers
+      # - rspec-strategies:
+      #     requires:
+      #       - rspec-mailers
+      # - rspec-integration:
+      #     requires:
+      #       - rspec-views
+
+      # - upload-coverage:
+      #     requires:
+      #       - rspec-requests
+      #       - rspec-jobs
+      #       - rspec-strategies
+      #       - rspec-integration
 
       - cucumber-desktop:
           requires:
-            - rspec-requests
-      - cucumber-narrow:
-          requires:
-            - rspec-requests
-      - cucumber-tablet:
-          requires:
-            - rspec-requests
+            - persisted-data
+          pre-steps:
+            - browser-tools/install-browser-tools:
+                chrome-version: 114.0.5735.90
+            - browser-tools/install-chromedriver
+            - run:
+                name: Check install
+                command: |
+                  google-chrome --version
+                  chromedriver --version
+                  node -v
 
-      - docker-build:
-          requires:
-            - cucumber-desktop
-            - cucumber-narrow
-            - cucumber-tablet
+      # - cucumber-narrow:
+      #     requires:
+      #       - rspec-requests
+      # - cucumber-tablet:
+      #     requires:
+      #       - rspec-requests
 
-      - deploy:
-          requires:
-            - docker-build
+      # - docker-build:
+      #     requires:
+      #       - cucumber-desktop
+      #       - cucumber-narrow
+      #       - cucumber-tablet
+
+      # - deploy:
+      #     requires:
+      #       - docker-build
