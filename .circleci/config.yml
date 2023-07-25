@@ -33,6 +33,7 @@ common-db-setup: &common-db-setup
     cp ./tmp/test.sql.bz2 db/dump/test.sql.bz2
     mv config/database_ci.yml config/database.yml
     yarn
+    RAILS_ENV=test bundle exec rails webpacker:install
     dockerize -wait tcp://localhost:3306 -timeout 1m
     RAILS_ENV=test bin/rails db:rebuild from=test to=test
     RAILS_ENV=test bin/rails db:migrate
