@@ -37,7 +37,7 @@ common-db-setup: &common-db-setup
     dockerize -wait tcp://localhost:3306 -timeout 1m
     RAILS_ENV=test bin/rails db:rebuild from=test to=test
     RAILS_ENV=test bin/rails db:migrate
-    RAILS_ENV=test bundle exec bin/webpack
+    RAILS_ENV=test bundle exec rails assets:precompile
     ./tmp/cc-test-reporter before-build
 
 jobs:
