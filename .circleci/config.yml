@@ -272,6 +272,8 @@ jobs:
       - ruby/install-deps:
           app-dir: ~/goggles_main
           key: goggles_main-v0600
+      - run:
+          <<: *common-db-setup
       - restore_cache:
           keys:
             - yarn-cache-v1-{{ checksum "yarn.lock" }}
@@ -281,8 +283,6 @@ jobs:
           key: yarn-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - public/packs-test
-      - run:
-          <<: *common-db-setup
       - run:
           name: RSpec - Components
           command: |
@@ -418,6 +418,8 @@ jobs:
       - ruby/install-deps:
           app-dir: ~/goggles_main
           key: goggles_main-v0600
+      - run:
+          <<: *common-db-setup
       - restore_cache:
           keys:
             - yarn-cache-v1-{{ checksum "yarn.lock" }}
@@ -427,8 +429,6 @@ jobs:
           key: yarn-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - public/packs-test
-      - run:
-          <<: *common-db-setup
       - run:
           name: Cucumber - desktop
           command: |
@@ -587,7 +587,7 @@ workflows:
             # - rubocop
             # - zeitwerk
           pre-steps:
-            - browser-tools/install-browser-tools:
+            - browser-tools/install-chrome:
                 chrome-version: 114.0.5735.90
             - browser-tools/install-chromedriver
             - run:
@@ -632,7 +632,7 @@ workflows:
           requires:
             - persisted-data
           pre-steps:
-            - browser-tools/install-browser-tools:
+            - browser-tools/install-chrome:
                 chrome-version: 114.0.5735.90
             - browser-tools/install-chromedriver
             - run:
