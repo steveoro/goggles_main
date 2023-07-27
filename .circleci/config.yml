@@ -15,6 +15,7 @@ common-config: &common-config
       environment:
         RAILS_ENV: test
         NODE_ENV: test
+        BABEL_ENV: test
         BUNDLE_JOBS: 2
         BUNDLE_RETRY: 2
         BUNDLE_PATH: vendor/bundle
@@ -29,9 +30,12 @@ common-config: &common-config
 web-assets: &web-assets
   name: Webpacker/Yarn assets
   command: |
-    RAILS_ENV=test bin/rails yarn:install
-    RAILS_ENV=test bin/rails assets:precompile
-    RAILS_ENV=test bin/rails webpacker:compile
+    echo "- RAILS_ENV...: $RAILS_ENV"
+    echo "- BABEL_ENV...: $BABEL_ENV"
+    echo "- NODE_ENV....: $NODE_ENV"
+    bin/rails yarn:install
+    bin/rails assets:precompile
+    bin/rails webpacker:compile
 
 common-db-setup: &common-db-setup
   name: DB setup
@@ -43,8 +47,11 @@ common-db-setup: &common-db-setup
     cp ./tmp/test.sql.bz2 db/dump/test.sql.bz2
     mv config/database_ci.yml config/database.yml
     dockerize -wait tcp://localhost:3306 -timeout 1m
-    RAILS_ENV=test bin/rails db:rebuild from=test to=test
-    RAILS_ENV=test bin/rails db:migrate
+    echo "- RAILS_ENV...: $RAILS_ENV"
+    echo "- BABEL_ENV...: $BABEL_ENV"
+    echo "- NODE_ENV....: $NODE_ENV"
+    bin/rails db:rebuild from=test to=test
+    bin/rails db:migrate
     ./tmp/cc-test-reporter before-build
 
 
@@ -281,13 +288,15 @@ jobs:
           node-version: '16.13'
       - restore_cache:
           keys:
-            - yarn-cache-v1-{{ checksum "yarn.lock" }}
+            - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
       - run:
           <<: *web-assets
       - save_cache:
-          key: yarn-cache-v1-{{ checksum "yarn.lock" }}
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
           paths:
             - public/packs-test
+            - tmp/cache/webpacker
+            - node_modules/.cache
 
       - run:
           name: RSpec - Components
@@ -416,7 +425,7 @@ jobs:
 
   cucumber-desktop:
     <<: *common-config
-    parallelism: 3
+    parallelism: 2
     steps:
       - checkout
       - attach_workspace:
@@ -432,13 +441,15 @@ jobs:
           node-version: '16.13'
       - restore_cache:
           keys:
-            - yarn-cache-v1-{{ checksum "yarn.lock" }}
+            - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
       - run:
           <<: *web-assets
       - save_cache:
-          key: yarn-cache-v1-{{ checksum "yarn.lock" }}
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
           paths:
             - public/packs-test
+            - tmp/cache/webpacker
+            - node_modules/.cache
 
       - run:
           name: Cucumber - desktop
