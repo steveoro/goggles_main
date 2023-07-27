@@ -35,7 +35,6 @@ web-assets: &web-assets
     echo "- NODE_ENV....: $NODE_ENV"
     bin/rails yarn:install
     bin/rails assets:precompile
-    bin/rails webpacker:compile
 
 common-db-setup: &common-db-setup
   name: DB setup
