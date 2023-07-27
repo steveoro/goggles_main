@@ -601,22 +601,23 @@ workflows:
       #       - rubocop
       #       - zeitwerk
 
-      - rspec-requests:
-          requires:
-            - persisted-data
-            # - brakeman
-            # - rubocop
-            # - zeitwerk
-          pre-steps:
-            - browser-tools/install-chrome:
-                chrome-version: 114.0.5735.90
-            - browser-tools/install-chromedriver
-            - run:
-                name: Check install
-                command: |
-                  google-chrome --version
-                  chromedriver --version
-                  node -v
+      # - rspec-requests:
+      #     requires:
+      #       - persisted-data
+      #       # - brakeman
+      #       # - rubocop
+      #       # - zeitwerk
+      #     pre-steps:
+      #       - browser-tools/install-chrome:
+      #           chrome-version: 114.0.5735.90
+      #           replace-existing: true
+      #       - browser-tools/install-chromedriver
+      #       - run:
+      #           name: Check install
+      #           command: |
+      #             google-chrome --version
+      #             chromedriver --version
+      #             node -v
 
 
       # - rspec-helpers:
@@ -655,6 +656,7 @@ workflows:
           pre-steps:
             - browser-tools/install-chrome:
                 chrome-version: 114.0.5735.90
+                replace-existing: true
             - browser-tools/install-chromedriver
             - run:
                 name: Check install
