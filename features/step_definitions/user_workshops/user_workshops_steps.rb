@@ -48,26 +48,32 @@ end
 #-- ---------------------------------------------------------------------------
 #++
 
+# Uses @associated_urs
 # Sets @search_filter & @filter_name
 Then('I filter the workshops list by an earlier date than the first row present on the grid') do
   step('I make sure the filtering form for the datagrid is visible')
-  workshop_date = find('section#data-grid table tbody tr td.workshop_date', visible: true).text
+  # Retrieving the workshop date from the row instead of the view makes this more stable
+  # (assuming that the selected UR is actually belonging to the oldest workshop there)
+  expect(@associated_urs.count).to be_positive
+  expect(@associated_urs.first.user_workshop).to be_a(GogglesDb::UserWorkshop)
+  workshop_date = @associated_urs.first.user_workshop.header_date
   expect(workshop_date).to be_present
   # Filter by an earlier date (makes the first row always visible, assuming the order isn't changed):
-  # WARNING: UserWorkshops can have results at a later date (even a couple of months after) than the header_date,
-  #          so we need to exagerate the search filter to make sure we get the same row.
-  @search_filter = (Date.parse(workshop_date) - 6.months).to_s
+  @search_filter = (workshop_date - 3.months).to_s
   @filter_name = 'workshop_date'
   fill_in('user_workshops_grid[workshop_date]', with: @search_filter)
   step('I submit the filters for the datagrid \'#new_user_workshops_grid\' waiting 10 secs tops for it to disappear')
 end
 
+# Uses @associated_urs
 # Sets @search_filter & @filter_name
 Then('I filter the workshops list by a portion of the first name found on the grid') do
   step('I make sure the filtering form for the datagrid is visible')
-  node = find('section#data-grid table tbody tr td.workshop_name a', visible: true)
+  # Retrieving the workshop name from the row instead of the view:
+  expect(@associated_urs.count).to be_positive
+  expect(@associated_urs.first.user_workshop).to be_a(GogglesDb::UserWorkshop)
   # Filter by the last portion of the first name found:
-  @search_filter = node.text.split(': ').last
+  @search_filter = @associated_urs.first.user_workshop.description.split.last
   expect(@search_filter).to be_present
   @filter_name = 'workshop_name'
   fill_in('user_workshops_grid[workshop_name]', with: @search_filter)

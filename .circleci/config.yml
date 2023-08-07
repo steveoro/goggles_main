@@ -657,16 +657,41 @@ workflows:
       # - cucumber-narrow:
       #     requires:
       #       - rspec-requests
+      #     pre-steps:
+      #       - browser-tools/install-chrome:
+      #           chrome-version: 114.0.5735.90
+      #           replace-existing: true
+      #       - browser-tools/install-chromedriver
+      #       - run:
+      #           name: Check install
+      #           command: |
+      #             google-chrome --version
+      #             chromedriver --version
+      #             node -v
+
       # - cucumber-tablet:
       #     requires:
       #       - rspec-requests
+      #     pre-steps:
+      #       - browser-tools/install-chrome:
+      #           chrome-version: 114.0.5735.90
+      #           replace-existing: true
+      #       - browser-tools/install-chromedriver
+      #       - run:
+      #           name: Check install
+      #           command: |
+      #             google-chrome --version
+      #             chromedriver --version
+      #             node -v
 
-      # - docker-build:
+      - docker-build:
+          requires:
+            - cucumber-desktop
       #     requires:
       #       - cucumber-desktop
       #       - cucumber-narrow
       #       - cucumber-tablet
 
-      # - deploy:
-      #     requires:
-      #       - docker-build
+      - deploy:
+          requires:
+            - docker-build

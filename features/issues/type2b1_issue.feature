@@ -11,6 +11,9 @@ Feature: Reporting an issue of type "2b1"
     And I have already selected a random meeting from any of my available results
     When I browse to see the selected meeting details
     Then I am at the show page for the details of the meeting
+    When I choose a random event from the clickable list of the meeting
+    And I click on the chosen meeting event section, waiting for it to load
+    Then I see the results of the chosen meeting event
     And I can see the 'report mistake' ('type1b1') buttons on the results of the page
 
     When I click a random 'type1b1' button on the page

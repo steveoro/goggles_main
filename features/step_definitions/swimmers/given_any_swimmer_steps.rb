@@ -29,7 +29,7 @@ Given('I have a chosen a random swimmer with existing MIRs') do
 end
 
 # Designed for UserWorkshops
-# Sets @chosen_swimmer
+# Sets @chosen_swimmer, @associated_urs
 Given('I have a chosen a random swimmer with existing user results') do
   expect(GogglesDb::UserResult.count).to be_positive
   # It's faster using 2 queries instead of 1:
@@ -37,6 +37,8 @@ Given('I have a chosen a random swimmer with existing user results') do
                                     .distinct(:swimmer_id).pluck(:swimmer_id)
                                     .first(300).sample
   @chosen_swimmer = GogglesDb::Swimmer.find(swimmer_id)
+  @associated_urs = GogglesDb::UserResult.where(swimmer_id:)
+  expect(@associated_urs.count).to be_positive
 end
 
 # Designed for History
