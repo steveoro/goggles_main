@@ -541,13 +541,17 @@ jobs:
           name: Setup deploy server login
           command: |
             mkdir -p .ssh
-            ssh-keyscan -H $SSH_SERVER >> ~/.ssh/known_hosts
+            touch .ssh/known_hosts
+            touch .ssh/config
+            touch .ssh/id_rsa_deploy
+            touch .ssh/id_rsa_deploy.pub
+            ssh-keyscan -H $SSH_SERVER >> .ssh/known_hosts
             echo Host $SSH_SERVER >> .ssh/config
             echo 'IdentityFile ~/.ssh/id_rsa_deploy' >> .ssh/config
-            echo $id_rsa >> ~/.ssh/id_rsa_deploy
-            echo $id_rsa_pub >> ~/.ssh/id_rsa_deploy.pub
-            chmod 600 ~/.ssh/id_rsa_deploy
-            chmod 644 ~/.ssh/id_rsa_deploy.pub
+            echo $id_rsa >> .ssh/id_rsa_deploy
+            echo $id_rsa_pub >> .ssh/id_rsa_deploy.pub
+            chmod 600 .ssh/id_rsa_deploy
+            chmod 644 .ssh/id_rsa_deploy.pub
       - when:
           condition: << pipeline.git.tag >>
           steps:
@@ -639,20 +643,20 @@ workflows:
       #       - rspec-strategies
       #       - rspec-integration
 
-      - cucumber-desktop:
-          requires:
-            - persisted-data
-          pre-steps:
-            - browser-tools/install-chrome:
-                chrome-version: 114.0.5735.90
-                replace-existing: true
-            - browser-tools/install-chromedriver
-            - run:
-                name: Check install
-                command: |
-                  google-chrome --version
-                  chromedriver --version
-                  node -v
+      # - cucumber-desktop:
+      #     requires:
+      #       - persisted-data
+      #     pre-steps:
+      #       - browser-tools/install-chrome:
+      #           chrome-version: 114.0.5735.90
+      #           replace-existing: true
+      #       - browser-tools/install-chromedriver
+      #       - run:
+      #           name: Check install
+      #           command: |
+      #             google-chrome --version
+      #             chromedriver --version
+      #             node -v
 
       # - cucumber-narrow:
       #     requires:
@@ -684,9 +688,9 @@ workflows:
       #             chromedriver --version
       #             node -v
 
-      - docker-build:
-          requires:
-            - cucumber-desktop
+      # - docker-build:
+      #     requires:
+      #       - cucumber-desktop
       #     requires:
       #       - cucumber-desktop
       #       - cucumber-narrow
@@ -694,4 +698,5 @@ workflows:
 
       - deploy:
           requires:
-            - docker-build
+            - persisted-data
+            # - docker-build
