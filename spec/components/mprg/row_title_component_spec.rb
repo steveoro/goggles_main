@@ -17,16 +17,16 @@ RSpec.describe Mprg::RowTitleComponent, type: :component do
         .and include(fixture_row.gender_type.label.to_s)
     end
 
-    it 'renders a linkable table row' do
-      expect(subject.at_css('tr')).to be_present
-      expect(subject.at_css('tr')[:id]).to eq(
+    it 'renders a linkable table head' do
+      expect(subject.at_css('thead')).to be_present
+      expect(subject.at_css('thead')[:id]).to eq(
         "mprg-#{fixture_row.id}-#{fixture_row.category_type_id}-#{fixture_row.gender_type_id}"
       )
     end
 
     it 'renders a sticky table header spanning 4 columns' do
-      expect(subject.at_css('tr th.sticky-header')).to be_present
-      expect(subject.at_css('tr th.sticky-header')[:colspan]).to eq('4')
+      expect(subject.at_css('thead tr th.sticky-header')).to be_present
+      expect(subject.at_css('thead tr th.sticky-header')[:colspan]).to eq('4')
     end
   end
 

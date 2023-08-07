@@ -13,7 +13,7 @@ When('I am at the Calendars {string} page') do |page_name|
 end
 
 Then('I can see the pagination controls on the calendar current page when there are enough rows') do
-  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:251)
+  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:278)
   last_season = GogglesDb::Season.joins(meetings: :meeting_individual_results)
                                  .last_season_by_type(GogglesDb::SeasonType.mas_fin)
   if GogglesDb::Calendar.where(season_id: last_season.id).count > 10

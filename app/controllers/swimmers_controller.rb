@@ -38,28 +38,42 @@ class SwimmersController < ApplicationController
 
     # Prepare the list of selectable & available events for the current swimmer
     @event_type_list = GogglesDb::EventType.all_eventable.map do |event_type|
-      count = GogglesDb::MeetingIndividualResult.includes(:event_type)
-                                                .where(swimmer_id: @swimmer.id, 'event_types.id': event_type.id)
-                                                .count
-      next if count.zero?
+      event_list = GogglesDb::MeetingIndividualResult.includes(:event_type, :pool_type)
+                                                     .where(swimmer_id: @swimmer.id, 'event_types.id': event_type.id)
+      next if event_list.empty?
 
-      count25 = GogglesDb::MeetingIndividualResult.includes(:event_type, :pool_type)
-                                                  .where(
-                                                    swimmer_id: @swimmer.id,
-                                                    'event_types.id': event_type.id,
-                                                    'pool_types.id': GogglesDb::PoolType::MT_25_ID
-                                                  ).count
-      {
-        id: event_type.id,
-        label: event_type.long_label, # I18n
-        count25:,
-        count50: count - count25,
-        count:
-      }
+      prepare_summary_count_stats_for(event_type, event_list)
     end
     @event_type_list.compact!
     prepare_chart_recap_data
   end
+
+  # GET [XHR] - Renders the whole subsection of history stats for a single
+  #             MeetingEvent row, by AJAX call.
+  #
+  # == Required params:
+  # - :id => a valid Swimmer ID
+  # - :event_type_id => a valid EventType ID
+  # - :event_total => all-time overall total count of *all* events for the specified swimmer
+  #
+  # rubocop:disable Metrics/AbcSize
+  def event_type_stats
+    if !request.xhr? || @swimmer.nil? || !GogglesDb::EventType.exists?(history_params[:event_type_id]) || history_params[:event_total].to_i.zero?
+      flash[:warning] = I18n.t('search_view.errors.invalid_request')
+      redirect_to(root_path) && return
+    end
+
+    @event_type = GogglesDb::EventType.find(history_params[:event_type_id])
+    @event_total = history_params[:event_total].to_i
+    event_list = GogglesDb::MeetingIndividualResult.includes(:event_type, :pool_type)
+                                                   .where(swimmer_id: @swimmer.id, 'event_types.id': @event_type.id)
+
+    @max_updated_at = event_list.select(:updated_at).order(:updated_at).last&.updated_at.to_i
+    @hash = prepare_full_summary_stats_for(@event_type, event_list)
+  end
+  # rubocop:enable Metrics/AbcSize
+  #-- -------------------------------------------------------------------------
+  #++
 
   # GET /swimmers/history/:id
   # Filter & display specific event history + stats for a specific swimmer.
@@ -80,7 +94,7 @@ class SwimmersController < ApplicationController
       scope.where(
         swimmer_id: @swimmer.id,
         event_types: { id: @event_type.id }
-      )
+      ).page(history_params[:page]).per(25)
     end
     prepare_chart_detail_data
   end
@@ -96,7 +110,7 @@ class SwimmersController < ApplicationController
 
   # /history actions strong parameters checking
   def history_params
-    params.permit(:id, :event_type_id)
+    params.permit(:id, :event_type_id, :event_total)
   end
 
   # Default whitelist for datagrid parameters
@@ -126,6 +140,65 @@ class SwimmersController < ApplicationController
   end
   #-- -------------------------------------------------------------------------
   #++
+
+  # Returns a simplified hash containing just the history summary header
+  # row counts (event description + counts) for specific event type MIRs.
+  #
+  # == Params:
+  # - event_type: the current GogglesDb::EventType
+  # - event_list: the ActiveRecord relation of MIRs filtered just by EventType & Swimmer
+  #
+  def prepare_summary_count_stats_for(event_type, event_list)
+    count25 = event_list.where('pool_types.id': GogglesDb::PoolType::MT_25_ID).count
+    count50 = event_list.where('pool_types.id': GogglesDb::PoolType::MT_50_ID).count
+
+    {
+      id: event_type.id,
+      label: event_type.long_label, # I18n
+      count25:,
+      count50:,
+      count: count25 + count50
+    }
+  end
+
+  # Returns a hash containing the whole history summary stats
+  # for specific event type MIRs.
+  #
+  # == Params:
+  # - event_type: the current GogglesDb::EventType
+  # - event_list: the ActiveRecord relation of MIRs filtered just by EventType & Swimmer
+  #
+  # rubocop:disable Metrics/AbcSize
+  def prepare_full_summary_stats_for(event_type, event_list)
+    event_list25 = event_list.where('pool_types.id': GogglesDb::PoolType::MT_25_ID)
+    event_list50 = event_list.where('pool_types.id': GogglesDb::PoolType::MT_50_ID)
+    count25 = event_list.where('pool_types.id': GogglesDb::PoolType::MT_25_ID).count
+    count50 = event_list.where('pool_types.id': GogglesDb::PoolType::MT_50_ID).count
+
+    {
+      id: event_type.id,
+      label: event_type.long_label, # I18n
+      count25:,
+      count50:,
+      count: count25 + count50,
+      best_timing_mir: event_list.order(:minutes, :seconds, :hundredths).first,
+      best_timing_mir25: event_list25.order(:minutes, :seconds, :hundredths).first,
+      best_timing_mir50: event_list50.order(:minutes, :seconds, :hundredths).first,
+      worst_timing_mir: event_list.order(:minutes, :seconds, :hundredths).last,
+      worst_timing_mir25: event_list25.order(:minutes, :seconds, :hundredths).last,
+      worst_timing_mir50: event_list50.order(:minutes, :seconds, :hundredths).last,
+      max_score_mir: event_list.where('standard_points > 0').order(standard_points: :desc).first,
+      max_score_mir25: event_list25.where('standard_points > 0').order(standard_points: :desc).first,
+      max_score_mir50: event_list50.where('standard_points > 0').order(standard_points: :desc).first,
+      min_score_mir: event_list.where('standard_points > 0').order(standard_points: :asc).first,
+      min_score_mir25: event_list25.where('standard_points > 0').order(standard_points: :asc).first,
+      min_score_mir50: event_list50.where('standard_points > 0').order(standard_points: :asc).first,
+      avg_score: event_list.where('standard_points > 0').average(:standard_points).to_f,
+      avg_score25: event_list25.where('standard_points > 0').average(:standard_points).to_f,
+      avg_score50: event_list50.where('standard_points > 0').average(:standard_points).to_f
+    }
+  end
+  # rubocop:enable Metrics/AbcSize
 
   # Prepares the swimmer history_recap chart data members, mapping each event type label
   # to its percentage of the total accounted events.

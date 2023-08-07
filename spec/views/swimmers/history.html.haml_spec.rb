@@ -28,7 +28,7 @@ RSpec.describe 'swimmers/history.html.haml' do
         scope.where(
           swimmer_id: fixture_row.id,
           event_types: { id: event_type.id }
-        )
+        ).page(1).per(25)
       end
     end
 
@@ -124,12 +124,13 @@ RSpec.describe 'swimmers/history.html.haml' do
       expect(node).to be_present
     end
 
-    it 'renders datagrid control row with the filter toggle button, the active filter labels and the datagrid total' do
-      node = subject.at_css('section#swimmer-history-detail #data-grid #datagrid-ctrls')
+    it 'renders datagrid control row with the filter toggle button, the pagination sections and the datagrid total' do
+      node = subject.at_css('section#swimmer-history-detail #data-grid')
       expect(node).to be_present
       expect(node.at_css('#filter-show-btn')).to be_present
-      expect(node.at_css('#filter-labels')).to be_present
+      # (#filter-labels may be not rendered at all if no filtering is active)
       expect(node.at_css('#datagrid-total')).to be_present
+      expect(node.at_css('#pagination-bottom')).to be_present
     end
 
     it 'renders the datagrid table' do

@@ -32,10 +32,19 @@
                 = '%'
           %tbody
             - @event_type_list.each do |hash|
-              %tr.event-types{ scope: 'row' }
+              - target_id = "stats-row-#{hash[:id]}"
+              %tr.event-types{ id: "stats-hdr-#{hash[:id]}", scope: 'row' }
                 %td.history-link.text-right.mx-auto
                   = link_to(swimmer_history_path(id: @swimmer.id, event_type_id: hash[:id])) do
                     = hash[:label]
+                  %label.switch-sm.pr-3{ id: "btn-load-stats-#{hash[:id]}" }
+                    %input{ type: 'checkbox' }
+                    = link_to('', swimmer_event_type_stats_path(id: @swimmer.id, event_type_id: hash[:id], event_total: @event_total),
+                              method: :get, remote: true, id: "toggle-#{target_id}",
+                              class: 'rotating-toggle collapsed', role: 'button', title: t('meetings.tooltip.link.click_to_expand'),
+                              data: { tooltip: true, toggle: 'collapse', target: "##{target_id}" },
+                              'aria-expanded' => false, 'aria-controls' => "switch for #{target_id}",
+                              onclick: "document.querySelector('#loading-indicator').classList.remove('d-none');")
                 %td.count-25.text-right.mx-auto
                   = hash[:count25]
                 %td.count-50.text-right.mx-auto
@@ -44,6 +53,11 @@
                   = hash[:count]
                 %td.percentage.text-right.mx-auto
                   = format('%0.2f', hash[:count].to_f / @event_total * 100.0)
+
+              %tr.event-types.collapse{ id: target_id, scope: 'row' }
+                %td.text-center{ colspan: 5 }
+                  %i.text-secondary.fa.fa-spin.fa-2x.fa-cog
+
             %tr.bg-info.text-light#overall-totals{ scope: 'row' }
               %td.total-25.text-right.mx-auto{ colspan: 2 }
                 %b= @event25_total

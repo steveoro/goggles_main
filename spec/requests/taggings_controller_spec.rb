@@ -1,22 +1,11 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'support/shared_request_examples'
 
 RSpec.describe TaggingsController do
   let(:fixture_meeting_id) { GogglesDb::Meeting.last(100).sample.id }
   let(:fixture_team_id) { GogglesDb::Team.first(100).sample.id }
-
-  shared_examples_for('invalid TaggingsController request') do
-    it 'is a redirect to root_path' do
-      expect(response).to redirect_to(root_path)
-    end
-
-    it 'set the flash error message' do
-      expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
-    end
-  end
-  #-- -------------------------------------------------------------------------
-  #++
 
   describe 'POST /by_user' do
     context 'for an unlogged user' do
@@ -35,7 +24,7 @@ RSpec.describe TaggingsController do
       context 'making a plain HTML request,' do
         before { post(taggings_by_user_path(meeting_id: fixture_meeting_id)) }
 
-        it_behaves_like('invalid TaggingsController request')
+        it_behaves_like('invalid row id GET request')
       end
 
       context 'making an XHR request with valid parameters,' do
@@ -51,7 +40,7 @@ RSpec.describe TaggingsController do
       context 'making an XHR request with missing or invalid parameters,' do
         before { post(taggings_by_user_path(meeting_id: -1), xhr: true) }
 
-        it_behaves_like('invalid TaggingsController request')
+        it_behaves_like('invalid row id GET request')
       end
     end
   end
@@ -75,7 +64,7 @@ RSpec.describe TaggingsController do
       context 'making a plain HTML request,' do
         before { post(taggings_by_team_path, params: { meeting_id: fixture_meeting_id, team_id: fixture_team_id }) }
 
-        it_behaves_like('invalid TaggingsController request')
+        it_behaves_like('invalid row id GET request')
       end
 
       context 'making an XHR request with valid parameters,' do
@@ -92,7 +81,7 @@ RSpec.describe TaggingsController do
         # (no team_id parameter)
         before { post(taggings_by_team_path, xhr: true, params: { meeting_id: fixture_meeting_id }) }
 
-        it_behaves_like('invalid TaggingsController request')
+        it_behaves_like('invalid row id GET request')
       end
     end
   end

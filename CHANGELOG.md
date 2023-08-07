@@ -2,7 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
-- **0.6.00** [Steve A.] test upgrade to Ruby 3.1.4
+- **0.6.00** [Steve A.] test upgrade to Ruby 3.1.4; made meetings/show & swimmers/history_recap async; re-added pagination on swimmers/history to prevent very long page loads for hyper-active swimmers; misc improvements, refactorings & additional specs
 - **0.5.22** [Steve A.] re-sync w/ base engine & API; added support for account reactivation request; bundle update
 - **0.5.12** [Steve A.] re-sync w/ base engine
 - **0.5.05** [Steve A.] check team & swimmer presence in meeting before enabling links to results in meetings/_navs; re-sync w/ base engine

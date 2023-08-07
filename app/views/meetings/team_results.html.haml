@@ -5,12 +5,12 @@
     = render(partial: 'meeting_header', locals: { meeting: @meeting })
     = render(partial: 'meeting_navs', locals: { meeting: @meeting, active_tab: 'team', can_tap_to_results: @default_team_or_swimmer_in_meeting })
 
-    - cache(cache_key_for_meeting(action: 'meeting_team_results', meeting_id: @meeting.id, max_updated_at: @max_updated_at,
+    - cache(cache_key_for_meeting(action: 'meeting_team_results', id: @meeting.id, max_updated_at: @max_updated_at,
             team_id: @team&.id, swimmer_id: @swimmer&.id)) do
       %section#meeting-team-results
         = render(partial: 'team_results_header', locals: { team: @team, team_ranks: @team_ranks,
-                 team_outstanding_scores: @team_outstanding_scores, team_tot_events: @team_tot_events,
-                 top_scores: @top_scores })
+                  team_outstanding_scores: @team_outstanding_scores, team_tot_events: @team_tot_events,
+                  top_scores: @top_scores })
 
         = render(partial: 'team_results_swimmers_grid', locals: { meeting: @meeting,
                  meeting_team_swimmers: @meeting_team_swimmers, events_per_swimmers: @events_per_swimmers })

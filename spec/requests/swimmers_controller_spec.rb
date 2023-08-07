@@ -54,6 +54,46 @@ RSpec.describe SwimmersController do
   #-- -------------------------------------------------------------------------
   #++
 
+  describe 'GET XHR /event_type_stats' do
+    let(:event_type_id) { GogglesDb::EventType.all_individuals.sample.id }
+
+    context 'making a plain HTML request,' do
+      before do
+        get(
+          swimmer_event_type_stats_path(id: fixture_row_id, event_type_id:, event_total: (1 + (rand * 10)).to_i)
+        )
+      end
+
+      it_behaves_like('invalid row id GET request')
+    end
+
+    context 'making an XHR request with valid parameters,' do
+      before do
+        get(
+          swimmer_event_type_stats_path(id: fixture_row_id, event_type_id:, event_total: (1 + (rand * 10)).to_i),
+          xhr: true
+        )
+      end
+
+      it 'is successful' do
+        expect(response).to be_successful
+      end
+    end
+
+    context 'making an XHR request with missing or invalid parameters,' do
+      before do
+        get(
+          swimmer_event_type_stats_path(id: fixture_row_id, event_type_id:, event_total: 0),
+          xhr: true
+        )
+      end
+
+      it_behaves_like('invalid row id GET request')
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
   describe 'GET /history/:id' do
     let(:event_type_id) { GogglesDb::EventType.all_individuals.pluck(:id).sample }
 

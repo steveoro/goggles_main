@@ -100,10 +100,11 @@ RSpec.describe 'swimmers/history_recap.html.haml' do
       expect(table).to be_present
     end
 
-    it 'renders a table row for each event type list entry' do
+    it 'renders a table row for each event type list entry plus an expandable detailed stats section' do
       table_rows = subject.css('section#swimmer-history-recap table tbody tr.event-types')
       expect(table_rows).to be_present
-      expect(table_rows.count).to eq(event_type_list.count)
+      # 1 header + 1 collapsed/loadable detail
+      expect(table_rows.count).to eq(event_type_list.count * 2)
     end
 
     context 'for each rendered table row,' do
@@ -117,6 +118,14 @@ RSpec.describe 'swimmers/history_recap.html.haml' do
           expect(node.at_css('a').attributes['href'].value).to eq(
             swimmer_history_path(fixture_row, event_type_list[idx][:id])
           )
+        end
+      end
+
+      it 'includes the link to expand the collapsed stats section' do
+        table_rows.css('td.history-link label.switch-sm').each_with_index do |node, idx|
+          expect(node).to be_present
+          target_id = "stats-row-#{event_type_list[idx][:id]}"
+          expect(node.at_css('a').attributes['id'].value).to eq("toggle-#{target_id}")
         end
       end
 

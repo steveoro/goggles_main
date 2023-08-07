@@ -2,18 +2,9 @@
   .spacer-left
 
   .main-content#top-of-page
-    #workshop-show-title
-      = render(Meeting::TitleComponent.new(meeting: @user_workshop))
-    #workshop-show-details
-      %table.table.table-striped.table-sm
-        %tbody
-          = render(Meeting::HeaderBodyComponent.new(meeting: @user_workshop))
-          = render(Meeting::MoreBodyComponent.new(meeting: @user_workshop))
+    = render(partial: 'meetings/meeting_header', locals: { meeting: @user_workshop })
 
-    / (only 1 modal container per page)
-    #lap-edit-modal-container
-
-    - cache(cache_key_for_meeting(action: 'workshop_show', meeting_id: @user_workshop.id, max_updated_at: @max_updated_at,
+    - cache(cache_key_for_meeting(action: 'workshop_show', id: @user_workshop.id, max_updated_at: @max_updated_at,
             team_id: @team&.id, swimmer_id: @swimmer&.id)) do
       %section#workshop-show-results
         %table.table.table-striped.table-sm

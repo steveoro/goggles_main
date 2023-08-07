@@ -1,0 +1,57 @@
+- cache(cache_key_for_meeting(action: 'swimmer_history_event_type_stats',
+        id: "#{swimmer.id}-#{event_type.id}", max_updated_at: max_updated_at)) do
+  - target_id = "stats-row-#{hash[:id]}"
+  %tr.event-types{ id: "stats-hdr-#{hash[:id]}", scope: 'row' }
+    %td.history-link.text-right.mx-auto
+      = link_to(swimmer_history_path(id: swimmer.id, event_type_id: hash[:id])) do
+        = hash[:label]
+      = render(Switch::RotatingComponent.new(target_id: target_id))
+    %td.count-25.text-right.mx-auto
+      = hash[:count25]
+    %td.count-50.text-right.mx-auto
+      = hash[:count50]
+    %td.count.text-right.mx-auto
+      = hash[:count]
+    %td.percentage.text-right.mx-auto
+      = format('%0.2f', hash[:count].to_f / event_total * 100.0)
+
+  %tr.event-types{ id: target_id }
+    %td.text-right{ colspan: 5 }
+      - if hash[:best_timing_mir25].present? || hash[:best_timing_mir50].present? || hash[:best_timing_mir].present?
+        .row-fluid.bg-light-cyan2.mx-0.font-75rem.text-center.best-timings
+          %i= t('swimmers.history.stats.best_timings')
+        = render(partial: 'event_type_best_timing_row', locals: { label: '25 m.', swimmer_id: @swimmer.id,
+                 best_timing_mir: hash[:best_timing_mir25] })
+        = render(partial: 'event_type_best_timing_row', locals: { label: '50 m.', swimmer_id: @swimmer.id,
+                 best_timing_mir: hash[:best_timing_mir50] })
+        = render(partial: 'event_type_best_timing_row', locals: { label: t('swimmers.history.stats.all_time'),
+                 swimmer_id: @swimmer.id, best_timing_mir: hash[:best_timing_mir] })
+
+      - if hash[:max_score_mir25].present? || hash[:max_score_mir50].present? || hash[:max_score_mir].present?
+        .row-fluid.bg-light-cyan2.mx-0.font-75rem.text-center.top-score
+          %i= t('swimmers.history.stats.top_scores')
+        = render(partial: 'event_type_stat_score_row', locals: { label: '25 m.', swimmer_id: @swimmer.id,
+                 stat_score_mir: hash[:max_score_mir25] })
+        = render(partial: 'event_type_stat_score_row', locals: { label: '50 m.', swimmer_id: @swimmer.id,
+                 stat_score_mir: hash[:max_score_mir50] })
+        = render(partial: 'event_type_stat_score_row', locals: { label: t('swimmers.history.stats.all_time'),
+                 swimmer_id: @swimmer.id, stat_score_mir: hash[:max_score_mir] })
+
+      - if hash[:min_score_mir25].present? || hash[:min_score_mir50].present? || hash[:min_score_mir].present?
+        .row-fluid.bg-light-cyan2.mx-0.font-75rem.text-center.min-score
+          %i= t('swimmers.history.stats.lowest_scores')
+        = render(partial: 'event_type_stat_score_row', locals: { label: '25 m.', swimmer_id: @swimmer.id,
+                 stat_score_mir: hash[:min_score_mir25] })
+        = render(partial: 'event_type_stat_score_row', locals: { label: '50 m.', swimmer_id: @swimmer.id,
+                 stat_score_mir: hash[:min_score_mir50] })
+        = render(partial: 'event_type_stat_score_row', locals: { label: t('swimmers.history.stats.all_time'),
+                 swimmer_id: @swimmer.id, stat_score_mir: hash[:min_score_mir] })
+
+      .row-fluid.bg-light-cyan2.mx-0.font-75rem.text-center.avg-score
+        %i= t('swimmers.history.stats.average')
+      = render(partial: 'event_type_avg_score_row', locals: { label: '25 m.',
+                avg_score: hash[:avg_score25] })
+      = render(partial: 'event_type_avg_score_row', locals: { label: '50 m.',
+                avg_score: hash[:avg_score50] })
+      = render(partial: 'event_type_avg_score_row', locals: { label: t('swimmers.history.stats.all_time'),
+                avg_score: hash[:avg_score] })

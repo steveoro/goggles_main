@@ -6,5 +6,5 @@
       %th.mprg-links{ colspan: 3 }
         - @meeting_programs.where(gender_type_id: gender_type.id).each do |mprg|
           = link_to(mprg.category_type&.short_name,
-            "#mprg-#{mprg.id}-#{mprg.category_type_id}-#{mprg.gender_type_id}",
-            { 'data-turbolinks' => 'false' })
+                    "#mprg-#{mprg.id}-#{mprg.category_type_id}-#{mprg.gender_type_id}",
+                    data: { turbo: false, turbolinks: false })

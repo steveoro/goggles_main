@@ -15,13 +15,13 @@ Then('I click on the first row to see the details of the first workshop') do
     putc('.')
     sleep(1) && wait_for_ajax
     found = begin
-      find('.main-content#top-of-page #workshop-show-title', visible: true)
+      find('.main-content#top-of-page #meeting-show-title', visible: true)
     rescue StandardError
       false
     end
     break if found
   end
-  find('.main-content#top-of-page #workshop-show-title')
+  find('.main-content#top-of-page #meeting-show-title')
 end
 
 # Uses @chosen_workshop

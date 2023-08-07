@@ -99,13 +99,13 @@ RSpec.describe MeetingHelper do
     end
 
     context 'without team_id & swimmer_id,' do
-      subject(:result) { helper.cache_key_for_meeting(action: fixture_action, meeting_id: fixture_meeting_id, max_updated_at:) }
+      subject(:result) { helper.cache_key_for_meeting(action: fixture_action, id: fixture_meeting_id, max_updated_at:) }
 
       it_behaves_like('#cache_key_for_meeting default behaviour')
     end
 
     context 'with a team_id,' do
-      subject(:result) { helper.cache_key_for_meeting(action: fixture_action, meeting_id: fixture_meeting_id, max_updated_at:, team_id:) }
+      subject(:result) { helper.cache_key_for_meeting(action: fixture_action, id: fixture_meeting_id, max_updated_at:, team_id:) }
 
       it_behaves_like('#cache_key_for_meeting default behaviour')
 
@@ -116,7 +116,7 @@ RSpec.describe MeetingHelper do
 
     context 'with a swimmer_id,' do
       subject(:result) do
-        helper.cache_key_for_meeting(action: fixture_action, meeting_id: fixture_meeting_id, max_updated_at:, swimmer_id:)
+        helper.cache_key_for_meeting(action: fixture_action, id: fixture_meeting_id, max_updated_at:, swimmer_id:)
       end
 
       it_behaves_like('#cache_key_for_meeting default behaviour')
@@ -128,7 +128,7 @@ RSpec.describe MeetingHelper do
 
     context 'with both a team_id & a swimmer_id,' do
       subject(:result) do
-        helper.cache_key_for_meeting(action: fixture_action, meeting_id: fixture_meeting_id, max_updated_at:, team_id:,
+        helper.cache_key_for_meeting(action: fixture_action, id: fixture_meeting_id, max_updated_at:, team_id:,
                                      swimmer_id:)
       end
 

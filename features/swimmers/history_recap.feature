@@ -27,5 +27,7 @@ Feature: Swimmer History main page ('History recap')
     And I can see the chosen swimmer's name as subtitle of the history recap page
     And I see the overall pie graph for the event types
     And I see the list of attended event types
+    When I expand the details of a random event type and wait the stats to be displayed
+    Then I see that at least the average score section is always present
     When I click on random event type link on the history recap
     Then I am at the detailed history page for the chosen event type and swimmer

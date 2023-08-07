@@ -70,12 +70,14 @@ Rails.application.routes.draw do
   get 'meetings/for_team/:id',    to: 'meetings#for_team',    as: 'meetings_for_team'
   get 'meetings/team_results/:id',    to: 'meetings#team_results',    as: 'meeting_team_results'
   get 'meetings/swimmer_results/:id', to: 'meetings#swimmer_results', as: 'meeting_swimmer_results'
+  get 'meetings/show_event_section/:id', to: 'meetings#show_event_section', as: 'meeting_show_event_section', format: :javascript
 
   get 'swimming_pools/show/:id', to: 'swimming_pools#show', as: 'swimming_pool_show'
 
   get 'swimmers/show/:id',          to: 'swimmers#show',          as: 'swimmer_show'
   get 'swimmers/history_recap/:id', to: 'swimmers#history_recap', as: 'swimmer_history_recap'
   get 'swimmers/:id/history/:event_type_id', to: 'swimmers#history', as: 'swimmer_history'
+  get 'swimmers/:id/event_type_stats/:event_type_id', to: 'swimmers#event_type_stats', as: 'swimmer_event_type_stats', format: :javascript
 
   post 'taggings/by_user/:meeting_id', to: 'taggings#by_user', as: 'taggings_by_user'
   post 'taggings/by_team', to: 'taggings#by_team', as: 'taggings_by_team' # (No required parameters by design)

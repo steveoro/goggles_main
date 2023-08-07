@@ -62,12 +62,34 @@ And('I see the list of attended event types') do
   find('section#swimmer-history-recap table tbody tr.event-types', visible: true)
 end
 
+# Sets @expanded_stat_dom_id (see step below)
+When('I expand the details of a random event type and wait the stats to be displayed') do
+  tbody = find('section#swimmer-history-recap table tbody', visible: true)
+  expect(tbody).to be_present
+  event_rows = find_all('tr.event-types', visible: true)
+  expect(event_rows.count).to be_positive
+
+  rnd_node = event_rows.sample
+  rnd_node.find('td.history-link label.switch-sm').click
+  @expanded_stat_dom_id = rnd_node.find('td.history-link label.switch-sm a')[:id].split('toggle-').last
+  # Wait for the actual target row ID to be rendered:
+  sleep(1) && wait_for_ajax
+  find("tr##{@expanded_stat_dom_id}", visible: true)
+end
+
+# Uses @expanded_stat_dom_id
+When('I see that at least the average score section is always present') do
+  find("tr##{@expanded_stat_dom_id} td .avg-score", visible: true)
+end
+
 When('I click on random event type link on the history recap') do
   tbody = find('section#swimmer-history-recap table tbody', visible: true)
   expect(tbody).to be_present
   event_rows = find_all('tr.event-types', visible: true)
   expect(event_rows.count).to be_positive
-  event_rows.sample.find('td.history-link a').click
+
+  rnd_node = event_rows.sample
+  rnd_node.find('td.history-link a').click
 end
 #-- ---------------------------------------------------------------------------
 #++

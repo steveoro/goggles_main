@@ -6,17 +6,21 @@
 # Artifact storage is usually available on CI servers only for paying accounts
 # and should be disabled when running, for instance, on Semaphore 2.0.
 #
-# Use the 'AUTO_ARTIFACTS' ENV variable when running Cucumber to toggle this on.
+# - 'AUTO_ARTIFACTS' ENV variable = 1 => toggle this on (when running Cucumber)
+# - 'ARTIFACTS_PATH' ENV variable = <some path> => set destination paths for the artifacts
 #
 # Default artifacts destination path is 'tmp/cucumber'.
 #
 module AutocreateArtifacts
   # Returns a timestamped destination pathname which is used as prefix string
   # for the actual filename of each generated artifact (page sources & screenshots).
+  #
+  # == Output path:
+  # - <RAILS_ROOT>/tmp/cucumber (default); override with: ENV('ARTIFACTS_PATH')
   def timestamped_prefix_path
     time_now = Time.zone.now
     timestamp = "#{time_now.strftime('%Y-%m-%d-%H-%M-%S.')}#{format((time_now.usec / 1000).to_i.to_s, '%03d')}"
-    destination_path = Rails.root.join('tmp', 'cucumber')
+    destination_path = ENV.fetch('ARTIFACTS_PATH', Rails.root.join('tmp/cucumber'))
     "#{destination_path}/#{timestamp}"
   end
 

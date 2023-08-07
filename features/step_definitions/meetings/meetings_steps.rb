@@ -22,7 +22,7 @@ Then('I click on the first row to see the details of the first meeting') do
     break if found
   end
   find('.main-content#top-of-page #meeting-show-title')
-  find('#meeting-show-results table.table thead tr th.mevent-separator', visible: true)
+  find('#meeting-show-results table.table thead.mevent-separator', visible: true)
 end
 
 # Uses @chosen_meeting
@@ -44,6 +44,38 @@ end
 Then('I am at the show page for the details of the meeting') do
   # We don't care which detail row is:
   expect(page.current_path.to_s).to include(meeting_show_path(-1).gsub('-1', ''))
+end
+
+# Sets @chosen_meeting (from URL) & @chosen_mevent
+Then('I choose a random event from the clickable list of the meeting') do
+  # Instead of selecting a random node from the displayed list, let's get the current Meeting
+  # and choose an actual random event row from the existing MIRs, so that we can be almost sure
+  # the event section will be expanded to some results:
+  current_meeting_id = current_url.split('/').last.to_i
+  @chosen_meeting = GogglesDb::Meeting.find(current_meeting_id)
+  @chosen_mevent = @chosen_meeting.meeting_individual_results.includes(:meeting_event).sample.meeting_event
+end
+
+# Uses @chosen_mevent
+Then('I click on the chosen meeting event section, waiting for it to load') do
+  find("thead th a#btn-load-mev-#{@chosen_mevent.id}").click
+  sleep(1) && wait_for_ajax
+
+  10.times do
+    wait_for_ajax
+    if page.has_css?("thead th a#btn-load-mev-#{@chosen_mevent.id}")
+      sleep(0.5)
+      putc '-'
+    else
+      putc '+'
+      break
+    end
+  end
+end
+
+# Uses @chosen_mevent
+Then('I see the results of the chosen meeting event') do
+  find("thead#mevent-#{@chosen_mevent.id}")
 end
 #-- ---------------------------------------------------------------------------
 #++
@@ -112,30 +144,39 @@ end
 #++
 
 # Designed for Meetings
-# Uses @chosen_meeting
-# Sets @chosen_mir
+# Uses: @chosen_meeting
+# Sets: @chosen_mir & @chosen_mevent
 Given('I have chosen a random result among the current meeting details') do
-  @chosen_mir = @chosen_meeting.meeting_individual_results.sample
+  @chosen_mir = @chosen_meeting.meeting_individual_results
+                               .includes(:meeting_event)
+                               .sample
+  @chosen_mevent = @chosen_mir.meeting_event
 end
 
 # Designed for Meetings
-# Uses @chosen_meeting, @associated_team_id
-# Sets @chosen_mir
+# Uses: @chosen_meeting, @associated_team_id
+# Sets: @chosen_mir & @chosen_mevent
 Given('I have chosen a random row from the results of my associated team') do
   expect(@chosen_meeting).to be_a(GogglesDb::Meeting)
   expect(@associated_team_id).to be_positive
-  @chosen_mir = @chosen_meeting.meeting_individual_results.where(team_id: @associated_team_id).sample
+  @chosen_mir = @chosen_meeting.meeting_individual_results
+                               .includes(:meeting_event)
+                               .where(team_id: @associated_team_id)
+                               .sample
+  @chosen_mevent = @chosen_mir.meeting_event
 end
 
 # Designed for Meetings
 # Uses: @chosen_meeting & @current_user
-# Sets: @chosen_mir
+# Sets: @chosen_mir & @chosen_mevent
 Given('I have chosen a random row from my own results') do
   expect(@chosen_meeting).to be_a(GogglesDb::Meeting)
   expect(@current_user.swimmer_id).to be_present
   @chosen_mir = @chosen_meeting.meeting_individual_results
+                               .includes(:meeting_event)
                                .where(swimmer_id: @current_user.swimmer_id)
                                .sample
+  @chosen_mevent = @chosen_mir.meeting_event
 end
 #-- ---------------------------------------------------------------------------
 #++

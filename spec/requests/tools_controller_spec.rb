@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'support/shared_request_examples'
 
 RSpec.describe ToolsController do
   describe 'GET /fin_score' do
@@ -42,13 +43,7 @@ RSpec.describe ToolsController do
       context 'making a plain HTML request,' do
         before { get(tools_compute_fin_score_path) }
 
-        it 'is a redirect to root_path' do
-          expect(response).to redirect_to(root_path)
-        end
-
-        it 'set the flash error message' do
-          expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
-        end
+        it_behaves_like('invalid row id GET request')
       end
 
       context 'making an XHR request' do
@@ -163,13 +158,7 @@ RSpec.describe ToolsController do
             get(tools_compute_fin_score_path, xhr: true)
           end
 
-          it 'is a redirect to root_path' do
-            expect(response).to redirect_to(root_path)
-          end
-
-          it 'set the flash error message' do
-            expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
-          end
+          it_behaves_like('invalid row id GET request')
         end
       end
     end

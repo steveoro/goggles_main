@@ -18,4 +18,9 @@ RSpec.describe Switch::RotatingComponent, type: :component do
   it 'links to the specified DOM target_id' do
     expect(subject.at_css('.rotating-toggle')['href']).to eq("##{fixture_dom_id}")
   end
+
+  it "allows 'option_classes' to be set on the rotating toggle in the constructor" do
+    result = render_inline(described_class.new(target_id: fixture_dom_id, option_classes: 'my-class'))
+    expect(result.at_css('span.rotating-toggle.my-class')).to be_present
+  end
 end

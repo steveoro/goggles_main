@@ -4,12 +4,13 @@ orbs:
   browser-tools: circleci/browser-tools@1.4.3
   node: circleci/node@5.1.0
 
+ARTIFACTS_PATH: &ARTIFACTS_PATH ~/test-artifacts
+
 common-config: &common-config
   working_directory: ~/goggles_main
   shell: /bin/bash --login
-  # NOTE: make sure ENV vars on CircleCI include CC_TEST_REPORTER_ID
-  #       for CodeClimate test coverage upload!
-  #       (Otherwise the 'upload-coverage' step will fail.)
+  # NOTE: make sure ENV vars on CircleCI web UI include CC_TEST_REPORTER_ID
+  #       for CodeClimate test coverage upload! (Otherwise the 'upload-coverage' step will fail.)
   docker:
     - image: cimg/ruby:3.1.4-browsers
       environment:
@@ -21,6 +22,8 @@ common-config: &common-config
         BUNDLE_PATH: vendor/bundle
         PAGER: cat
         GIT_LFS_SKIP_SMUDGE: 1
+        AUTO_ARTIFACTS: 1
+        ARTIFACTS_PATH: *ARTIFACTS_PATH
     - image: cimg/mariadb:10.6.12
       environment:
         DATABASE_NAME: goggles_test
@@ -41,7 +44,7 @@ common-db-setup: &common-db-setup
   command: |
     sudo apt update
     sudo apt-get install mysql-client
-    mkdir -p tmp ~/test-results ~/test-artifacts
+    mkdir -p tmp ~/test-results "$ARTIFACTS_PATH"
     echo $RAILS_MASTER_KEY > config/master.key
     cp ./tmp/test.sql.bz2 db/dump/test.sql.bz2
     mv config/database_ci.yml config/database.yml
@@ -139,8 +142,6 @@ jobs:
                                    -o "./tmp/codeclimate.rspec-components.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
-      - store_artifacts:
-          path: ~/test-artifacts
       - persist_to_workspace:
           root: tmp
           paths:
@@ -170,8 +171,6 @@ jobs:
                                    -o "./tmp/codeclimate.rspec-decorators.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
-      - store_artifacts:
-          path: ~/test-artifacts
       - persist_to_workspace:
           root: tmp
           paths:
@@ -201,8 +200,6 @@ jobs:
                                    -o "./tmp/codeclimate.rspec-helpers.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
-      - store_artifacts:
-          path: ~/test-artifacts
       - persist_to_workspace:
           root: tmp
           paths:
@@ -231,8 +228,6 @@ jobs:
                                    -o "./tmp/codeclimate.rspec-jobs.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
-      - store_artifacts:
-          path: ~/test-artifacts
       - persist_to_workspace:
           root: tmp
           paths:
@@ -261,8 +256,6 @@ jobs:
                                    -o "./tmp/codeclimate.rspec-mailers.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
-      - store_artifacts:
-          path: ~/test-artifacts
       - persist_to_workspace:
           root: tmp
           paths:
@@ -308,8 +301,6 @@ jobs:
                                    -o "./tmp/codeclimate.rspec-requests.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
-      - store_artifacts:
-          path: ~/test-artifacts
       - persist_to_workspace:
           root: tmp
           paths:
@@ -339,8 +330,6 @@ jobs:
                                    -o "./tmp/codeclimate.rspec-strategies.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
-      - store_artifacts:
-          path: ~/test-artifacts
       - persist_to_workspace:
           root: tmp
           paths:
@@ -370,8 +359,6 @@ jobs:
                                    -o "./tmp/codeclimate.rspec-views.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
-      - store_artifacts:
-          path: ~/test-artifacts
       - persist_to_workspace:
           root: tmp
           paths:
@@ -400,8 +387,6 @@ jobs:
                                    -o "./tmp/codeclimate.rspec-integration.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
-      - store_artifacts:
-          path: ~/test-artifacts
       - persist_to_workspace:
           root: tmp
           paths:
@@ -452,14 +437,18 @@ jobs:
 
       - run:
           name: Cucumber - desktop
+          # command: |
+          #   TEST_FILES=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings)
+          #   AUTO_ARTIFACTS=1 RAILS_ENV=test bundle exec cucumber --color --format pretty \
+          #               --format junit --out ~/test-results/cucumber-large.xml ${TEST_FILES}
           command: |
             TEST_FILES=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings)
-            AUTO_ARTIFACTS=1 RAILS_ENV=test bundle exec cucumber --color --format pretty \
-                        --format junit --out ~/test-results/cucumber-large.xml ${TEST_FILES}
+            bundle exec cucumber --color --format pretty --format junit --out ~/test-results/cucumber-large.xml \
+                                 ${TEST_FILES}
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
-          path: ~/test-artifacts
+          path: *ARTIFACTS_PATH
 
 
   cucumber-narrow:
@@ -483,7 +472,7 @@ jobs:
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
-          path: ~/test-artifacts
+          path: *ARTIFACTS_PATH
 
 
   cucumber-tablet:
@@ -507,7 +496,7 @@ jobs:
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
-          path: ~/test-artifacts
+          path: *ARTIFACTS_PATH
 
 
   docker-build:
