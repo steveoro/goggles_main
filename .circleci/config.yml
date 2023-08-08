@@ -549,32 +549,26 @@ jobs:
           key: goggles_main-v0600
       - when:
           condition: << pipeline.git.tag >>
-          environment:
-            RAILS_ENV: production
-            NODE_ENV: production
-            BABEL_ENV: production
           steps:
             - run:
                 <<: *common-db-setup
+                environment:
+                  RAILS_ENV: production
+                  NODE_ENV: production
+                  BABEL_ENV: production
       - unless:
           condition: << pipeline.git.tag >>
-          environment:
-            RAILS_ENV: staging
-            NODE_ENV: production
-            BABEL_ENV: production
           steps:
             - run:
                 <<: *common-db-setup
+                environment:
+                  RAILS_ENV: staging
+                  NODE_ENV: production
+                  BABEL_ENV: production
 
-      - run:
-          command: |
-            echo "- RAILS_ENV...: $RAILS_ENV"
-            echo "- BABEL_ENV...: $BABEL_ENV"
-            echo "- NODE_ENV....: $NODE_ENV"
       - node/install:
           install-yarn: true
           node-version: '16.13'
-
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true
@@ -586,6 +580,10 @@ jobs:
                   - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-prod" }}
             - run:
                 <<: *web-assets
+                environment:
+                  RAILS_ENV: production
+                  NODE_ENV: production
+                  BABEL_ENV: production
             - save_cache:
                 key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-prod" }}
                 paths:
@@ -609,6 +607,10 @@ jobs:
                   - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-prod" }}
             - run:
                 <<: *web-assets
+                environment:
+                  RAILS_ENV: staging
+                  NODE_ENV: production
+                  BABEL_ENV: production
             - save_cache:
                 key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-prod" }}
                 paths:
@@ -626,7 +628,7 @@ jobs:
 
 
   deploy:
-    <<: *common-config
+    <<: *deploy-config
     steps:
       - when:
           condition: << pipeline.git.tag >>
