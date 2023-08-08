@@ -409,7 +409,7 @@ jobs:
 
   cucumber-desktop:
     <<: *common-config
-    parallelism: 2
+    parallelism: 3
     steps:
       - checkout
       - attach_workspace:
@@ -419,7 +419,6 @@ jobs:
           key: goggles_main-v0600
       - run:
           <<: *common-db-setup
-
       - node/install:
           install-yarn: true
           node-version: '16.13'
@@ -434,13 +433,8 @@ jobs:
             - public/packs-test
             - tmp/cache/webpacker
             - node_modules/.cache
-
       - run:
           name: Cucumber - desktop
-          # command: |
-          #   TEST_FILES=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings)
-          #   AUTO_ARTIFACTS=1 RAILS_ENV=test bundle exec cucumber --color --format pretty \
-          #               --format junit --out ~/test-results/cucumber-large.xml ${TEST_FILES}
           command: |
             TEST_FILES=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings)
             bundle exec cucumber --color --format pretty --format junit --out ~/test-results/cucumber-large.xml \
@@ -463,6 +457,20 @@ jobs:
           key: goggles_main-v0600
       - run:
           <<: *common-db-setup
+      - node/install:
+          install-yarn: true
+          node-version: '16.13'
+      - restore_cache:
+          keys:
+            - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
+      - run:
+          <<: *web-assets
+      - save_cache:
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
+          paths:
+            - public/packs-test
+            - tmp/cache/webpacker
+            - node_modules/.cache
       - run:
           name: Cucumber - mobile/narrow
           command: |
@@ -487,6 +495,20 @@ jobs:
           key: goggles_main-v0600
       - run:
           <<: *common-db-setup
+      - node/install:
+          install-yarn: true
+          node-version: '16.13'
+      - restore_cache:
+          keys:
+            - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
+      - run:
+          <<: *web-assets
+      - save_cache:
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
+          paths:
+            - public/packs-test
+            - tmp/cache/webpacker
+            - node_modules/.cache
       - run:
           name: Cucumber - mobile/tablet
           command: |
@@ -503,9 +525,28 @@ jobs:
     <<: *common-config
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
           key: goggles_main-v0600
+      - run:
+          <<: *common-db-setup
+      - node/install:
+          install-yarn: true
+          node-version: '16.13'
+      - restore_cache:
+          keys:
+            - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
+      - run:
+          <<: *web-assets
+      - save_cache:
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
+          paths:
+            - public/packs-test
+            - tmp/cache/webpacker
+            - node_modules/.cache
+
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true

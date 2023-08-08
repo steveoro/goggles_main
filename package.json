@@ -16,7 +16,7 @@
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
     "@rails/ujs": "^6.0.0",
-    "@rails/webpacker": "5.4.4",
+    "@rails/webpacker": "^5.4.4",
     "backgrid": "^0.3.8",
     "bootstrap": "^4.6.0",
     "browserslist": "^4.21.5",
