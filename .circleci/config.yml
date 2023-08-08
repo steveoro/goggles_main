@@ -36,6 +36,7 @@ deploy-config: &deploy-config
   docker:
     - image: cimg/ruby:3.1.4-browsers
       environment:
+        DISABLE_SPRING: true
         BUNDLE_JOBS: 2
         BUNDLE_RETRY: 2
         BUNDLE_PATH: vendor/bundle
@@ -48,12 +49,11 @@ deploy-config: &deploy-config
         PAGER: cat
 
 web-assets: &web-assets
-  name: Webpacker/Yarn assets
+  name: Assets precompile
   command: |
     echo "- RAILS_ENV...: $RAILS_ENV"
     echo "- BABEL_ENV...: $BABEL_ENV"
     echo "- NODE_ENV....: $NODE_ENV"
-    bin/rails yarn:install
     bin/rails assets:precompile
 
 common-db-setup: &common-db-setup
