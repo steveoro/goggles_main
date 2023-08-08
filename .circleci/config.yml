@@ -52,7 +52,7 @@ common-db-setup: &common-db-setup
     echo "- RAILS_ENV...: $RAILS_ENV"
     echo "- BABEL_ENV...: $BABEL_ENV"
     echo "- NODE_ENV....: $NODE_ENV"
-    bin/rails db:rebuild from=test to=test
+    bin/rails db:rebuild from=test
     bin/rails db:migrate
     ./tmp/cc-test-reporter before-build
 
@@ -530,8 +530,24 @@ jobs:
       - ruby/install-deps:
           app-dir: ~/goggles_main
           key: goggles_main-v0600
-      - run:
-          <<: *common-db-setup
+      - when:
+          condition: << pipeline.git.tag >>
+          environment:
+            RAILS_ENV: production
+            NODE_ENV: production
+            BABEL_ENV: production
+          steps:
+            - run:
+                <<: *common-db-setup
+      - unless:
+          condition: << pipeline.git.tag >>
+          environment:
+            RAILS_ENV: staging
+            NODE_ENV: production
+            BABEL_ENV: production
+          steps:
+            - run:
+                <<: *common-db-setup
       - node/install:
           install-yarn: true
           node-version: '16.13'
@@ -541,10 +557,6 @@ jobs:
           docker_layer_caching: true
       - when:
           condition: << pipeline.git.tag >>
-          environment:
-            RAILS_ENV: production
-            NODE_ENV: production
-            BABEL_ENV: production
           steps:
             - restore_cache:
                 keys:
@@ -568,10 +580,6 @@ jobs:
                   docker push $DOCKERHUB_USERNAME/goggles-main:prod-<< pipeline.git.tag >>
       - unless:
           condition: << pipeline.git.tag >>
-          environment:
-            RAILS_ENV: staging
-            NODE_ENV: production
-            BABEL_ENV: production
           steps:
             - restore_cache:
                 keys:
