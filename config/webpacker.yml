@@ -80,7 +80,7 @@ test:
 production:
   <<: *default
   # Production depends on precompilation of packs prior to booting for performance.
-  compile: true
+  compile: false
   # Extract and emit a css file
   extract_css: true
   # Cache manifest.json for performance
@@ -89,6 +89,6 @@ production:
 
 staging:
   <<: *default
-  compile: true
+  compile: false
   extract_css: true
   cache_manifest: true

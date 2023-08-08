@@ -50,7 +50,7 @@ RUN gem install bundler -v $BUNDLER_VERSION
 # --- Image-specific stuff:
 FROM common_builder
 ENV RAILS_ENV=staging \
-    NODE_ENV=staging \
+    NODE_ENV=production \
     DATABASE_NAME=goggles \
     DATABASE_HOST=goggles-db.staging \
     DATABASE_PORT=3306 \
