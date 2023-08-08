@@ -598,7 +598,7 @@ jobs:
 workflows:
   full-build:
     jobs:
-      # - persisted-data
+      - persisted-data
       # - brakeman:
       #     requires:
       #       - persisted-data
@@ -722,7 +722,9 @@ workflows:
       #       - cucumber-narrow
       #       - cucumber-tablet
 
-      - docker-build
+      - docker-build:
+          requires:
+            - persisted-data
       - deploy:
           requires:
             - docker-build
