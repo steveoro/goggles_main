@@ -29,7 +29,7 @@ Given('I have a chosen a random team with existing MIRs') do
 end
 
 # Designed for UserWorkshops
-# Sets @chosen_team
+# Sets @chosen_team, @associated_urs
 Given('I have a chosen a random team with existing user results') do
   expect(GogglesDb::UserResult.count).to be_positive
   # It's faster using 2 queries instead of 1:
@@ -37,6 +37,9 @@ Given('I have a chosen a random team with existing user results') do
                                  .distinct('user_workshops.team_id').pluck(:team_id)
                                  .first(300).sample
   @chosen_team = GogglesDb::Team.find(team_id)
+  @associated_urs = GogglesDb::UserResult.includes(:user_workshop).joins(:user_workshop)
+                                         .where('user_workshops.team_id': team_id)
+  expect(@associated_urs.count).to be_positive
 end
 
 # Designed for Meetings

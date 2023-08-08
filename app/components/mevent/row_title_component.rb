@@ -3,7 +3,7 @@
 #
 # = Mevent components module
 #
-#   - version:  7-0.5.03
+#   - version:  7-0.6.00
 #   - author:   Steve A.
 #
 module Mevent

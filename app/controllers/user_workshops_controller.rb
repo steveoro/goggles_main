@@ -4,10 +4,8 @@
 #
 class UserWorkshopsController < ApplicationController
   before_action :authenticate_user!, only: [:index]
-  before_action :prepare_managed_teams, only: [:show]
-
-  before_action :validate_workshop, only: %i[show]
-  before_action :validate_team, only: %i[show]
+  before_action :prepare_managed_teams, :validate_workshop, :validate_team,
+                only: %i[show]
   before_action :validate_swimmer, only: %i[index show]
 
   # GET /user_workshops/:id

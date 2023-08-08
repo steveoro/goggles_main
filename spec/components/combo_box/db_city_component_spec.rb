@@ -11,7 +11,7 @@ RSpec.describe ComboBox::DbCityComponent, type: :component do
     subject do
       expect(default_row).to be_a(GogglesDb::City).and be_valid
       render_inline(
-        described_class.new(free_text: free_text_option, required: required_option, default_row: default_row)
+        described_class.new(free_text: free_text_option, required: required_option, default_row:)
       )
     end
 

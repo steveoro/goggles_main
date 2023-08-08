@@ -12,6 +12,9 @@ Feature: Reporting an issue of type "1b"
     Then the 'meeting' search results are displayed, all matching 'Riccione|ITALIANI|NAZIONALI'
     When I click on the first 'meeting' result to browse to its detail page
     Then I am at the show page for the details of the meeting
+    When I choose a random event from the clickable list of the meeting
+    And I click on the chosen meeting event section, waiting for it to load
+    Then I see the results of the chosen meeting event
     And I can see the 'report missing' ('type1b') buttons on the results of the page
     When I click a random 'type1b' button on the page
     Then I am at the new issue 'type1b' page
@@ -28,6 +31,9 @@ Feature: Reporting an issue of type "1b"
     Then the 'meeting' search results are displayed, all matching 'Riccione|ITALIANI|NAZIONALI'
     When I click on the first 'meeting' result to browse to its detail page
     Then I am at the show page for the details of the meeting
+    When I choose a random event from the clickable list of the meeting
+    And I click on the chosen meeting event section, waiting for it to load
+    Then I see the results of the chosen meeting event
     And I can see the 'report missing' ('type1b') buttons on the results of the page
     When I click a random 'type1b' button on the page
     Then I am at the new issue 'type1b' page
@@ -52,6 +58,9 @@ Feature: Reporting an issue of type "1b"
     Then the 'meeting' search results are displayed, all matching 'Riccione|ITALIANI|NAZIONALI'
     When I click on the first 'meeting' result to browse to its detail page
     Then I am at the show page for the details of the meeting
+    When I choose a random event from the clickable list of the meeting
+    And I click on the chosen meeting event section, waiting for it to load
+    Then I see the results of the chosen meeting event
     And I can see the 'report missing' ('type1b') buttons on the results of the page
     When I click a random 'type1b' button on the page
     Then I am at the new issue 'type1b' page

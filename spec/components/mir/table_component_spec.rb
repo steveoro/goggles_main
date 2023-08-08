@@ -7,7 +7,7 @@ RSpec.describe MIR::TableComponent, type: :component do
     subject do
       render_inline(
         described_class.new(
-          mirs: mirs,
+          mirs:,
           # Disable row action buttons for this context:
           managed_team_ids: [],
           current_swimmer_id: 0
@@ -57,7 +57,7 @@ RSpec.describe MIR::TableComponent, type: :component do
     context 'when rendering a result row for which the user can report a mistake,' do
       subject do
         render_inline(
-          described_class.new(mirs: mirs, managed_team_ids: [], current_swimmer_id: reportable_row.swimmer_id)
+          described_class.new(mirs:, managed_team_ids: [], current_swimmer_id: reportable_row.swimmer_id)
         )
       end
 

@@ -1,0 +1,19 @@
+$('#loading-indicator').addClass('d-none')
+// Remove sibling row first:
+document.querySelector("#stats-row-<%= @event_type.id %>").outerHTML = ''
+// Re-render both the header & the row with the actual data:
+document.querySelector("#stats-hdr-<%= @event_type.id %>").outerHTML = `<%=
+          escape_javascript(
+            render(
+              partial: 'event_type_stats',
+              locals: {
+                swimmer: @swimmer, event_type: @event_type,
+                event_total: @event_total,
+                hash: @hash,
+                max_updated_at: @max_updated_at
+              }
+            )
+          ) %>`;
+
+// Re-enable tooltips for shown sections:
+$('[data-toggle="tooltip"]').tooltip()

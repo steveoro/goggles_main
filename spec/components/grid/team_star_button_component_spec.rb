@@ -37,7 +37,7 @@ RSpec.describe Grid::TeamStarButtonComponent, type: :component do
     context 'and not tagged, with a valid current user' do
       subject do
         render_inline(
-          described_class.new(asset_row: unexpired_meeting, current_user: user, user_teams: user_teams)
+          described_class.new(asset_row: unexpired_meeting, current_user: user, user_teams:)
         )
       end
 
@@ -66,7 +66,7 @@ RSpec.describe Grid::TeamStarButtonComponent, type: :component do
     context 'and already tagged, with a valid current user' do
       subject do
         render_inline(
-          described_class.new(asset_row: tagged_meeting, current_user: user, user_teams: user_teams)
+          described_class.new(asset_row: tagged_meeting, current_user: user, user_teams:)
         )
       end
 
@@ -95,7 +95,7 @@ RSpec.describe Grid::TeamStarButtonComponent, type: :component do
     context 'with a invalid current user,' do
       subject do
         render_inline(
-          described_class.new(asset_row: unexpired_meeting, current_user: unexpired_calendar, user_teams: user_teams)
+          described_class.new(asset_row: unexpired_meeting, current_user: unexpired_calendar, user_teams:)
         ).to_html
       end
 
@@ -104,7 +104,7 @@ RSpec.describe Grid::TeamStarButtonComponent, type: :component do
 
     context 'with a nil current user,' do
       subject do
-        render_inline(described_class.new(asset_row: unexpired_meeting, current_user: nil, user_teams: user_teams))
+        render_inline(described_class.new(asset_row: unexpired_meeting, current_user: nil, user_teams:))
           .to_html
       end
 
@@ -113,7 +113,7 @@ RSpec.describe Grid::TeamStarButtonComponent, type: :component do
   end
 
   context 'when using an \'expired\' Meeting row with other valid parameters' do
-    subject { render_inline(described_class.new(asset_row: expired_meeting, current_user: user, user_teams: user_teams)) }
+    subject { render_inline(described_class.new(asset_row: expired_meeting, current_user: user, user_teams:)) }
 
     it 'does not render any link' do
       expect(subject.at('a')).not_to be_present
@@ -130,7 +130,7 @@ RSpec.describe Grid::TeamStarButtonComponent, type: :component do
     context 'and not tagged, with other valid parameters' do
       subject do
         render_inline(
-          described_class.new(asset_row: unexpired_calendar, current_user: user, user_teams: user_teams)
+          described_class.new(asset_row: unexpired_calendar, current_user: user, user_teams:)
         )
       end
 
@@ -160,7 +160,7 @@ RSpec.describe Grid::TeamStarButtonComponent, type: :component do
     context 'and already tagged, with a valid current user' do
       subject do
         render_inline(
-          described_class.new(asset_row: tagged_calendar, current_user: user, user_teams: user_teams)
+          described_class.new(asset_row: tagged_calendar, current_user: user, user_teams:)
         )
       end
 
@@ -190,7 +190,7 @@ RSpec.describe Grid::TeamStarButtonComponent, type: :component do
     context 'with a invalid current user,' do
       subject do
         render_inline(
-          described_class.new(asset_row: unexpired_calendar, current_user: unexpired_calendar, user_teams: user_teams)
+          described_class.new(asset_row: unexpired_calendar, current_user: unexpired_calendar, user_teams:)
         ).to_html
       end
 
@@ -199,7 +199,7 @@ RSpec.describe Grid::TeamStarButtonComponent, type: :component do
 
     context 'with a nil current user,' do
       subject do
-        render_inline(described_class.new(asset_row: unexpired_calendar, current_user: nil, user_teams: user_teams))
+        render_inline(described_class.new(asset_row: unexpired_calendar, current_user: nil, user_teams:))
           .to_html
       end
 
@@ -212,7 +212,7 @@ RSpec.describe Grid::TeamStarButtonComponent, type: :component do
   context 'with an unsupported but present asset row plus other valid parameters values,' do
     subject do
       render_inline(
-        described_class.new(asset_row: user, current_user: user, user_teams: user_teams)
+        described_class.new(asset_row: user, current_user: user, user_teams:)
       ).to_html
     end
 
@@ -223,7 +223,7 @@ RSpec.describe Grid::TeamStarButtonComponent, type: :component do
 
   context 'with a nil asset row plus other valid parameters values,' do
     subject do
-      render_inline(described_class.new(asset_row: nil, current_user: user, user_teams: user_teams))
+      render_inline(described_class.new(asset_row: nil, current_user: user, user_teams:))
         .to_html
     end
 

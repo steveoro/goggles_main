@@ -26,7 +26,7 @@ module Solver
 
       id = value_from_req(key: 'team_affiliation_id', nested: 'team_affiliation', sub_key: 'id')
       # Priority #1
-      return GogglesDb::TeamAffiliation.find_by(id: id) if id.to_i.positive?
+      return GogglesDb::TeamAffiliation.find_by(id:) if id.to_i.positive?
 
       # Priority #2
       solve_bindings

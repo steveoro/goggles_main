@@ -5,13 +5,16 @@
 # - @chosen_meeting
 # Sets:
 # - @chosen_mir to a GogglesDb::MeetingIndividualResult
+# - @chosen_mevent the event of @chosen_mir
 Given('I select a random individual result from my chosen team') do
   expect(@managed_team).to be_a(GogglesDb::Team).and be_valid
   expect(@chosen_meeting).to be_a(GogglesDb::Meeting).and be_valid
   @chosen_mir = @chosen_meeting.meeting_individual_results
+                               .includes(:meeting_event)
                                .where(team_id: @managed_team.id)
                                .sample
   expect(@chosen_mir).to be_a(GogglesDb::MeetingIndividualResult).and be_valid
+  @chosen_mevent = @chosen_mir.meeting_event
 end
 
 # Uses:

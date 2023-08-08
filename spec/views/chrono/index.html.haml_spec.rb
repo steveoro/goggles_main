@@ -56,8 +56,7 @@ RSpec.describe 'chrono/index.html.haml' do
       #            view specs do not have the @controller variable set.
       #            Also, sign-in the user using the included integration test helpers:
       sign_in(new_user)
-      allow(view).to receive(:user_signed_in?).and_return(true)
-      allow(view).to receive(:current_user).and_return(new_user)
+      allow(view).to receive_messages(user_signed_in?: true, current_user: new_user)
       render
     end
 

@@ -5,7 +5,7 @@
     = render(partial: 'meeting_header', locals: { meeting: @meeting })
     = render(partial: 'meeting_navs', locals: { meeting: @meeting, active_tab: 'swimmer', can_tap_to_results: @default_team_or_swimmer_in_meeting })
 
-    - cache(cache_key_for_meeting(action: 'meeting_swimmer_results', meeting_id: @meeting.id, max_updated_at: @max_updated_at,
+    - cache(cache_key_for_meeting(action: 'meeting_swimmer_results', id: @meeting.id, max_updated_at: @max_updated_at,
             team_id: @team&.id, swimmer_id: @swimmer&.id)) do
       %section#meeting-swimmer-results
         = render(partial: 'swimmer_results_header', locals: { meeting: @meeting, swimmer: @swimmer,

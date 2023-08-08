@@ -11,10 +11,12 @@ Feature: Laps modal editor management for MIRs
     And I have already selected a random meeting from any of my available results
     When I browse to see the selected meeting details
     Then I am at the show page for the details of the meeting
+    When I select a random individual result from my chosen team
+    And I click on the chosen meeting event section, waiting for it to load
+    Then I see the results of the chosen meeting event
     And I can see the lap edit buttons on the page
 
-    When I select a random individual result from my chosen team
-    And I click the button to manage its laps
+    When I click the button to manage its laps
     Then the laps management modal dialog pops up showing its contents
     And I can see the overall result on the last row of the table
 

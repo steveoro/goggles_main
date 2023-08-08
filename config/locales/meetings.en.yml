@@ -22,6 +22,7 @@ en:
       link:
         team_results: "Show the meeting results summary for this team"
         swimmer_results: "Show the meeting results summary for this swimmer"
+        click_to_expand: "Click to expand and show the details"
     dashboard:
       title: Meeting
       subtitle: Details

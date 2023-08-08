@@ -54,8 +54,7 @@ RSpec.describe 'issues/my_reports.html.haml' do
   before do
     expect(current_user).to be_a(GogglesDb::User).and be_valid
     sign_in(current_user)
-    allow(view).to receive(:user_signed_in?).and_return(true)
-    allow(view).to receive(:current_user).and_return(current_user)
+    allow(view).to receive_messages(user_signed_in?: true, current_user:)
   end
   #-- -------------------------------------------------------------------------
   #++

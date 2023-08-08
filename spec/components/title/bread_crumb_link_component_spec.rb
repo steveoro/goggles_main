@@ -27,8 +27,8 @@ RSpec.describe Title::BreadCrumbLinkComponent, type: :component do
     subject do
       render_inline(
         described_class.new(
-          title: title, css_icon: css_icon, title_link: title_link, # (optional)
-          parent_title: parent_title, parent_link: parent_link
+          title:, css_icon:, title_link:, # (optional)
+          parent_title:, parent_link:
         )
       )
     end
@@ -48,8 +48,8 @@ RSpec.describe Title::BreadCrumbLinkComponent, type: :component do
     subject do
       render_inline(
         described_class.new(
-          title: title, css_icon: css_icon,
-          parent_title: parent_title, parent_link: parent_link
+          title:, css_icon:,
+          parent_title:, parent_link:
         )
       )
     end

@@ -5,7 +5,7 @@
 class MeetingsController < ApplicationController
   before_action :authenticate_user!, only: [:index]
   before_action :prepare_user_teams, :prepare_managed_teams, :validate_meeting, :validate_team,
-                only: %i[show team_results swimmer_results]
+                only: %i[show show_event_section team_results swimmer_results]
   before_action :validate_swimmer, except: %i[for_swimmer for_team]
 
   # GET /meetings/:id
@@ -67,14 +67,41 @@ class MeetingsController < ApplicationController
     end
 
     @meeting_events = @meeting.meeting_events
-                              .includes(:meeting_session, :event_type, :stroke_type, season: [:season_type])
-                              .joins(:meeting_session, :event_type, :stroke_type, season: [:season_type])
+                              .includes(:event_type, :stroke_type, meeting_session: [:meeting], season: [:season_type])
+                              .joins(:event_type, :stroke_type, meeting_session: [:meeting], season: [:season_type])
                               .unscope(:order)
                               .order('meeting_sessions.session_order, meeting_events.event_order')
     # Get page timestamp for cache key:
     set_max_updated_at_for_meeting
     check_default_team_or_swimmer_in_meeting
   end
+
+  # GET [XHR] - Renders just a single MeetingEvent section via AJAX call
+  #
+  # == Required params:
+  # - id: the MeetingEvent related to the meeting results section to be rendered
+  #
+  # rubocop:disable Metrics/AbcSize
+  def show_event_section
+    unless request.xhr? && GogglesDb::MeetingEvent.exists?(meeting_params[:id])
+      flash[:warning] = I18n.t('search_view.errors.invalid_request')
+      redirect_to(root_path) && return
+    end
+
+    @meeting_event = GogglesDb::MeetingEvent.includes(:event_type, meeting_session: :meeting)
+                                            .joins(:event_type, meeting_session: :meeting)
+                                            .find(meeting_params[:id])
+    @meeting_events = @meeting_event.meeting.meeting_events
+                                    .includes(:event_type, meeting_session: :meeting)
+                                    .joins(:event_type, meeting_session: :meeting)
+                                    .by_order
+    @event_index = @meeting_events.find_index(@meeting_event)
+    @prgs_for_event = GogglesDb::MeetingProgram.where(meeting_event_id: meeting_params[:id])
+                                               .joins(:meeting_event, :event_type, :category_type, :gender_type)
+                                               .includes(:meeting_event, :event_type, :category_type, :gender_type)
+                                               .order('category_types.age_begin, gender_types.id DESC')
+  end
+  # rubocop:enable Metrics/AbcSize
   #-- -------------------------------------------------------------------------
   #++
 
@@ -104,13 +131,15 @@ class MeetingsController < ApplicationController
 
     event_ids = map_tot_team_event_ids_from(@mir_list, @mrr_list)
     @team_tot_events = event_ids.size
+
+    # Add to the stats the relay results:
+    (1..4).to_a.each { |rank| @team_ranks[rank] += @mrr_list.valid_for_ranking.for_rank(rank).count }
+    @team_outstanding_scores += @mrr_list.valid_for_ranking.where('standard_points > ?', 800).count
+
     @meeting_events_list = GogglesDb::MeetingEvent.where(id: event_ids)
                                                   .joins(:event_type, :stroke_type)
                                                   .includes(:event_type, :stroke_type)
                                                   .order('event_types.relay, meeting_events.event_order')
-    # Add to the stats the relay results:
-    (1..4).to_a.each { |rank| @team_ranks[rank] += @mrr_list.valid_for_ranking.for_rank(rank).count }
-    @team_outstanding_scores += @mrr_list.valid_for_ranking.where('standard_points > ?', 800).count
 
     # Get the programs filtered by team_id:
     prg_ids = map_tot_team_program_ids_from(@meeting, @team)
@@ -118,6 +147,7 @@ class MeetingsController < ApplicationController
                                                       .joins(:event_type, :stroke_type)
                                                       .includes(:event_type, :stroke_type)
                                                       .order('event_types.relay, meeting_events.event_order')
+
     # Find out top scorers for this meetings & custom cups:
     @top_scores = map_top_scores_from(@mir_list)
 
@@ -266,8 +296,8 @@ class MeetingsController < ApplicationController
   # == Returns:
   # An array sorted by ID.
   def map_tot_team_event_ids_from(mir_list, mrr_list)
-    ind_event_ids = mir_list.map { |row| row.meeting_event.id }.uniq
-    rel_event_ids = mrr_list.map { |row| row.meeting_event.id }.uniq
+    ind_event_ids = mir_list.distinct('meeting_events.id').pluck('meeting_events.id')
+    rel_event_ids = mrr_list.distinct('meeting_events.id').pluck('meeting_events.id')
     (ind_event_ids + rel_event_ids).uniq.sort
   end
 
@@ -283,12 +313,12 @@ class MeetingsController < ApplicationController
     ind_prg_ids = GogglesDb::MeetingIndividualResult.joins(:meeting, :meeting_program)
                                                     .includes(:meeting, :meeting_program)
                                                     .where(['meetings.id = ? AND meeting_individual_results.team_id = ?', meeting.id, team.id])
-                                                    .map(&:meeting_program_id)
+                                                    .pluck(:meeting_program_id)
                                                     .uniq
     rel_prg_ids = GogglesDb::MeetingRelayResult.joins(:meeting, :meeting_program)
                                                .includes(:meeting, :meeting_program)
                                                .where(['meetings.id = ? AND meeting_relay_results.team_id = ?', meeting.id, team.id])
-                                               .map(&:meeting_program_id)
+                                               .pluck(:meeting_program_id)
                                                .uniq
     (ind_prg_ids + rel_prg_ids).uniq.sort
   end

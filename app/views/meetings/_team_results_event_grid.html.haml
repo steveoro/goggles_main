@@ -45,7 +45,8 @@
       / Team Relay results:
       - if relay
         %tbody
-          - meeting_event.meeting_relay_results.for_team(team).order(:meeting_program_id).each do |relay_result|
+          - meeting_event.meeting_relay_results.includes(:meeting_program, :gender_type,
+                          category_type: [:season]).for_team(team).order(:meeting_program_id).each do |relay_result|
             - mrr = relay_result # MeetingRelayResultDecorator.decorate(relay_result)
             %tr
               %td
@@ -65,7 +66,7 @@
               - if goggle_cup
                 %td
               - if mrr.meeting_relay_swimmers.exists?
-                - mrr.meeting_relay_swimmers.by_order.each do |meeting_relay_swimmer|
+                - mrr.meeting_relay_swimmers.includes(:swimmer, :stroke_type).by_order.each do |meeting_relay_swimmer|
                   %tr
                     %td.text-right{ colspan: 3 }
                       %i= "#{meeting_relay_swimmer.swimmer.complete_name} (#{meeting.header_date.year - meeting_relay_swimmer.swimmer.year_of_birth}) - #{meeting_relay_swimmer.stroke_type.label}"

@@ -26,7 +26,7 @@ module Solver
     # - default: possible default value used only in case the solver strategy resolves to nil (defaults to +nil+)
     #
     def initialize(req:, target_name:, default: nil)
-      super(req: req)
+      super(req:)
       @entity_name = target_name.tableize.singularize
       @entity_class = GogglesDb.module_eval(target_name)
       @default = default
@@ -45,9 +45,9 @@ module Solver
       code = value_from_req(key: "#{@entity_name}_code", nested: @entity_name, sub_key: 'code')
 
       if id.to_i.positive?
-        @entity_class.find_by(id: id)
+        @entity_class.find_by(id:)
       elsif code
-        @entity_class.find_by(code: code)
+        @entity_class.find_by(code:)
       elsif @default.present?
         @entity_class.find_by(id: @default)
       end

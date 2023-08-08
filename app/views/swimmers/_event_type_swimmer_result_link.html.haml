@@ -1,0 +1,7 @@
+- deco_meeting = MeetingDecorator.decorate(meeting).decorated
+.font-75rem
+  = link_to(meeting_swimmer_results_path(id: deco_meeting.id, swimmer_id: swimmer_id)) do
+    %span
+      #{deco_meeting.display_label}
+      %br
+      %small (#{deco_meeting.meeting_date})

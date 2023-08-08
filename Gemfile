@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.2'
+ruby '3.1.4'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # [20210128] ActiveRecord 6.1 introduces too many changes for the current version
@@ -117,10 +117,9 @@ group :test do
   # Example:
   #          expect { get :index }.to perform_constant_number_of_queries"
   gem 'rspec_junit_formatter' # required by new Semaphore test reports
-  gem 'selenium-webdriver'
+  # Selenium 4.11+ handles web drivers by itself, so 'webdrivers' standalone is no longer required
+  gem 'selenium-webdriver', '>= 4.11'
   gem 'simplecov', '= 0.13.0', require: false
-  # Easy installation and use of web drivers to run system tests with browsers
-  gem 'webdrivers'
   gem 'webmock'
 end
 

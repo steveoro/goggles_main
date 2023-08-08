@@ -246,7 +246,7 @@ class LapsController < ApplicationController
         meeting_program_id: @parent_result.meeting_program_id,
         swimmer_id: @parent_result.swimmer_id,
         team_id: @parent_result.team_id,
-        length_in_meters: length_in_meters,
+        length_in_meters:,
         minutes: 0,
         seconds: 0,
         hundredths: 0,
@@ -259,7 +259,7 @@ class LapsController < ApplicationController
     GogglesDb::UserLap.new(
       user_result_id: @parent_result.id,
       swimmer_id: @parent_result.swimmer_id,
-      length_in_meters: length_in_meters,
+      length_in_meters:,
       minutes: 0,
       seconds: 0,
       hundredths: 0,

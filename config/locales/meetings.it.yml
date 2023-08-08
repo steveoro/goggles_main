@@ -22,6 +22,7 @@ it:
       link:
         team_results: "Mostra il riassunto dei risultati del Meeting per questa squadra"
         swimmer_results: "Mostra il riassunto dei risultati del Meeting per questo atleta"
+        click_to_expand: "Clicca per espandere e mostrare i dettagli"
     dashboard:
       title: Meeting
       subtitle: Dettagli

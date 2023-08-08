@@ -1,6 +1,6 @@
 # --- Common stuff:
-FROM ruby:2.7.2-alpine AS common_builder
-ENV BUNDLER_VERSION=2.2.7 \
+FROM ruby:3.1.4-alpine3.18 AS common_builder
+ENV BUNDLER_VERSION=2.4.15 \
     INSTALL_PATH=/app
 
 RUN mkdir -p $INSTALL_PATH
@@ -50,7 +50,7 @@ RUN gem install bundler -v $BUNDLER_VERSION
 # --- Image-specific stuff:
 FROM common_builder
 ENV RAILS_ENV=staging \
-    NODE_ENV=staging \
+    NODE_ENV=production \
     DATABASE_NAME=goggles \
     DATABASE_HOST=goggles-db.staging \
     DATABASE_PORT=3306 \

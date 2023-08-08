@@ -14,7 +14,7 @@ RSpec.describe FlashAlertComponent, type: :component do
 
   FlashAlertComponent::SUPPORTED_SYMS.each do |symbol|
     context "when using a supported symbol (#{symbol})," do
-      subject { render_inline(described_class.new(symbol: symbol, body: text_body, title: text_title)) }
+      subject { render_inline(described_class.new(symbol:, body: text_body, title: text_title)) }
 
       it 'renders an alert box' do
         expect(subject.css('.alert')).to be_present

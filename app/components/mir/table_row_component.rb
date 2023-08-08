@@ -3,7 +3,7 @@
 #
 # = MIR components module
 #
-#   - version:  7-0.5.02
+#   - version:  7-0.6.00
 #   - author:   Steve A.
 #
 module MIR

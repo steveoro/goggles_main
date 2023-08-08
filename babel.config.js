@@ -1,9 +1,9 @@
-module.exports = function (api) {
-  const validEnv = ['development', 'test', 'production']
-  const currentEnv = api.env()
-  const isDevelopmentEnv = api.env('development')
-  const isProductionEnv = api.env('production')
-  const isTestEnv = api.env('test')
+module.exports = function(api) {
+  var validEnv = ['development', 'test', 'production']
+  var currentEnv = api.env()
+  var isDevelopmentEnv = api.env('development')
+  var isProductionEnv = api.env('production')
+  var isTestEnv = api.env('test')
 
   if (!validEnv.includes(currentEnv)) {
     throw new Error(
@@ -41,11 +41,43 @@ module.exports = function (api) {
       '@babel/plugin-syntax-dynamic-import',
       isTestEnv && 'babel-plugin-dynamic-import-node',
       '@babel/plugin-transform-destructuring',
-      ['@babel/plugin-proposal-private-methods', { loose: true }]
-        ['@babel/plugin-proposal-class-properties', { loose: true }],
-      ['@babel/plugin-proposal-object-rest-spread', { useBuiltIns: true }],
-      ['@babel/plugin-transform-runtime', { helpers: false }],
-      ['@babel/plugin-transform-regenerator', { async: false }]
+      [
+        '@babel/plugin-proposal-class-properties',
+        {
+          loose: true
+        }
+      ],
+      [
+        '@babel/plugin-proposal-object-rest-spread',
+        {
+          useBuiltIns: true
+        }
+      ],
+      [
+        '@babel/plugin-proposal-private-methods',
+        {
+          loose: true
+        }
+      ],
+      [
+        '@babel/plugin-proposal-private-property-in-object',
+        {
+          loose: true
+        }
+      ],
+      [
+        '@babel/plugin-transform-runtime',
+        {
+          helpers: false
+        }
+      ],
+      [
+        '@babel/plugin-transform-regenerator',
+        {
+          async: false
+        }
+      ],
+      '@babel/plugin-transform-numeric-separator'
     ].filter(Boolean)
   }
 }

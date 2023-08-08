@@ -15,7 +15,7 @@ class HistoryGrid < BaseGrid
     GogglesDb::MeetingIndividualResult.includes(
       :meeting, :event_type, :pool_type,
       :meeting_event, meeting_program: [:meeting, :pool_type, { meeting_event: [:event_type] }]
-    ).joins(:meeting, :pool_type)
+    ).joins(:meeting, :pool_type).by_date(:desc)
   end
 
   filter(:pool_type, :enum, header: I18n.t('meetings.dashboard.pool_type_short'),

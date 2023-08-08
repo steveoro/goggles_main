@@ -8,8 +8,6 @@ WebMock.disable_net_connect!(
   allow: 'chromedriver.storage.googleapis.com'
 )
 puts '==> WebMock enabled <=='
-puts "\r\n[Steve] To prevent external connection errors by webdrivers updates run the dedicated update task periodically:"
-puts "\t> RAILS_ENV=test rails webdrivers:chromedriver:update"
 
 Before('@api') do
   stub_request(:get, %r{.+/api/v3/tools/compute_score.+}i)

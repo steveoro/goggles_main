@@ -100,8 +100,7 @@ RSpec.describe 'goggles/_main_navbar.html.haml' do
       #            view specs do not have the @controller variable set.
       #            Also, sign-in the user using the included integration test helpers:
       sign_in(user)
-      allow(view).to receive(:user_signed_in?).and_return(true)
-      allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive_messages(user_signed_in?: true, current_user: user)
       render
     end
 
@@ -122,8 +121,7 @@ RSpec.describe 'goggles/_main_navbar.html.haml' do
       #            view specs do not have the @controller variable set.
       #            Also, sign-in the user using the included integration test helpers:
       sign_in(user)
-      allow(view).to receive(:user_signed_in?).and_return(true)
-      allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive_messages(user_signed_in?: true, current_user: user)
       assign(:current_user_is_manager, true)
       render
     end

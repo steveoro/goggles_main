@@ -13,6 +13,9 @@ Feature: Show meeting details
     Then the 'meeting' search results are displayed, all matching 'Riccione|ITALIANI|NAZIONALI'
     When I click on the first 'meeting' result to browse to its detail page
     Then I am at the show page for the details of the meeting
+    When I choose a random event from the clickable list of the meeting
+    And I click on the chosen meeting event section, waiting for it to load
+    Then I see the results of the chosen meeting event
     But I can't see any of the 'report missing' ('type1b') buttons on the results of the page
     And I can't see any of the 'report mistake' ('type1b1') buttons on the results of the page
     And I can't see any of the lap edit buttons on the whole page
@@ -24,6 +27,9 @@ Feature: Show meeting details
     Then the 'meeting' search results are displayed, all matching 'Riccione|ITALIANI|NAZIONALI'
     When I click on the first 'meeting' result to browse to its detail page
     Then I am at the show page for the details of the meeting
+    When I choose a random event from the clickable list of the meeting
+    And I click on the chosen meeting event section, waiting for it to load
+    Then I see the results of the chosen meeting event
     And I can see the 'report missing' ('type1b') buttons on the results of the page
     But I can't see any of the 'report mistake' ('type1b1') buttons on the results of the page
     And I can't see any of the lap edit buttons on the whole page
@@ -34,6 +40,9 @@ Feature: Show meeting details
     And I have already selected a random meeting from any of my available results
     When I browse to see the selected meeting details
     Then I am at the show page for the details of the meeting
+    When I choose a random event from the clickable list of the meeting
+    And I click on the chosen meeting event section, waiting for it to load
+    Then I see the results of the chosen meeting event
     And I can see the 'report missing' ('type1b') buttons on the results of the page
     And I can see the 'report mistake' ('type1b1') buttons on the results of the page
     But I can't see any of the lap edit buttons on the whole page
@@ -44,6 +53,9 @@ Feature: Show meeting details
     And I have already selected a random meeting from any of my available results
     When I browse to see the selected meeting details
     Then I am at the show page for the details of the meeting
+    When I choose a random event from the clickable list of the meeting
+    And I click on the chosen meeting event section, waiting for it to load
+    Then I see the results of the chosen meeting event
     And I can see the 'report missing' ('type1b') buttons on the results of the page
     And I can see the 'report mistake' ('type1b1') buttons on the results of the page
     And I can see the lap edit buttons on the page

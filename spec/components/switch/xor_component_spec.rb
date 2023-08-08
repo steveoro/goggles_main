@@ -54,7 +54,7 @@ RSpec.describe Switch::XorComponent, type: :component do
         described_class.new(
           fixture_label1, fixture_target1,
           fixture_label2, fixture_target2,
-          hidden_id: hidden_id, class: custom_css
+          hidden_id:, class: custom_css
         )
       )
     end

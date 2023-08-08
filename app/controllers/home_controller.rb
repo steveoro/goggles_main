@@ -70,7 +70,7 @@ class HomeController < ApplicationController
   # - email: a User#email string
   #
   def process_reactivate_email(email)
-    user = GogglesDb::User.find_by(email: email)
+    user = GogglesDb::User.find_by(email:)
     if user.nil?
       flash[:warning] = I18n.t('devise.customizations.reactivation.msg.error_not_existing')
     elsif user.active?

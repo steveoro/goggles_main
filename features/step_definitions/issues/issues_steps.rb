@@ -41,6 +41,11 @@ end
 
 Then('I can\'t see any of the {string} \({string}) buttons on the results of the page') do |_issue_name, issue_type|
   expect(page).not_to have_css("a.btn.issue-#{issue_type}-btn")
+  # Alternatively, more explicit:
+  #
+  # find('a.btn', visible: true) # Make sure the page has rendered buttons
+  # all_btn_styles = find_all('a.btn').map { |node| node[:class] }.uniq
+  # expect(all_btn_styles.none? { |style| style.include?("issue-#{issue_type}-btn") }).to be true
 end
 
 Then('I can see the {string} \({string}) buttons on the results of the page') do |_issue_name, issue_type|

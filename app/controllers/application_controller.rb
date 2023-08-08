@@ -278,7 +278,7 @@ class ApplicationController < ActionController::Base
     # [!!!] Whenever the above ^^ changes, CHECK & UPDATE ALSO:
     # - features/step_definitions/calendars/calendars_steps.rb:17
     # - features/step_definitions/calendars/given_any_calendars_steps.rb:8:37:56
-    # - features/step_definitions/devise/given_any_user_steps.rb:99:184:251
+    # - features/step_definitions/devise/given_any_user_steps.rb:105:191:265
     # - spec/support/shared_team_managers_context.rb:4
 
     Rails.logger.info("\r\n\r\n----> @last_seasons_ids recomputed. Elapsed time: #{Time.zone.now - start}")

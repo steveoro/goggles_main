@@ -19,22 +19,26 @@
                                                 'chart-data2-value' => @chart_data50&.to_json } }
         %canvas#detail-chart{ data: { 'chart-target' => 'chart' } }
 
-      .row-fluid#data-grid
-        = datagrid_form_for(@grid, method: :get, url: swimmer_history_path(id: @swimmer.id,
-                            event_type_id: @event_type.id))
+        %section.container#data-grid
+          = datagrid_form_for(@grid, method: :get, url: swimmer_history_path(id: @swimmer.id,
+                              event_type_id: @event_type.id))
+          .row.my-2#datagrid-ctrls
+            .col-auto
+              #filter-show-btn= render(Grid::FilterShowButtonComponent.new)
+              - filter_labels = grid_filter_to_labels('swimmers.history', @grid_filter_params)
+              - if filter_labels.present?
+                %small#filter-labels
+                  = t('swimmers.history.filter')
+                  &nbsp;
+                  %span.text-muted= filter_labels
+            .col
+              #pagination-top= paginate(@grid.assets)
+            .col-auto
+              %small#datagrid-total
+                = t('datagrid.total')
+                = page_entries_info(@grid.assets, entry_name: t('datagrid.rows'))
+          = datagrid_table(@grid, html: { class: 'table table-hover table-sm' })
+          #pagination-bottom= paginate(@grid.assets)
 
-        .row.my-2#datagrid-ctrls
-          .col-auto
-            #filter-show-btn= render(Grid::FilterShowButtonComponent.new)
-          .col#filter-labels
-            - filter_labels = grid_filter_to_labels('swimmers.history', @grid_filter_params)
-            - if filter_labels.present?
-              %small
-                = t('swimmers.history.filter')
-                &nbsp;
-                %span.text-muted= filter_labels
-          .col-auto#datagrid-total
-            = t('datagrid.total')
-            %b= @grid.assets.count
-            = t('datagrid.rows')
-        = datagrid_table(@grid, html: { class: 'table table-hover table-sm' })
+        %section.text-center.fixed-bottom#footer
+          &nbsp;

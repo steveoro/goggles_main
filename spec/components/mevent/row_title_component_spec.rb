@@ -9,9 +9,9 @@ RSpec.describe Mevent::RowTitleComponent, type: :component do
       expect(subject.css('h4').text).to include(fixture_row.event_type.long_label.to_s)
     end
 
-    it 'renders a linkable table row' do
-      expect(subject.at_css('tr')).to be_present
-      expect(subject.at_css('tr')[:id]).to eq("mevent-#{fixture_row.id}")
+    it 'renders a linkable table head' do
+      expect(subject.at_css('thead')).to be_present
+      expect(subject.at_css('thead')[:id]).to eq("mevent-#{fixture_row.id}")
     end
   end
   #-- -------------------------------------------------------------------------

@@ -82,6 +82,35 @@ RSpec.describe MeetingsController do
   #-- -------------------------------------------------------------------------
   #++
 
+  describe 'GET XHR /show_event_section' do
+    # (Older meeting events are more likely to have results already defined)
+    let(:meeting_event_id) { GogglesDb::MeetingEvent.first(300).pluck(:id).sample }
+
+    context 'making a plain HTML request,' do
+      before { get(meeting_show_event_section_path(id: meeting_event_id)) }
+
+      it_behaves_like('invalid row id GET request')
+    end
+
+    context 'making an XHR request with valid parameters,' do
+      before do
+        get(meeting_show_event_section_path(id: meeting_event_id), xhr: true)
+      end
+
+      it 'is successful' do
+        expect(response).to be_successful
+      end
+    end
+
+    context 'making an XHR request with missing or invalid parameters,' do
+      before { get(meeting_show_event_section_path(id: -1), xhr: true) }
+
+      it_behaves_like('invalid row id GET request')
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
   describe 'GET /for_swimmer/:id' do
     context 'with a valid row id' do
       let(:swimmer_id) { GogglesDb::Swimmer.first(100).pluck(:id).sample }

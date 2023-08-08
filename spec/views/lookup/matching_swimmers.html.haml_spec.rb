@@ -11,7 +11,7 @@ RSpec.describe 'lookup/matching_swimmers.html.haml' do
 
     before do
       expect(matches.count).to eq(5)
-      render(partial: 'matching_swimmers', locals: { matches: matches })
+      render(partial: 'matching_swimmers', locals: { matches: })
     end
 
     it 'builds an option list valid for an HTML select' do
@@ -35,7 +35,7 @@ RSpec.describe 'lookup/matching_swimmers.html.haml' do
 
     before do
       expect(matches.count).to eq(0)
-      render(partial: 'matching_swimmers', locals: { matches: matches })
+      render(partial: 'matching_swimmers', locals: { matches: })
     end
 
     it 'doesn\'t build any option list' do

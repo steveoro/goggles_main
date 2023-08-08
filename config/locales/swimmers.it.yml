@@ -46,3 +46,9 @@ it:
         pool_type: 'Vasca'
         ascending: '↗'
         descending: '↘'
+      stats:
+        best_timings: Tempi migliori
+        top_scores: Punteggi migliori
+        lowest_scores: Punteggi peggiori (non nulli)
+        all_time: Di sempre
+        average: Media

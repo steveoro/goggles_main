@@ -3,7 +3,7 @@
 #
 # = Mprg components module
 #
-#   - version:  7.01
+#   - version:  7-0.6.00
 #   - author:   Steve A.
 #
 module Mprg

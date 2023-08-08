@@ -14,8 +14,7 @@ RSpec.describe 'user_workshops/index.html.haml' do
       expect(current_user.swimmer).to be_a(GogglesDb::Swimmer).and be_valid
 
       sign_in(current_user)
-      allow(view).to receive(:user_signed_in?).and_return(true)
-      allow(view).to receive(:current_user).and_return(current_user)
+      allow(view).to receive_messages(user_signed_in?: true, current_user:)
       assign(:swimmer, current_user.swimmer)
       grid = UserWorkshopsGrid.new do |scope|
         scope.where('(user_workshops.user_id = ?) OR (user_results.swimmer_id = ?)', current_user.id, current_user.swimmer_id)

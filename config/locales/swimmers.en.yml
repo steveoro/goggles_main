@@ -46,3 +46,9 @@ en:
         pool_type: 'Pool'
         ascending: '↗'
         descending: '↘'
+      stats:
+        best_timings: Best timings
+        top_scores: Top scores
+        lowest_scores: Lowest scores (not void)
+        all_time: All-time
+        average: Average

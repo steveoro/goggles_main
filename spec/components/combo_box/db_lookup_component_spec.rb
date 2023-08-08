@@ -16,7 +16,7 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
           free_text: free_text_option,
           required: required_option,
           disabled: disabled_option,
-          wrapper_class: wrapper_class, # customize CSS wrapper DIV
+          wrapper_class:, # customize CSS wrapper DIV
           values: options_from_collection_for_select(category_types, 'id', 'short_name')
         )
       )
@@ -62,7 +62,7 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
           free_text: free_text_option,
           required: required_option,
           disabled: disabled_option,
-          wrapper_class: wrapper_class,
+          wrapper_class:,
           values: options_from_collection_for_select([last_chosen_row], 'id', 'name', last_chosen_row.id)
         )
       )
@@ -112,7 +112,7 @@ RSpec.describe ComboBox::DbLookupComponent, type: :component do
           use_2_api: true,
           required: required_option,
           disabled: disabled_option,
-          wrapper_class: wrapper_class,
+          wrapper_class:,
           values: options_from_collection_for_select([last_chosen_row], 'id', 'description', last_chosen_row.id)
         )
       )

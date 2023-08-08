@@ -26,7 +26,7 @@ module Solver
 
       id = value_from_req(key: 'user_workshop_id', nested: 'user_workshop', sub_key: 'id')
       # Priority #1
-      return GogglesDb::UserWorkshop.find_by(id: id) if id.to_i.positive?
+      return GogglesDb::UserWorkshop.find_by(id:) if id.to_i.positive?
 
       # Priority #2
       solve_bindings

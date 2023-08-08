@@ -20,7 +20,7 @@ RSpec.describe ComboBox::DbSwimmingPoolComponent, type: :component do
           required: required_option,
           disabled: disabled_option,
           use_2_api: true,
-          default_row: default_row
+          default_row:
         )
       )
     end

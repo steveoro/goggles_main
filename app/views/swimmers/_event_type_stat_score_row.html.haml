@@ -1,0 +1,11 @@
+- if stat_score_mir.present?
+  .row.mx-0
+    .col-3.font-75rem
+      %i= label
+    .col-3
+      %span
+        #{format('%0.2f', stat_score_mir.standard_points.to_f)}
+        %small.text-secondary (#{stat_score_mir.to_timing})
+    .col
+      = render(partial: 'event_type_swimmer_result_link', locals: { meeting: stat_score_mir.meeting,
+              swimmer_id: swimmer_id })

@@ -8,7 +8,7 @@ services:
     command: --max_allowed_packet=67108864
     container_name: goggles-db.staging
     env_file:
-      - .env
+      - .staging.env
     ports:
       - '33070:3306'
     restart: always
@@ -21,7 +21,7 @@ services:
       - goggles-db.staging
     container_name: goggles-api.staging
     env_file:
-      - .env
+      - .staging.env
     ports:
       - '9081:8081'
     restart: always
@@ -42,7 +42,7 @@ services:
       - api.staging
     container_name: goggles-main.staging
     env_file:
-      - .env
+      - .staging.env
     ports:
       - '9080:8080'
     restart: always

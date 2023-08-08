@@ -59,50 +59,50 @@ module Solver
     def self.for(target_entity_name, req, default = nil)
       case target_entity_name
       when 'Badge'
-        Badge.new(req: req)
+        Badge.new(req:)
       when 'CategoryType'
-        CategoryType.new(req: req)
+        CategoryType.new(req:)
       when 'City'
-        City.new(req: req)
+        City.new(req:)
       when 'Lap'
-        Lap.new(req: req)
+        Lap.new(req:)
 
       when 'DayPartType', 'DisqualificationCodeType',
            'EditionType', 'EntryTimeType', 'EventType', 'GenderType',
            'HeatType',
            'PoolType', 'SeasonType', 'StrokeType', 'TimingType'
-        LookupEntity.new(req: req, target_name: target_entity_name, default: default)
+        LookupEntity.new(req:, target_name: target_entity_name, default:)
 
       when 'MeetingEvent'
-        MeetingEvent.new(req: req)
+        MeetingEvent.new(req:)
       when 'MeetingIndividualResult'
-        MeetingIndividualResult.new(req: req)
+        MeetingIndividualResult.new(req:)
       when 'MeetingProgram'
-        MeetingProgram.new(req: req)
+        MeetingProgram.new(req:)
       when 'MeetingRelayResult'
-        MeetingRelayResult.new(req: req)
+        MeetingRelayResult.new(req:)
       when 'MeetingRelaySwimmer'
-        MeetingRelaySwimmer.new(req: req)
+        MeetingRelaySwimmer.new(req:)
       when 'MeetingSession'
-        MeetingSession.new(req: req)
+        MeetingSession.new(req:)
       when 'Meeting'
-        Meeting.new(req: req)
+        Meeting.new(req:)
       when 'Season'
-        Season.new(req: req)
+        Season.new(req:)
       when 'Swimmer'
-        Swimmer.new(req: req)
+        Swimmer.new(req:)
       when 'SwimmingPool'
-        SwimmingPool.new(req: req)
+        SwimmingPool.new(req:)
       when 'TeamAffiliation'
-        TeamAffiliation.new(req: req)
+        TeamAffiliation.new(req:)
       when 'Team'
-        Team.new(req: req)
+        Team.new(req:)
       when 'UserLap'
-        UserLap.new(req: req)
+        UserLap.new(req:)
       when 'UserResult'
-        UserResult.new(req: req)
+        UserResult.new(req:)
       when 'UserWorkshop'
-        UserWorkshop.new(req: req)
+        UserWorkshop.new(req:)
 
       else
         raise(ArgumentError, "New, unsupported or unimplemented target requested (#{target_entity_name}).")

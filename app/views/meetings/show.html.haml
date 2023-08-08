@@ -5,28 +5,23 @@
     = render(partial: 'meeting_header', locals: { meeting: @meeting })
     = render(partial: 'meeting_navs', locals: { meeting: @meeting, active_tab: 'results', can_tap_to_results: @default_team_or_swimmer_in_meeting })
 
-    - cache(cache_key_for_meeting(action: 'meeting_show', meeting_id: @meeting.id, max_updated_at: @max_updated_at,
-            team_id: @team&.id, swimmer_id: @swimmer&.id)) do
-      %section#meeting-show-results
-        %table.table.table-striped.table-sm
-          - @meeting_events&.includes(:event_type, meeting_session: :meeting)&.joins(:event_type,
-                meeting_session: :meeting)&.by_order&.each_with_index do |meeting_event, index|
-            - prgs_for_event = GogglesDb::MeetingProgram.where(meeting_event_id: meeting_event.id).joins(:meeting_event,
-                :event_type, :category_type, :gender_type).includes(:meeting_event, :event_type, :category_type,
-                :gender_type).order('category_types.age_begin, gender_types.id DESC')
-            %thead
-              = render(Mevent::RowSeparatorComponent.new) if index.positive? # skip first separator
-              = render(Mevent::RowTitleComponent.new(event_container: meeting_event, can_manage: user_signed_in?))
-            = render(Mevent::RowLinksComponent.new(meeting_events: @meeting_events))
-            - prgs_for_event.each do |mprg|
-              = render(Mprg::RowSeparatorComponent.new)
-              = render(Mprg::RowLinksComponent.new(meeting_programs: prgs_for_event))
-              %thead
-                = render(Mprg::RowTitleComponent.new(meeting_program: mprg))
-              - if mprg.relay?
-                = render(MRR::TableComponent.new(mrrs: mprg.meeting_relay_results.includes(:team)))
-              - else
-                = render(MIR::TableComponent.new(mirs: mprg.meeting_individual_results.includes(:meeting, :swimmer, :team),
-                        managed_team_ids: @managed_team_ids, current_swimmer_id: @current_swimmer_id))
+    %section#meeting-show-results{ 'data-turbolinks-permanent' => true }
+      %table.table.table-striped.table-sm
+        - @meeting_events&.by_order&.each do |meeting_event|
+          %thead.mevent-separator{ id: "mevent-#{meeting_event.id}" }
+            %tr.text-center
+              %th{ colspan: 4 }
+                - collapse_target = "loading-mev-#{meeting_event.id}"
+                = link_to(meeting_show_event_section_path(meeting_event.id), method: :get, remote: true,
+                          id: "btn-load-mev-#{meeting_event.id}", type: 'button',
+                          class: 'btn btn-link', role: 'button', title: t('meetings.tooltip.link.click_to_expand'),
+                          data: { tooltip: true, toggle: 'collapse', target: "##{collapse_target}" },
+                          'aria-expanded' => false, 'aria-controls' => collapse_target,
+                          onclick: "document.querySelector('#loading-indicator').classList.remove('d-none');") do
+                  = meeting_event.event_type.long_label
+
+            %tr.collapse.text-center{ id: collapse_target }
+              %td{ colspan: 4 }
+                %i.text-secondary.fa.fa-spin.fa-2x.fa-cog
 
   .spacer-right

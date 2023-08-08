@@ -33,8 +33,8 @@ RSpec.describe ComboBox::DbSwimmerComponent, type: :component do
           free_text: free_text_option,
           required: required_option,
           disabled: disabled_option,
-          wrapper_class: wrapper_class, # customize CSS wrapper DIV
-          values: values
+          wrapper_class:, # customize CSS wrapper DIV
+          values:
         )
       )
     end
@@ -66,7 +66,7 @@ RSpec.describe ComboBox::DbSwimmerComponent, type: :component do
           required: required_option,
           disabled: disabled_option,
           use_2_api: true,
-          default_row: default_row
+          default_row:
         )
       )
     end

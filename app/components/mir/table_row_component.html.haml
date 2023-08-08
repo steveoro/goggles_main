@@ -16,7 +16,8 @@
                show_category: @show_category, show_team: @show_team))
       = render(Issues::ReportMistakeButtonComponent.new(result_row: @mir, can_manage: @report_mistake))
     %td
-      %span.swimmer-results-link= SwimmerDecorator.decorate(swimmer).link_to_results(meeting_id)
+      %span.swimmer-results-link
+        = SwimmerDecorator.decorate(swimmer).link_to_results(meeting_id)
       %br/
       %small.text-muted
         %span.year-of-birth

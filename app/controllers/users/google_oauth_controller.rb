@@ -31,10 +31,10 @@ module Users
       error = flash['google_sign_in']['error'] if flash['google_sign_in'].present?
       # Errors returned:
       if error.present?
-        logger.error(I18n.t('devise.customizations.google_oauth.auth_error', error: error))
+        logger.error(I18n.t('devise.customizations.google_oauth.auth_error', error:))
         redirect_to(
           new_user_registration_url,
-          alert: I18n.t('devise.customizations.google_oauth.auth_error', error: error)
+          alert: I18n.t('devise.customizations.google_oauth.auth_error', error:)
         ) && return
       end
 
