@@ -25,8 +25,7 @@ RSpec.describe 'calendars/starred_map.html.haml' do
       expect(current_user).to be_a(GogglesDb::User).and be_valid
       expect(current_user.swimmer).to be_a(GogglesDb::Swimmer).and be_valid
       sign_in(current_user)
-      allow(view).to receive(:user_signed_in?).and_return(true)
-      allow(view).to receive(:current_user).and_return(current_user)
+      allow(view).to receive_messages(user_signed_in?: true, current_user:)
       # No point in having actual rendered map markers as we're not testing the
       # JS library here; an empty array is enough for both the map places and the user teams:
       assign(:map_places, [])

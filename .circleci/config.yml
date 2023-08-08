@@ -577,7 +577,7 @@ jobs:
           steps:
             - restore_cache:
                 keys:
-                  - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-prod" }}
+                  - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
             - run:
                 <<: *web-assets
                 environment:
@@ -585,7 +585,7 @@ jobs:
                   NODE_ENV: production
                   BABEL_ENV: production
             - save_cache:
-                key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-prod" }}
+                key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
                 paths:
                   - public/packs
                   - tmp/cache/webpacker
@@ -604,7 +604,7 @@ jobs:
           steps:
             - restore_cache:
                 keys:
-                  - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-prod" }}
+                  - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
             - run:
                 <<: *web-assets
                 environment:
@@ -612,7 +612,7 @@ jobs:
                   NODE_ENV: production
                   BABEL_ENV: production
             - save_cache:
-                key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-prod" }}
+                key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
                 paths:
                   - public/packs
                   - tmp/cache/webpacker
@@ -651,132 +651,129 @@ workflows:
   full-build:
     jobs:
       - persisted-data
-      # - brakeman:
-      #     requires:
-      #       - persisted-data
-      # - rubocop:
-      #     requires:
-      #       - persisted-data
-      # - zeitwerk:
-      #     requires:
-      #       - persisted-data
+      - brakeman:
+          requires:
+            - persisted-data
+      - rubocop:
+          requires:
+            - persisted-data
+      - zeitwerk:
+          requires:
+            - persisted-data
 
-      # - rspec-components:
-      #     requires:
-      #       - brakeman
-      #       - rubocop
-      #       - zeitwerk
-      # - rspec-decorators:
-      #     requires:
-      #       - brakeman
-      #       - rubocop
-      #       - zeitwerk
-
-      # - rspec-requests:
-      #     requires:
-      #       - persisted-data
-      #       # - brakeman
-      #       # - rubocop
-      #       # - zeitwerk
-      #     pre-steps:
-      #       - browser-tools/install-chrome:
-      #           chrome-version: 114.0.5735.90
-      #           replace-existing: true
-      #       - browser-tools/install-chromedriver
-      #       - run:
-      #           name: Check install
-      #           command: |
-      #             google-chrome --version
-      #             chromedriver --version
-      #             node -v
+      - rspec-components:
+          requires:
+            - brakeman
+            - rubocop
+            - zeitwerk
+      - rspec-decorators:
+          requires:
+            - brakeman
+            - rubocop
+            - zeitwerk
 
 
-      # - rspec-helpers:
-      #     requires:
-      #       - rspec-components
-      #       - rspec-decorators
-      # - rspec-mailers:
-      #     requires:
-      #       - rspec-components
-      #       - rspec-decorators
-      # - rspec-views:
-      #     requires:
-      #       - rspec-components
-      #       - rspec-decorators
+      - rspec-requests:
+          requires:
+            - brakeman
+            - rubocop
+            - zeitwerk
+          pre-steps:
+            - browser-tools/install-chrome:
+                chrome-version: 114.0.5735.90
+                replace-existing: true
+            - browser-tools/install-chromedriver
+            - run:
+                name: Check install
+                command: |
+                  google-chrome --version
+                  chromedriver --version
+                  node -v
 
-      # - rspec-jobs:
-      #     requires:
-      #       - rspec-helpers
-      # - rspec-strategies:
-      #     requires:
-      #       - rspec-mailers
-      # - rspec-integration:
-      #     requires:
-      #       - rspec-views
 
-      # - upload-coverage:
-      #     requires:
-      #       - rspec-requests
-      #       - rspec-jobs
-      #       - rspec-strategies
-      #       - rspec-integration
+      - rspec-helpers:
+          requires:
+            - rspec-components
+            - rspec-decorators
+      - rspec-mailers:
+          requires:
+            - rspec-components
+            - rspec-decorators
+      - rspec-views:
+          requires:
+            - rspec-components
+            - rspec-decorators
 
-      # - cucumber-desktop:
-      #     requires:
-      #       - persisted-data
-      #     pre-steps:
-      #       - browser-tools/install-chrome:
-      #           chrome-version: 114.0.5735.90
-      #           replace-existing: true
-      #       - browser-tools/install-chromedriver
-      #       - run:
-      #           name: Check install
-      #           command: |
-      #             google-chrome --version
-      #             chromedriver --version
-      #             node -v
+      - rspec-jobs:
+          requires:
+            - rspec-helpers
+      - rspec-strategies:
+          requires:
+            - rspec-mailers
+      - rspec-integration:
+          requires:
+            - rspec-views
 
-      # - cucumber-narrow:
-      #     requires:
-      #       - rspec-requests
-      #     pre-steps:
-      #       - browser-tools/install-chrome:
-      #           chrome-version: 114.0.5735.90
-      #           replace-existing: true
-      #       - browser-tools/install-chromedriver
-      #       - run:
-      #           name: Check install
-      #           command: |
-      #             google-chrome --version
-      #             chromedriver --version
-      #             node -v
+      - upload-coverage:
+          requires:
+            - rspec-requests
+            - rspec-jobs
+            - rspec-strategies
+            - rspec-integration
 
-      # - cucumber-tablet:
-      #     requires:
-      #       - rspec-requests
-      #     pre-steps:
-      #       - browser-tools/install-chrome:
-      #           chrome-version: 114.0.5735.90
-      #           replace-existing: true
-      #       - browser-tools/install-chromedriver
-      #       - run:
-      #           name: Check install
-      #           command: |
-      #             google-chrome --version
-      #             chromedriver --version
-      #             node -v
 
-      # - docker-build:
-      #     requires:
-      #       - cucumber-desktop
-      #     requires:
-      #       - cucumber-desktop
-      #       - cucumber-narrow
-      #       - cucumber-tablet
+      - cucumber-desktop:
+          requires:
+            - persisted-data
+          pre-steps:
+            - browser-tools/install-chrome:
+                chrome-version: 114.0.5735.90
+                replace-existing: true
+            - browser-tools/install-chromedriver
+            - run:
+                name: Check install
+                command: |
+                  google-chrome --version
+                  chromedriver --version
+                  node -v
+
+      - cucumber-narrow:
+          requires:
+            - rspec-requests
+          pre-steps:
+            - browser-tools/install-chrome:
+                chrome-version: 114.0.5735.90
+                replace-existing: true
+            - browser-tools/install-chromedriver
+            - run:
+                name: Check install
+                command: |
+                  google-chrome --version
+                  chromedriver --version
+                  node -v
+
+      - cucumber-tablet:
+          requires:
+            - rspec-requests
+          pre-steps:
+            - browser-tools/install-chrome:
+                chrome-version: 114.0.5735.90
+                replace-existing: true
+            - browser-tools/install-chromedriver
+            - run:
+                name: Check install
+                command: |
+                  google-chrome --version
+                  chromedriver --version
+                  node -v
+
 
       - docker-build:
           requires:
-            - persisted-data
+            - cucumber-desktop
+            - cucumber-narrow
+            - cucumber-tablet
+
       - deploy:
           requires:
             - docker-build

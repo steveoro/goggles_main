@@ -123,8 +123,7 @@ RSpec.shared_context('calendar_grid rendered with only expired but valid meeting
     expect(current_user.swimmer).to be_a(GogglesDb::Swimmer).and be_valid
     sign_in(current_user)
     expect(grid_domain.count).to be_positive
-    allow(view).to receive(:user_signed_in?).and_return(true)
-    allow(view).to receive(:current_user).and_return(current_user)
+    allow(view).to receive_messages(user_signed_in?: true, current_user:)
   end
 end
 #-- ---------------------------------------------------------------------------
@@ -183,8 +182,7 @@ RSpec.shared_context('calendar_grid rendered with valid & not expired meeting da
     expect(current_user.swimmer).to be_a(GogglesDb::Swimmer).and be_valid
     sign_in(current_user)
     expect(grid_domain.count).to be >= 3
-    allow(view).to receive(:user_signed_in?).and_return(true)
-    allow(view).to receive(:current_user).and_return(current_user)
+    allow(view).to receive_messages(user_signed_in?: true, current_user:)
   end
 end
 #-- ---------------------------------------------------------------------------

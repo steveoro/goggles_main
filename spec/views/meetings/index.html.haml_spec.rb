@@ -14,8 +14,7 @@ RSpec.describe 'meetings/index.html.haml' do
       expect(current_user.swimmer).to be_a(GogglesDb::Swimmer).and be_valid
 
       sign_in(current_user)
-      allow(view).to receive(:user_signed_in?).and_return(true)
-      allow(view).to receive(:current_user).and_return(current_user)
+      allow(view).to receive_messages(user_signed_in?: true, current_user:)
       assign(:swimmer, current_user.swimmer)
       grid = MeetingsGrid.new do |scope|
         scope.for_swimmer(current_user.swimmer).page(1).per(10)
