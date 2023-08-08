@@ -673,7 +673,7 @@ workflows:
       #             chromedriver --version
       #             node -v
 
-      # - docker-build:
+      - docker-build
       #     requires:
       #       - cucumber-desktop
       #     requires:
@@ -682,5 +682,5 @@ workflows:
       #       - cucumber-tablet
 
       - deploy
-          # requires:
-          #   - docker-build
+          requires:
+            - docker-build
