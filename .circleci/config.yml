@@ -30,6 +30,23 @@ common-config: &common-config
         DATABASE_USER: root
         PAGER: cat
 
+deploy-config: &deploy-config
+  working_directory: ~/goggles_main
+  shell: /bin/bash --login
+  docker:
+    - image: cimg/ruby:3.1.4-browsers
+      environment:
+        BUNDLE_JOBS: 2
+        BUNDLE_RETRY: 2
+        BUNDLE_PATH: vendor/bundle
+        PAGER: cat
+        GIT_LFS_SKIP_SMUDGE: 1
+    - image: cimg/mariadb:10.6.12
+      environment:
+        DATABASE_NAME: goggles
+        DATABASE_USER: root
+        PAGER: cat
+
 web-assets: &web-assets
   name: Webpacker/Yarn assets
   command: |
@@ -522,7 +539,7 @@ jobs:
 
 
   docker-build:
-    <<: *common-config
+    <<: *deploy-config
     steps:
       - checkout
       - attach_workspace:
@@ -548,6 +565,12 @@ jobs:
           steps:
             - run:
                 <<: *common-db-setup
+
+      - run:
+          command: |
+            echo "- RAILS_ENV...: $RAILS_ENV"
+            echo "- BABEL_ENV...: $BABEL_ENV"
+            echo "- NODE_ENV....: $NODE_ENV"
       - node/install:
           install-yarn: true
           node-version: '16.13'
