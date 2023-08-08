@@ -535,24 +535,28 @@ jobs:
       - node/install:
           install-yarn: true
           node-version: '16.13'
-      - restore_cache:
-          keys:
-            - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
-      - run:
-          <<: *web-assets
-      - save_cache:
-          key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
-          paths:
-            - public/packs-test
-            - tmp/cache/webpacker
-            - node_modules/.cache
 
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true
       - when:
           condition: << pipeline.git.tag >>
+          environment:
+            RAILS_ENV: production
+            NODE_ENV: production
+            BABEL_ENV: production
           steps:
+            - restore_cache:
+                keys:
+                  - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-prod" }}
+            - run:
+                <<: *web-assets
+            - save_cache:
+                key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-prod" }}
+                paths:
+                  - public/packs
+                  - tmp/cache/webpacker
+                  - node_modules/.cache
             - run:
                 name: Docker TAGGED prod
                 command: |
@@ -564,7 +568,22 @@ jobs:
                   docker push $DOCKERHUB_USERNAME/goggles-main:prod-<< pipeline.git.tag >>
       - unless:
           condition: << pipeline.git.tag >>
+          environment:
+            RAILS_ENV: staging
+            NODE_ENV: production
+            BABEL_ENV: production
           steps:
+            - restore_cache:
+                keys:
+                  - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-prod" }}
+            - run:
+                <<: *web-assets
+            - save_cache:
+                key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-prod" }}
+                paths:
+                  - public/packs
+                  - tmp/cache/webpacker
+                  - node_modules/.cache
             - run:
                 name: Docker LATEST staging
                 command: |
