@@ -18,6 +18,7 @@ common-config: &common-config
         RAILS_ENV: test
         NODE_ENV: test
         BABEL_ENV: test
+        DISABLE_SPRING: true
         BUNDLE_JOBS: 2
         BUNDLE_RETRY: 2
         BUNDLE_PATH: vendor/bundle

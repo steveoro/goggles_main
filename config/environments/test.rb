@@ -8,7 +8,7 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  config.cache_classes = false # 'false' needed for Spring auto-reload
+  config.cache_classes = (ENV['DISABLE_SPRING'] == 'true') # 'false' needed for Spring auto-reload
   config.action_view.cache_template_loading = true
 
   # Do not eager load code on boot. This avoids loading your whole application

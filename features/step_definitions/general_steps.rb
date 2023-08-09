@@ -93,6 +93,7 @@ end
 
 # Click on OK/Yes
 When('I click on {string} accepting the confirmation request') do |string_css|
+  find(string_css, visible: true)
   accept_confirm do
     find(string_css).click
   end
@@ -100,6 +101,7 @@ end
 
 # Click on Cancel/No
 When('I click on {string} rejecting the confirmation request') do |string_css|
+  find(string_css, visible: true)
   dismiss_confirm do
     find(string_css).click
   end
