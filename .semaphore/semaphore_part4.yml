@@ -68,7 +68,7 @@ blocks:
         - name: Cucumber tablet
           matrix:
             - env_var: DRV_NAME
-              values: [ "headless_chrome_ipad", "headless_chrome_ipadpro" ]
+              values: [ "headless_chrome_ipadmini", "headless_chrome_ipadair" ]
           commands:
             - CAPYBARA_DRV=$DRV_NAME AUTO_ARTIFACTS=1 bundle exec cucumber --publish-quiet --color --format pretty --format junit --out coverage/$DRV_NAME.xml
 

@@ -71,7 +71,7 @@ blocks:
         - name: Cucumber mobile narrow
           matrix:
             - env_var: DRV_NAME
-              values: [ "headless_chrome_iphonex" ]
+              values: [ "headless_chrome_iphone12" ]
           commands:
             - CAPYBARA_DRV=$DRV_NAME AUTO_ARTIFACTS=1 bundle exec cucumber --publish-quiet --color --format pretty --format junit --out coverage/$DRV_NAME.xml
 

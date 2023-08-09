@@ -68,7 +68,7 @@ blocks:
         - name: Cucumber mobile small
           matrix:
             - env_var: DRV_NAME
-              values: [ "headless_chrome_iphone678", "headless_chrome_galaxys5", "headless_chrome_pixel2" ]
+              values: [ "headless_chrome_iphonese", "headless_chrome_galaxys5", "headless_chrome_pixel5" ]
           commands:
             - CAPYBARA_DRV=$DRV_NAME AUTO_ARTIFACTS=1 bundle exec cucumber --publish-quiet --color --format pretty --format junit --out coverage/$DRV_NAME.xml
 

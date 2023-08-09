@@ -117,13 +117,14 @@ Capybara.register_driver(:headless_chrome) do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: chrome_options, http_client:)
 end
 
-Capybara.register_driver(:headless_chrome_iphone4) do |app|
+Capybara.register_driver(:headless_chrome_galaxyfold) do |app|
   Capybara::Selenium::Driver.new(
     app,
     browser: :chrome,
     options: Selenium::WebDriver::Chrome::Options.new(
       args: %w[headless disable-gpu disable-extensions enable-features=NetworkService,NetworkServiceInProcess],
-      mobileEmulation: { deviceName: 'iPhone 4' },
+      mobileEmulation: { deviceName: 'Galaxy Fold' },
+      w3c: false,
       prefs: chrome_prefs
     ),
     http_client:
@@ -137,32 +138,35 @@ Capybara.register_driver(:headless_chrome_iphone5) do |app|
     options: Selenium::WebDriver::Chrome::Options.new(
       args: %w[headless disable-gpu disable-extensions enable-features=NetworkService,NetworkServiceInProcess],
       mobileEmulation: { deviceName: 'iPhone 5' },
+      w3c: false,
       prefs: chrome_prefs
     ),
     http_client:
   )
 end
 
-Capybara.register_driver(:headless_chrome_iphone678) do |app|
+Capybara.register_driver(:headless_chrome_iphonese) do |app|
   Capybara::Selenium::Driver.new(
     app,
     browser: :chrome,
     options: Selenium::WebDriver::Chrome::Options.new(
       args: %w[headless disable-gpu disable-extensions enable-features=NetworkService,NetworkServiceInProcess],
-      mobileEmulation: { deviceName: 'iPhone 6/7/8' },
+      mobileEmulation: { deviceName: 'iPhone SE' },
+      w3c: false,
       prefs: chrome_prefs
     ),
     http_client:
   )
 end
 
-Capybara.register_driver(:headless_chrome_iphonex) do |app|
+Capybara.register_driver(:headless_chrome_iphone12) do |app|
   Capybara::Selenium::Driver.new(
     app,
     browser: :chrome,
     options: Selenium::WebDriver::Chrome::Options.new(
       args: %w[headless disable-gpu disable-extensions enable-features=NetworkService,NetworkServiceInProcess],
-      mobileEmulation: { deviceName: 'iPhone X' },
+      mobileEmulation: { deviceName: 'iPhone 12 Pro' },
+      w3c: false,
       prefs: chrome_prefs
     ),
     http_client:
@@ -176,45 +180,49 @@ Capybara.register_driver(:headless_chrome_galaxys5) do |app|
     options: Selenium::WebDriver::Chrome::Options.new(
       args: %w[headless disable-gpu disable-extensions enable-features=NetworkService,NetworkServiceInProcess],
       mobileEmulation: { deviceName: 'Galaxy S5' },
+      w3c: false,
       prefs: chrome_prefs
     ),
     http_client:
   )
 end
 
-Capybara.register_driver(:headless_chrome_pixel2) do |app|
+Capybara.register_driver(:headless_chrome_pixel5) do |app|
   Capybara::Selenium::Driver.new(
     app,
     browser: :chrome,
     options: Selenium::WebDriver::Chrome::Options.new(
       args: %w[headless disable-gpu disable-extensions enable-features=NetworkService,NetworkServiceInProcess],
-      mobileEmulation: { deviceName: 'Pixel 2' },
+      mobileEmulation: { deviceName: 'Pixel 5' },
+      w3c: false,
       prefs: chrome_prefs
     ),
     http_client:
   )
 end
 
-Capybara.register_driver(:headless_chrome_ipad) do |app|
+Capybara.register_driver(:headless_chrome_ipadmini) do |app|
   Capybara::Selenium::Driver.new(
     app,
     browser: :chrome,
     options: Selenium::WebDriver::Chrome::Options.new(
       args: %w[headless disable-gpu disable-extensions enable-features=NetworkService,NetworkServiceInProcess],
-      mobileEmulation: { deviceName: 'iPad' },
+      mobileEmulation: { deviceName: 'iPad Mini' },
+      w3c: false,
       prefs: chrome_prefs
     ),
     http_client:
   )
 end
 
-Capybara.register_driver(:headless_chrome_ipadpro) do |app|
+Capybara.register_driver(:headless_chrome_ipadair) do |app|
   Capybara::Selenium::Driver.new(
     app,
     browser: :chrome,
     options: Selenium::WebDriver::Chrome::Options.new(
       args: %w[headless disable-gpu disable-extensions enable-features=NetworkService,NetworkServiceInProcess],
-      mobileEmulation: { deviceName: 'iPad Pro' },
+      mobileEmulation: { deviceName: 'iPad Air' },
+      w3c: false,
       prefs: chrome_prefs
     ),
     http_client:
