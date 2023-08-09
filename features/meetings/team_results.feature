@@ -52,7 +52,7 @@ Feature: Show specific team results for a specific meeting
   Scenario: signed-in w/ a swimmer & browsing own team results shows also the "report mistake" buttons
     Given I have a confirmed account with associated swimmer and existing MIRs
     And I sign-in with my existing account
-    And I have already selected a random meeting from any of my available results
+    And I have already selected a random meeting and an event from any of my available results
     When I browse to see the selected meeting details
     And I have chosen a random row from the results of my associated team
     And I click on the chosen meeting event section, waiting for it to load
@@ -71,7 +71,7 @@ Feature: Show specific team results for a specific meeting
   Scenario: signed-in team manager browsing managed team results shows every management button
     Given I have a confirmed team manager account managing some existing MIRs
     And I sign-in with my existing account
-    And I have already selected a random meeting from any of my available results
+    And I have already selected a random meeting and an event from any of my available results
     When I browse to see the selected meeting details
     And I have chosen a random row from the results of my associated team
     And I click on the chosen meeting event section, waiting for it to load

@@ -8,7 +8,7 @@ Feature: Laps modal editor management for MIRs
   Scenario: signed-in team manager browsing results and managing laps
     Given I have a confirmed team manager account managing some existing MIRs
     And I sign-in with my existing account
-    And I have already selected a random meeting from any of my available results
+    And I have already selected a random meeting and an event from any of my available results
     When I browse to see the selected meeting details
     Then I am at the show page for the details of the meeting
     When I select a random individual result from my chosen team

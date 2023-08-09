@@ -22,10 +22,12 @@ Given('I have already selected a random meeting with available results') do
 end
 
 # Sets @chosen_meeting, @associated_team_id
-# Uses @associated_mirs
-Given('I have already selected a random meeting from any of my available results') do
-  chosen_mir = @associated_mirs.sample
+# Uses @associated_mirs, @chosen_mevent
+Given('I have already selected a random meeting and an event from any of my available results') do
+  chosen_mir = @associated_mirs.includes(:meeting_event).sample
   @chosen_meeting = chosen_mir.meeting
   @associated_team_id = chosen_mir.team_id
+  @chosen_mevent = chosen_mir.meeting_event
   expect(@chosen_meeting).to be_a(GogglesDb::Meeting).and be_valid
+  expect(@chosen_mevent).to be_a(GogglesDb::MeetingEvent).and be_valid
 end

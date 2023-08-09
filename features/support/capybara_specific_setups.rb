@@ -95,12 +95,15 @@ end
 # end
 # NOTE: Selenium webdriver using Firefox/headless currently has no real support for mobileEmulation.
 
+chrome_args = %w[
+  headless disable-gpu disable-extensions
+  enable-features=NetworkService,NetworkServiceInProcess
+]
+
 # ** Chrome **
 Capybara.register_driver(:headless_chrome) do |app|
   chrome_options = Selenium::WebDriver::Chrome::Options.new
-  %w[
-    headless disable-gpu window-size=1280,1024 no-sandbox enable-features=NetworkService,NetworkServiceInProcess
-  ].each { |arg| chrome_options.add_argument(arg) }
+  chrome_args.each { |arg| chrome_options.add_argument(arg) }
   chrome_options.add_preference(:download,
                                 directory_upgrade: true,
                                 prompt_for_download: false,
@@ -129,10 +132,8 @@ end
 ].each do |drv_sym, device_name|
   Capybara.register_driver(drv_sym) do |app|
     chrome_options = Selenium::WebDriver::Chrome::Options.new
-    chrome_options.add_emulation(device_name: device_name)
-    %w[
-      headless disable-gpu disable-extensions enable-features=NetworkService,NetworkServiceInProcess
-    ].each { |arg| chrome_options.add_argument(arg) }
+    chrome_options.add_emulation(device_name:)
+    chrome_args.each { |arg| chrome_options.add_argument(arg) }
     chrome_options.add_preference(:download,
                                   directory_upgrade: true,
                                   prompt_for_download: false,

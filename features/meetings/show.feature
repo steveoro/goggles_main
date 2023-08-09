@@ -37,10 +37,9 @@ Feature: Show meeting details
   Scenario: signed-in w/ a swimmer & browsing own meeting results shows also the "report mistake" buttons
     Given I have a confirmed account with associated swimmer and existing MIRs
     And I sign-in with my existing account
-    And I have already selected a random meeting from any of my available results
+    And I have already selected a random meeting and an event from any of my available results
     When I browse to see the selected meeting details
-    Then I am at the show page for the details of the meeting
-    When I choose a random event from the clickable list of the meeting
+    And I am at the show page for the details of the meeting
     And I click on the chosen meeting event section, waiting for it to load
     Then I see the results of the chosen meeting event
     And I can see the 'report missing' ('type1b') buttons on the results of the page
@@ -50,10 +49,9 @@ Feature: Show meeting details
   Scenario: signed-in team manager browsing managed meeting results shows every management button
     Given I have a confirmed team manager account managing some existing MIRs
     And I sign-in with my existing account
-    And I have already selected a random meeting from any of my available results
+    And I have already selected a random meeting and an event from any of my available results
     When I browse to see the selected meeting details
-    Then I am at the show page for the details of the meeting
-    When I choose a random event from the clickable list of the meeting
+    And I am at the show page for the details of the meeting
     And I click on the chosen meeting event section, waiting for it to load
     Then I see the results of the chosen meeting event
     And I can see the 'report missing' ('type1b') buttons on the results of the page
