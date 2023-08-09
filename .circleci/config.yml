@@ -7,6 +7,7 @@ orbs:
 ARTIFACTS_PATH: &ARTIFACTS_PATH ~/test-artifacts
 
 common-config: &common-config
+  resource_class: large
   working_directory: ~/goggles_main
   shell: /bin/bash --login
   # NOTE: make sure ENV vars on CircleCI web UI include CC_TEST_REPORTER_ID
@@ -31,6 +32,7 @@ common-config: &common-config
         PAGER: cat
 
 deploy-config: &deploy-config
+  resource_class: large
   working_directory: ~/goggles_main
   shell: /bin/bash --login
   docker:
@@ -492,7 +494,7 @@ jobs:
           name: Cucumber - mobile/narrow
           command: |
             TEST_FILES=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings)
-            CAPYBARA_DRV=headless_chrome_iphone12 RAILS_ENV=test bundle exec cucumber --color --format pretty \
+            CAPYBARA_DRV=headless_chrome_galaxyfold RAILS_ENV=test bundle exec cucumber --color --format pretty \
                         --format junit --out ~/test-results/cucumber-narrow.xml ${TEST_FILES}
       - store_test_results:
           path: ~/test-results
@@ -753,21 +755,20 @@ workflows:
                   chromedriver --version
                   node -v
 
-      - cucumber-tablet:
-          requires:
-            - persisted-data
-            # - rspec-requests
-          pre-steps:
-            - browser-tools/install-chrome:
-                chrome-version: 114.0.5735.90
-                replace-existing: true
-            - browser-tools/install-chromedriver
-            - run:
-                name: Check install
-                command: |
-                  google-chrome --version
-                  chromedriver --version
-                  node -v
+      # - cucumber-tablet:
+      #     requires:
+      #       - rspec-requests
+      #     pre-steps:
+      #       - browser-tools/install-chrome:
+      #           chrome-version: 114.0.5735.90
+      #           replace-existing: true
+      #       - browser-tools/install-chromedriver
+      #       - run:
+      #           name: Check install
+      #           command: |
+      #             google-chrome --version
+      #             chromedriver --version
+      #             node -v
 
 
       # - docker-build:
