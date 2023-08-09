@@ -94,6 +94,8 @@ end
 # Click on OK/Yes
 When('I click on {string} accepting the confirmation request') do |string_css|
   find(string_css, visible: true)
+  page.scroll_to(string_css) # force the node into the center of the viewport
+  wait_for_ajax && sleep(0.5)
   accept_confirm do
     find(string_css).click
   end
@@ -102,6 +104,8 @@ end
 # Click on Cancel/No
 When('I click on {string} rejecting the confirmation request') do |string_css|
   find(string_css, visible: true)
+  page.scroll_to(string_css) # force the node into the center of the viewport
+  wait_for_ajax && sleep(0.5)
   dismiss_confirm do
     find(string_css).click
   end
