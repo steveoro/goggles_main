@@ -53,6 +53,7 @@ Then('I can see the {string} \({string}) buttons on the results of the page') do
 end
 
 Then('I click a random {string} button on the page') do |issue_type|
+  find("a.btn.issue-#{issue_type}-btn", visible: true) # make sure the page is rendered
   chosen_btn = find_all("a.btn.issue-#{issue_type}-btn").sample
   chosen_btn.click
   wait_for_ajax && sleep(0.5)
