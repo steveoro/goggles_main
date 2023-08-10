@@ -18,7 +18,6 @@ common-config: &common-config
         RAILS_ENV: test
         NODE_ENV: test
         BABEL_ENV: test
-        DISABLE_SPRING: true
         BUNDLE_JOBS: 2
         BUNDLE_RETRY: 2
         BUNDLE_PATH: vendor/bundle
@@ -154,12 +153,11 @@ jobs:
       - run:
           name: RSpec - Components
           command: |
-            TEST_FILES=$(circleci tests glob "spec/components/**/*_spec.rb" | circleci tests split --split-by=timings)
-            bundle exec rspec --profile 10 --color --order rand \
-                        -f RspecJunitFormatter --out ~/test-results/rspec-components.xml \
-                        -f doc -- ${TEST_FILES}
+            TEST_FILES=$(circleci tests glob "spec/components/**/*_spec.rb")
+            echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
+                        --format RspecJunitFormatter -o ~/test-results/rspec-components.xml" --verbose --split-by=timings
             ./tmp/cc-test-reporter format-coverage -t simplecov \
-                                   -o "./tmp/codeclimate.rspec-components.$CIRCLE_NODE_INDEX.json"
+                        -o "./tmp/codeclimate.rspec-components.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
       - persist_to_workspace:
@@ -183,12 +181,11 @@ jobs:
       - run:
           name: RSpec - Components
           command: |
-            TEST_FILES=$(circleci tests glob "spec/decorators/**/*_spec.rb" | circleci tests split --split-by=timings)
-            bundle exec rspec --profile 10 --color --order rand \
-                        -f RspecJunitFormatter --out ~/test-results/rspec-decorators.xml \
-                        -f doc -- ${TEST_FILES}
+            TEST_FILES=$(circleci tests glob "spec/decorators/**/*_spec.rb")
+            echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
+                        --format RspecJunitFormatter -o ~/test-results/rspec-decorators.xml" --verbose --split-by=timings
             ./tmp/cc-test-reporter format-coverage -t simplecov \
-                                   -o "./tmp/codeclimate.rspec-decorators.$CIRCLE_NODE_INDEX.json"
+                        -o "./tmp/codeclimate.rspec-decorators.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
       - persist_to_workspace:
@@ -212,12 +209,11 @@ jobs:
       - run:
           name: RSpec - Components
           command: |
-            TEST_FILES=$(circleci tests glob "spec/helpers/**/*_spec.rb" | circleci tests split --split-by=timings)
-            bundle exec rspec --profile 10 --color --order rand \
-                        -f RspecJunitFormatter --out ~/test-results/rspec-helpers.xml \
-                        -f doc -- ${TEST_FILES}
+            TEST_FILES=$(circleci tests glob "spec/helpers/**/*_spec.rb")
+            echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
+                        --format RspecJunitFormatter -o ~/test-results/rspec-helpers.xml" --verbose --split-by=timings
             ./tmp/cc-test-reporter format-coverage -t simplecov \
-                                   -o "./tmp/codeclimate.rspec-helpers.$CIRCLE_NODE_INDEX.json"
+                        -o "./tmp/codeclimate.rspec-helpers.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
       - persist_to_workspace:
@@ -241,11 +237,11 @@ jobs:
       - run:
           name: RSpec - Components
           command: |
-            bundle exec rspec --profile 10 --color --order rand \
-                        -f RspecJunitFormatter --out ~/test-results/rspec-jobs.xml \
-                        -f doc -P spec/jobs/**/*_spec.rb
+            TEST_FILES=$(circleci tests glob "spec/jobs/**/*_spec.rb")
+            echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
+                        --format RspecJunitFormatter -o ~/test-results/rspec-jobs.xml" --verbose --split-by=timings
             ./tmp/cc-test-reporter format-coverage -t simplecov \
-                                   -o "./tmp/codeclimate.rspec-jobs.$CIRCLE_NODE_INDEX.json"
+                        -o "./tmp/codeclimate.rspec-jobs.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
       - persist_to_workspace:
@@ -269,11 +265,11 @@ jobs:
       - run:
           name: RSpec - Components
           command: |
-            bundle exec rspec --profile 10 --color --order rand \
-                        -f RspecJunitFormatter --out ~/test-results/rspec-mailers.xml \
-                        -f doc -P spec/mailers/**/*_spec.rb
+            TEST_FILES=$(circleci tests glob "spec/mailers/**/*_spec.rb")
+            echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
+                        --format RspecJunitFormatter -o ~/test-results/rspec-mailers.xml" --verbose --split-by=timings
             ./tmp/cc-test-reporter format-coverage -t simplecov \
-                                   -o "./tmp/codeclimate.rspec-mailers.$CIRCLE_NODE_INDEX.json"
+                        -o "./tmp/codeclimate.rspec-mailers.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
       - persist_to_workspace:
@@ -313,12 +309,11 @@ jobs:
       - run:
           name: RSpec - Components
           command: |
-            TEST_FILES=$(circleci tests glob "spec/requests/**/*_spec.rb" | circleci tests split --split-by=timings)
-            bundle exec rspec --profile 10 --color --order rand \
-                        -f RspecJunitFormatter --out ~/test-results/rspec-requests.xml \
-                        -f doc -- ${TEST_FILES}
+            TEST_FILES=$(circleci tests glob "spec/requests/**/*_spec.rb")
+            echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
+                        --format RspecJunitFormatter -o ~/test-results/rspec-requests.xml" --verbose --split-by=timings
             ./tmp/cc-test-reporter format-coverage -t simplecov \
-                                   -o "./tmp/codeclimate.rspec-requests.$CIRCLE_NODE_INDEX.json"
+                        -o "./tmp/codeclimate.rspec-requests.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
       - persist_to_workspace:
@@ -342,12 +337,11 @@ jobs:
       - run:
           name: RSpec - Components
           command: |
-            TEST_FILES=$(circleci tests glob "spec/strategies/**/*_spec.rb" | circleci tests split --split-by=timings)
-            bundle exec rspec --profile 10 --color --order rand \
-                        -f RspecJunitFormatter --out ~/test-results/rspec-strategies.xml \
-                        -f doc -- ${TEST_FILES}
+            TEST_FILES=$(circleci tests glob "spec/strategies/**/*_spec.rb")
+            echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
+                        --format RspecJunitFormatter -o ~/test-results/rspec-strategies.xml" --verbose --split-by=timings
             ./tmp/cc-test-reporter format-coverage -t simplecov \
-                                   -o "./tmp/codeclimate.rspec-strategies.$CIRCLE_NODE_INDEX.json"
+                        -o "./tmp/codeclimate.rspec-strategies.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
       - persist_to_workspace:
@@ -371,12 +365,11 @@ jobs:
       - run:
           name: RSpec - Components
           command: |
-            TEST_FILES=$(circleci tests glob "spec/views/**/*_spec.rb" | circleci tests split --split-by=timings)
-            bundle exec rspec --profile 10 --color --order rand \
-                        -f RspecJunitFormatter --out ~/test-results/rspec-views.xml \
-                        -f doc -- ${TEST_FILES}
+            TEST_FILES=$(circleci tests glob "spec/views/**/*_spec.rb")
+            echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
+                        --format RspecJunitFormatter -o ~/test-results/rspec-views.xml" --verbose --split-by=timings
             ./tmp/cc-test-reporter format-coverage -t simplecov \
-                                   -o "./tmp/codeclimate.rspec-views.$CIRCLE_NODE_INDEX.json"
+                        -o "./tmp/codeclimate.rspec-views.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
       - persist_to_workspace:
@@ -400,11 +393,11 @@ jobs:
       - run:
           name: RSpec - Components
           command: |
-            bundle exec rspec --profile 10 --color --order rand \
-                        -f RspecJunitFormatter --out ~/test-results/rspec-integration.xml \
-                        -f doc -P spec/integration/**/*_spec.rb
+            TEST_FILES=$(circleci tests glob "spec/integration/**/*_spec.rb")
+            echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
+                        --format RspecJunitFormatter -o ~/test-results/rspec-integration.xml" --verbose --split-by=timings
             ./tmp/cc-test-reporter format-coverage -t simplecov \
-                                   -o "./tmp/codeclimate.rspec-integration.$CIRCLE_NODE_INDEX.json"
+                        -o "./tmp/codeclimate.rspec-integration.$CIRCLE_NODE_INDEX.json"
       - store_test_results:
           path: ~/test-results
       - persist_to_workspace:
@@ -456,9 +449,11 @@ jobs:
       - run:
           name: Cucumber - desktop
           command: |
-            TEST_FILES=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings)
-            bundle exec cucumber --color --format pretty --format junit --out ~/test-results/cucumber-large.xml \
-                                 ${TEST_FILES}
+            TEST_FILES=$(circleci tests glob "features/**/*.feature")
+            echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec cucumber --color --format pretty \
+                        --format junit,fileattribute=true --out ~/test-results/cucumber-large.xml" --verbose --split-by=timings
+          environment:
+            RAILS_ENV: test
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
@@ -494,9 +489,12 @@ jobs:
       - run:
           name: Cucumber - mobile/narrow
           command: |
-            TEST_FILES=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings)
-            CAPYBARA_DRV=headless_chrome_galaxyfold RAILS_ENV=test bundle exec cucumber --color --format pretty \
-                        --format junit --out ~/test-results/cucumber-narrow.xml ${TEST_FILES}
+            TEST_FILES=$(circleci tests glob "features/**/*.feature")
+            echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec cucumber --color --format pretty \
+                        --format junit,fileattribute=true --out ~/test-results/cucumber-narrow.xml" --verbose --split-by=timings
+          environment:
+            RAILS_ENV: test
+            CAPYBARA_DRV: headless_chrome_galaxyfold
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
@@ -532,9 +530,12 @@ jobs:
       - run:
           name: Cucumber - mobile/tablet
           command: |
-            TEST_FILES=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings)
-            CAPYBARA_DRV=headless_chrome_ipadair AUTO_ARTIFACTS=1 RAILS_ENV=test bundle exec cucumber --color --format pretty \
-                        --format junit --out ~/test-results/cucumber-tablet.xml ${TEST_FILES}
+            TEST_FILES=$(circleci tests glob "features/**/*.feature")
+            echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec cucumber --color --format pretty \
+                        --format junit,fileattribute=true --out ~/test-results/cucumber-tablet.xml" --verbose --split-by=timings
+          environment:
+            RAILS_ENV: test
+            CAPYBARA_DRV: headless_chrome_ipadair
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
@@ -756,20 +757,21 @@ workflows:
                   chromedriver --version
                   node -v
 
-      # - cucumber-tablet:
-      #     requires:
-      #       - rspec-requests
-      #     pre-steps:
-      #       - browser-tools/install-chrome:
-      #           chrome-version: 114.0.5735.90
-      #           replace-existing: true
-      #       - browser-tools/install-chromedriver
-      #       - run:
-      #           name: Check install
-      #           command: |
-      #             google-chrome --version
-      #             chromedriver --version
-      #             node -v
+      - cucumber-tablet:
+          requires:
+            - persisted-data
+            # - rspec-requests
+          pre-steps:
+            - browser-tools/install-chrome:
+                chrome-version: 114.0.5735.90
+                replace-existing: true
+            - browser-tools/install-chromedriver
+            - run:
+                name: Check install
+                command: |
+                  google-chrome --version
+                  chromedriver --version
+                  node -v
 
 
       # - docker-build:
