@@ -298,6 +298,7 @@ jobs:
       - restore_cache:
           keys:
             - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
+            - yarn-cache-v1-{{ checksum "yarn.lock" }}
       - run:
           <<: *web-assets
       - save_cache:
@@ -439,6 +440,7 @@ jobs:
       - restore_cache:
           keys:
             - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
+            - yarn-cache-v1-{{ checksum "yarn.lock" }}
       - run:
           <<: *web-assets
       - save_cache:
@@ -479,6 +481,7 @@ jobs:
       - restore_cache:
           keys:
             - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
+            - yarn-cache-v1-{{ checksum "yarn.lock" }}
       - run:
           <<: *web-assets
       - save_cache:
