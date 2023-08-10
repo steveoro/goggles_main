@@ -19,8 +19,10 @@ Feature: Show specific swimmer results for a specific meeting
     And I have already selected a random meeting with available results
     When I browse to see the selected meeting details
     And I have chosen a random result among the current meeting details
+    And I scroll toward the end of the page to see the bottom of the page
     And I click on the chosen meeting event section, waiting for it to load
     Then I see the results of the chosen meeting event
+    And I scroll toward the end of the page to see the bottom of the page
     When I click on the swimmer name on the chosen result row, selecting it
     And I wait until the slow-rendered page portion 'section#meeting-swimmer-results' is visible
     Then I am at the chosen swimmer results page for the current meeting
@@ -35,6 +37,7 @@ Feature: Show specific swimmer results for a specific meeting
     And I have already selected a random meeting with available results
     When I browse to see the selected meeting details
     And I have chosen a random result among the current meeting details
+    And I scroll toward the end of the page to see the bottom of the page
     And I click on the chosen meeting event section, waiting for it to load
     Then I see the results of the chosen meeting event
     And I scroll toward the end of the page to see the bottom of the page
@@ -53,8 +56,10 @@ Feature: Show specific swimmer results for a specific meeting
     And I have already selected a random meeting and an event from any of my available results
     When I browse to see the selected meeting details
     And I have chosen a random row from my own results
+    And I scroll toward the end of the page to see the bottom of the page
     And I click on the chosen meeting event section, waiting for it to load
     Then I see the results of the chosen meeting event
+    And I scroll toward the end of the page to see the bottom of the page
     When I click on the swimmer name on the chosen result row, selecting it
     And I wait until the slow-rendered page portion 'section#meeting-swimmer-results' is visible
     Then I am at the chosen swimmer results page for the current meeting
@@ -70,8 +75,10 @@ Feature: Show specific swimmer results for a specific meeting
     And I have already selected a random meeting and an event from any of my available results
     When I browse to see the selected meeting details
     And I have chosen a random row from the results of my associated team
+    And I scroll toward the end of the page to see the bottom of the page
     And I click on the chosen meeting event section, waiting for it to load
     Then I see the results of the chosen meeting event
+    And I scroll toward the end of the page to see the bottom of the page
     When I click on the swimmer name on the chosen result row, selecting it
     And I wait until the slow-rendered page portion 'section#meeting-swimmer-results' is visible
     Then I am at the chosen swimmer results page for the current meeting

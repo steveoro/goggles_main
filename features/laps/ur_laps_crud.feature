@@ -11,6 +11,7 @@ Feature: Laps modal editor management for UserResults
     And I have already selected a random workshop from any of my available results
     When I browse to see the selected workshop details
     Then I am at the show page for the details of the workshop
+    And I scroll toward the end of the page to see the bottom of the page
     And I can see the lap edit buttons on the page
 
     When I select a random user result from my chosen team
@@ -22,6 +23,7 @@ Feature: Laps modal editor management for UserResults
     Then I see another empty lap row is added (only if the last distance is less than the goal)
 
     When I fill the last lap row with some random timing values
+    And I scroll toward the end of the page to see the bottom of the page
     And I click to save my edited lap
     Then I see my chosen lap has been correctly saved
     And I scroll toward the end of the page to see the bottom of the page
@@ -31,4 +33,5 @@ Feature: Laps modal editor management for UserResults
     And I see my chosen lap has been correctly saved
     And I click to delete my chosen lap and confirm the deletion
     Then I can see the chosen lap is no longer shown in the editor
+    And I scroll toward the end of the page to see the bottom of the page
     And I dismiss the lap modal editor by clicking on the close button
