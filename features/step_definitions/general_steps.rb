@@ -91,11 +91,16 @@ Then('an error message from the edit form is present') do
 end
 # -----------------------------------------------------------------------------
 
+Then('I scroll toward the end of the page to see the bottom of the form') do
+  # Go down a lot towards the bottom of the page first:
+  # (useful especially for small device screens)
+  execute_script('window.scrollTo(0,10000)')
+  wait_for_ajax && sleep(0.5)
+end
+
 # Click on OK/Yes
 When('I click on {string} accepting the confirmation request') do |string_css|
   find(string_css, visible: true)
-  page.scroll_to(string_css) # force the node into the center of the viewport
-  wait_for_ajax && sleep(0.5)
   accept_confirm do
     find(string_css).click
   end
@@ -104,8 +109,6 @@ end
 # Click on Cancel/No
 When('I click on {string} rejecting the confirmation request') do |string_css|
   find(string_css, visible: true)
-  page.scroll_to(string_css) # force the node into the center of the viewport
-  wait_for_ajax && sleep(0.5)
   dismiss_confirm do
     find(string_css).click
   end

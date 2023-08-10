@@ -31,7 +31,8 @@ Feature: Reporting an issue of type "2b1"
     When I check 'wrong_team' as a selected checkbox
     Then I see that the 'wrong_swimmer' checkbox is unchecked
 
-    When I click on '#issues-type2b1-post-btn' accepting the confirmation request
+    When I scroll toward the end of the page to see the bottom of the form
+    And I click on '#issues-type2b1-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present
     And I see my newly created issue

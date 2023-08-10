@@ -19,6 +19,7 @@ Feature: Reporting an issue of type "3b"
     Then I see the issue form 'frm-type3b'
 
     When I type 'LIGABUE MARCO' as selection for the 'swimmer' Select2 field
+    And I scroll toward the end of the page to see the bottom of the form
     And I click on '#issues-type3b-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present

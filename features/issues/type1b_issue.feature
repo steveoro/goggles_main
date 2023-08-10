@@ -45,6 +45,7 @@ Feature: Reporting an issue of type "1b"
 
     When I type '100 RANA' as selection for the 'event_type' Select2 field
     And I fill the result timing with random values
+    And I scroll toward the end of the page to see the bottom of the form
     And I click on '#issues-type1b-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present
@@ -71,6 +72,7 @@ Feature: Reporting an issue of type "1b"
     When I type '100 DORSO' as selection for the 'event_type' Select2 field
     And I type 'LIGABUE MARCO' as selection for the 'swimmer' Select2 field
     And I fill the result timing with random values
+    And I scroll toward the end of the page to see the bottom of the form
     And I click on '#issues-type1b-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present

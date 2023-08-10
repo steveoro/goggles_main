@@ -96,7 +96,7 @@ end
 # NOTE: Selenium webdriver using Firefox/headless currently has no real support for mobileEmulation.
 
 chrome_args = %w[
-  headless disable-gpu disable-extensions
+  headless disable-gpu disable-extensions disable-popup-blocking
   enable-features=NetworkService,NetworkServiceInProcess
 ]
 
@@ -104,6 +104,7 @@ chrome_args = %w[
 Capybara.register_driver(:headless_chrome) do |app|
   chrome_options = Selenium::WebDriver::Chrome::Options.new
   chrome_args.each { |arg| chrome_options.add_argument(arg) }
+  chrome_options.add_argument('window-size=1280,1024')
   chrome_options.add_preference(:download,
                                 directory_upgrade: true,
                                 prompt_for_download: false,

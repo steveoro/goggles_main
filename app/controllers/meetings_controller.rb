@@ -374,8 +374,9 @@ class MeetingsController < ApplicationController
 
   # Sets <tt>@default_team_or_swimmer_in_meeting</tt> to +true+ only if the default current swimmer & team
   # are present in the current @meeting.
+  # Use to enable or not certain meeting nav tabs.
   #
-  # Requires to be called after:
+  # Can be called only after:
   # 1. ApplicationController#prepare_user_teams
   # 2. this#validate_meeting
   # 3. this#validate_swimmer
