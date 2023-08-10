@@ -113,7 +113,8 @@ When('I see my chosen lap has been correctly saved') do
 end
 
 When('I dismiss the lap modal editor by clicking on the close button') do
-  find_by_id('modal-close', class: 'btn', visible: true).click
+  find_by_id('modal-close', class: 'btn', visible: true)
+  execute_script("document.querySelector('button#modal-close').click()")
   wait_for_ajax && sleep(1)
 end
 # -----------------------------------------------------------------------------
