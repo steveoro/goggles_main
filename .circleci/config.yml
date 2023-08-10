@@ -660,96 +660,95 @@ workflows:
   full-build:
     jobs:
       - persisted-data
-      # - brakeman:
-      #     requires:
-      #       - persisted-data
-      # - rubocop:
-      #     requires:
-      #       - persisted-data
-      # - zeitwerk:
-      #     requires:
-      #       - persisted-data
+      - brakeman:
+          requires:
+            - persisted-data
+      - rubocop:
+          requires:
+            - persisted-data
+      - zeitwerk:
+          requires:
+            - persisted-data
 
-      # - rspec-components:
-      #     requires:
-      #       - brakeman
-      #       - rubocop
-      #       - zeitwerk
-      # - rspec-decorators:
-      #     requires:
-      #       - brakeman
-      #       - rubocop
-      #       - zeitwerk
-
-
-      # - rspec-requests:
-      #     requires:
-      #       - brakeman
-      #       - rubocop
-      #       - zeitwerk
-      #     pre-steps:
-      #       - browser-tools/install-chrome:
-      #           chrome-version: 114.0.5735.90
-      #           replace-existing: true
-      #       - browser-tools/install-chromedriver
-      #       - run:
-      #           name: Check install
-      #           command: |
-      #             google-chrome --version
-      #             chromedriver --version
-      #             node -v
+      - rspec-components:
+          requires:
+            - brakeman
+            - rubocop
+            - zeitwerk
+      - rspec-decorators:
+          requires:
+            - brakeman
+            - rubocop
+            - zeitwerk
 
 
-      # - rspec-helpers:
-      #     requires:
-      #       - rspec-components
-      #       - rspec-decorators
-      # - rspec-mailers:
-      #     requires:
-      #       - rspec-components
-      #       - rspec-decorators
-      # - rspec-views:
-      #     requires:
-      #       - rspec-components
-      #       - rspec-decorators
-
-      # - rspec-jobs:
-      #     requires:
-      #       - rspec-helpers
-      # - rspec-strategies:
-      #     requires:
-      #       - rspec-mailers
-      # - rspec-integration:
-      #     requires:
-      #       - rspec-views
-
-      # - upload-coverage:
-      #     requires:
-      #       - rspec-requests
-      #       - rspec-jobs
-      #       - rspec-strategies
-      #       - rspec-integration
+      - rspec-requests:
+          requires:
+            - brakeman
+            - rubocop
+            - zeitwerk
+          pre-steps:
+            - browser-tools/install-chrome:
+                chrome-version: 114.0.5735.90
+                replace-existing: true
+            - browser-tools/install-chromedriver
+            - run:
+                name: Check install
+                command: |
+                  google-chrome --version
+                  chromedriver --version
+                  node -v
 
 
-      # - cucumber-desktop:
-      #     requires:
-      #       - persisted-data
-      #     pre-steps:
-      #       - browser-tools/install-chrome:
-      #           chrome-version: 114.0.5735.90
-      #           replace-existing: true
-      #       - browser-tools/install-chromedriver
-      #       - run:
-      #           name: Check install
-      #           command: |
-      #             google-chrome --version
-      #             chromedriver --version
-      #             node -v
+      - rspec-helpers:
+          requires:
+            - rspec-components
+            - rspec-decorators
+      - rspec-mailers:
+          requires:
+            - rspec-components
+            - rspec-decorators
+      - rspec-views:
+          requires:
+            - rspec-components
+            - rspec-decorators
+
+      - rspec-jobs:
+          requires:
+            - rspec-helpers
+      - rspec-strategies:
+          requires:
+            - rspec-mailers
+      - rspec-integration:
+          requires:
+            - rspec-views
+
+      - upload-coverage:
+          requires:
+            - rspec-requests
+            - rspec-jobs
+            - rspec-strategies
+            - rspec-integration
+
+
+      - cucumber-desktop:
+          requires:
+            - persisted-data
+          pre-steps:
+            - browser-tools/install-chrome:
+                chrome-version: 114.0.5735.90
+                replace-existing: true
+            - browser-tools/install-chromedriver
+            - run:
+                name: Check install
+                command: |
+                  google-chrome --version
+                  chromedriver --version
+                  node -v
 
       - cucumber-narrow:
           requires:
-            - persisted-data
-            # - rspec-requests
+            - rspec-requests
           pre-steps:
             - browser-tools/install-chrome:
                 chrome-version: 114.0.5735.90
@@ -764,8 +763,7 @@ workflows:
 
       - cucumber-tablet:
           requires:
-            - persisted-data
-            # - rspec-requests
+            - rspec-requests
           pre-steps:
             - browser-tools/install-chrome:
                 chrome-version: 114.0.5735.90
@@ -779,12 +777,12 @@ workflows:
                   node -v
 
 
-      # - docker-build:
-      #     requires:
-      #       - cucumber-desktop
-      #       - cucumber-narrow
-      #       - cucumber-tablet
+      - docker-build:
+          requires:
+            - cucumber-desktop
+            - cucumber-narrow
+            - cucumber-tablet
 
-      # - deploy:
-      #     requires:
-      #       - docker-build
+      - deploy:
+          requires:
+            - docker-build
