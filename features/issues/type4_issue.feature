@@ -21,7 +21,7 @@ Feature: Reporting an issue of type "4"
     When I fill the 'expected' field with 'Simple result browsing'
     And I fill the 'outcome' field with 'Everything exploded'
     And I fill the 'reproduce' field with 'click on the red button and wait'
-    And I scroll toward the end of the page to see the bottom of the form
+    And I scroll toward the end of the page to see the bottom of the page
     And I click on '#issues-type4-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present

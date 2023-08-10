@@ -21,7 +21,7 @@ Feature: Reporting an issue of type "1b1"
     And I see the issue form 'frm-type1b1'
 
     When I fill the result timing with a random correction
-    And I scroll toward the end of the page to see the bottom of the form
+    And I scroll toward the end of the page to see the bottom of the page
     And I click on '#issues-type1b1-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present

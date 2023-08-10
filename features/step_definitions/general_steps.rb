@@ -91,7 +91,7 @@ Then('an error message from the edit form is present') do
 end
 # -----------------------------------------------------------------------------
 
-Then('I scroll toward the end of the page to see the bottom of the form') do
+Then('I scroll toward the end of the page to see the bottom of the page') do
   # Go down a lot towards the bottom of the page first:
   # (useful especially for small device screens)
   execute_script('window.scrollTo(0,10000)')
@@ -100,17 +100,25 @@ end
 
 # Click on OK/Yes
 When('I click on {string} accepting the confirmation request') do |string_css|
-  find(string_css, visible: true)
-  accept_confirm do
-    find(string_css).click
+  find(string_css, visible: true) # make sure the node is visible
+  within(string_css) do |node|
+    accept_confirm do
+      # It turns out Selenium sometimes doesn't fire the click event as expected,
+      # even though the button is clicked. JS to the rescue...
+      # See: https://medium.com/@alieckaja/capybara-inconsistent-click-behavior-and-flickering-tests-f50b5fae8ab2
+      execute_script("document.querySelector('#{string_css}').click()")
+    end
   end
 end
 
 # Click on Cancel/No
 When('I click on {string} rejecting the confirmation request') do |string_css|
-  find(string_css, visible: true)
-  dismiss_confirm do
-    find(string_css).click
+  find(string_css, visible: true) # make sure the node is visible
+  within(string_css) do |node|
+    dismiss_confirm do
+      # (See note in previous step)
+      execute_script("document.querySelector('#{string_css}').click()")
+    end
   end
 end
 # -----------------------------------------------------------------------------

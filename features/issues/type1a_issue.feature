@@ -24,7 +24,7 @@ Feature: Reporting an issue of type "1a"
     And I see that 'IT' is already set as 'city_country_code' field
     And I see that the current date is already set as the date of the event
     And I fill-in the results URL for the issue form with a random URL
-    And I scroll toward the end of the page to see the bottom of the form
+    And I scroll toward the end of the page to see the bottom of the page
     And I click on '#issues-type1a-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present

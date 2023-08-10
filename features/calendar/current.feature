@@ -27,6 +27,7 @@ Feature: Current season Calendar
     And at least 2 calendar rows are not expired
     When I browse to '/calendars/current'
     Then I am at the Calendars 'current' page
+    And I scroll toward the end of the page to see the bottom of the page
     And I can see the pagination controls on the calendar current page when there are enough rows
     And I can see the calendar row star button enabled or disabled depending on the row status
     But I cannot see the team row tag button available in any row
@@ -42,6 +43,7 @@ Feature: Current season Calendar
     And at least 2 calendar rows are not expired
     When I browse to '/calendars/current'
     Then I am at the Calendars 'current' page
+    And I scroll toward the end of the page to see the bottom of the page
     And I can see the pagination controls on the calendar current page when there are enough rows
     And I can see the calendar row star button enabled or disabled depending on the row status
     And I can see the calendar team star button enabled or disabled depending on the row status

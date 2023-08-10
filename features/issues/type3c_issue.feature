@@ -22,7 +22,7 @@ Feature: Reporting an issue of type "3c"
     And I fill the 'type3c_last_name' field with 'SALAMANCA'
     And I fill the 'type3c_year_of_birth' field with '1956'
     And I select 'MAS' for the 'type3c_gender_type_id' select field
-    And I scroll toward the end of the page to see the bottom of the form
+    And I scroll toward the end of the page to see the bottom of the page
     And I click on '#issues-type3c-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present

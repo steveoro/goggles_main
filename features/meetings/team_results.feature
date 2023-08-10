@@ -55,6 +55,7 @@ Feature: Show specific team results for a specific meeting
     And I have already selected a random meeting and an event from any of my available results
     When I browse to see the selected meeting details
     And I have chosen a random row from the results of my associated team
+    And I scroll toward the end of the page to see the bottom of the page
     And I click on the chosen meeting event section, waiting for it to load
     Then I see the results of the chosen meeting event
     When I click on the team name on the chosen result row, selecting it
@@ -74,6 +75,7 @@ Feature: Show specific team results for a specific meeting
     And I have already selected a random meeting and an event from any of my available results
     When I browse to see the selected meeting details
     And I have chosen a random row from the results of my associated team
+    And I scroll toward the end of the page to see the bottom of the page
     And I click on the chosen meeting event section, waiting for it to load
     Then I see the results of the chosen meeting event
     When I click on the team name on the chosen result row, selecting it
