@@ -24,6 +24,7 @@ Feature: Laps modal editor management for UserResults
     When I fill the last lap row with some random timing values
     And I click to save my edited lap
     Then I see my chosen lap has been correctly saved
+    And I scroll toward the end of the page to see the bottom of the page
     And I dismiss the lap modal editor by clicking on the close button
 
     When I click the button to manage its laps
