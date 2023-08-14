@@ -1,6 +1,4 @@
 codecov:
-  ci:
-    - "steveoro.semaphoreci.com"
   require_ci_to_pass: yes
 
 coverage:

@@ -180,7 +180,7 @@ jobs:
       - run:
           <<: *common-db-setup
       - run:
-          name: RSpec - Components
+          name: RSpec - Decorators
           command: |
             TEST_FILES=$(circleci tests glob "spec/decorators/**/*_spec.rb")
             echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
@@ -208,7 +208,7 @@ jobs:
       - run:
           <<: *common-db-setup
       - run:
-          name: RSpec - Components
+          name: RSpec - Helpers
           command: |
             TEST_FILES=$(circleci tests glob "spec/helpers/**/*_spec.rb")
             echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
@@ -236,7 +236,7 @@ jobs:
       - run:
           <<: *common-db-setup
       - run:
-          name: RSpec - Components
+          name: RSpec - Jobs
           command: |
             TEST_FILES=$(circleci tests glob "spec/jobs/**/*_spec.rb")
             echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
@@ -264,7 +264,7 @@ jobs:
       - run:
           <<: *common-db-setup
       - run:
-          name: RSpec - Components
+          name: RSpec - Mailers
           command: |
             TEST_FILES=$(circleci tests glob "spec/mailers/**/*_spec.rb")
             echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
@@ -309,7 +309,7 @@ jobs:
             - node_modules/.cache
 
       - run:
-          name: RSpec - Components
+          name: RSpec - Requests
           command: |
             TEST_FILES=$(circleci tests glob "spec/requests/**/*_spec.rb")
             echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
@@ -337,7 +337,7 @@ jobs:
       - run:
           <<: *common-db-setup
       - run:
-          name: RSpec - Components
+          name: RSpec - Strategies
           command: |
             TEST_FILES=$(circleci tests glob "spec/strategies/**/*_spec.rb")
             echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
@@ -365,7 +365,7 @@ jobs:
       - run:
           <<: *common-db-setup
       - run:
-          name: RSpec - Components
+          name: RSpec - Views
           command: |
             TEST_FILES=$(circleci tests glob "spec/views/**/*_spec.rb")
             echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
@@ -393,7 +393,7 @@ jobs:
       - run:
           <<: *common-db-setup
       - run:
-          name: RSpec - Components
+          name: RSpec - Integration
           command: |
             TEST_FILES=$(circleci tests glob "spec/integration/**/*_spec.rb")
             echo "$TEST_FILES" | circleci tests run --command="xargs bundle exec rspec --color --order rand -f doc \
