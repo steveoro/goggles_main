@@ -1,2 +1,6 @@
-- @mrrs.by_timing.each do |mrr|
-  = render(MRR::TableRowComponent.new(mrr: mrr))
+- @mrrs.with_rank.by_rank.each_with_index do |mrr, index|
+  = render(MRR::TableRowComponent.new(mrr: mrr, index: index, lap_edit: can_edit_lap?(mrr),
+                                      report_mistake: can_report_mistake?(mrr)))
+- @mrrs.with_no_rank.by_timing.each_with_index do |mrr, index|
+  = render(MRR::TableRowComponent.new(mrr: mrr, index: index, lap_edit: can_edit_lap?(mrr),
+                                      report_mistake: can_report_mistake?(mrr)))

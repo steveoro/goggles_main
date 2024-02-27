@@ -33,51 +33,19 @@
             %td.text-center
               = "(#{t('meeting.entry_time')})"
 
-      / Individual results
-      - unless relay
-        -# TODO: MIR#by_swimmer()
-        - can_edit_lap = current_user_is_admin || managed_team_ids.nil? || managed_team_ids.include?(team.id)
-        - meeting_event.meeting_individual_results.for_team(team).joins(:swimmer, :category_type).includes(:category_type, :laps).by_swimmer.by_rank.each do |mir|
-          - can_manage = user_signed_in? && current_user.swimmer_id.present? && current_user.swimmer_id == mir.swimmer_id
-          = render(MIR::TableRowComponent.new(mir: mir, lap_edit: can_edit_lap, report_mistake: can_edit_lap || can_manage,
-                   show_category: true, show_team: false))
+      - can_edit_lap = current_user_is_admin || managed_team_ids.nil? || managed_team_ids.include?(team.id)
+      - if relay # Team Relay results
+        - mrrs = meeting_event.meeting_relay_results.includes(:team, :meeting_program, :gender_type,
+                                meeting_relay_swimmers: [:relay_laps],
+                                category_type: [:season]).for_team(team).order(:meeting_program_id)
+        = render(MRR::TableComponent.new(mrrs: mrrs, managed_team_ids:, user_teams:, current_user_is_admin:))
 
-      / Team Relay results:
-      - if relay
-        %tbody
-          - meeting_event.meeting_relay_results.includes(:meeting_program, :gender_type,
-                          category_type: [:season]).for_team(team).order(:meeting_program_id).each do |relay_result|
-            - mrr = relay_result # MeetingRelayResultDecorator.decorate(relay_result)
-            %tr
-              %td
-                %b= mrr.relay_code
-              %td
-                = mrr.gender_type.code
-                = '-'
-                = mrr.category_type.decorate.short_label
-              %td.text-right
-                = render(RankingPosComponent.new(rank: mrr.rank))
-              %td.text-right
-                = mrr.to_timing
-              %td.text-right
-                = sprintf("%02.2f", mrr.standard_points.to_f)
-              %td.text-right
-                = sprintf("%02.2f", mrr.meeting_points.to_f)
-              - if goggle_cup
-                %td
-              - if mrr.meeting_relay_swimmers.exists?
-                - mrr.meeting_relay_swimmers.includes(:swimmer, :stroke_type).by_order.each do |meeting_relay_swimmer|
-                  %tr
-                    %td.text-right{ colspan: 3 }
-                      %i= "#{meeting_relay_swimmer.swimmer.complete_name} (#{meeting.header_date.year - meeting_relay_swimmer.swimmer.year_of_birth}) - #{meeting_relay_swimmer.stroke_type.label}"
-                    %td.text-right
-                      = meeting_relay_swimmer.to_timing
-                    %td
-                    %td
-                    - if goggle_cup
-                      %td
-                    - if meeting.startlist?
-                      %td
+      - else # Individual results
+        - meeting_event.meeting_individual_results.for_team(team).joins(:swimmer, :category_type).includes(:category_type, :laps).by_swimmer.by_rank.each do |mir|
+          - can_report = user_signed_in? && current_user.swimmer_id.present? && current_user.swimmer_id == mir.swimmer_id
+          = render(MIR::TableRowComponent.new(mir: mir, lap_edit: can_edit_lap,
+                                              report_mistake: can_edit_lap || can_report,
+                                              show_category: true, show_team: false))
 
 .row
   &nbsp;

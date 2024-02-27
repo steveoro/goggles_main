@@ -26,3 +26,6 @@ it:
       edit_ok: "I cambiamenti sono stati salvati con successo."
       edit_failed: "Il salvataggio è fallito: %{error}"
       create_ok: "Nuova riga creata! (ID: %{id})"
+      add_relay_result_btn: "+ Frazione"
+      delete_swimmer_fraction_confirm: "L'intera parte di staffetta sui %{lap_length}m eseguita da %{swimmer_name} sarà ELIMINATA.\r\nCome conseguenza, i dati di questa frazione potranno poi essere solo re-inseriti a mano (presumibilmente da te).\r\nSappi che ti stai assumendo la piena responsabilità di questo gesto: i tuoi compagni di squadra saranno avvisati e in seguito potrebbero punirti fisicamente.\r\n(Sto scherzando. O forse no...) Ad ogni modo...\r\nSIAMO SICURI di VOLERE CONTINUARE?"
+      delete_failed: "Impossibile cancellare: riprova più tardi."

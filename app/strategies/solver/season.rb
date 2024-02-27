@@ -55,7 +55,7 @@ module Solver
       return nil unless all_bindings_solved?
 
       new_instance = GogglesDb::Season.new
-      bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
+      bindings.each { |key, solved| new_instance.send(:"#{key}=", solved) unless solved.nil? }
       new_instance.save # Don't throw validation errors
       new_instance
     end

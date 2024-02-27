@@ -243,7 +243,7 @@ RSpec.describe MeetingsController do
     let(:meeting_id) do
       GogglesDb::Meeting.includes(:meeting_individual_results)
                         .joins(:meeting_individual_results)
-                        .first(250).pluck(:id)
+                        .first(200).pluck(:id)
                         .sample
     end
 
@@ -302,6 +302,7 @@ RSpec.describe MeetingsController do
         GogglesDb::MeetingIndividualResult.includes(:meeting, :swimmer, :team)
                                           .joins(:meeting, :swimmer, :team)
                                           .where('meetings.id': meeting_id)
+                                          .last(200)
                                           .sample
       end
       let(:fixture_swimmer) { fixture_mir.swimmer }

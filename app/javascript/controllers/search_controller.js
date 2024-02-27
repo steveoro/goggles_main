@@ -40,6 +40,8 @@ export default class extends Controller {
       window.pageSwiper = new SwipeElement(this.swiperTarget, {
         // Options:
         continuous: true, // (wrap back at pagination end)
+        enableLeft: true, // (useful to force-disable swiping when not continuous if at first or last page)
+        enableRight: true,
         index: this.hasCurrentValue ? this.currentValue : 1,
         total: this.hasMaxValue ? this.maxValue : 1,
         // debug: true,

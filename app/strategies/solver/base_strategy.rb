@@ -198,7 +198,7 @@ module Solver
     def set_bindings_from_entity_if_solved
       return unless solved?
 
-      @bindings.each { |key, _solved| @bindings[key] = @entity.send(key) if @entity.respond_to?(key) }
+      @bindings.each_key { |key| @bindings[key] = @entity.send(key) if @entity.respond_to?(key) }
     end
 
     # Returns true if the specified +key+ is present at root level.

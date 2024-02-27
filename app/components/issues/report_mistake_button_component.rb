@@ -3,7 +3,7 @@
 #
 # = Issues components module
 #
-#   - version:  7-0.4.25
+#   - version:  7-0.6.20
 #   - author:   Steve A.
 #
 module Issues
@@ -29,7 +29,8 @@ module Issues
 
     # Skips rendering unless the required parameters are set
     def render?
-      @can_manage && @result_row.is_a?(GogglesDb::AbstractResult)
+      @can_manage &&
+        (@result_row.is_a?(GogglesDb::AbstractResult) || @result_row.instance_of?(GogglesDb::MeetingRelayResult))
     end
     #-- -----------------------------------------------------------------------
     #++

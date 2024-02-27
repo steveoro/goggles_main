@@ -14,7 +14,7 @@ Feature: Chrono time recording setup
 
   Scenario: invidivual event time recording setup for a meeting
     Given I select 'meeting' as the event container type
-    When I type 'MASTER FIN 2021' as selection for the 'season' pre-filled select field
+    When I type 'MASTER FIN' as selection for the 'season' pre-filled select field
     And I type '18° Trofeo De Akker' as selection for the 'meeting' Select2 field
     Then I click on the 'next' button at the end of form step '1'
     And I see that form step '2' is displayed
@@ -49,7 +49,7 @@ Feature: Chrono time recording setup
 
   Scenario: invidivual event time recording setup for a workshop
     Given I select 'workshop' as the event container type
-    When I type 'MASTER CSI 2021' as selection for the 'season' pre-filled select field
+    When I type 'MASTER CSI' as selection for the 'season' pre-filled select field
     And I type '1° Trial CSI RE' as selection for the 'user_workshop' Select2 field
     Then I click on the 'next' button at the end of form step '1'
     And I see that form step '2' is displayed

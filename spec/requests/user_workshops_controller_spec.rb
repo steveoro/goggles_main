@@ -44,14 +44,14 @@ RSpec.describe UserWorkshopsController do
 
       context 'when filtering data by :workshop_date,' do
         it 'is successful' do
-          get(meetings_path(meetings_grid: { workshop_date: '2021-06-15' }))
+          get(user_workshops_path(user_workshops_grid: { workshop_date: '2021-06-15' }))
           expect(response).to be_successful
         end
       end
 
       context 'when filtering data by :workshop_name,' do
         it 'is successful' do
-          get(meetings_path(meetings_grid: { workshop_name: 'CSI' }))
+          get(user_workshops_path(user_workshops_grid: { workshop_name: 'CSI' }))
           expect(response).to be_successful
         end
       end

@@ -73,7 +73,7 @@ module Solver
       # - year_of_birth...: supplied || guessable by AgeGuesser(new_row, category_type_id) => year_guessed: true (TODO)
       # - last_name.......: supplied || guessable by #name_splitter(new_row)
       # - first_name......: supplied || guessable by #name_splitter(new_row)
-      bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
+      bindings.each { |key, solved| new_instance.send(:"#{key}=", solved) unless solved.nil? }
       # Make sure every new instance has also the split-name if missing:
       new_instance = name_splitter(new_instance) unless new_instance.complete_name.nil? ||
                                                         new_instance.last_name.present?

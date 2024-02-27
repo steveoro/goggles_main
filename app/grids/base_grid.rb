@@ -32,20 +32,6 @@ class BaseGrid
       end
     end
   end
-
-  # Date column formatter helper
-  #
-  # == Params:
-  # - <tt>name</tt>: column name
-  # - <tt>args</tt>: options hash (blocks are supported)
-  #
-  def self.date_column(name, *args)
-    column(name, *args) do |model|
-      format(block_given? ? yield : model.send(name)) do |date|
-        content_tag(:small, date.strftime('%Y-%m-%d'))
-      end
-    end
-  end
   #-- -------------------------------------------------------------------------
   #++
 end

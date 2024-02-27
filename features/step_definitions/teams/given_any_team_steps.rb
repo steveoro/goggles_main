@@ -33,8 +33,8 @@ end
 Given('I have a chosen a random team with existing user results') do
   expect(GogglesDb::UserResult.count).to be_positive
   # It's faster using 2 queries instead of 1:
-  team_id = GogglesDb::UserResult.includes(user_workshop: [:team]).joins(user_workshop: [:team])
-                                 .distinct('user_workshops.team_id').pluck(:team_id)
+  team_id = GogglesDb::UserResult.includes(:user_workshop).joins(:user_workshop)
+                                 .distinct('user_workshops.team_id').pluck('user_workshops.team_id')
                                  .first(300).sample
   @chosen_team = GogglesDb::Team.find(team_id)
   @associated_urs = GogglesDb::UserResult.includes(:user_workshop).joins(:user_workshop)

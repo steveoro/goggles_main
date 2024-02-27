@@ -83,7 +83,7 @@ module DownloadHelpers
   end
 
   def downloading?
-    # Check existance of the temp. download file created by Chrome:
+    # Check existence of the temp. download file created by Chrome:
     available_download_file_names.grep(/\.crdownload$/).any?
   end
 

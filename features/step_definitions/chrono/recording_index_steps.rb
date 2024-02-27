@@ -49,7 +49,7 @@ end
 Then('I see that the deleted request is missing from the index') do
   container_node = find('.main-content .container#chrono-rows', visible: true)
   expect(container_node).to be_present
-  expect(container_node).not_to have_css(".col#main-req#{@deleted_row_id}")
+  expect(container_node).to have_no_css(".col#main-req#{@deleted_row_id}")
 end
 
 When('I download the chrono request as a JSON file') do

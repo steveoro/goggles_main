@@ -33,7 +33,7 @@ Then('I can see the calendar row star button enabled or disabled depending on th
     if @unexpired_calendars.pluck(:meeting_id).include?(row_id) # Unexpired? => must be enabled
       btn = find("#btn-row-star-#{row_id}")
       expect(btn).to be_present
-      expect(btn).not_to have_css('disabled')
+      expect(btn).to have_no_css('disabled')
       expect(btn[:href]).to include(taggings_by_user_path(meeting_id: row_id))
     elsif @expired_calendars.pluck(:meeting_id).include?(row_id) # Expired? => disabled for sure
       expect(find("i#btn-row-star-#{row_id}.disabled")).to be_present
@@ -60,7 +60,7 @@ Then('I can see the calendar team star button enabled or disabled depending on t
     if meeting.header_date >= Time.zone.today
       btn = find("#btn-team-star-#{row_id}")
       expect(btn).to be_present
-      expect(btn).not_to have_css('disabled')
+      expect(btn).to have_no_css('disabled')
     else
       expect(find("i#btn-team-star-#{row_id}.disabled")).to be_present
     end

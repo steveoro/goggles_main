@@ -1,0 +1,29 @@
+document.querySelector('#lap-edit-modal-contents').innerHTML = "<%=
+  escape_javascript(
+    render(
+      RelayLaps::EditModalContentsComponent.new(relay_result: @relay_result)
+    )
+  )
+%>";
+
+document.querySelector('#lap-modal-alert-text').innerHTML = "<%= escape_javascript(@alert_msg) %>"
+$('#modal-loading-indicator').addClass('d-none');
+$('#lap-modal-alert').addClass("<%= @alert_class %>")
+$('#lap-modal-alert').show().removeClass('d-none').delay(1500).fadeOut(1000);
+
+/*
+   Replace the underlying MRR row if present:
+   (this includes re-rendering the #laps-showID sub-table):
+*/
+if (document.querySelector("#mrr<%= @relay_result&.id %>")) {
+  // Clear lap-show subtable before creating a duplicate:
+  if (document.querySelector("#laps-show<%= @relay_result&.id %>")) {
+    document.querySelector("#laps-show<%= @relay_result&.id %>").outerHTML = ''
+  }
+  document.querySelector("#mrr<%= @relay_result&.id %>").outerHTML = "<%=
+    escape_javascript(
+      render(MRR::TableRowComponent.new(mrr: @relay_result,
+             lap_edit: @lap_edit, report_mistake: @report_mistake))
+    )
+  %>";
+}

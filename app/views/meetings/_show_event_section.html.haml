@@ -8,7 +8,9 @@
     = render(Mprg::RowLinksComponent.new(meeting_programs: prgs_for_event))
     = render(Mprg::RowTitleComponent.new(meeting_program: mprg))
     - if mprg.relay?
-      = render(MRR::TableComponent.new(mrrs: mprg.meeting_relay_results.includes(:team)))
+      = render(MRR::TableComponent.new(mrrs: mprg.meeting_relay_results.includes(:team, :meeting_program,
+                                       :gender_type, meeting_relay_swimmers: [:relay_laps], category_type: [:season]),
+                                       managed_team_ids:, user_teams:, current_user_is_admin:))
     - else
       = render(MIR::TableComponent.new(mirs: mprg.meeting_individual_results.includes(:meeting, :swimmer, :team),
-              managed_team_ids: @managed_team_ids, current_swimmer_id: @current_swimmer_id))
+                                       managed_team_ids:, current_swimmer_id:))

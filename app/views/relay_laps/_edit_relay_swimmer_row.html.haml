@@ -1,0 +1,73 @@
+- event_type = relay_result.event_type
+- overall_index = (swimmer_index  + 1) * (event_type.phase_length_in_meters / 50) # Index relative to all sub-laps (RelayLaps)
+%tr{ id: "mrs-header-row-#{overall_index}" }
+  %td{ scope: 'row', class: 'row border-0 d-flex' }
+    .col.text-center.pt-2.lap-row.align-self-center
+      %h6.mark
+        #{relay_swimmer.swimmer.complete_name}
+        &nbsp;
+        %small (#{relay_swimmer.stroke_type.code})
+    .col-auto.text-center.align-self-center
+      - if relay_swimmer.id.to_i.positive?
+        - if event_type.phase_length_in_meters > 50 && relay_swimmer.relay_laps.count < max_relay_laps
+          = link_to(relay_laps_path(result_id: relay_swimmer.id,
+                    result_class: relay_swimmer.class.name.split('::').last, length_in_meters: 50),
+                    method: :post, remote: true, id: "lap-new50-#{relay_swimmer.id}",
+                    class: 'btn btn-sm btn-outline-secondary m-1') do
+            %span
+              %i.fa.fa-plus
+              50m
+        = link_to(relay_lap_path(id: relay_swimmer.id, "result_id[#{overall_index}]": relay_result.id,
+                  "result_class[#{overall_index}]": relay_result.class.name.split('::').last),
+                  method: :delete, remote: true, id: "lap-delete-row-#{overall_index}",
+                  class: 'btn btn-sm btn-outline-danger',
+                  data: { confirm: t('datagrid.edit_modal.delete_swimmer_fraction_confirm',
+                          lap_length: relay_swimmer.length_in_meters,
+                          swimmer_name: relay_swimmer.swimmer.complete_name) }) do
+          %i.fa.fa-trash-o
+
+/ Sub-laps first:
+- relay_swimmer.relay_laps.each_with_index do |relay_lap, sub_index|
+  = render(partial: 'relay_laps/edit_relay_lap_row', locals: { relay_result:, relay_swimmer:,
+           relay_lap:, event_type:, swimmer_index:, sub_index: })
+
+/ Overall relay fraction timing as last row:
+%tr.container
+  %td{ scope: 'row', class: 'border-0' }
+    = form_tag(relay_lap_path(relay_swimmer.id), id: "frm-lap-row-#{overall_index}", method: :put, remote: true) do
+      = hidden_field_tag("result_id[#{overall_index}]", relay_result.id)
+      = hidden_field_tag("result_class[#{overall_index}]", relay_result.class.name.split('::').last)
+      .form-row.my-1.lap-row.border-bottom
+        .col-3.col-lg-2.mb-1
+          .input-group.mt-1
+            = number_field_tag("length_in_meters[#{overall_index}]", relay_swimmer.length_in_meters,
+                               min: 15, max: 1500, required: true, autofocus: true, type: 'text',
+                               class: 'form-control form-control-sm text-right')
+            .form-control-sm.ml-0.p-1
+              %small
+                %b= 'm.'
+        .col-3.col-lg-2.mb-1
+          .input-group.mt-1
+            = number_field_tag("minutes_from_start[#{overall_index}]", relay_swimmer.minutes_from_start,
+                               min: 0, max: 120, required: true, autofocus: true, type: 'number',
+                               class: 'form-control form-control-sm text-right')
+            .form-control-sm.ml-0.p-1
+              %b= '\''
+        .col-3.col-lg-2.mb-1
+          .input-group.mt-1
+            = number_field_tag("seconds_from_start[#{overall_index}]", relay_swimmer.seconds_from_start,
+                               min: 0, max: 59, required: true, autofocus: true, type: 'number',
+                               class: 'form-control form-control-sm text-right')
+            .form-control-sm.ml-0.p-1
+              %b= '"'
+        .col-3.col-lg-2.mb-1
+          .input-group.mt-1
+            = number_field_tag("hundredths_from_start[#{overall_index}]", relay_swimmer.hundredths_from_start,
+                               min: 0, max: 99, required: true, autofocus: true, type: 'number',
+                               class: 'form-control form-control-sm text-right')
+        .col.mb-1
+          = submit_tag(t('laps.modal.form.submit_save_btn'), id: "lap-save-row-#{overall_index}",
+                        class: 'btn btn-sm btn-outline-primary my-1',
+                        onclick: "$('#modal-loading-indicator').removeClass('d-none');")
+          %span.my-2.float-right{ id: "mrs-delta-#{overall_index}" }
+            Δt: #{relay_swimmer.to_timing}

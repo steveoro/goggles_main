@@ -8,14 +8,38 @@
         R: #{@relay_swimmer.reaction_time}
 
   %td.text-left{ colspan: 2 }
-    %small
+    %small{ id: "detail-mrs#{@relay_swimmer.id}"}
       - if Rails.env.development?
         ID: #{@relay_swimmer.id}&nbsp;
-      #{@relay_swimmer.to_timing} Δ
-      &nbsp;
-      %i.fa.fa-long-arrow-right
-      &nbsp;
-      #{timing_from_start} ⏱
-      %br/
       %i.text-muted
-        = swimmer_text_label_with_age
+        #{SwimmerDecorator.decorate(swimmer).link_to_results(meeting.id)}
+      %small #{swimmer_year_and_age_label}
+      %br/
+      - if @relay_swimmer.relay_laps.present?
+        %ul.pl-0
+          - @relay_swimmer.relay_laps.by_distance.each do |sub_lap|
+            %li{ id: "detail-rl#{sub_lap.id}"}
+              #{sub_lap.to_timing} Δ
+              &nbsp;
+              %i.fa.fa-long-arrow-right
+              &nbsp;
+              #{sub_lap.timing_from_start} ⏱
+              %small
+                #{sub_lap.length_in_meters} m
+          %li
+            #{@relay_swimmer.to_timing} Δ
+            &nbsp;
+            %i.fa.fa-long-arrow-right
+            &nbsp;
+            #{timing_from_start} ⏱
+            %small
+              #{@relay_swimmer.length_in_meters} m
+
+      - else
+        #{@relay_swimmer.to_timing} Δ
+        &nbsp;
+        %i.fa.fa-long-arrow-right
+        &nbsp;
+        #{timing_from_start} ⏱
+        %small
+          #{@relay_swimmer.length_in_meters} m

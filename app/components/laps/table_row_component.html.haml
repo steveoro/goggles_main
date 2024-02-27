@@ -5,13 +5,10 @@
       - if Rails.env.development?
         &nbsp;ID: #{@lap.id}
   %td.text-right{ colspan: 2 }
-    .container.row.px-0
-      .col.px-0.delta-timing
-        %small
-          #{@lap.to_timing} Δ
-      .col-1.px-0
-        %small
-          %i.fa.fa-long-arrow-right
-      .col.px-0.timing-from-start
-        %small
-          #{@lap.timing_from_start} ⏱
+    .delta-timing.text-left
+      %small
+        #{@lap.to_timing} Δ
+        &nbsp;
+        %i.fa.fa-long-arrow-right
+        &nbsp;
+        #{@lap.timing_from_start} ⏱

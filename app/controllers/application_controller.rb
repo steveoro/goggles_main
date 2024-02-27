@@ -5,11 +5,23 @@ require 'version'
 # = ApplicationController
 #
 # Common parent controller
-class ApplicationController < ActionController::Base
+class ApplicationController < ActionController::Base # rubocop:disable Metrics/ClassLength
   protect_from_forgery with: :exception
   before_action :app_settings_row, :set_locale, :detect_device_variant, :check_maintenance_mode,
                 :update_stats, :prepare_last_seasons
   before_action :configure_devise_permitted_parameters, if: :devise_controller?
+
+  # Prosopite will work only when enabled in config/environments/<ENV>.rb
+  unless Rails.env.production?
+    around_action :n_plus_one_detection
+
+    def n_plus_one_detection
+      Prosopite.scan
+      yield
+    ensure
+      Prosopite.finish
+    end
+  end
 
   # Catch-all redirect in case of 404s
   def redirect_missing
@@ -46,7 +58,7 @@ class ApplicationController < ActionController::Base
   #
   def prepare_last_seasons
     @last_seasons_ids = last_season_ids
-    @last_seasons = GogglesDb::Season.where(id: @last_seasons_ids) if @last_seasons.blank?
+    @last_seasons = GogglesDb::Season.unscoped.where(id: @last_seasons_ids) if @last_seasons.blank?
 
     # Can we show any management button related to these seasons? (team selection should happen afterwards)
     @current_user_is_admin = GogglesDb::GrantChecker.admin?(current_user)
@@ -55,30 +67,65 @@ class ApplicationController < ActionController::Base
                                                             .joins(team_affiliation: %i[team season])
                                                             .exists?(user_id: current_user.id, 'seasons.id': @last_seasons_ids)
   end
+  #-- -------------------------------------------------------------------------
+  #++
 
   # Prepares the array storing all available Teams for the current user (if any);
   # defaults to an empty array otherwise.
+  # Safe to be called multiple times with different list of IDs.
   #
-  # Uses @last_seasons_ids.
-  # Sets the internal member:
+  # == Params:
+  # - season_ids: an array of Season#IDs or []
+  #
+  # == Result:
+  # *Updates* the internal member:
   # - <tt>@user_teams</tt> => array of all the GogglesDb::Team rows associated to the current_user,
   #                           (if the current user has an associated swimmer)
   #
-  def prepare_user_teams
-    @user_teams = []
-    return unless user_signed_in? && @last_seasons_ids.present? && current_user.swimmer
+  # If <tt>@user_teams</tt> is already set, calling again the helper will just add the unique teams
+  # from the swimmer's badges of the specified seasons.
+  #
+  def update_user_teams_for_seasons_ids(season_ids)
+    @user_teams ||= []
+    return unless user_signed_in? && season_ids.present? && current_user.swimmer
 
-    @user_teams = GogglesDb::Badge.where(season_id: @last_seasons_ids, swimmer_id: current_user.swimmer_id)
-                                  .map(&:team).uniq
+    @user_teams += GogglesDb::Badge.where(season_id: season_ids, swimmer_id: current_user.swimmer_id)
+                                   .map(&:team).uniq
+    @user_teams.uniq!
   end
 
-  # Similarly to #prepare_user_teams, this one collects all available and *managed* Teams for the current user (if any)
-  # which have an affiliation belonging to one of the last seasons found.
+  # Specialized/default version of the helper above, specific for @last_season_ids only.
+  #
+  # Uses @last_seasons_ids.
+  #
+  # == Result:
+  # *Updates* the internal member:
+  # - <tt>@user_teams</tt> => array of all the GogglesDb::Team rows associated to the current_user,
+  #                           (if the current user has an associated swimmer)
+  #
+  # If <tt>@user_teams</tt> is already set, calling again the helper will just add the unique teams
+  # from the swimmer's badges of the specified seasons.
+  #
+  def prepare_user_teams
+    update_user_teams_for_seasons_ids(@last_seasons_ids)
+  end
+
+  # Similarly to #prepare_user_teams, this one collects all available and *managed* Teams
+  # for the current user (if any) which have an affiliation belonging to one of specified seasons IDs.
   # Defaults to an empty array otherwise; +nil+ only for admins (to avoid listing all teams).
   #
-  # Uses @last_seasons_ids & @current_user_is_manager.
+  # == Params:
+  # - season_ids: an array of Season#IDs or []
   #
-  # Sets the internal member:
+  # Uses @current_user_is_admin.
+  #
+  # == Result:
+  # *Updates* the internal members:
+  #
+  # - <tt>@current_user_is_manager</tt> =>
+  #  Sets this to +true+ if there's a TeamAffiliation in the specified season IDs
+  #  that is also managed by the current user (if is logged in).
+  #
   # - <tt>@managed_teams</tt> =>
   #  Array of all unique GogglesDb::Team rows found, managed the current_user and
   #  belonging to any one of the @last_seasons_ids found.
@@ -91,15 +138,49 @@ class ApplicationController < ActionController::Base
   #  +empty+   => no team managed
   #  +nil+     => all teams managed (admin: true, skips checks)
   #
-  def prepare_managed_teams
-    @managed_teams = @managed_team_ids = @current_user_is_admin ? nil : []
-    return unless @current_user_is_manager
+  def update_managed_teams_for_seasons_ids(season_ids)
+    if @current_user_is_admin
+      @managed_teams = @managed_team_ids = nil # signal that all teams are managed by Admins
+      return
+    end
 
-    mas = GogglesDb::ManagedAffiliation.includes(:team, :season, team_affiliation: %i[team season])
-                                       .joins(team_affiliation: %i[team season])
-                                       .where(user_id: current_user.id, 'seasons.id': @last_seasons_ids)
-    @managed_teams = mas.map(&:team).uniq
-    @managed_team_ids = @managed_teams.present? ? @managed_teams.map(&:id) : []
+    # Fill the managed-teams filtering arrays only when not an admin:
+    managed_team_ids_for_season = if user_signed_in?
+                                    GogglesDb::ManagedAffiliation.includes(:team_affiliation)
+                                                                 .joins(:team_affiliation)
+                                                                 .where(user_id: current_user.id, 'team_affiliations.season_id': season_ids)
+                                                                 .pluck(:team_id)
+                                                                 .uniq
+                                  else
+                                    []
+                                  end
+    @managed_team_ids ||= []
+    @managed_team_ids += managed_team_ids_for_season if managed_team_ids_for_season.present?
+    @managed_team_ids.uniq!
+    @managed_teams = GogglesDb::Team.where(id: @managed_team_ids)
+    @current_user_is_manager = user_signed_in? && managed_team_ids_for_season.present?
+  end
+
+  # Specialized/default version of the helper above, specific for @last_season_ids only.
+  #
+  # Uses @last_seasons_ids & @current_user_is_admin.
+  #
+  # == Result:
+  # *Updates* the internal members:
+  #
+  # - <tt>@current_user_is_manager</tt> =>
+  #  Sets this to +true+ if there's a TeamAffiliation in the specified season IDs
+  #  that is also managed by the current user (if is logged in).
+  #
+  # - <tt>@managed_teams</tt> =>
+  #  Array of all unique GogglesDb::Team rows found, managed the current_user and
+  #  belonging to any one of the @last_seasons_ids found.
+  #
+  # - <tt>@managed_team_ids</tt> =>
+  #  Same as above, but lists just the IDs for convenience.
+  #
+  def prepare_managed_teams
+    update_managed_teams_for_seasons_ids(@last_seasons_ids)
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -266,7 +347,7 @@ class ApplicationController < ActionController::Base
     # Retrieve any available latest season(s) by type, but include also those *having* at least some results
     # (this is required by many features):
     @last_seasons_ids = GogglesDb::LastSeasonId.all.map(&:id)
-    @last_seasons = GogglesDb::Season.where(id: @last_seasons_ids)
+    @last_seasons = GogglesDb::Season.unscoped.where(id: @last_seasons_ids)
     # [Steve, 20230608] WAS:
     # [
     #   GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin),

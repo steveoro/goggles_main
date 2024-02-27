@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require GogglesDb::Engine.root.join('spec', 'support', 'shared_method_existance_examples')
+require GogglesDb::Engine.root.join('spec', 'support', 'shared_method_existence_examples')
 
 # == Result (solved? & entity) ==
 

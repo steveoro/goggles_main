@@ -51,7 +51,7 @@ module Solver
       return nil unless required_bindings.values.all?(&:present?)
 
       new_instance = GogglesDb::SwimmingPool.new
-      bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
+      bindings.each { |key, solved| new_instance.send(:"#{key}=", solved) unless solved.nil? }
       # Compute nick_name afterwards if missing:
       if new_instance.nick_name.blank?
         new_instance.nick_name = normalize_string_name_into_code(

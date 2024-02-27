@@ -1,0 +1,49 @@
+%tr.container
+  %td{ scope: 'row', class: 'border-0' }
+    - overall_index = swimmer_index * event_type.phase_length_in_meters / 50 + sub_index + 1 # Index relative to all sub-laps (RelayLaps)
+    = form_tag(relay_lap_path(relay_lap.id), id: "frm-sublap-row-#{overall_index}", method: :put, remote: true) do
+      -# Editing relay laps requires the parent MRS for the update to succeed:
+      = hidden_field_tag("result_id[#{overall_index}]", relay_swimmer.id)
+      = hidden_field_tag("result_class[#{overall_index}]", 'MeetingRelaySwimmer')
+      .form-row.my-1.lap-row.sublap-row
+        .col-3.col-lg-2.mb-1
+          .input-group.mt-1
+            = number_field_tag("length_in_meters[#{overall_index}]", relay_lap.length_in_meters,
+                               min: 25, max: 800, required: true, autofocus: true, type: 'text',
+                               class: 'form-control form-control-sm text-right')
+            .form-control-sm.ml-0.p-1
+              %small
+                %b= 'm.'
+        .col-3.col-lg-2.mb-1
+          .input-group.mt-1
+            = number_field_tag("minutes_from_start[#{overall_index}]", relay_lap.minutes_from_start,
+                               min: 0, max: 120, required: true, autofocus: true, type: 'number',
+                               class: 'form-control form-control-sm text-right')
+            .form-control-sm.ml-0.p-1
+              %b= '\''
+        .col-3.col-lg-2.mb-1
+          .input-group.mt-1
+            = number_field_tag("seconds_from_start[#{overall_index}]", relay_lap.seconds_from_start,
+                               min: 0, max: 59, required: true, autofocus: true, type: 'number',
+                               class: 'form-control form-control-sm text-right')
+            .form-control-sm.ml-0.p-1
+              %b= '"'
+        .col-3.col-lg-2.mb-1
+          .input-group.mt-1
+            = number_field_tag("hundredths_from_start[#{overall_index}]", relay_lap.hundredths_from_start,
+                               min: 0, max: 99, required: true, autofocus: true, type: 'number',
+                               class: 'form-control form-control-sm text-right')
+        .col.mb-1
+          = submit_tag(t('laps.modal.form.submit_save_btn'), id: "sublap-save-row-#{overall_index}",
+                        class: 'btn btn-sm btn-outline-primary my-1',
+                        onclick: "$('#modal-loading-indicator').removeClass('d-none');")
+          - if relay_lap.id.to_i.positive?
+            = link_to(relay_lap_path(id: relay_lap.id, "result_id[#{overall_index}]": relay_swimmer.id,
+                      "result_class[#{overall_index}]": relay_swimmer.class.name.split('::').last),
+                      method: :delete, remote: true, id: "lap-delete-row-#{overall_index}",
+                      class: 'btn btn-sm btn-outline-danger',
+                      data: { confirm: t('laps.modal.msgs.submit_delete_confirm',
+                              lap_length: relay_lap.length_in_meters) }) do
+              %i.fa.fa-trash-o
+          %span.my-2.float-right{ id: "sublap-delta-#{overall_index}" }
+            Δt: #{relay_lap.to_timing}

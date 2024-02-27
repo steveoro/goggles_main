@@ -58,6 +58,8 @@ Rails.application.routes.draw do
 
   post 'laps/edit_modal' # XHR only
   resources :laps, only: %i[create update destroy] # XHR only
+  post 'relay_laps/edit_modal' # XHR only
+  resources :relay_laps, only: %i[create update destroy] # XHR only
 
   put 'lookup/matching_swimmers'
 

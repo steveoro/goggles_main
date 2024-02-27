@@ -57,7 +57,7 @@ module Switch
     # Returns the base DOM ID for the hidden field changing any form-only namespaces to snake_case
     # (i.e. "base_namespace[field_name]" => "base_namespace_field_name").
     def base_field_id
-      @base_field_id ||= @field_name&.gsub('[', '_')&.gsub(']', '')
+      @base_field_id ||= @field_name&.tr('[', '_')&.delete(']')
     end
   end
 end

@@ -15,7 +15,7 @@ When('I open the drop-down top menu to see the available commands') do
 end
 
 Then('I should NOT see the {string} command') do |cmd_dom_id|
-  expect(page).not_to have_css("#navbar-content a##{cmd_dom_id}")
+  expect(page).to have_no_css("#navbar-content a##{cmd_dom_id}")
 end
 
 Then('I should see the {string} command') do |cmd_dom_id|

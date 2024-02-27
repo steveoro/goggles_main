@@ -63,7 +63,10 @@ module ComboBox
 
       @gender_types = [GogglesDb::GenderType.male, GogglesDb::GenderType.female]
       @default_row = SwimmerDecorator.decorate(options[:default_row]) if options[:default_row].instance_of?(GogglesDb::Swimmer)
-      @values = options[:values]&.map { |swimmer| SwimmerDecorator.decorate(swimmer) }
+      # To optimize the query for collections, it's best to go "low-level" and reach out for the
+      # original core decorator (from GogglesDb) so that we don't call 'decorated.display_label'
+      # multiple times for each of the array items:
+      @values = GogglesDb::SwimmerDecorator.decorate_collection(options[:values]) if options[:values]
     end
 
     protected
@@ -94,7 +97,7 @@ module ComboBox
       html_options = @values.map do |swimmer|
         content_tag(
           :option,
-          swimmer.text_label,
+          swimmer.display_label,
           selected: swimmer.id == @default_row&.id ? 'selected' : nil,
           value: swimmer.id.to_i,
           'data-complete_name': swimmer.complete_name,

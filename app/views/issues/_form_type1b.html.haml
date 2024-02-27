@@ -12,17 +12,23 @@
         = render(ComboBox::DbLookupComponent.new(nil, t('meetings.event'), 'event_type', required: true,
                                                  values: event_type_options(parent_meeting.event_types)))
     .container
-      - if current_user.swimmer.nil?
-        %p.form-text.text-center.text-muted
-          %small
-            %i= t('issues.type1b.form.notice.no_associated_swimmer')
-      - unless can_manage
-        %p.form-text.text-center.text-muted
-          %small
-            %i= t('issues.type1b.form.notice.cant_manage')
+      -# [20240201] Currently, the "TeamManager grant limit" for reporting missing results has been lifted
+      -# (was: "disabled: !can_manage")
+      -# - if current_user.swimmer.nil?
+      -#   %p.form-text.text-center.text-muted
+      -#     %small
+      -#       %i= t('issues.type1b.form.notice.no_associated_swimmer')
+      -# - unless can_manage
+      -#   %p.form-text.text-center.text-muted
+      -#     %small
+      -#       %i= t('issues.type1b.form.notice.cant_manage')
       .row
-        = render(ComboBox::DbSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer', disabled: !can_manage,
-                                                  free_text: false, default_row: current_user.swimmer,
+        = render(ComboBox::DbLookupComponent.new('teams', t('teams.team'), 'team', required: false,
+                                                 free_text: true, default_row: teams&.first, values: teams))
+
+      .row
+        = render(ComboBox::DbSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer', required: false,
+                                                  free_text: true, default_row: current_user.swimmer,
                                                   values: swimmers))
       = hidden_field_tag(:parent_meeting_id, parent_meeting.id)
       = hidden_field_tag(:parent_meeting_class, parent_meeting.class.name.split('::').last)
@@ -48,6 +54,13 @@
                              class: 'form-control text-right')
           .form-control-sm.ml-1.p-1
             &nbsp;
+
+    .form-row.mb-2
+      .form-group.col.mx-3
+        = label_tag(:other_notes, t('issues.type1b1.form.other_notes'))
+        %br/
+        = text_area_tag(:other_notes, nil, rows: 3, autofocus: true, class: 'form-control',
+                        'aria-describedby' => 'other notes')
 
   .form-group.mt-2.col-auto
     .actions

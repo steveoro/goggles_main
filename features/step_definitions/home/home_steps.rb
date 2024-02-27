@@ -42,7 +42,7 @@ When('I see the contact form') do
 end
 
 When('I fill in the contact form with a test message') do
-  within(find('#contact-us-box form#frm-contact-us')) do
+  within('#contact-us-box form#frm-contact-us') do
     fill_in('body', with: 'This is a test message')
   end
 end
@@ -56,7 +56,7 @@ end
 Then('I see the button {string} {string}') do |button_id, status|
   case status
   when 'missing'
-    expect(page).not_to have_css("##{button_id}")
+    expect(page).to have_no_css("##{button_id}")
 
   when 'disabled'
     btn = find("##{button_id}.disabled")
@@ -64,7 +64,7 @@ Then('I see the button {string} {string}') do |button_id, status|
 
   else
     btn = find("##{button_id}", visible: true)
-    expect(btn).not_to have_css('.disabled')
+    expect(btn).to have_no_css('.disabled')
   end
 end
 # -----------------------------------------------------------------------------

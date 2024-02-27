@@ -24,7 +24,7 @@ class IssuesController < ApplicationController
   def destroy
     unless request.delete? && GogglesDb::Issue.exists?(delete_params[:id])
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(issues_my_reports_path) and return
+      redirect_to(issues_my_reports_path) && return
     end
 
     row = GogglesDb::Issue.find_by(id: delete_params[:id])
@@ -57,12 +57,12 @@ class IssuesController < ApplicationController
     # Allow non-existing partial matches to be used too, in case the name is wrong:
     team_id ||= GogglesDb::Team.for_name(type0_params[:team_label]).first&.id if type0_params[:team_label].present?
     unless request.post? && team_id.present? && type0_params[:season].present?
-      flash[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(issues_my_reports_path) and return
+      flash[:warning] = I18n.t('issues.type1b.msg.missing_parameters')
+      redirect_to(issues_my_reports_path) && return
     end
     if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
       flash[:warning] = I18n.t('issues.spam_notice')
-      redirect_to(issues_my_reports_path) and return
+      redirect_to(issues_my_reports_path) && return
     end
 
     skip = false
@@ -77,7 +77,7 @@ class IssuesController < ApplicationController
     end
 
     flash[:info] = skip ? I18n.t('issues.type0.msg.some_existing_were_skipped') : I18n.t('issues.sent_ok')
-    redirect_to(issues_my_reports_path) and return
+    redirect_to(issues_my_reports_path) && return
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -86,16 +86,16 @@ class IssuesController < ApplicationController
   def create_type1a
     unless request.post? && type1a_params[:results_url].present? &&
            (type1a_params[:meeting_id].present? || type1a_params[:meeting_label].present?)
-      flash[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(issues_my_reports_path) and return
+      flash[:warning] = I18n.t('issues.type1b.msg.missing_parameters')
+      redirect_to(issues_my_reports_path) && return
     end
     if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
       flash[:warning] = I18n.t('issues.spam_notice')
-      redirect_to(issues_my_reports_path) and return
+      redirect_to(issues_my_reports_path) && return
     end
 
     create_issue('1a', type1a_params)
-    redirect_to(issues_my_reports_path) and return
+    redirect_to(issues_my_reports_path) && return
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -107,14 +107,14 @@ class IssuesController < ApplicationController
                                                .find_by(id: type1b_params[:parent_meeting_id])
     unless @parent_meeting
       flash.now[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(root_path) and return
+      redirect_to(root_path) && return
     end
 
     @type = '1b'
     @issue_title = I18n.t('issues.type1b.form.title')
     # Store preselected event type in cookies as we'll use the event_type_options() chrono helper for this:
     cookies[:event_type_id] = type1b_params[:event_type_id].to_i
-    @swimmers = managed_swimmers(@parent_meeting.season_id)
+    @swimmers, @teams = managed_swimmers(@parent_meeting.season_id)
     @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, @parent_meeting.season_id)
     render('new')
   end
@@ -122,19 +122,23 @@ class IssuesController < ApplicationController
   # [POST] Create issue type "1b": missing result in existing Meeting.
   #
   def create_type1b
-    unless request.post? && type1b_params[:event_type_id].present? && type1b_params[:swimmer_id].present? &&
-           type1b_params[:parent_meeting_id].present? && type1b_params[:parent_meeting_class].present? &&
-           type1b_params[:minutes].present? && type1b_params[:seconds].present? && type1b_params[:hundredths].present?
-      flash[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(issues_my_reports_path) and return
+    unless request.post? && type1b_params[:parent_meeting_id].present? && type1b_params[:parent_meeting_class].present? &&
+           type1b_params[:minutes].present? && type1b_params[:seconds].present? && type1b_params[:hundredths].present? &&
+           (type1b_params[:event_type_id].present? || type1b_params[:other_notes].present?) &&
+           (type1b_params[:team_id].present? || type1b_params[:swimmer_id].present? || type1b_params[:other_notes].present?)
+      flash[:warning] = I18n.t('issues.type1b.msg.missing_parameters')
+      redirect_to(issues_my_reports_path) && return
     end
     if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
       flash[:warning] = I18n.t('issues.spam_notice')
-      redirect_to(issues_my_reports_path) and return
+      redirect_to(issues_my_reports_path) && return
     end
+    # [Steve, addendum 20240201]
+    # Even if the team_id is not found, we'll save the team_label in the issue request and handle
+    # it manually to allow unregistered teams to be added, even by non-team-managers.
 
     create_issue('1b', type1b_params)
-    redirect_to(issues_my_reports_path) and return
+    redirect_to(issues_my_reports_path) && return
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -142,17 +146,16 @@ class IssuesController < ApplicationController
   # [GET] Form setup for issue type "1b1": wrong result in existing Meeting.
   #
   def new_type1b1
-    @result_row = result_class_from_params.includes(:swimmer, :event_type)
-    @result_row = @result_row.includes(:team) if result_class_from_params.new.respond_to?(:team)
-    @result_row = @result_row.find_by(id: type1b1_params[:result_id])
+    @result_row = result_class_from_params.find_by(id: type1b1_params[:result_id])
     unless @result_row
-      flash.now[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(root_path) and return
+      flash[:warning] = I18n.t('search_view.errors.invalid_request')
+      redirect_to(root_path)
+      return
     end
 
     @type = '1b1'
     @issue_title = I18n.t('issues.type1b1.form.title')
-    @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, @result_row.parent_meeting.season_id)
+    @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, @result_row.season.id)
     render('new')
   end
 
@@ -164,16 +167,16 @@ class IssuesController < ApplicationController
            type1b1_params[:minutes].present? && type1b1_params[:seconds].present? &&
            type1b1_params[:hundredths].present?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(issues_my_reports_path) and return
+      redirect_to(issues_my_reports_path) && return
     end
 
     if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
       flash[:warning] = I18n.t('issues.spam_notice')
-      redirect_to(issues_my_reports_path) and return
+      redirect_to(issues_my_reports_path) && return
     end
 
     create_issue('1b1', type1b1_params)
-    redirect_to(issues_my_reports_path) and return
+    redirect_to(issues_my_reports_path) && return
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -181,17 +184,15 @@ class IssuesController < ApplicationController
   # [GET] Form setup for issue type "2b1": wrong team, swimmer or meeting
   #
   def new_type2b1
-    @result_row = result_class_from_params.includes(:swimmer, :event_type)
-    @result_row = @result_row.includes(:team) if result_class_from_params.new.respond_to?(:team)
-    @result_row = @result_row.find_by(id: type1b1_params[:result_id])
+    @result_row = result_class_from_params.find_by(id: type1b1_params[:result_id])
     unless @result_row
       flash.now[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(root_path) and return
+      redirect_to(root_path) && return
     end
 
     @type = '2b1'
     @issue_title = I18n.t('issues.type1b1.form.title')
-    @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, @result_row.parent_meeting.season_id)
+    @can_manage = GogglesDb::ManagerChecker.any_for?(current_user, @result_row.season.id)
     render('new')
   end
 
@@ -199,18 +200,19 @@ class IssuesController < ApplicationController
   def create_type2b1
     unless request.post? &&
            type1b1_params[:result_id].present? && type1b1_params[:result_class].present? &&
-           (type1b1_params[:wrong_meeting].present? || type1b1_params[:wrong_swimmer].present? ||
-            type1b1_params[:wrong_team].present?)
+           (type1b1_params[:wrong_meeting].present? || type1b1_params[:wrong_event].present? ||
+            type1b1_params[:wrong_swimmer].present? || type1b1_params[:wrong_team].present? ||
+            type1b1_params[:other_notes].present?)
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(issues_my_reports_path) and return
+      redirect_to(issues_my_reports_path) && return
     end
     if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
       flash[:warning] = I18n.t('issues.spam_notice')
-      redirect_to(issues_my_reports_path) and return
+      redirect_to(issues_my_reports_path) && return
     end
 
     create_issue('2b1', type1b1_params)
-    redirect_to(issues_my_reports_path) and return
+    redirect_to(issues_my_reports_path) && return
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -219,15 +221,15 @@ class IssuesController < ApplicationController
   def create_type3b
     unless request.post? && type1b_params[:swimmer_id].present?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(issues_my_reports_path) and return
+      redirect_to(issues_my_reports_path) && return
     end
     if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
       flash[:warning] = I18n.t('issues.spam_notice')
-      redirect_to(issues_my_reports_path) and return
+      redirect_to(issues_my_reports_path) && return
     end
 
     create_issue('3b', type1b_params)
-    redirect_to(issues_my_reports_path) and return
+    redirect_to(issues_my_reports_path) && return
   end
 
   # [POST] Create issue type "3c": edit swimmer details (free text - may require confirm from user after parsing)
@@ -235,15 +237,15 @@ class IssuesController < ApplicationController
     unless request.post? && type3c_params[:type3c_first_name].present? && type3c_params[:type3c_last_name].present? &&
            type3c_params[:type3c_year_of_birth].present? && type3c_params[:type3c_gender_type_id].present?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(issues_my_reports_path) and return
+      redirect_to(issues_my_reports_path) && return
     end
     if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
       flash[:warning] = I18n.t('issues.spam_notice')
-      redirect_to(issues_my_reports_path) and return
+      redirect_to(issues_my_reports_path) && return
     end
 
     create_issue('3c', type3c_params)
-    redirect_to(issues_my_reports_path) and return
+    redirect_to(issues_my_reports_path) && return
   end
 
   # [POST] Create issue type "4": generic application error or bug
@@ -252,15 +254,15 @@ class IssuesController < ApplicationController
     unless request.post? && type4_params[:expected].present? && type4_params[:outcome].present? &&
            type4_params[:reproduce].present?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(issues_my_reports_path) and return
+      redirect_to(issues_my_reports_path) && return
     end
     if GogglesDb::Issue.for_user(current_user).processable.count >= SPAM_LIMIT
       flash[:warning] = I18n.t('issues.spam_notice')
-      redirect_to(issues_my_reports_path) and return
+      redirect_to(issues_my_reports_path) && return
     end
 
     create_issue('4', type4_params)
-    redirect_to(issues_my_reports_path) and return
+    redirect_to(issues_my_reports_path) && return
   end
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   #-- -------------------------------------------------------------------------
@@ -301,14 +303,16 @@ class IssuesController < ApplicationController
   # Strong parameters checking for form type 1b & 3b ("report missing" & "change swimmer association")
   def type1b_params
     params.permit(:parent_meeting_id, :parent_meeting_class, :event_type_id, :event_type_label,
-                  :minutes, :seconds, :hundredths, :swimmer_id, :swimmer_label, :swimmer_complete_name,
-                  :swimmer_first_name, :swimmer_last_name, :swimmer_year_of_birth, :gender_type_id)
+                  :minutes, :seconds, :hundredths, :team_id, :team_label,
+                  :swimmer_id, :swimmer_label, :swimmer_complete_name,
+                  :swimmer_first_name, :swimmer_last_name, :swimmer_year_of_birth, :gender_type_id,
+                  :other_notes)
   end
 
   # Strong parameters checking for form type 1b1 & 2b1 ("report mistake")
   def type1b1_params
-    params.permit(:result_id, :result_class, :wrong_meeting, :wrong_swimmer, :wrong_team,
-                  :minutes, :seconds, :hundredths)
+    params.permit(:result_id, :result_class, :wrong_meeting, :wrong_event, :wrong_swimmer,
+                  :wrong_team, :minutes, :seconds, :hundredths, :dsq_missing, :other_notes)
   end
 
   # Strong parameters checking for form type 3c ("edit swimmer details")
@@ -332,14 +336,16 @@ class IssuesController < ApplicationController
 
   # Returns the correct sibling class for the AbstractResult, given the :result_class parameter.
   def result_class_from_params
-    return GogglesDb::MeetingIndividualResult if type1b1_params[:result_class].to_s.include?('IndividualResult')
+    return GogglesDb::MeetingIndividualResult.includes(:team, :swimmer, :event_type, :season) if type1b1_params[:result_class].to_s.include?('IndividualResult')
+    return GogglesDb::MeetingRelayResult.includes(:team, :event_type, :season) if type1b1_params[:result_class].to_s.include?('RelayResult')
 
-    GogglesDb::UserResult
+    GogglesDb::UserResult.includes(:swimmer, :event_type, :season)
   end
   #-- -------------------------------------------------------------------------
   #++
 
-  # Returns the list of available managed swimmers for the current user, given the season_id.
+  # Returns the dual list of available managed swimmers & teams for the current user, given the season_id.
+  # The returned array of array is in the format <tt>[array_of_managed_swimmer_ids, array_of_managed_team_ids]</tt>.
   # This will be used for preset values in DbSwimmerComponent options.
   def managed_swimmers(season_id)
     # If the list of available swimmers is nil, the swimmer select will be disabled by default.
@@ -352,9 +358,10 @@ class IssuesController < ApplicationController
                                                             'team_affiliations.season_id': season_id)
                                                      .map { |ma| ma.team_affiliation.team_id }
                                                      .uniq
-    GogglesDb::Badge.where(season_id:, team_id: managed_teams_ids)
-                    .map(&:swimmer)
-                    .uniq
+    managed_swimmer_ids = GogglesDb::Badge.where(season_id:, team_id: managed_teams_ids)
+                                          .map(&:swimmer)
+                                          .uniq
+    [managed_swimmer_ids, managed_teams_ids]
   end
   #-- -------------------------------------------------------------------------
   #++

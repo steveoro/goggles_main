@@ -51,7 +51,7 @@ module Solver
       return nil unless required_bindings.values.all?(&:present?)
 
       new_instance = GogglesDb::MeetingEvent.new
-      bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
+      bindings.each { |key, solved| new_instance.send(:"#{key}=", solved) unless solved.nil? }
       new_instance.heat_type_id = GogglesDb::HeatType::FINALS_ID unless new_instance.heat_type_id.to_i.positive?
       new_instance.event_order = existing_event_order(new_instance) + 1 unless new_instance.event_order.positive?
       new_instance.save # Don't throw validation errors

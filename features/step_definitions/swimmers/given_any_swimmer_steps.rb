@@ -14,7 +14,7 @@ end
 
 # Sets @chosen_swimmer
 Given('I have a previously chosen a random swimmer') do
-  @chosen_swimmer = GogglesDb::Swimmer.first(300).sample
+  @chosen_swimmer = GogglesDb::Swimmer.last(250).sample
   expect(@chosen_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
 end
 
@@ -24,7 +24,7 @@ Given('I have a chosen a random swimmer with existing MIRs') do
   # It's faster using 2 queries instead of 1:
   swimmer_id = GogglesDb::MeetingIndividualResult.includes(:swimmer).joins(:swimmer)
                                                  .distinct(:swimmer_id).pluck(:swimmer_id)
-                                                 .first(300).sample
+                                                 .last(250).sample
   @chosen_swimmer = GogglesDb::Swimmer.find(swimmer_id)
 end
 
@@ -35,7 +35,7 @@ Given('I have a chosen a random swimmer with existing user results') do
   # It's faster using 2 queries instead of 1:
   swimmer_id = GogglesDb::UserResult.includes(:swimmer).joins(:swimmer)
                                     .distinct(:swimmer_id).pluck(:swimmer_id)
-                                    .first(300).sample
+                                    .last(250).sample
   @chosen_swimmer = GogglesDb::Swimmer.find(swimmer_id)
   @associated_urs = GogglesDb::UserResult.where(swimmer_id:)
   expect(@associated_urs.count).to be_positive
@@ -48,7 +48,7 @@ Given('I have a chosen a random event type for the already chosen swimmer') do
   # It's faster using 2 queries instead of 1:
   event_type_id = GogglesDb::MeetingIndividualResult.where(swimmer_id: @chosen_swimmer.id)
                                                     .includes(:event_type).joins(:event_type)
-                                                    .distinct(:event_type).pluck(:event_type_id)
+                                                    .distinct('event_types.id').pluck('event_types.id')
                                                     .first(100).sample
   @chosen_event_type = GogglesDb::EventType.find(event_type_id)
 end

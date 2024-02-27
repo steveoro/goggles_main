@@ -1,0 +1,47 @@
+.modal-header
+  %h5.modal-title{ id: 'lap-edit-modal-title' }
+    %span
+      %i.fa.fa-clock-o
+      = t('laps.modal.form.title')
+    &nbsp;
+    %b= result_label
+
+  .fixed-top.text-center.pd-4.mt-4.d-none#modal-loading-indicator
+    .spinner-border.text-primary{ role: 'status', 'aria-hidden' => 'true' }
+
+  .alert.mx-auto.m-0.px-2.py-0.d-none#lap-modal-alert{ role: 'alert' }
+    %small#lap-modal-alert-text
+
+  %button.close{ 'aria-label' => t('datagrid.edit_modal.close_btn'), 'data-dismiss' => 'modal' }
+    %span{ 'aria-hidden' => 'true' } &times;
+.modal-body{ id: 'lap-edit-modal-body' }
+  .container
+    %table.table.table-sm
+      %thead
+        %tr#lap-table-header
+          %th{ scope: 'row', class: 'row border-0 d-flex' }
+            .col.text-center.align-self-center
+              %h6.py-2.bg-light-green= team.editable_name
+            .col-auto.text-center.align-self-center
+              = form_tag(relay_laps_path(@relay_result.id), id: "frm-add-mrs-row", method: :post,
+                          remote: true, class: 'form-inline') do
+                = hidden_field_tag('result_id', @relay_result.id)
+                = hidden_field_tag('result_class', @relay_result.class.name.split('::').last)
+                .form-group
+                  .field
+                    = select_tag('badge_id', options_from_collection_for_select(available_badges, 'id',
+                                  ->(badge){ SwimmerDecorator.decorate(badge.swimmer).text_label }), required: true, autofocus: true,
+                                  class: 'form-control mb-1')
+                    = select_tag('length_in_meters', options_for_select(available_relay_options), required: true, autofocus: true,
+                                  class: 'form-control mb-1')
+                    = submit_tag(t('datagrid.edit_modal.add_relay_result_btn'), id: 'btn-add-mrs-row',
+                                  disabled: unused_relay_fractions.blank?, class: 'btn btn-sm btn-outline-primary mb-1')
+
+      %tbody#laps-table-body
+        = render(partial: 'relay_laps/edit_relay_table_body', locals: { relay_result: @relay_result,
+                 max_relay_laps: max_relay_laps })
+
+.modal-footer
+  %button#modal-close.btn.btn-sm.btn-outline-secondary{ 'aria-label' => t('datagrid.edit_modal.close_btn'),
+                                            'data-dismiss' => 'modal', type: 'button' }
+    = I18n.t('datagrid.edit_modal.close_btn')

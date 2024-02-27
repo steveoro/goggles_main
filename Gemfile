@@ -98,6 +98,7 @@ group :development, :test do
   gem 'bullet'
   # gem 'byebug' # Uncomment and call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'letter_opener'
+  gem 'prosopite' # Bullet alternative
   gem 'pry'
   gem 'rspec'
   gem 'rspec_pacman_formatter'

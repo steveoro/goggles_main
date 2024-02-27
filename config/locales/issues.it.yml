@@ -50,14 +50,19 @@ it:
         notice:
           cant_manage: "Solo i Team manager possono selezionare un atleta dall'elenco."
           no_associated_swimmer: "Non hai un nuotatore associato al tuo account, quindi non è possibile preselezionare un atleta."
+          other_notes_placeholder: "(Inserisci qualsiasi altra informazione riguardante questo risultato mancante)"
       msg:
         meeting_not_found: "Meeting o Collegiale non trovato!"
+        missing_parameters: "Mancano parametri richiesti: impossibile procedere."
     type1b1:
       form:
         tooltip: "Segnala un errore in questo risultato del Meeting"
         title: "🚩 Segnala errore"
         tab_label: "Tempo sbagliato"
-        result_label: "Risultato corretto"
+        result_label: "Tempo corretto"
+        dsq_missing_label: "Questo risultato è stato squalificato"
+        other_notes: "Altre note"
+        other_notes_placeholder: "(Quant'altro necessiti correzione in questo risultato)"
     type1c:
       label: "Vorrei segnalare dei risultati mancanti per alcuni miei compagni di squadra o correggerne di sbagliati."
       description1: "Se sei già stato abilitato come 'Team Manager' di una delle squadre a cui sei iscritto, noterai che i link 'Segnala errore' (🚩) o 'Segnala risultato mancante' (🏴) compariranno non solo per i tuoi risultati ma anche per i tuoi compagni delle squadre che gestisci."
@@ -81,8 +86,9 @@ it:
     type2b1:
       form:
         btn_label: "🚩 Segnala"
-        tab_label: "Squadra o Atleta sbagliati"
+        tab_label: "Attribuzione Squadra o Atleta sbagliati"
         wrong_meeting_label: "Non ho/ha mai partecipato a questo Meeting"
+        wrong_event_label: "Non ho/ha mai partecipato a questa specifica gara"
         wrong_swimmer_label: "L'atleta non appartiene alla nostra Squadra"
         wrong_team_label: "Non ho mai fatto parte di questa Squadra"
 

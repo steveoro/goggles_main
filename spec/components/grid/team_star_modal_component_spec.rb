@@ -31,7 +31,7 @@ RSpec.describe Grid::TeamStarModalComponent, type: :component do
       expect(subject.at('#team-star-modal-body select#team_id')).to be_present
       expect(user_teams.map(&:editable_name))
         .to(match_array(subject.css('#team-star-modal-body #team_id option').map(&:text)))
-      expect(user_teams.map(&:id).map(&:to_s))
+      expect(user_teams.map { |x| x.id.to_s })
         .to(match_array(subject.css('#team-star-modal-body #team_id option').map(&:values).flatten))
     end
 

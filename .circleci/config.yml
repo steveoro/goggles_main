@@ -1,8 +1,8 @@
 version: 2.1
 orbs:
-  ruby: circleci/ruby@2.1.0
-  browser-tools: circleci/browser-tools@1.4.3
-  node: circleci/node@5.1.0
+  ruby: circleci/ruby@2.1.1
+  browser-tools: circleci/browser-tools@1.4.8
+  node: circleci/node@5.2.0
 
 ARTIFACTS_PATH: &ARTIFACTS_PATH ~/test-artifacts
 
@@ -102,7 +102,7 @@ jobs:
       - checkout
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - ruby/rubocop-check:
           app-dir: ~/goggles_main
           label: Rubocop
@@ -115,7 +115,7 @@ jobs:
       - checkout
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - run:
           name: Brakeman
           command: |
@@ -130,7 +130,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - run:
           <<: *common-db-setup
       - run:
@@ -148,7 +148,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - run:
           <<: *common-db-setup
       - run:
@@ -176,7 +176,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - run:
           <<: *common-db-setup
       - run:
@@ -204,7 +204,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - run:
           <<: *common-db-setup
       - run:
@@ -232,7 +232,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - run:
           <<: *common-db-setup
       - run:
@@ -260,7 +260,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - run:
           <<: *common-db-setup
       - run:
@@ -288,7 +288,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - run:
           <<: *common-db-setup
 
@@ -333,7 +333,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - run:
           <<: *common-db-setup
       - run:
@@ -361,7 +361,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - run:
           <<: *common-db-setup
       - run:
@@ -389,7 +389,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - run:
           <<: *common-db-setup
       - run:
@@ -431,7 +431,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - run:
           <<: *common-db-setup
       - node/install:
@@ -472,7 +472,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - run:
           <<: *common-db-setup
       - node/install:
@@ -514,7 +514,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
+          key: goggles_main-v0630
       - run:
           <<: *common-db-setup
       - node/install:
@@ -547,7 +547,7 @@ jobs:
           path: *ARTIFACTS_PATH
 
 
-  docker-build:
+  docker-latest:
     <<: *deploy-config
     steps:
       - checkout
@@ -555,109 +555,153 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0600
-      - when:
-          condition: << pipeline.git.tag >>
-          steps:
-            - run:
-                <<: *common-db-setup
-                environment:
-                  RAILS_ENV: production
-                  NODE_ENV: production
-                  BABEL_ENV: production
-      - unless:
-          condition: << pipeline.git.tag >>
-          steps:
-            - run:
-                <<: *common-db-setup
-                environment:
-                  RAILS_ENV: staging
-                  NODE_ENV: production
-                  BABEL_ENV: production
-
+          key: goggles_main-v0630
+      - run:
+          <<: *common-db-setup
+          environment:
+            RAILS_ENV: staging
+            NODE_ENV: production
+            BABEL_ENV: production
       - node/install:
           install-yarn: true
           node-version: '16.13'
       - setup_remote_docker:
-          version: 20.10.14
+          version: default
           docker_layer_caching: true
-      - when:
-          condition: << pipeline.git.tag >>
-          steps:
-            - restore_cache:
-                keys:
-                  - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
-            - run:
-                <<: *web-assets
-                environment:
-                  RAILS_ENV: production
-                  NODE_ENV: production
-                  BABEL_ENV: production
-            - save_cache:
-                key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
-                paths:
-                  - public/packs
-                  - tmp/cache/webpacker
-                  - node_modules/.cache
-            - run:
-                name: Docker TAGGED prod
-                command: |
-                  echo "Git Tag << pipeline.git.tag >>"
-                  echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
-                  docker pull $DOCKERHUB_USERNAME/goggles-main:latest
-                  RAILS_ENV=production bundle exec rails assets:precompile
-                  docker build -t $DOCKERHUB_USERNAME/goggles-main:prod-<< pipeline.git.tag >> --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.prod .
-                  docker push $DOCKERHUB_USERNAME/goggles-main:prod-<< pipeline.git.tag >>
-      - unless:
-          condition: << pipeline.git.tag >>
-          steps:
-            - restore_cache:
-                keys:
-                  - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
-            - run:
-                <<: *web-assets
-                environment:
-                  RAILS_ENV: staging
-                  NODE_ENV: production
-                  BABEL_ENV: production
-            - save_cache:
-                key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
-                paths:
-                  - public/packs
-                  - tmp/cache/webpacker
-                  - node_modules/.cache
-            - run:
-                name: Docker LATEST staging
-                command: |
-                  echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
-                  docker pull $DOCKERHUB_USERNAME/goggles-main:latest
-                  RAILS_ENV=staging bundle exec rails assets:precompile
-                  docker build -t $DOCKERHUB_USERNAME/goggles-main:latest --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.staging .
-                  docker push $DOCKERHUB_USERNAME/goggles-main:latest
+      - restore_cache:
+          keys:
+            - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
+      - run:
+          <<: *web-assets
+          environment:
+            RAILS_ENV: staging
+            NODE_ENV: production
+            BABEL_ENV: production
+      - save_cache:
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
+          paths:
+            - public/packs
+            - tmp/cache/webpacker
+            - node_modules/.cache
+      - run:
+          name: Docker LATEST staging
+          command: |
+            echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+            docker pull $DOCKERHUB_USERNAME/goggles-main:latest
+            RAILS_ENV=staging bundle exec rails assets:precompile
+            docker build -t $DOCKERHUB_USERNAME/goggles-main:latest --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.staging .
+            docker push $DOCKERHUB_USERNAME/goggles-main:latest
 
-
-  deploy:
+  docker-versioned:
     <<: *deploy-config
     steps:
-      - when:
-          condition: << pipeline.git.tag >>
-          steps:
-            - run:
-                name: Production DEPLOY
-                command: |
-                  echo "Git Tag << pipeline.git.tag >>"
-                  ssh -o StrictHostKeyChecking=no deploy@$SSH_SERVER "TAG=<< pipeline.git.tag >> MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_prod.sh"
-      - unless:
-          condition: << pipeline.git.tag >>
-          steps:
-            - run:
-                name: Staging DEPLOY
-                command: |
-                  ssh -o StrictHostKeyChecking=no deploy@$SSH_SERVER "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_staging.sh"
+      - checkout
+      - attach_workspace:
+          at: ~/goggles_main/tmp
+      - ruby/install-deps:
+          app-dir: ~/goggles_main
+          key: goggles_main-v0630
+      - run:
+          <<: *common-db-setup
+          environment:
+            RAILS_ENV: production
+            NODE_ENV: production
+            BABEL_ENV: production
+      - node/install:
+          install-yarn: true
+          node-version: '16.13'
+      - setup_remote_docker:
+          version: default
+          docker_layer_caching: true
+      - restore_cache:
+          keys:
+            - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
+      - run:
+          <<: *web-assets
+          environment:
+            RAILS_ENV: production
+            NODE_ENV: production
+            BABEL_ENV: production
+      - save_cache:
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
+          paths:
+            - public/packs
+            - tmp/cache/webpacker
+            - node_modules/.cache
+      - run:
+          name: Docker TAGGED prod
+          command: |
+            echo "Git Tag: << pipeline.git.tag >>"
+            echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+            docker pull $DOCKERHUB_USERNAME/goggles-main:latest
+            RAILS_ENV=production bundle exec rails assets:precompile
+            docker build -t $DOCKERHUB_USERNAME/goggles-main:prod-<< pipeline.git.tag >> --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.prod .
+            docker push $DOCKERHUB_USERNAME/goggles-main:prod-<< pipeline.git.tag >>
+
+
+  deploy-staging:
+    <<: *deploy-config
+    steps:
+      - run:
+          name: Staging DEPLOY
+          command: |
+            ssh -o StrictHostKeyChecking=no deploy@$SSH_SERVER "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_staging.sh"
+
+  deploy-production:
+    <<: *deploy-config
+    steps:
+      - run:
+          name: Production DEPLOY
+          command: |
+            echo "Git Tag << pipeline.git.tag >>"
+            ssh -o StrictHostKeyChecking=no deploy@$SSH_SERVER "TAG=<< pipeline.git.tag >> MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_prod.sh"
 
 
 workflows:
-  full-build:
+  build-and-deploy-versioned:
+    jobs:
+      - persisted-data:
+          filters:
+            tags:
+              only: /^\d+\.\d+.*/
+            branches:
+              ignore: /.*/
+      - brakeman:
+          requires:
+            - persisted-data
+          filters:
+            tags:
+              only: /^\d+\.\d+.*/
+            branches:
+              ignore: /.*/
+      - zeitwerk:
+          requires:
+            - persisted-data
+          filters:
+            tags:
+              only: /^\d+\.\d+.*/
+            branches:
+              ignore: /.*/
+      - docker-versioned:
+          requires:
+            - brakeman
+            - zeitwerk
+          filters:
+            tags:
+              only: /^\d+\.\d+.*/
+            branches:
+              ignore: /.*/
+      - deploy-production:
+          requires:
+            - docker-versioned
+          filters:
+            tags:
+              only: /^\d+\.\d+.*/
+            branches:
+              ignore: /.*/
+
+
+  test-and-deploy-latest:
     jobs:
       - persisted-data
       - brakeman:
@@ -681,7 +725,6 @@ workflows:
             - rubocop
             - zeitwerk
 
-
       - rspec-requests:
           requires:
             - brakeman
@@ -689,7 +732,7 @@ workflows:
             - zeitwerk
           pre-steps:
             - browser-tools/install-chrome:
-                chrome-version: 114.0.5735.90
+                chrome-version: 122.0.6261.69
                 replace-existing: true
             - browser-tools/install-chromedriver
             - run:
@@ -698,7 +741,6 @@ workflows:
                   google-chrome --version
                   chromedriver --version
                   node -v
-
 
       - rspec-helpers:
           requires:
@@ -730,13 +772,12 @@ workflows:
             - rspec-strategies
             - rspec-integration
 
-
       - cucumber-desktop:
           requires:
             - persisted-data
           pre-steps:
             - browser-tools/install-chrome:
-                chrome-version: 114.0.5735.90
+                chrome-version: 122.0.6261.69
                 replace-existing: true
             - browser-tools/install-chromedriver
             - run:
@@ -751,7 +792,7 @@ workflows:
             - rspec-requests
           pre-steps:
             - browser-tools/install-chrome:
-                chrome-version: 114.0.5735.90
+                chrome-version: 122.0.6261.69
                 replace-existing: true
             - browser-tools/install-chromedriver
             - run:
@@ -766,7 +807,7 @@ workflows:
             - rspec-requests
           pre-steps:
             - browser-tools/install-chrome:
-                chrome-version: 114.0.5735.90
+                chrome-version: 122.0.6261.69
                 replace-existing: true
             - browser-tools/install-chromedriver
             - run:
@@ -776,13 +817,11 @@ workflows:
                   chromedriver --version
                   node -v
 
-
-      - docker-build:
+      - docker-latest:
           requires:
             - cucumber-desktop
             - cucumber-narrow
             - cucumber-tablet
-
-      - deploy:
+      - deploy-staging:
           requires:
-            - docker-build
+            - docker-latest

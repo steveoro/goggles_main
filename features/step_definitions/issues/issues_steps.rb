@@ -40,7 +40,7 @@ end
 # -----------------------------------------------------------------------------
 
 Then('I can\'t see any of the {string} \({string}) buttons on the results of the page') do |_issue_name, issue_type|
-  expect(page).not_to have_css("a.btn.issue-#{issue_type}-btn")
+  expect(page).to have_no_css("a.btn.issue-#{issue_type}-btn")
   # Alternatively, more explicit:
   #
   # find('a.btn', visible: true) # Make sure the page has rendered buttons
@@ -49,6 +49,16 @@ Then('I can\'t see any of the {string} \({string}) buttons on the results of the
 end
 
 Then('I can see the {string} \({string}) buttons on the results of the page') do |_issue_name, issue_type|
+  10.times do
+    wait_for_ajax
+    if page.has_css?("a.btn.issue-#{issue_type}-btn")
+      sleep(0.5)
+      putc '.'
+      break
+    else
+      putc '-'
+    end
+  end
   expect(page).to have_css("a.btn.issue-#{issue_type}-btn")
 end
 
@@ -129,6 +139,7 @@ When('I see my newly created issue') do
   end
   issue_grid = find('section#issues-grid table tbody', visible: true)
   last_row = issue_grid.find_all('tr', visible: true).last
+  expect(issue_grid.text).to include(@latest_issue.req.to_s)
   expect(last_row.text).to include(@latest_issue.req.to_s)
 end
 
@@ -157,5 +168,5 @@ end
 # - @chosen_issue_row_id
 When('I can see that the chosen issue row has been deleted') do
   expect(find('section#issues-grid table tbody', visible: true))
-    .not_to have_selector("#frm-delete-row-#{@chosen_issue_row_id}")
+    .to have_no_css("#frm-delete-row-#{@chosen_issue_row_id}")
 end

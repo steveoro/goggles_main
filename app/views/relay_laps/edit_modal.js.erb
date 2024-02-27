@@ -1,0 +1,10 @@
+document.querySelector('#lap-edit-modal-container').innerHTML = "<%=
+  escape_javascript(
+    render(
+      RelayLaps::EditModalComponent.new(relay_result: @parent_result)
+    )
+  )
+%>";
+
+$('#loading-indicator').addClass('d-none');
+$('#lap-edit-modal').modal('show');

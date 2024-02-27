@@ -3,7 +3,7 @@
 #
 # = MIR components module
 #
-#   - version:  7-0.5.01
+#   - version:  7-0.6.30
 #   - author:   Steve A.
 #
 module MIR
@@ -31,7 +31,8 @@ module MIR
 
     # Skips rendering unless @mirs is enumerable and orderable :by_timing
     def render?
-      @mirs.respond_to?(:each) && @mirs.respond_to?(:by_timing)
+      @mirs.respond_to?(:each) && @mirs.respond_to?(:by_timing) && @mirs.respond_to?(:by_rank) &&
+        @mirs.respond_to?(:with_rank) && @mirs.respond_to?(:with_no_rank)
     end
 
     protected

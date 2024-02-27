@@ -42,7 +42,7 @@
                   .col.px-0
                     = meeting.meeting_entries.where(['swimmer_id = ? AND meeting_program_id = ?', mir.swimmer_id, mir.meeting_program_id]).first.to_timing
 
-        - if mir.laps.count.positive?
+        - if mir.laps.present?
           = render(Laps::TableComponent.new(laps: mir.laps, collapsed: false))
 
   .row

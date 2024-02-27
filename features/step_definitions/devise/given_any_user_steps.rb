@@ -218,6 +218,111 @@ Given('I have a confirmed team manager account managing some existing MIRs') do
   @current_user.save!
   expect(@current_user.confirmed_at).to be_present
 end
+
+# == Less restrictive domain case for managing "any MRRs"
+#
+# Designed for Meetings & Team Managers (similar to the above, w/o setting an associated swimmer).
+# Selects any team "with MRRs" from the latest available FIN season (with MRRs present in it).
+# The current user will become a TeamManager for that team, in the season of the chosen Meeting.
+#
+# Sets:
+# - @current_user
+# - @managed_team
+# - @associated_mrrs => MRRS associated to the @managed_team
+# - @last_seasons_ids => list of valid Season IDs considered as "manageable"
+Given('I have a confirmed team manager account managing some existing MRRs') do
+  # Consider last season *including* results:
+  # (NOTE: cfr. app/controllers/application_controller.rb:278)
+
+  # == Less restrictive: "any MRRs"
+  @last_seasons_ids = [
+    GogglesDb::Season.joins(meetings: :meeting_relay_results)
+                     .last_season_by_type(GogglesDb::SeasonType.mas_fin).id
+  ]
+  last_season_id = @last_seasons_ids.first
+
+  # Make sure we choose a team w/ results by selecting the meeting first & the team manager afterwards,
+  # creating also anything that's beeen missing:
+  meeting_with_results = GogglesDb::Meeting.includes(:meeting_relay_results).joins(:meeting_relay_results)
+                                           .where(season_id: last_season_id)
+                                           .by_date(:desc).first(25)
+                                           .sample
+  @managed_team = meeting_with_results.meeting_relay_results.sample.team
+  expect(@managed_team).to be_a(GogglesDb::Team).and be_valid
+  @associated_mrrs = GogglesDb::MeetingRelayResult.includes(meeting: :season).joins(meeting: :season)
+                                                  .where(team_id: @managed_team.id, 'meetings.season_id': last_season_id)
+  expect(@associated_mrrs.count).to be_positive
+
+  team_affiliation = GogglesDb::TeamAffiliation.where(team_id: @managed_team.id, season_id: last_season_id).first ||
+                     FactoryBot.create(:team_affiliation, season: GogglesDb::Season.find(last_season_id))
+  managed_aff = GogglesDb::ManagedAffiliation.where(team_affiliation_id: team_affiliation.id).first ||
+                FactoryBot.create(:managed_affiliation, team_affiliation:)
+
+  @current_user = managed_aff.manager
+  @current_user.confirmed_at = Time.zone.now if @current_user.confirmed_at.blank?
+  # This is needed when the user comes from the test seed and its password may be already encrypted:
+  @current_user.password = 'Password123!' # force usage of test password for easier login
+  @current_user.save!
+  expect(@current_user.confirmed_at).to be_present
+end
+
+# == More complex domain case for managing "long MRRs" (4x100s/4x200s, relays w/ "sublaps")
+#
+# Designed for Meetings & Team Managers (similar to the above, w/o setting an associated swimmer).
+# Selects any team from "long MRRs" from the latest available FIN season with long MRRs in it.
+# The current user will become a TeamManager for that team, in the season of the chosen Meeting.
+#
+# Sets:
+# - @current_user
+# - @managed_team
+# - @associated_mrrs => MRRS (only "long length") associated to the @managed_team
+# - @last_seasons_ids => list of valid Season IDs considered as "manageable" (given the type of results searched for)
+#
+Given('I have a confirmed team manager account managing some existing MRRs with possible sublaps') do
+  # Consider last season *including* results:
+  # (NOTE: cfr. app/controllers/application_controller.rb:278)
+
+  @last_seasons_ids = [
+    GogglesDb::Season.includes(
+      meetings: [meeting_relay_results: { meeting_event: :event_type }]
+    ).joins(
+      meetings: [meeting_relay_results: { meeting_event: :event_type }]
+    ).where(
+      'event_types.code': %w[S4X100SL S4X100MI S4X200SL M4X100SL M4X100MI M4X200SL]
+    ).last_season_by_type(GogglesDb::SeasonType.mas_fin).id
+  ]
+  last_season_id = @last_seasons_ids.first
+
+  # Make sure we choose a team w/ results by selecting the meeting first & the team manager afterwards,
+  # creating also anything that's been missing:
+  meeting_with_results = GogglesDb::Meeting.includes(meeting_relay_results: { meeting_event: :event_type })
+                                           .joins(meeting_relay_results: { meeting_event: :event_type })
+                                           .where(season_id: last_season_id, 'event_types.code': %w[S4X100SL S4X100MI S4X200SL M4X100SL M4X100MI M4X200SL])
+                                           .by_date(:desc).first(25)
+                                           .sample
+  long_mrrs = GogglesDb::MeetingRelayResult.includes(:meeting, { meeting_event: :event_type })
+                                           .joins(:meeting, { meeting_event: :event_type })
+                                           .where(
+                                             'meetings.id': meeting_with_results.id,
+                                             'event_types.code': %w[S4X100SL S4X100MI S4X200SL M4X100SL M4X100MI M4X200SL]
+                                           )
+  @managed_team = long_mrrs.sample.team
+  expect(@managed_team).to be_a(GogglesDb::Team).and be_valid
+  @associated_mrrs = long_mrrs.where(team_id: @managed_team.id)
+  expect(@associated_mrrs.count).to be_positive
+
+  team_affiliation = GogglesDb::TeamAffiliation.where(team_id: @managed_team.id, season_id: last_season_id).first ||
+                     FactoryBot.create(:team_affiliation, season: GogglesDb::Season.find(last_season_id))
+  managed_aff = GogglesDb::ManagedAffiliation.where(team_affiliation_id: team_affiliation.id).first ||
+                FactoryBot.create(:managed_affiliation, team_affiliation:)
+
+  @current_user = managed_aff.manager
+  @current_user.confirmed_at = Time.zone.now if @current_user.confirmed_at.blank?
+  # This is needed when the user comes from the test seed and its password may be already encrypted:
+  @current_user.password = 'Password123!' # force usage of test password for easier login
+  @current_user.save!
+  expect(@current_user.confirmed_at).to be_present
+end
 # -----------------------------------------------------------------------------
 
 # Designed for UserWorkshops

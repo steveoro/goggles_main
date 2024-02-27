@@ -3,7 +3,6 @@
 
   .main-content#top-of-page
     = render(partial: 'meetings/meeting_header', locals: { meeting: @user_workshop })
-
     - cache(cache_key_for_meeting(action: 'workshop_show', id: @user_workshop.id, max_updated_at: @max_updated_at,
             team_id: @team&.id, swimmer_id: @swimmer&.id)) do
       %section#workshop-show-results

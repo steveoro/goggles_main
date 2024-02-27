@@ -3,7 +3,7 @@
 #
 # = MRR components module
 #
-#   - version:  7.01
+#   - version:  7-0.6.30
 #   - author:   Steve A.
 #
 module MRR
@@ -19,22 +19,45 @@ module MRR
     # Creates a new ViewComponent
     #
     # == Params
-    # - mrr: the GogglesDb::MeetingRelayResult model instance to be displayed
-    def initialize(mrr:)
+    # - :mrr            => [required] GogglesDb::MeetingRelayResult model instance to be displayed
+    # - :index          => the current MRR ordering index from its associated MPRG (if available),
+    #                      spanning the event context (can substitute rank in case the rank is missing)
+    # - :lap_edit       => when +true+, it will render the "lap edit" row-action button
+    # - :report_mistake => when +true+, it will render the "report mistake" row-action button
+    def initialize(options = {})
       super
-      @mrr = mrr
+      @mrr = options[:mrr]
+      @index = options[:index] || 0
+      @lap_edit = options[:lap_edit] || false
+      @report_mistake = options[:report_mistake] || false
     end
 
     # Skips rendering unless the member is properly set
     def render?
-      @mrr.instance_of?(GogglesDb::MeetingRelayResult)
+      @mrr.instance_of?(GogglesDb::MeetingRelayResult) &&
+        @mrr.id.to_i.positive?
     end
 
     protected
 
-    # Memoized lap (relay swimmer) presence
-    def laps?
-      @laps ||= @mrr.meeting_relay_swimmers.count.positive?
+    # Memoized rank value
+    def rank
+      @rank ||= @mrr.rank
+    end
+
+    # Memoized Meeting#id
+    def meeting_id
+      @meeting_id ||= @mrr&.meeting&.id
+    end
+
+    # Memoized Team association
+    def team
+      @team ||= @mrr.team
+    end
+
+    # Memoized MeetingRelaySwimmers list.
+    def mrs
+      @mrs ||= @mrr.meeting_relay_swimmers
     end
 
     # Relay name; gives precedence to the Relay code, if present

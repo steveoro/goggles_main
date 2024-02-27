@@ -17,7 +17,6 @@ module Switch
     # Creates a new ViewComponent
     #
     # == Params
-    #
     # - <tt>target_id</tt>: a collapsed body DOM ID as target for the component; the component will toggle
     #   the collapse CSS class from the target, if available.
     #

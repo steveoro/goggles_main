@@ -34,7 +34,8 @@
             #{SwimmingPoolDecorator.decorate(swimming_pool).link_to_full_name}
     %td
       .text-muted.text-right
-        = result_score
+        - unless result_score.blank?
+          = Kernel.format("%2.2f", result_score)
 
 - if includes_laps?
   = render(Laps::TableComponent.new(laps: laps))

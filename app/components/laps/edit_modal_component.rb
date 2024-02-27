@@ -3,7 +3,7 @@
 #
 # = Laps components module
 #
-#   - version:  7-0.5.01
+#   - version:  7-0.6.20
 #   - author:   Steve A.
 #
 module Laps

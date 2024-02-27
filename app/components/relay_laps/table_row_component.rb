@@ -3,7 +3,7 @@
 #
 # = RelayLaps components module
 #
-#   - version:  7-0.1.00
+#   - version:  7-0.6.30
 #   - author:   Steve A.
 #
 module RelayLaps
@@ -28,14 +28,18 @@ module RelayLaps
       @relay_swimmer = relay_swimmer
     end
 
-    # Skips rendering unless the membere is properly set
+    # Skips rendering unless the member is properly set
     def render?
-      @relay_swimmer.instance_of?(GogglesDb::MeetingRelaySwimmer)
+      @relay_swimmer.instance_of?(GogglesDb::MeetingRelaySwimmer) &&
+        @relay_swimmer.id.to_i.positive?
     end
 
     protected
 
-    # Returns the DOM ID for this component
+    # Returns the DOM ID for this component.
+    # Note: it'd be a required reference to the parent result so that each table row gets
+    # expanded at once by the same parent result (in this case, the MRR).
+    # (This is a known hack)
     def dom_id
       "laps#{@relay_swimmer.meeting_relay_result_id}"
     end
@@ -44,12 +48,11 @@ module RelayLaps
     def related_laps
       @related_laps ||= @relay_swimmer.meeting_relay_result
                                       .meeting_relay_swimmers
-                                      .includes(:meeting, :swimmer, :stroke_type)
     end
 
     # Memoized Meeting instance
     def meeting
-      @meeting ||= related_laps.first.meeting
+      @meeting ||= @relay_swimmer.meeting_relay_result.meeting
     end
 
     # Memoized Swimmer instance
@@ -57,22 +60,20 @@ module RelayLaps
       @swimmer ||= @relay_swimmer.swimmer
     end
 
-    # WIP: move this into core DB
+    # Returns the timing recorded from the start of this relay lap/phase
     def timing_from_start
-      precending_laps = related_laps.by_order
-                                    .where('relay_order <= ?', @relay_swimmer.relay_order)
       Timing.new(
-        hundredths: precending_laps.sum(:hundredths),
-        seconds: precending_laps.sum(:seconds),
-        minutes: precending_laps.sum(:minutes)
+        hundredths: @relay_swimmer.hundredths_from_start,
+        seconds: @relay_swimmer.seconds_from_start,
+        minutes: @relay_swimmer.minutes_from_start
       )
     end
 
-    # Returns the DOM ID for this component
-    def swimmer_text_label_with_age
+    # Returns the year of birth and the approximate age for the swimmer.
+    def swimmer_year_and_age_label
       return '' unless swimmer && meeting
 
-      "#{swimmer.complete_name} (#{swimmer.year_of_birth} ~ #{swimmer.age(meeting.header_date)})"
+      "(#{swimmer.year_of_birth} ~ #{swimmer.age(meeting.header_date)})"
     end
   end
 end

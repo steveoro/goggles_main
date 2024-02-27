@@ -2,22 +2,29 @@
 
 Then('I can\'t see any of the lap edit buttons on the whole page') do
   table_nodes = find('table.table tbody tr', visible: true)
-  expect(table_nodes).not_to have_css('a.btn.lap-edit-btn')
+  expect(table_nodes).to have_no_css('a.btn.lap-edit-btn')
 end
 
 Then('I can see the lap edit buttons on the page') do
   # WARNING: meeting show page could take a while to get rendered
-  sleep(1) && wait_for_ajax
-  find('.main-content#top-of-page', visible: true)
-  find('.lap-edit-btn', visible: true)
+  step("I wait until the slow-rendered page portion '.main-content#top-of-page' is visible")
+  step("I wait until the slow-rendered page portion '.lap-edit-btn' is visible")
+  expect(find('.lap-edit-btn')).to be_visible
 end
 # -----------------------------------------------------------------------------
 
 # Uses:
 # - @chosen_mir (can be an AbstractResult)
 When('I click the button to manage its laps') do
-  expect(page).to have_css('a.btn.lap-edit-btn')
+  sleep(1)
+  wait_for_ajax
   expect(@chosen_mir).to be_a(GogglesDb::AbstractResult).and be_valid
+
+  step("I wait until the slow-rendered page portion '.lap-edit-btn' is visible")
+  expect(page).to have_css('a.btn.lap-edit-btn')
+  step("I wait until the slow-rendered page portion '#lap-req-edit-modal-#{@chosen_mir.id}' is visible")
+  expect(page).to have_css("#lap-req-edit-modal-#{@chosen_mir.id}")
+
   btn = find("a.btn#lap-req-edit-modal-#{@chosen_mir.id}", visible: true)
   btn.click
   sleep(1) && wait_for_ajax
@@ -55,7 +62,8 @@ When('I choose to add a 25m lap') do
   find("#lap-edit-modal.modal a#lap-new25-#{@chosen_mir.id}", visible: true).click
   # XJS partial re-rending is pretty slow:
   20.times do
-    wait_for_ajax && sleep(1)
+    wait_for_ajax
+    sleep(1)
     break if find_all('tbody#laps-table-body tr td .lap-row').count > before_add
   end
 end
@@ -63,7 +71,7 @@ end
 # Sets:
 # - @chosen_lap_idx
 When('I see another empty lap row is added \(only if the last distance is less than the goal)') do
-  find('tbody#laps-table-body tr td .lap-row', visible: true)
+  step("I wait until the slow-rendered page portion 'tbody#laps-table-body tr td .lap-row' is visible")
   @chosen_lap_idx = find_all('tbody#laps-table-body tr td .lap-row').count - 1
   # No empty lap will be created if we've selected a random result that already has laps
   # that fill all the available step distances:
@@ -105,6 +113,7 @@ end
 # - @chosen_lap_idx
 # - @chosen_lap (can be an AbstractLap)
 When('I see my chosen lap has been correctly saved') do
+  step("I wait until the slow-rendered page portion 'tbody#laps-table-body tr td form#frm-lap-row-#{@chosen_lap_idx + 1}' is visible")
   find("tbody#laps-table-body tr td form#frm-lap-row-#{@chosen_lap_idx + 1}", visible: true)
   expect(find("input#length_in_meters_#{@chosen_lap_idx}").value).to eq(@chosen_lap.length_in_meters.to_s)
   expect(find("input#minutes_from_start_#{@chosen_lap_idx}").value).to eq(@chosen_lap.minutes.to_s)
@@ -126,14 +135,20 @@ end
 When('I click to delete my chosen lap and confirm the deletion') do
   before_deletion = find_all('tbody#laps-table-body tr td .lap-row').count
   delete_btn = find("#lap-delete-row-#{@chosen_lap_idx}", visible: true)
-  expect(delete_btn).to be_visible
   accept_confirm do
     delete_btn.click
     sleep(1)
   end
   # XJS partial re-rending is pretty slow:
-  20.times do
-    wait_for_ajax && sleep(1)
+  css_selector = 'tbody#laps-table-body tr td .lap-row'
+  step("I wait until the slow-rendered page portion '#{css_selector}' is visible")
+  expect(page).to have_css(css_selector)
+
+  25.times do
+    putc 'S' # Signal "*S*low" retry
+    find('tbody#laps-table-body tr td')
+    wait_for_ajax
+    sleep(1)
     break if find_all('tbody#laps-table-body tr td .lap-row').count < before_deletion
   end
   expect(find_all('tbody#laps-table-body tr td .lap-row').count).to be < before_deletion

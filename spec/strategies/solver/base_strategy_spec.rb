@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-require GogglesDb::Engine.root.join('spec', 'support', 'shared_method_existance_examples')
+require GogglesDb::Engine.root.join('spec', 'support', 'shared_method_existence_examples')
 
 RSpec.describe Solver::BaseStrategy, type: :strategy do
   subject { described_class.new(req: {}) }

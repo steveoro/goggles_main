@@ -26,3 +26,6 @@ en:
       edit_ok: "Changes have been successfully saved."
       edit_failed: "Save action failed: %{error}"
       create_ok: "New row created! (ID: %{id})"
+      add_relay_result_btn: "+ Fraction"
+      delete_swimmer_fraction_confirm: "This whole relay part performed by %{swimmer_name} will be DELETED.\r\nAs a follow-up, this data will have to be input again by hand (presumably, by yourself).\r\nBe advised that you're taking full responsibility for this: your teammates shall be informed of this and may decide, in future, to punish you physically.\r\n(I'm joking. Or do I...) Anyway...\r\nARE WE REALLY SURE to PROCEED?"
+      delete_failed: "Unable to delete: try again later."

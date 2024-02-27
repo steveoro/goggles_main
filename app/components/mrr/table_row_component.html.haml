@@ -1,17 +1,25 @@
-%tbody
+%tbody.result-table-row{ id: "mrr#{@mrr.id}" }
   %tr
     %td.text-right
-      = render(RankingPosComponent.new(rank: @mrr.rank))
-    %td.text-right
-      = @mrr.to_timing.to_s
-      - if laps?
-        %br/
-        = render(Switch::RotatingComponent.new(target_id: "laps#{@mrr.id}"))
+      = render(RankingPosComponent.new(rank: rank))
+    %td.text-right.pl-0
+      - if @mrr.reaction_time > 0.0
+        %small.text-muted
+          R: #{@mrr.reaction_time}
+        &nbsp;
+      = @mrr.to_timing
+      %br/
+      = render(Switch::RotatingComponent.new(target_id: "laps#{@mrr.id}")) if mrs.present?
+      = render(RelayLaps::EditButtonComponent.new(relay_result: @mrr, can_manage: @lap_edit))
+      = render(Issues::ReportMistakeButtonComponent.new(result_row: @mrr, can_manage: @report_mistake))
     %td
-      = relay_name
+      %span.team-result-link
+        #{TeamDecorator.decorate(team).link_to_results(meeting_id)},
+      %small (#{relay_name} #{@mrr.category_type.short_name})
     %td
-      .text-muted
-        = result_score
+      .text-muted.text-right
+        - unless result_score.blank?
+          = Kernel.format("%2.2f", result_score)
 
-- if laps?
-  = render(RelayLaps::TableComponent.new(relay_swimmers: @mrr.meeting_relay_swimmers))
+- if mrs.present?
+  = render(RelayLaps::TableComponent.new(relay_swimmers: mrs))

@@ -56,6 +56,10 @@ class TaggingsController < ApplicationController
     end
 
     @meeting = GogglesDb::Meeting.find_by(id: tag_params[:meeting_id])
+    return unless @meeting
+
+    update_user_teams_for_seasons_ids([@meeting.season_id])
+    update_managed_teams_for_seasons_ids([@meeting.season_id])
   end
 
   # Validates the required team_id parameter

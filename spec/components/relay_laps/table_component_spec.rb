@@ -4,13 +4,13 @@ require 'rails_helper'
 
 RSpec.describe RelayLaps::TableComponent, type: :component do
   context 'with a valid parameter,' do
-    subject { render_inline(described_class.new(relay_swimmers: fixture_mrr.meeting_relay_swimmers)) }
+    subject { render_inline(described_class.new(relay_swimmers: parent_result.meeting_relay_swimmers)) }
 
-    let(:fixture_mrr) { FactoryBot.create(:meeting_relay_result_with_swimmers) }
+    let(:parent_result) { FactoryBot.create(:meeting_relay_result_with_swimmers) }
 
     before do
-      expect(fixture_mrr).to be_a(GogglesDb::MeetingRelayResult).and be_valid
-      expect(fixture_mrr.meeting_relay_swimmers.count).to be_positive
+      expect(parent_result).to be_a(GogglesDb::MeetingRelayResult).and be_valid
+      expect(parent_result.meeting_relay_swimmers.count).to be_positive
     end
 
     it 'renders a table body' do
@@ -18,7 +18,7 @@ RSpec.describe RelayLaps::TableComponent, type: :component do
     end
 
     it 'renders as many table rows as the laps specified' do
-      expect(subject.css('tr').count).to eq(fixture_mrr.meeting_relay_swimmers.count)
+      expect(subject.css('tr').count).to eq(parent_result.meeting_relay_swimmers.count)
     end
   end
 

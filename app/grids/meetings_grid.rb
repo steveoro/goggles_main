@@ -7,16 +7,16 @@
 class MeetingsGrid < BaseGrid
   # Returns the default scope for the grid. (#assets is the filtered version of it)
   scope do
-    GogglesDb::Meeting.includes(:meeting_sessions)
-                      .joins(:meeting_sessions)
+    GogglesDb::Meeting.includes(:meeting_sessions, season: [:federation_type])
+                      .joins(:meeting_sessions, season: [:federation_type])
                       .distinct
                       .by_date(:desc)
   end
 
   filter(:meeting_date, :date, header: I18n.t('meetings.dashboard.params.meeting_date_label'),
                                input_options: { maxlength: 10, placeholder: 'YYYY-MM-DD' }) do |value, scope|
-    scope.includes(:meeting_sessions)
-         .joins(:meeting_sessions)
+    scope.includes(:meeting_sessions, :season, :federation_type)
+         .joins(:meeting_sessions, :season)
          .where('header_date >= ? OR meeting_sessions.scheduled_date >= ?', value, value)
   end
 

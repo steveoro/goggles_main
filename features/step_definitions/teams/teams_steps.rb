@@ -38,7 +38,7 @@ Then('I am at the team swimmers page index for team ID {int}') do |team_id|
 end
 
 Then('the list of swimmers is not displayed') do
-  expect(page).not_to have_css('#swimmers-list table')
+  expect(page).to have_no_css('#swimmers-list table')
 end
 
 Then('I see the list of swimmers for team ID {int}') do |_team_id|

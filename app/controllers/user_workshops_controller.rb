@@ -108,6 +108,10 @@ class UserWorkshopsController < ApplicationController
     @user_workshop = GogglesDb::UserWorkshop.includes(:user_results, :event_types)
                                             .where(id: user_workshop_params[:id])
                                             .first
+    return unless @user_workshop
+
+    update_user_teams_for_seasons_ids([@user_workshop.season_id])
+    update_managed_teams_for_seasons_ids([@user_workshop.season_id])
   end
 
   # Prepares the internal @team variable; falls backs to the first associated team found for the current swimmer if
@@ -134,6 +138,6 @@ class UserWorkshopsController < ApplicationController
   # Sets the internal <tt>@max_updated_at</tt> value that will be used as main cache timestamp for the current <tt>@user_workshop</tt>.
   def set_max_updated_at_for_workshop
     # Get a timestamp from last updated result:
-    @max_updated_at = @user_workshop.user_results.select('user_results.updated_at').order(:updated_at).last&.updated_at.to_i
+    @max_updated_at = @user_workshop.user_results.order('user_results.updated_at').last&.updated_at.to_i
   end
 end

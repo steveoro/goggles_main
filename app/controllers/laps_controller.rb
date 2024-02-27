@@ -7,6 +7,7 @@ class LapsController < ApplicationController
   before_action :authenticate_user!
   before_action :validate_modal_request, only: %i[edit_modal create]
   before_action :validate_row_request, only: %i[update destroy]
+  before_action :prepare_managed_teams, only: %i[create update destroy]
 
   # [XHR POST /laps/edit_modal] renders the Laps edit modal for the specified result.
   #
@@ -38,6 +39,7 @@ class LapsController < ApplicationController
   #
   def create
     step_length = modal_params[:step].to_i
+    check_and_set_lap_edit_and_report_mistake_flags # (Needs @parent_result to be set)
 
     # Create additional lap if requested:
     if step_length.positive?
@@ -86,6 +88,7 @@ class LapsController < ApplicationController
     previous_lap = @curr_lap.previous_lap
     delta_timing = previous_lap ? @curr_lap.timing_from_start - previous_lap.timing_from_start : @curr_lap.timing_from_start
     @curr_lap.from_timing(delta_timing)
+    check_and_set_lap_edit_and_report_mistake_flags # (Needs @parent_result to be set)
     handle_error_request unless @curr_lap.save
 
     # Recompute & update all subsequent deltas:
@@ -112,11 +115,20 @@ class LapsController < ApplicationController
   # - <tt>id</tt>: existing row ID
   #
   def destroy
-    handle_error_request unless @curr_lap.destroy
+    if @curr_lap&.destroy
+      @alert_msg = I18n.t('laps.modal.msgs.destroy_successful')
+      @alert_class = 'alert-success'
+    elsif @curr_lap
+      @alert_msg = I18n.t('datagrid.edit_modal.delete_failed')
+      @alert_class = 'alert-danger'
+    else
+      @alert_msg = I18n.t('search_view.errors.invalid_request')
+      @alert_class = 'alert-warning'
+    end
 
-    @alert_msg = I18n.t('laps.modal.msgs.destroy_successful')
     last_lap = @parent_result.laps.by_distance.last
     @last_delta_timing = @parent_result.to_timing - last_lap.timing_from_start if last_lap
+    check_and_set_lap_edit_and_report_mistake_flags # (Needs @parent_result to be set)
     render(:update)
   end
   #-- -------------------------------------------------------------------------
@@ -193,9 +205,11 @@ class LapsController < ApplicationController
   #
   # rubocop:disable Metrics/AbcSize
   def validate_modal_request
-    handle_invalid_request unless request.xhr? && request.post? && modal_params[:result_id].present? &&
-                                  modal_params[:result_class].present? &&
-                                  result_class_from_params.exists?(modal_params[:result_id])
+    valid_params = request.xhr? && request.post? &&
+                   modal_params[:result_id].present? &&
+                   modal_params[:result_class].present? &&
+                   result_class_from_params.exists?(modal_params[:result_id])
+    handle_invalid_request && return unless valid_params
 
     # Display customizations for the parent MIR component from pass-through parameters:
     @show_category = modal_params[:show_category]
@@ -212,11 +226,13 @@ class LapsController < ApplicationController
   #
   # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def validate_row_request
-    handle_invalid_request unless request.xhr? && (request.put? || request.delete?) && rows_params[:id].present? &&
-                                  lap_class_from_row_params.exists?(rows_params[:id]) &&
-                                  rows_params[:result_id]&.values&.first&.present? &&
-                                  rows_params[:result_class]&.values&.first&.present? &&
-                                  result_class_from_row_params.exists?(rows_params[:result_id].values.first)
+    valid_params = request.xhr? && (request.put? || request.delete?) &&
+                   rows_params[:id].present? &&
+                   lap_class_from_row_params.exists?(rows_params[:id]) &&
+                   rows_params[:result_id]&.values&.first&.present? &&
+                   rows_params[:result_class]&.values&.first&.present? &&
+                   result_class_from_row_params.exists?(rows_params[:result_id].values.first)
+    handle_invalid_request && return unless valid_params
 
     # Display customizations for the parent MIR component from pass-through parameters:
     @show_category = rows_params[:show_category]&.values&.first == '1' || false
@@ -267,6 +283,25 @@ class LapsController < ApplicationController
       seconds_from_start: 0,
       hundredths_from_start: 0
     )
+  end
+
+  # Assuming @parent_result member has been setup,
+  # this sets both the flags @lap_edit & @report_mistake by checking their current values.
+  def check_and_set_lap_edit_and_report_mistake_flags # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+    return unless @parent_result # This can be nil when forging URL paths
+
+    if @parent_result.respond_to?(:season)
+      season_id = @parent_result.season.id
+      update_user_teams_for_seasons_ids([season_id])
+      update_managed_teams_for_seasons_ids([season_id])
+    end
+
+    @lap_edit = @managed_team_ids.nil? ||
+                (@parent_result.respond_to?(:team_id) && @managed_team_ids.include?(@parent_result.team_id)) ||
+                (@parent_result.parent_meeting.respond_to?(:team_id) && @managed_team_ids.include?(@parent_result.parent_meeting.team_id))
+
+    @report_mistake = @lap_edit ||
+                      (user_signed_in? && current_user.swimmer_id.present? && current_user.swimmer_id == @parent_result.swimmer_id)
   end
 end
 # rubocop:enable Metrics/ClassLength

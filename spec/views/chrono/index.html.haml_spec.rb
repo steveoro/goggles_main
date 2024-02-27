@@ -40,7 +40,7 @@ RSpec.describe 'chrono/index.html.haml' do
 
     # The footer was removed because it was hiding the post button on very small screens like on the iPhone 4.
     it 'does not include the bottom footer section' do
-      expect(rendered).not_to have_css('section.fixed-bottom#footer')
+      expect(rendered).to have_no_css('section.fixed-bottom#footer')
     end
   end
 

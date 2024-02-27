@@ -61,6 +61,9 @@ RSpec.describe Solver::Lap, type: :integration do
       #-- ---------------------------------------------------------------------
       #++
 
+      # This test is critical for asserting the whole Solver chain works.
+      # (If the MIR parent are multiple => different MIRs have been created
+      # for different Laps => != MPRGs => != MEvs => != MSess)
       context 'after sorting out all rows, the whole group' do
         it 'is bound to the same MIR parent' do
           results = []

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_08_153109) do
+ActiveRecord::Schema.define(version: 2023_12_17_193904) do
 
   create_table "achievement_rows", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
     t.integer "lock_version", default: 0
@@ -317,24 +317,6 @@ ActiveRecord::Schema.define(version: 2023_06_08_153109) do
     t.index ["season_id", "rank"], name: "rank_x_season"
     t.index ["season_id", "team_id"], name: "teams_x_season"
     t.index ["team_id"], name: "fk_computed_season_rankings_teams"
-  end
-
-  create_table "data_import_swimmer_aliases", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "complete_name", limit: 100
-    t.integer "swimmer_id"
-    t.index ["swimmer_id", "complete_name"], name: "idx_swimmer_id_complete_name", unique: true
-  end
-
-  create_table "data_import_team_aliases", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "name", limit: 60
-    t.integer "team_id"
-    t.index ["team_id", "name"], name: "idx_team_id_name", unique: true
   end
 
   create_table "day_part_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
@@ -779,6 +761,7 @@ ActiveRecord::Schema.define(version: 2023_06_08_153109) do
     t.integer "team_affiliation_id"
     t.boolean "personal_best", default: false, null: false
     t.boolean "season_type_best", default: false, null: false
+    t.string "disqualification_notes"
     t.index ["badge_id"], name: "fk_meeting_individual_results_badges"
     t.index ["disqualification_code_type_id"], name: "idx_mir_disqualification_code_type"
     t.index ["disqualified"], name: "index_meeting_individual_results_on_disqualified"
@@ -856,6 +839,7 @@ ActiveRecord::Schema.define(version: 2023_06_08_153109) do
     t.integer "entry_hundredths", limit: 2
     t.integer "team_affiliation_id"
     t.integer "entry_time_type_id"
+    t.string "disqualification_notes"
     t.index ["disqualification_code_type_id"], name: "idx_mrr_disqualification_code_type"
     t.index ["entry_time_type_id"], name: "fk_meeting_relay_results_entry_time_types"
     t.index ["meeting_program_id", "rank"], name: "results_x_relay"
@@ -876,6 +860,10 @@ ActiveRecord::Schema.define(version: 2023_06_08_153109) do
     t.integer "seconds", limit: 2, default: 0
     t.integer "hundredths", limit: 2, default: 0
     t.integer "meeting_relay_result_id"
+    t.integer "length_in_meters", default: 0
+    t.integer "minutes_from_start", limit: 3, default: 0
+    t.integer "seconds_from_start", limit: 2, default: 0
+    t.integer "hundredths_from_start", limit: 2, default: 0
     t.index ["badge_id"], name: "fk_meeting_relay_swimmers_badges"
     t.index ["meeting_relay_result_id"], name: "fk_meeting_relay_swimmers_meeting_relay_results"
     t.index ["relay_order"], name: "relay_order"
@@ -1074,6 +1062,30 @@ ActiveRecord::Schema.define(version: 2023_06_08_153109) do
     t.index ["code"], name: "index_record_types_on_code", unique: true
   end
 
+  create_table "relay_laps", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "minutes", limit: 3, default: 0
+    t.integer "seconds", limit: 2, default: 0
+    t.integer "hundredths", limit: 2, default: 0
+    t.integer "minutes_from_start", limit: 3, default: 0
+    t.integer "seconds_from_start", limit: 2, default: 0
+    t.integer "hundredths_from_start", limit: 2, default: 0
+    t.decimal "reaction_time", precision: 5, scale: 2, default: "0.0"
+    t.integer "length_in_meters", default: 0
+    t.integer "position", limit: 3
+    t.integer "stroke_cycles"
+    t.integer "breath_cycles"
+    t.integer "swimmer_id", null: false
+    t.integer "team_id", null: false
+    t.integer "meeting_relay_result_id", null: false
+    t.integer "meeting_relay_swimmer_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["meeting_relay_result_id"], name: "index_relay_laps_on_meeting_relay_result_id"
+    t.index ["meeting_relay_swimmer_id"], name: "index_relay_laps_on_meeting_relay_swimmer_id"
+    t.index ["swimmer_id"], name: "index_relay_laps_on_swimmer_id"
+    t.index ["team_id"], name: "index_relay_laps_on_team_id"
+  end
+
   create_table "score_computation_type_rows", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
     t.integer "lock_version", default: 0
     t.datetime "created_at"
@@ -1235,6 +1247,15 @@ ActiveRecord::Schema.define(version: 2023_06_08_153109) do
     t.index ["eventable"], name: "idx_is_eventable"
   end
 
+  create_table "swimmer_aliases", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
+    t.integer "lock_version", default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "complete_name", limit: 100
+    t.integer "swimmer_id"
+    t.index ["swimmer_id", "complete_name"], name: "idx_swimmer_id_complete_name", unique: true
+  end
+
   create_table "swimmer_level_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
     t.integer "lock_version", default: 0
     t.datetime "created_at"
@@ -1383,6 +1404,15 @@ ActiveRecord::Schema.define(version: 2023_06_08_153109) do
     t.index ["team_id"], name: "fk_team_affiliations_teams"
   end
 
+  create_table "team_aliases", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
+    t.integer "lock_version", default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "name", limit: 60
+    t.integer "team_id"
+    t.index ["team_id", "name"], name: "idx_team_id_name", unique: true
+  end
+
   create_table "team_lap_templates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", force: :cascade do |t|
     t.integer "lock_version", default: 0
     t.integer "part_order", limit: 3, default: 0
@@ -1503,7 +1533,7 @@ ActiveRecord::Schema.define(version: 2023_06_08_153109) do
     t.index ["user_id", "achievement_id"], name: "index_user_achievements_on_user_id_and_achievement_id", unique: true
   end
 
-  create_table "user_laps", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci", force: :cascade do |t|
+  create_table "user_laps", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_result_id", null: false
     t.integer "swimmer_id", null: false
     t.decimal "reaction_time", precision: 5, scale: 2
@@ -1622,7 +1652,7 @@ ActiveRecord::Schema.define(version: 2023_06_08_153109) do
     t.index ["user_id", "description"], name: "index_user_trainings_on_user_id_and_description"
   end
 
-  create_table "user_workshops", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci", force: :cascade do |t|
+  create_table "user_workshops", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
     t.integer "lock_version", default: 0
     t.date "header_date"
     t.string "header_year", limit: 10
@@ -1741,6 +1771,10 @@ ActiveRecord::Schema.define(version: 2023_06_08_153109) do
   add_foreign_key "meeting_reservations", "swimmers"
   add_foreign_key "meeting_reservations", "teams"
   add_foreign_key "meeting_reservations", "users"
+  add_foreign_key "relay_laps", "meeting_relay_results"
+  add_foreign_key "relay_laps", "meeting_relay_swimmers"
+  add_foreign_key "relay_laps", "swimmers"
+  add_foreign_key "relay_laps", "teams"
   add_foreign_key "swimmer_season_scores", "badges"
   add_foreign_key "swimmer_season_scores", "event_types"
   add_foreign_key "swimmer_season_scores", "meeting_individual_results"

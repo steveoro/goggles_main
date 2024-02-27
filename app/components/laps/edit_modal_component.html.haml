@@ -44,7 +44,7 @@
               = render(partial: 'laps/edit_table_body', locals: { parent_result: @parent_result, laps: laps,
                        show_category: @show_category, show_team: @show_team })
 
-        .modal-footer
-          %button#modal-close.btn.btn-sm.btn-outline-secondary{ 'aria-label' => t('datagrid.edit_modal.close_btn'),
-                                                    'data-dismiss' => 'modal', type: 'button' }
-            = I18n.t('datagrid.edit_modal.close_btn')
+      .modal-footer
+        %button#modal-close.btn.btn-sm.btn-outline-secondary{ 'aria-label' => t('datagrid.edit_modal.close_btn'),
+                                                  'data-dismiss' => 'modal', type: 'button' }
+          = I18n.t('datagrid.edit_modal.close_btn')

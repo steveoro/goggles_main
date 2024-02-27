@@ -50,14 +50,19 @@ en:
         notice:
           cant_manage: "Only Team managers are allowed to select a swimmer from the list."
           no_associated_swimmer: "Your account does not have an associated swimmer yet, so there is no default swimmer for this form."
+          other_notes_placeholder: "(Insert any other additional data regarding this missing result)"
       msg:
         meeting_not_found: "Meeting or Workshop not found!"
+        missing_parameters: "Missing required parameters: cannot proceed."
     type1b1:
       form:
         tooltip: "Report a mistake spotted in this Meeting result"
         title: "🚩 Report mistake"
-        tab_label: "Tempo sbagliato"
-        result_label: "Correct Result"
+        tab_label: "Wrong timing"
+        result_label: "Correct timing"
+        dsq_missing_label: "This result has been disqualified"
+        other_notes: "Other notes"
+        other_notes_placeholder: "(Anything else that needs being corrected in this result)"
     type1c:
       label: "I want to report some missing results for one my team mates or correct some wrong ones."
       description1: "If you are already enabled as a 'team manager' for one of your teams, you'll notice that the 'Report mistake' (🚩) or the 'Report missing result' (🏴) links will be available for any meeting result or swimmer in your teams (not just for you as a swimmer)."
@@ -81,8 +86,9 @@ en:
     type2b1:
       form:
         btn_label: "🚩 Report"
-        tab_label: "Wrong Team or Swimmer"
+        tab_label: "Wrong Team or Swimmer set"
         wrong_meeting_label: "Never been to this Meeting"
+        wrong_event_label: "Never enrolled in this race event"
         wrong_swimmer_label: "This Swimmer doesn't belong to our Team"
         wrong_team_label: "I have never been part of this Team"
 

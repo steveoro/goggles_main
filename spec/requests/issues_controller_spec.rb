@@ -207,7 +207,7 @@ RSpec.describe IssuesController do
   # - path_to_be_tested: the path that will be called by the POST method
   # - params: the params Hash for the call
   #
-  shared_examples_for('issues POST request w/ varying parameters and context') do
+  shared_examples_for('issues POST request w/ varying parameters and context') do |warn_msg_key|
     context 'with an unlogged user' do
       before do
         post(
@@ -238,7 +238,8 @@ RSpec.describe IssuesController do
 
         it 'sets an invalid request flash warning message' do
           expect(flash[:info]).to be_blank # (as counterproof)
-          expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+          correct_msg_key = warn_msg_key || 'issues.type1b.msg.missing_parameters'
+          expect(flash[:warning]).to eq(I18n.t(correct_msg_key))
         end
       end
 
@@ -325,7 +326,7 @@ RSpec.describe IssuesController do
       }
     end
 
-    it_behaves_like('issues POST request w/ varying parameters and context')
+    it_behaves_like('issues POST request w/ varying parameters and context', 'search_view.errors.invalid_request')
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -340,7 +341,7 @@ RSpec.describe IssuesController do
       }
     end
 
-    it_behaves_like('issues POST request w/ varying parameters and context')
+    it_behaves_like('issues POST request w/ varying parameters and context', 'search_view.errors.invalid_request')
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -355,7 +356,7 @@ RSpec.describe IssuesController do
       }
     end
 
-    it_behaves_like('issues POST request w/ varying parameters and context')
+    it_behaves_like('issues POST request w/ varying parameters and context', 'search_view.errors.invalid_request')
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -371,7 +372,7 @@ RSpec.describe IssuesController do
       }
     end
 
-    it_behaves_like('issues POST request w/ varying parameters and context')
+    it_behaves_like('issues POST request w/ varying parameters and context', 'search_view.errors.invalid_request')
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -386,7 +387,7 @@ RSpec.describe IssuesController do
       }
     end
 
-    it_behaves_like('issues POST request w/ varying parameters and context')
+    it_behaves_like('issues POST request w/ varying parameters and context', 'search_view.errors.invalid_request')
   end
   #-- -------------------------------------------------------------------------
   #++

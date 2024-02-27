@@ -34,12 +34,9 @@ RSpec.describe Laps::TableRowComponent, type: :component do
       expect(subject.at_css('tr.collapse td .length-in-meters').text).to include(fixture_lap.length_in_meters&.to_s)
     end
 
-    it 'includes the lap delta timing' do
-      expect(subject.at_css('tr.collapse td .delta-timing').text).to include(fixture_lap.to_timing&.to_s)
-    end
-
-    it 'includes the lap timing from start' do
-      expect(subject.at_css('tr.collapse td .timing-from-start').text).to include(fixture_lap.timing_from_start&.to_s)
+    it 'includes both the lap delta timing and the timing from start' do
+      expect(subject.at_css('tr.collapse td .delta-timing').text).to include("#{fixture_lap.to_timing} Δ")
+      expect(subject.at_css('tr.collapse td .delta-timing').text).to include("#{fixture_lap.timing_from_start} ⏱")
     end
   end
 

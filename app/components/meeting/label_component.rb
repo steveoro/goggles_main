@@ -3,7 +3,7 @@
 #
 # = Meeting components module
 #
-#   - version:  7-0.3.50
+#   - version:  7-0.6.30
 #   - author:   Steve A.
 #
 module Meeting
@@ -33,7 +33,7 @@ module Meeting
 
     # Inline rendering
     def call
-      decorated&.display_label
+      decorated&.display_label&.html_safe # rubocop:disable Rails/OutputSafety
     end
 
     private

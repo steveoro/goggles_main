@@ -28,7 +28,7 @@ When('I insert {int}, {int} and {int} as FIN target timing') do |minutes, second
 end
 
 When('I click on the request FIN target score button') do
-  click_button('btn-fin-score')
+  click_link_or_button('btn-fin-score')
   wait_for_ajax
 end
 
@@ -42,7 +42,7 @@ When('I insert {int} as FIN target score') do |score|
 end
 
 When('I click on the request FIN target timing button') do
-  click_button('btn-fin-timing')
+  click_link_or_button('btn-fin-timing')
   wait_for_ajax
 end
 

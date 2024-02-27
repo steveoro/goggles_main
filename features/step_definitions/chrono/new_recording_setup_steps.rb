@@ -66,7 +66,7 @@ When('I type {string} as selection for the {string} Select2 field') do |manual_i
 
   # Close the dropdown (will also clear the search input, but who cares given we're faking it anyway)
   find(select2_search_field).click if page.has_css?(select2_search_box)
-  expect(page).not_to have_css(select2_search_box)
+  expect(page).to have_no_css(select2_search_box)
 
   # Fake the hidden input setup made by the component when the API call is successful:
   execute_script("$('##{field_camelcase_name}_label').val('#{manual_input_label}')")

@@ -99,4 +99,16 @@ RSpec.configure do |config|
   #   # test failures related to randomization by passing the same `--seed` value
   #   # as the one that triggered the failure.
   #   Kernel.srand config.seed
+
+  # ============================================================================
+  # Prosopite gem specific configuration: (Bullet alternative)
+  # (see https://github.com/charkost/prosopite)
+  # ============================================================================
+  config.before do # (:each)
+    Prosopite.scan
+  end
+
+  config.after do # (:each)
+    Prosopite.finish
+  end
 end

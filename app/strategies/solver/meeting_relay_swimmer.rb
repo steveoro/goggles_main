@@ -51,7 +51,7 @@ module Solver
       return nil unless required_bindings.values.all?(&:present?)
 
       new_instance = GogglesDb::MeetingRelaySwimmer.new
-      bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
+      bindings.each { |key, solved| new_instance.send(:"#{key}=", solved) unless solved.nil? }
       new_instance.relay_order = existing_relay_order(new_instance) + 1 unless new_instance.relay_order.positive?
       new_instance.save # Don't throw validation errors
       new_instance
@@ -68,6 +68,7 @@ module Solver
     # A direct attribute binding will be resolved to +nil+ if can't be found inside the
     # current data set after a call to #solve!.
     #
+    # rubocop:disable Metrics/AbcSize
     def init_bindings
       @bindings = {
         meeting_relay_result_id: Solver::Factory.for('MeetingRelayResult', root_key?('meeting_relay_result') ? req : req['meeting_relay_swimmer']),
@@ -81,9 +82,28 @@ module Solver
         reaction_time: value_from_req(key: 'meeting_relay_swimmer_reaction_time', nested: 'meeting_relay_swimmer', sub_key: 'reaction_time') || 0.0,
         minutes: value_from_req(key: 'meeting_relay_swimmer_minutes', nested: 'meeting_relay_swimmer', sub_key: 'minutes'),
         seconds: value_from_req(key: 'meeting_relay_swimmer_seconds', nested: 'meeting_relay_swimmer', sub_key: 'seconds'),
-        hundredths: value_from_req(key: 'meeting_relay_swimmer_hundredths', nested: 'meeting_relay_swimmer', sub_key: 'hundredths')
+        hundredths: value_from_req(key: 'meeting_relay_swimmer_hundredths', nested: 'meeting_relay_swimmer', sub_key: 'hundredths'),
+
+        length_in_meters: value_from_req(
+          key: 'meeting_relay_swimmer_length_in_meters',
+          nested: 'meeting_relay_swimmer',
+          sub_key: 'length_in_meters'
+        ),
+        minutes_from_start: value_from_req(
+          key: 'meeting_relay_swimmer_minutes_from_start',
+          nested: 'meeting_relay_swimmer', sub_key: 'minutes_from_start'
+        ),
+        seconds_from_start: value_from_req(
+          key: 'meeting_relay_swimmer_seconds_from_start',
+          nested: 'meeting_relay_swimmer', sub_key: 'seconds_from_start'
+        ),
+        hundredths_from_start: value_from_req(
+          key: 'meeting_relay_swimmer_hundredths_from_start',
+          nested: 'meeting_relay_swimmer', sub_key: 'hundredths_from_start'
+        )
       }
     end
+    # rubocop:enable Metrics/AbcSize
 
     private
 

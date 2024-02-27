@@ -2,7 +2,7 @@
 
 When('I search for {string}') do |query_string|
   fill_in('q', with: query_string)
-  click_button('btn-search')
+  click_link_or_button('btn-search')
 end
 
 Then('the {string} search results are displayed, all matching {string}') do |model_downcase_name, query_string|
@@ -17,7 +17,7 @@ Then('the {string} search results are displayed, all matching {string}') do |mod
 end
 
 Then('no search results are visible') do
-  expect(page).not_to have_css('.swipe-wrapper')
+  expect(page).to have_no_css('.swipe-wrapper')
 end
 
 Then('the pagination controls are present') do
@@ -29,7 +29,7 @@ end
 
 Then('the pagination controls are not present') do
   content_node = find('.swipe-wrapper', visible: true)
-  expect(content_node).not_to have_css('#paginator-controls')
+  expect(content_node).to have_no_css('#paginator-controls')
 end
 
 Then('a flash alert is shown about the empty results') do

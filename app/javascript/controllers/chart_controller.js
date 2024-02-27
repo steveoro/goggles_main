@@ -57,6 +57,12 @@ export const CHART_COLORS = {
  *
  * @param {Array} 'data-chart-data2-value' (Array of Objects, optional)
  *                 dataset Array #2 of the chart; when present it can be rendered together with dataset #1
+ * 
+ * == Dataset supported properties:
+ * - 'key': main key/label for the data tuple;
+ * - 'count': item count in the subset;
+ * - 'value': actual value to be shown (can be a percentage for pie charts);
+ * - 'typeLabel': additional label shown beside the main key.
  *
  * == Actions:
  * (no actions, just setup)

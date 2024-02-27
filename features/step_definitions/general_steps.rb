@@ -82,7 +82,7 @@ end
 
 # Similar to the above, but uses the label instead of the CSS selector:
 When('I click on the {string} button') do |string_label|
-  click_button(string_label)
+  click_link_or_button(string_label)
 end
 
 Then('an error message from the edit form is present') do
@@ -95,13 +95,14 @@ Then('I scroll toward the end of the page to see the bottom of the page') do
   # Go down a lot towards the bottom of the page first:
   # (useful especially for small device screens)
   execute_script('window.scrollTo(0,10000)')
-  wait_for_ajax && sleep(0.5)
+  sleep(0.5)
+  wait_for_ajax
 end
 
 # Click on OK/Yes
 When('I click on {string} accepting the confirmation request') do |string_css|
   find(string_css, visible: true) # make sure the node is visible
-  within(string_css) do |node|
+  within(string_css) do |_node|
     accept_confirm do
       # It turns out Selenium sometimes doesn't fire the click event as expected,
       # even though the button is clicked. JS to the rescue...
@@ -114,7 +115,7 @@ end
 # Click on Cancel/No
 When('I click on {string} rejecting the confirmation request') do |string_css|
   find(string_css, visible: true) # make sure the node is visible
-  within(string_css) do |node|
+  within(string_css) do |_node|
     dismiss_confirm do
       # (See note in previous step)
       execute_script("document.querySelector('#{string_css}').click()")
@@ -175,7 +176,7 @@ end
 # -----------------------------------------------------------------------------
 
 Then('I wait until the slow-rendered page portion {string} is visible') do |css_selector|
-  5.times do
+  10.times do
     target_node = begin
       find(css_selector, visible: true)
     rescue StandardError

@@ -12,12 +12,12 @@
           %i= t('chrono.index.queue_notice')
 
     .container.mt-2#chrono-rows
-      - if @queues.count.positive?
+      - if @queues.present?
         - GogglesDb::ImportQueueDecorator.decorate_collection(@queues).each do |queue|
           .row.border
             .col.mt-2.text-left{ id: "main-req#{queue.id}" }
               = queue.chrono_result_label
-              - if queue.sibling_rows.count.positive?
+              - if queue.sibling_rows.present?
                 = render(Switch::RotatingComponent.new(target_id: "laps#{queue.id}"))
             .col-2.my-1.text-center
               .row
@@ -31,7 +31,7 @@
                             data: { confirm: t('chrono.index.confirm_delete', queue_label: queue.text_label) }) do
                   %i.fa.fa-trash-o
 
-          - if queue.sibling_rows.count.positive?
+          - if queue.sibling_rows.present?
             %ul.collapse{ id: "laps#{queue.id}" }
               - collection = queue.sibling_rows.or(GogglesDb::ImportQueue.where(id: queue.id)).includes(:import_queues)
               - decorated = GogglesDb::ImportQueueDecorator.decorate_collection(collection)

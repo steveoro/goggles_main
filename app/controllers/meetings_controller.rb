@@ -5,7 +5,7 @@
 class MeetingsController < ApplicationController
   before_action :authenticate_user!, only: [:index]
   before_action :prepare_user_teams, :prepare_managed_teams, :validate_meeting, :validate_team,
-                only: %i[show show_event_section team_results swimmer_results]
+                only: %i[show team_results swimmer_results]
   before_action :validate_swimmer, except: %i[for_swimmer for_team]
 
   # GET /meetings/:id
@@ -67,9 +67,6 @@ class MeetingsController < ApplicationController
     end
 
     @meeting_events = @meeting.meeting_events
-                              .includes(:event_type, :stroke_type, meeting_session: [:meeting], season: [:season_type])
-                              .joins(:event_type, :stroke_type, meeting_session: [:meeting], season: [:season_type])
-                              .unscope(:order)
                               .order('meeting_sessions.session_order, meeting_events.event_order')
     # Get page timestamp for cache key:
     set_max_updated_at_for_meeting
@@ -88,18 +85,12 @@ class MeetingsController < ApplicationController
       redirect_to(root_path) && return
     end
 
-    @meeting_event = GogglesDb::MeetingEvent.includes(:event_type, meeting_session: :meeting)
-                                            .joins(:event_type, meeting_session: :meeting)
-                                            .find(meeting_params[:id])
-    @meeting_events = @meeting_event.meeting.meeting_events
-                                    .includes(:event_type, meeting_session: :meeting)
-                                    .joins(:event_type, meeting_session: :meeting)
-                                    .by_order
+    @meeting_event = GogglesDb::MeetingEvent.find(meeting_params[:id])
+    @meeting_events = @meeting_event.meeting.meeting_events.by_order
     @event_index = @meeting_events.find_index(@meeting_event)
-    @prgs_for_event = GogglesDb::MeetingProgram.where(meeting_event_id: meeting_params[:id])
-                                               .joins(:meeting_event, :event_type, :category_type, :gender_type)
-                                               .includes(:meeting_event, :event_type, :category_type, :gender_type)
-                                               .order('category_types.age_begin, gender_types.id DESC')
+    @prgs_for_event = GogglesDb::MeetingProgram.where(meeting_event_id: meeting_params[:id]).order('category_types.age_begin, gender_types.id DESC')
+    update_user_teams_for_seasons_ids([@meeting_event.season.id])
+    update_managed_teams_for_seasons_ids([@meeting_event.season.id])
   end
   # rubocop:enable Metrics/AbcSize
   #-- -------------------------------------------------------------------------
@@ -136,17 +127,11 @@ class MeetingsController < ApplicationController
     (1..4).to_a.each { |rank| @team_ranks[rank] += @mrr_list.valid_for_ranking.for_rank(rank).count }
     @team_outstanding_scores += @mrr_list.valid_for_ranking.where('standard_points > ?', 800).count
 
-    @meeting_events_list = GogglesDb::MeetingEvent.where(id: event_ids)
-                                                  .joins(:event_type, :stroke_type)
-                                                  .includes(:event_type, :stroke_type)
-                                                  .order('event_types.relay, meeting_events.event_order')
+    @meeting_events_list = GogglesDb::MeetingEvent.where(id: event_ids).order('event_types.relay, meeting_events.event_order')
 
     # Get the programs filtered by team_id:
     prg_ids = map_tot_team_program_ids_from(@meeting, @team)
-    @meeting_programs_list = GogglesDb::MeetingProgram.where(id: prg_ids)
-                                                      .joins(:event_type, :stroke_type)
-                                                      .includes(:event_type, :stroke_type)
-                                                      .order('event_types.relay, meeting_events.event_order')
+    @meeting_programs_list = GogglesDb::MeetingProgram.where(id: prg_ids).order('event_types.relay, meeting_events.event_order')
 
     # Find out top scorers for this meetings & custom cups:
     @top_scores = map_top_scores_from(@mir_list)
@@ -169,8 +154,6 @@ class MeetingsController < ApplicationController
     end
 
     @mir_list = @meeting.meeting_individual_results.for_swimmer(@swimmer)
-                        .joins(:swimmer, meeting_event: [:event_type])
-                        .includes(:swimmer, meeting_event: [:event_type])
     if @mir_list.empty?
       flash[:warning] = I18n.t('meetings.no_results_to_show_for_swimmer', swimmer: @swimmer.complete_name)
       redirect_to(meeting_show_path(@meeting)) && return
@@ -211,9 +194,11 @@ class MeetingsController < ApplicationController
 
   # Prepares the internal @meeting variable according to params[:id]
   def validate_meeting
-    @meeting = GogglesDb::Meeting.includes(:meeting_individual_results)
-                                 .where(id: meeting_params[:id])
-                                 .first
+    @meeting = GogglesDb::Meeting.where(id: meeting_params[:id]).first
+    return unless @meeting
+
+    update_user_teams_for_seasons_ids([@meeting.season_id])
+    update_managed_teams_for_seasons_ids([@meeting.season_id])
   end
 
   # Prepares the internal @team variable; falls backs to the first associated team found for the current swimmer if
@@ -243,8 +228,7 @@ class MeetingsController < ApplicationController
   # == Params:
   # - <tt>mir_list</tt>: the MIR list for the current meeting involving the current team.
   def map_team_swimmers_from(mir_list)
-    mir_list.joins(:swimmer).includes(:swimmer)
-            .group(:swimmer_id)
+    mir_list.group(:swimmer_id)
             .order('swimmers.complete_name ASC')
             .map(&:swimmer)
             .sort_by(&:complete_name)
@@ -280,9 +264,7 @@ class MeetingsController < ApplicationController
     meeting_team_swimmers_ids = meeting_team_swimmers.collect(&:id)
     events_per_swimmers = {}
     meeting_team_swimmers_ids.each do |id|
-      events_per_swimmers[id] = mir_list.joins(:swimmer, meeting_event: [:event_type])
-                                        .includes(:swimmer, meeting_event: [:event_type])
-                                        .where(meeting_individual_results: { swimmer_id: id })
+      events_per_swimmers[id] = mir_list.where(meeting_individual_results: { swimmer_id: id })
     end
     events_per_swimmers
   end
@@ -310,14 +292,11 @@ class MeetingsController < ApplicationController
   # == Returns:
   # An array sorted by ID.
   def map_tot_team_program_ids_from(meeting, team)
-    ind_prg_ids = GogglesDb::MeetingIndividualResult.joins(:meeting, :meeting_program)
-                                                    .includes(:meeting, :meeting_program)
-                                                    .where(['meetings.id = ? AND meeting_individual_results.team_id = ?', meeting.id, team.id])
+    ind_prg_ids = GogglesDb::MeetingIndividualResult.where(['meetings.id = ? AND meeting_individual_results.team_id = ?', meeting.id, team.id])
                                                     .pluck(:meeting_program_id)
                                                     .uniq
-    rel_prg_ids = GogglesDb::MeetingRelayResult.joins(:meeting, :meeting_program)
-                                               .includes(:meeting, :meeting_program)
-                                               .where(['meetings.id = ? AND meeting_relay_results.team_id = ?', meeting.id, team.id])
+
+    rel_prg_ids = GogglesDb::MeetingRelayResult.where(['meetings.id = ? AND meeting_relay_results.team_id = ?', meeting.id, team.id])
                                                .pluck(:meeting_program_id)
                                                .uniq
     (ind_prg_ids + rel_prg_ids).uniq.sort
@@ -326,20 +305,11 @@ class MeetingsController < ApplicationController
   # Collects and returns all the MIR rows from the specified Meeting & Team tuple.
   def collect_team_mirs(meeting, team)
     meeting.meeting_individual_results.for_team(team)
-           .includes(:swimmer, :event_type, laps: [:swimmer], meeting_event: [:event_type],
-                                            meeting_program: %i[gender_type event_type category_type])
-           .joins(:swimmer, :event_type, meeting_event: [:event_type],
-                                         meeting_program: %i[gender_type category_type])
   end
 
   # Collects and returns all the MRR rows from the specified Meeting & Team tuple.
   def collect_team_mrrs(meeting, team)
     meeting.meeting_relay_results.for_team(team)
-           .includes(:team, :meeting_program, :gender_type, :category_type, :event_type,
-                     meeting_event: [:event_type], meeting_program: %i[gender_type event_type category_type],
-                     meeting_relay_swimmers: %i[swimmer stroke_type])
-           .joins(:team, :meeting_program, :gender_type, :category_type,
-                  meeting_event: [:event_type], meeting_program: %i[gender_type category_type])
   end
 
   # Maps the top scores for each gender & custom (Goggle-) cup.
@@ -395,8 +365,8 @@ class MeetingsController < ApplicationController
   # Sets the internal <tt>@max_updated_at</tt> value that will be used as main cache timestamp for the current <tt>@meeting</tt>.
   def set_max_updated_at_for_meeting
     # Get a timestamp from last updated result:
-    max_mir_updated_at = @meeting.meeting_individual_results.select('meeting_individual_results.updated_at').order(:updated_at).last&.updated_at.to_i
-    max_mrr_updated_at = @meeting.meeting_relay_results.select('meeting_relay_results.updated_at').order(:updated_at).last&.updated_at.to_i
+    max_mir_updated_at = @meeting.meeting_individual_results.order(:updated_at).last&.updated_at.to_i
+    max_mrr_updated_at = @meeting.meeting_relay_results.order(:updated_at).last&.updated_at.to_i
     @max_updated_at = [max_mir_updated_at, max_mrr_updated_at].max
   end
 end

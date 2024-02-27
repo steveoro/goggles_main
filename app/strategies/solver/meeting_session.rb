@@ -8,7 +8,7 @@ module Solver
   #
   # = MeetingSession solver strategy object
   #
-  #   - version:  7-0.4.25
+  #   - version:  7-0.6.30
   #   - author:   Steve A.
   #
   # Resolves the request for building a new GogglesDb::MeetingSession.
@@ -45,7 +45,7 @@ module Solver
     # == Returns:
     # - +nil+ until all required bindings are solved;
     # - a new target entity instance when done, saved successfully if valid,
-    #   and yielding any validation erros as #error_messages.
+    #   and yielding any validation errors as #error_messages.
     def creator_strategy
       return nil if @bindings.empty?
 
@@ -53,7 +53,7 @@ module Solver
       return nil unless creator_required_bindings.values.all?(&:present?)
 
       new_instance = GogglesDb::MeetingSession.new
-      bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
+      bindings.each { |key, solved| new_instance.send(:"#{key}=", solved) unless solved.nil? }
       new_instance.session_order = compute_session_order(new_instance.meeting) if new_instance.session_order.zero?
       new_instance.scheduled_date = Time.zone.today.to_s if new_instance.scheduled_date.blank?
       new_instance.save # Don't throw validation errors
@@ -95,7 +95,11 @@ module Solver
     # Filtered hash of minimum required field bindings for the finder strategy
     def finder_required_bindings
       required_keys = %i[meeting_id scheduled_date session_order]
-      @bindings.select { |key, _value| required_keys.include?(key) }
+      filtered_bindings = @bindings.select { |key, _value| required_keys.include?(key) }
+      # ASSUMES: finder bindings have already been solved (so that meeting_id is already set)
+      # ALSO: do not force a session_order if we already have a value from the bindings
+      filtered_bindings[:session_order] ||= compute_session_order_from_bindings
+      filtered_bindings
     end
 
     # Filtered hash of minimum required field bindings for the creator strategy
@@ -108,8 +112,11 @@ module Solver
     def compute_session_order(meeting)
       return unless meeting.is_a?(GogglesDb::Meeting)
 
-      max_value = meeting.meeting_sessions.order(:scheduled_date).last&.session_order
-      max_value.to_i + 1
+      # [20240207] *** CRITICAL REMARK: ***
+      # DO NOT auto-increase or guess the value here! Take always the first found one as the good one,
+      # otherwise each request will end up in a new session and newly serialized values WON'T be
+      # associated in same MSession -> MPRG -> MEvent -> MIR -> Lap
+      meeting.meeting_sessions.order(:scheduled_date).first&.session_order || 1
     end
 
     # Uses the current bindings to retrieve a Meeting instance with which compute the session order

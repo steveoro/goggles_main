@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require GogglesDb::Engine.root.join('spec', 'support', 'shared_method_existance_examples')
+require GogglesDb::Engine.root.join('spec', 'support', 'shared_method_existence_examples')
 
 RSpec.describe IqRequest::ChronoRecParamAdapter do
   # Domain definition:

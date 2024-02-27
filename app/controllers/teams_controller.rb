@@ -67,7 +67,7 @@ class TeamsController < ApplicationController
     @last_affiliations = GogglesDb::SeasonType.all_masters.map do |season_type|
       GogglesDb::TeamAffiliation.includes(:team, season: :season_type).joins(:team, season: :season_type)
                                 .where(team_id: @team.id, seasons: { season_type_id: season_type.id })
-                                .order(:begin_date)
+                                .order('seasons.begin_date')
                                 .last
     end
     @last_affiliations.compact!

@@ -4,16 +4,12 @@
 # - ranking_num.......: storing the subject's ranking position to be rendered
 # - rendered_result...: storing the rendered text to be checked
 shared_examples_for 'RankingPosComponent rendering a ranking position' do |ranking_num|
-  it 'renders a UNICODE medal for rank 1..3 or just the ranking number for any other value' do
+  it 'renders a UNICODE medal for rank 0..3 or just the ranking number for any other value' do
     case ranking_num
-    when 1
-      expect(rendered_result).to include('🥇') if ranking_num == 1
-    when 2
-      expect(rendered_result).to include('🥈') if ranking_num == 2
-    when 3
-      expect(rendered_result).to include('🥉') if ranking_num == 3
+    when 0..3
+      expect(rendered_result).to include(%w[🚫 🥇 🥈 🥉][ranking_num])
     else
-      expect(rendered_result).to include(ranking_num.to_s) unless [1, 2, 3].member?(ranking_num)
+      expect(rendered_result).to include(ranking_num.to_s)
     end
   end
 end
@@ -235,6 +231,145 @@ shared_examples_for 'ComboBox::DbLookupComponent with double-API call enabled' d
     expect(subject.css(".#{wrapper_class}").attr('data-lookup-api-url2-value')).to be_present
     expect(subject.css(".#{wrapper_class}").attr('data-lookup-api-url2-value').value)
       .to end_with('/api/v3') # The API URL2 must be "rooted"
+  end
+end
+#-- ---------------------------------------------------------------------------
+#++
+
+# REQUIRES/ASSUMES:
+# - rendered_modal....: the rendered RL edit modal wrapping its edit form contents
+shared_examples_for 'RelayLaps::EditModalContentsComponent rendered with some existing laps & sublaps' do
+  it 'includes the modal title with the event & gender labels' do
+    title_container = rendered_modal.at('h5#lap-edit-modal-title.modal-title')
+    expect(title_container.text).to include(I18n.t('laps.modal.form.title')) &&
+                                    include(relay_result.event_type.label) &&
+                                    include(relay_result.gender_type.label) &&
+                                    include(relay_result.category_type.short_name)
+  end
+
+  it 'includes the alert msg container' do
+    expect(rendered_modal.at('small#lap-modal-alert-text')).to be_present
+  end
+
+  it 'renders the modal header row' do
+    expect(rendered_modal.at('tr#lap-table-header')).to be_present
+  end
+
+  describe 'within the modal header row,' do
+    let(:header_row) { rendered_modal.at('tr#lap-table-header') }
+
+    it 'renders the team editable name' do
+      expect(header_row.at('h6').text).to include(relay_result.team.editable_name)
+    end
+
+    it 'renders the form to add a new relay swimmer with its input controls' do
+      expect(header_row.at('#frm-add-mrs-row')).to be_present
+      expect(header_row.at('#frm-add-mrs-row input#result_id')).to be_present
+      expect(header_row.at('#frm-add-mrs-row input#result_class')).to be_present
+      expect(header_row.at('#frm-add-mrs-row select#badge_id')).to be_present
+      expect(header_row.at('#frm-add-mrs-row select#length_in_meters')).to be_present
+    end
+
+    it 'renders the form submit button to add a new relay swimmer (may be disabled though)' do
+      expect(header_row.at('#frm-add-mrs-row #btn-add-mrs-row')).to be_present
+    end
+  end
+
+  it 'renders the body of the table' do
+    expect(rendered_modal.at('tbody#laps-table-body')).to be_present
+  end
+
+  # --- MRS edit widgets ---
+  describe 'within the modal MRS row table body,' do
+    let(:table_body) { rendered_modal.at('tbody#laps-table-body') }
+
+    it 'renders a relay swimmer edit row (with its required hidden fields) for each existing MRS' do
+      max_sublaps = relay_result.event_type.phase_length_in_meters / 50
+      relay_result.meeting_relay_swimmers.each_with_index do |_mrs, swimmer_index|
+        overall_index = (swimmer_index + 1) * max_sublaps # Index relative to all sub-laps (RelayLaps)
+        mrs_form_table = table_body.at("form#frm-lap-row-#{overall_index}")
+        expect(mrs_form_table).to be_present
+        # The form must map to a proper parent result for the edited lap:
+        expect(mrs_form_table.at("input#result_id_#{overall_index}")).to be_present
+        expect(mrs_form_table.at("input#result_id_#{overall_index}").attr('value')).to eq(relay_result.id.to_s)
+        expect(mrs_form_table.at("input#result_class_#{overall_index}")).to be_present
+        expect(mrs_form_table.at("input#result_class_#{overall_index}").attr('value')).to eq(relay_result.class.name.split('::').last)
+      end
+    end
+
+    %w[length_in_meters minutes_from_start seconds_from_start hundredths_from_start].each do |field_name|
+      it "allows editing the #{field_name} for each MRS row" do
+        max_sublaps = relay_result.event_type.phase_length_in_meters / 50
+        relay_result.meeting_relay_swimmers.each_with_index do |mrs, swimmer_index|
+          overall_index = (swimmer_index + 1) * max_sublaps # Index relative to all sub-laps (RelayLaps)
+          mrs_form_table = table_body.at("form#frm-lap-row-#{overall_index}")
+          expect(mrs_form_table.at("input##{field_name}_#{overall_index}")).to be_present
+          expect(mrs_form_table.at("input##{field_name}_#{overall_index}").attr('value')).to eq(mrs.send(field_name).to_s) if mrs.send(field_name).present?
+        end
+      end
+    end
+
+    it 'renders the dedicated save & delete buttons (if the MRS is serialized) for each MRS' do
+      max_sublaps = relay_result.event_type.phase_length_in_meters / 50
+      relay_result.meeting_relay_swimmers.each_with_index do |mrs, swimmer_index|
+        overall_index = (swimmer_index + 1) * max_sublaps # Index relative to all sub-laps (RelayLaps)
+        expect(table_body.at("#lap-save-row-#{overall_index}")).to be_present
+        expect(table_body.at("#lap-delete-row-#{overall_index}")).to be_present if mrs.id.to_i.positive?
+      end
+    end
+
+    it 'renders the delta timing for each MRS row' do
+      max_sublaps = relay_result.event_type.phase_length_in_meters / 50
+      relay_result.meeting_relay_swimmers.each_with_index do |mrs, swimmer_index|
+        overall_index = (swimmer_index + 1) * max_sublaps # Index relative to all sub-laps (RelayLaps)
+        mrs_form_table = table_body.at("form#frm-lap-row-#{overall_index}")
+        expect(mrs_form_table.at("span#mrs-delta-#{overall_index}")).to be_present
+        expect(mrs_form_table.at("span#mrs-delta-#{overall_index}").text).to include("Δt: #{mrs.to_timing}") if mrs.to_timing.present?
+      end
+    end
+  end
+
+  # --- RelayLaps edit widgets ---
+  describe 'within each MRS row group,' do
+    let(:table_body) { rendered_modal.at('tbody#laps-table-body') }
+
+    it 'renders a RelayLap edit row (with its required hidden fields) for each existing RelayLap' do
+      max_sublaps = relay_result.event_type.phase_length_in_meters / 50
+      relay_result.meeting_relay_swimmers.each_with_index do |mrs, swimmer_index|
+        mrs.relay_laps.each_with_index do |_relay_lap, sub_index|
+          overall_index = (swimmer_index * max_sublaps) + sub_index + 1 # Index relative to all sub-laps (RelayLaps)
+          sublap_form = table_body.at("form#frm-sublap-row-#{overall_index}")
+          expect(sublap_form).to be_present
+          # The form must map to a proper parent result for the edited lap:
+          expect(sublap_form.at("input#result_id_#{overall_index}")).to be_present
+          expect(sublap_form.at("input#result_id_#{overall_index}").attr('value')).to eq(mrs.id.to_s)
+          expect(sublap_form.at("input#result_class_#{overall_index}")).to be_present
+          expect(sublap_form.at("input#result_class_#{overall_index}").attr('value')).to eq(mrs.class.name.split('::').last)
+        end
+      end
+    end
+
+    %w[length_in_meters minutes_from_start seconds_from_start hundredths_from_start].each do |field_name|
+      it "allows editing the #{field_name} for each RelayLap row" do
+        max_sublaps = relay_result.event_type.phase_length_in_meters / 50
+        # DEBUG
+        # puts "\r\nTotal MRS: #{relay_result.meeting_relay_swimmers.count}"
+        relay_result.meeting_relay_swimmers.each_with_index do |mrs, swimmer_index|
+          # DEBUG
+          # puts "Total RL (swimmer #{swimmer_index}): #{mrs.relay_laps.count}"
+          mrs.relay_laps.each_with_index do |relay_lap, sub_index|
+            overall_index = (swimmer_index * max_sublaps) + sub_index + 1 # Index relative to all sub-laps (RelayLaps)
+            # DEBUG
+            # puts "=> processing RL #{overall_index}"
+            sublap_form = table_body.at("form#frm-sublap-row-#{overall_index}")
+            expect(sublap_form.at("input##{field_name}_#{overall_index}")).to be_present
+            if relay_lap.send(field_name).present?
+              expect(sublap_form.at("input##{field_name}_#{overall_index}").attr('value')).to eq(relay_lap.send(field_name).to_s)
+            end
+          end
+        end
+      end
+    end
   end
 end
 #-- ---------------------------------------------------------------------------

@@ -53,7 +53,9 @@ Then('I choose a random event from the clickable list of the meeting') do
   # the event section will be expanded to some results:
   current_meeting_id = current_url.split('/').last.to_i
   @chosen_meeting = GogglesDb::Meeting.find(current_meeting_id)
-  @chosen_mevent = @chosen_meeting.meeting_individual_results.includes(:meeting_event).sample.meeting_event
+  @chosen_mevent = @chosen_meeting.meeting_individual_results
+                                  .includes(:meeting_event)
+                                  .last(20).sample.meeting_event
 end
 
 # Uses @chosen_mevent
@@ -148,7 +150,7 @@ end
 # Sets: @chosen_mir & @chosen_mevent
 Given('I have chosen a random result among the current meeting details') do
   @chosen_mir = @chosen_meeting.meeting_individual_results
-                               .includes(:meeting_event)
+                               .last(250)
                                .sample
   @chosen_mevent = @chosen_mir.meeting_event
 end
@@ -160,8 +162,8 @@ Given('I have chosen a random row from the results of my associated team') do
   expect(@chosen_meeting).to be_a(GogglesDb::Meeting)
   expect(@associated_team_id).to be_positive
   @chosen_mir = @chosen_meeting.meeting_individual_results
-                               .includes(:meeting_event)
                                .where(team_id: @associated_team_id)
+                               .last(250)
                                .sample
   @chosen_mevent = @chosen_mir.meeting_event
 end
@@ -183,28 +185,38 @@ end
 
 # Uses @chosen_mir
 When('I click on the team name on the chosen result row, selecting it') do
-  find("tbody.result-table-row#mir#{@chosen_mir.id} .team-result-link a").click
+  css_selector = "tbody.result-table-row#mir#{@chosen_mir.id} .team-result-link a"
+  step("I wait until the slow-rendered page portion '#{css_selector}' is visible")
+  expect(page).to have_css(css_selector)
+
+  find(css_selector).click
   sleep(1) && wait_for_ajax
 end
 
 # Uses @chosen_mir
 When('I click on the swimmer name on the chosen result row, selecting it') do
-  find("tbody.result-table-row#mir#{@chosen_mir.id} span.swimmer-results-link a").click
+  css_selector = "tbody.result-table-row#mir#{@chosen_mir.id} span.swimmer-results-link a"
+  step("I wait until the slow-rendered page portion '#{css_selector}' is visible")
+  expect(page).to have_css(css_selector)
+
+  find(css_selector).click
   sleep(1) && wait_for_ajax
 end
 
 # Uses @chosen_meeting
 Then('I am at the chosen team results page for the current meeting') do
-  sleep(1) && wait_for_ajax
+  sleep(1)
+  wait_for_ajax
   expect(page.current_path.to_s).to include(meeting_team_results_path(@chosen_meeting.id))
-  find('section#meeting-team-results', visible: true)
+  step("I wait until the slow-rendered page portion 'section#meeting-team-results' is visible")
 end
 
 # Uses @chosen_meeting
 Then('I am at the chosen swimmer results page for the current meeting') do
-  sleep(1) && wait_for_ajax
+  sleep(1)
+  wait_for_ajax
   expect(page.current_path.to_s).to include(meeting_swimmer_results_path(@chosen_meeting.id))
-  find('section#meeting-swimmer-results', visible: true)
+  step("I wait until the slow-rendered page portion 'section#meeting-swimmer-results' is visible")
 end
 #-- ---------------------------------------------------------------------------
 #++

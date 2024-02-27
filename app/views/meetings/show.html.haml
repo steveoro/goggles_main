@@ -12,7 +12,7 @@
             %tr.text-center
               %th{ colspan: 4 }
                 - collapse_target = "loading-mev-#{meeting_event.id}"
-                = link_to(meeting_show_event_section_path(meeting_event.id), method: :get, remote: true,
+                = link_to(meeting_show_event_section_path(meeting_event.id), anchor: collapse_target, method: :get, remote: true,
                           id: "btn-load-mev-#{meeting_event.id}", type: 'button',
                           class: 'btn btn-link', role: 'button', title: t('meetings.tooltip.link.click_to_expand'),
                           data: { tooltip: true, toggle: 'collapse', target: "##{collapse_target}" },
@@ -23,5 +23,8 @@
             %tr.collapse.text-center{ id: collapse_target }
               %td{ colspan: 4 }
                 %i.text-secondary.fa.fa-spin.fa-2x.fa-cog
+
+      .row
+        &nbsp;
 
   .spacer-right

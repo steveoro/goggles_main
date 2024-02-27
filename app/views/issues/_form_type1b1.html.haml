@@ -12,7 +12,7 @@
     = form_tag(issues_create_type1b1_path, id: 'frm-type1b1', method: :post) do
       = hidden_field_tag(:result_id, result_row.id)
       = hidden_field_tag(:result_class, result_row.class.name.split('::').last)
-      - parent_meeting = result_row.parent_meeting
+      - parent_meeting = result_row.respond_to?(:meeting) ? result_row.meeting : result_row.parent_meeting
       .bg-light-yellow.p-3.shadow-box
         .row-fluid
           %h4.text-center
@@ -20,13 +20,16 @@
             = render(Meeting::LabelComponent.new(meeting: parent_meeting))
         .row-fluid.text-center
           = parent_meeting.decorate.header_date
-        .row-fluid.col-12.pt-2.mb-0.text-center
+        .row-fluid.text-center
           %h5
             %b
-              #{result_row.swimmer.complete_name} - #{result_row.event_type.label} #{result_row.gender_type.label}
-        - if result_row.respond_to?(:team)
-          .row-fluid.text-center.mb-3
-            = result_row.team.editable_name
+              #{result_row.event_type.label} #{result_row.gender_type.label}
+          .mb-3
+            - if result_row.respond_to?(:swimmer)
+              #{result_row.swimmer.complete_name}
+              &nbsp;-&nbsp;
+            - if result_row.respond_to?(:team)
+              #{result_row.team.editable_name}
 
         .form-row.px-3.mb-2
           .form-group.col-12.col-lg-4.pt-2.mt-1.mb-0
@@ -49,6 +52,20 @@
                                 type: 'number', class: 'form-control text-right')
               .form-control-sm.ml-1.p-1
                 &nbsp;
+
+        .form-row.px-3.mb-2
+          .form-group.col-12.offset-lg-4.col-lg-6.pt-2.mt-1.mb-0
+            .custom-control.custom-checkbox
+              = check_box_tag(:dsq_missing, '1', false, class: 'custom-control-input')
+              = label_tag(:dsq_missing, t('issues.type1b1.form.dsq_missing_label'), class: 'custom-control-label')
+
+        .form-row.mb-2
+          .form-group.col.mx-3
+            = label_tag(:other_notes, t('issues.type1b1.form.other_notes'))
+            %br/
+            = text_area_tag(:other_notes, nil, rows: 3, autofocus: true, class: 'form-control',
+                            'aria-describedby' => 'other notes',
+                            placeholder: t('issues.type1b1.form.other_notes_placeholder'))
 
       .form-group.mt-2.col-auto
         .actions

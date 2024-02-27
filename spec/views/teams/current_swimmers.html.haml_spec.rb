@@ -13,11 +13,11 @@ RSpec.describe 'teams/current_swimmers.html.haml' do
       [
         GogglesDb::TeamAffiliation.includes(:team, season: :season_type).joins(:team, season: :season_type)
                                   .where(team_id: fixture_row.id, seasons: { season_type_id: GogglesDb::SeasonType.mas_csi.id })
-                                  .order(:begin_date)
+                                  .order('seasons.begin_date')
                                   .last,
         GogglesDb::TeamAffiliation.includes(:team, season: :season_type).joins(:team, season: :season_type)
                                   .where(team_id: fixture_row.id, seasons: { season_type_id: GogglesDb::SeasonType.mas_fin.id })
-                                  .order(:begin_date)
+                                  .order('seasons.begin_date')
                                   .last
       ].compact
     end

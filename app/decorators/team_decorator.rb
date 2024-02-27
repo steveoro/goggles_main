@@ -32,8 +32,6 @@ class TeamDecorator < Draper::Decorator
   # Returns the decorated base object instance, memoized.
   def decorated
     # Force eager loading:
-    @decorated ||= GogglesDb::Team.includes(:city)
-                                  .find_by(id: object.id)
-                                  .decorate
+    @decorated ||= GogglesDb::Team.includes(:city).find_by(id: object.id).decorate
   end
 end

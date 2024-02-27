@@ -4,15 +4,15 @@ require 'rails_helper'
 
 RSpec.describe RelayLaps::TableRowComponent, type: :component do
   context 'with a valid parameter,' do
-    subject { render_inline(described_class.new(relay_swimmer: fixture_lap)) }
+    subject { render_inline(described_class.new(relay_swimmer: fixture_mrs)) }
 
     let(:fixture_mrr) { FactoryBot.create(:meeting_relay_result_with_swimmers) }
-    let(:fixture_lap) { fixture_mrr.meeting_relay_swimmers.sample }
+    let(:fixture_mrs) { fixture_mrr.meeting_relay_swimmers.sample }
 
     before do
       expect(fixture_mrr).to be_a(GogglesDb::MeetingRelayResult).and be_valid
       expect(fixture_mrr.meeting_relay_swimmers.count).to be_positive
-      expect(fixture_lap).to be_a(GogglesDb::MeetingRelaySwimmer).and be_valid
+      expect(fixture_mrs).to be_a(GogglesDb::MeetingRelaySwimmer).and be_valid
     end
 
     it 'renders a collapsed table row with 2 cells' do
@@ -21,15 +21,15 @@ RSpec.describe RelayLaps::TableRowComponent, type: :component do
     end
 
     it 'includes the lap swimmer name' do
-      expect(subject.css('tr.collapse td').text).to include(fixture_lap.swimmer.complete_name)
+      expect(subject.css('tr.collapse td').text).to include(fixture_mrs.swimmer.complete_name)
     end
 
     it 'includes the lap swimmer year of birth' do
-      expect(subject.css('tr.collapse td').text).to include(fixture_lap.swimmer.year_of_birth.to_s)
+      expect(subject.css('tr.collapse td').text).to include(fixture_mrs.swimmer.year_of_birth.to_s)
     end
 
     it 'includes the lap timing' do
-      expect(subject.css('tr.collapse td.text-left').text).to include(fixture_lap.to_timing&.to_s)
+      expect(subject.css('tr.collapse td.text-left').text).to include(fixture_mrs.to_timing&.to_s)
     end
   end
 

@@ -2,7 +2,10 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
-- **0.6.00** [Steve A.] test upgrade to Ruby 3.1.4; made meetings/show & swimmers/history_recap async; re-added pagination on swimmers/history to prevent very long page loads for hyper-active swimmers; misc improvements, refactorings & additional specs
+- **0.6.30** [Steve A.] re-sync w/ base engine; added Prosopite config in test & development environments for quick checking specific API endpoints, although kept it disabled as well as Bullet; misc specs updates after most query reviews
+- **0.6.21** [Steve A.] re-sync w/ base engine & updated bundle; support for MRR/MRS/RelayLap editing for Team managers
+- **0.6.12** [Steve A.] Re-sync w/ base engine & updated bundle; CircleCI workflow edits: simplified build for docker-versioned (skips tests when tags are published to get the release sooner); rubocop fixes; handle new RelayLaps in relay result display
+- **0.6.00** [Steve A.] upgrade to Ruby 3.1.4; made meetings/show & swimmers/history_recap async; re-added pagination on swimmers/history to prevent very long page loads for hyper-active swimmers; misc improvements, refactorings & additional specs
 - **0.5.22** [Steve A.] re-sync w/ base engine & API; added support for account reactivation request; bundle update
 - **0.5.12** [Steve A.] re-sync w/ base engine
 - **0.5.05** [Steve A.] check team & swimmer presence in meeting before enabling links to results in meetings/_navs; re-sync w/ base engine

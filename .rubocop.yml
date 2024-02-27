@@ -84,6 +84,13 @@ Performance/CollectionLiteralInLoop:
     - 'spec/**/*'
 
 
+Rails/BulkChangeTable:
+  Exclude:
+    - 'db/migrate/20210513155157_change_user_results.rb'
+    - 'db/migrate/20210513170020_add_seq_to_import_queues.rb'
+    - 'db/migrate/20210514131355_rename_associations_in_user_results.rb'
+    - 'db/migrate/20210611120440_add_support_fields_to_import_queues.rb'
+
 # Excluded files here were already corrected in later migrations:
 Rails/ThreeStateBooleanColumn:
   Exclude:
@@ -96,6 +103,7 @@ Rails/SkipsModelValidations:
     - 'app/controllers/users/sessions_controller.rb'
     - 'db/migrate/20230530165750_clear_non_existing_associated_user_id.rb'
     - 'db/migrate/20210630154722_data_fix_badges_with_null_entry_time_type.rb'
+    - 'db/migrate/20240204165000_data_fix_remove_null_rank_values.rb'
 
 Rake/Desc:
   Exclude:
@@ -113,6 +121,10 @@ Rake/MethodDefinitionInTask:
 
 RSpec/IndexedLet:
   Enabled: false
+
+RSpec/ExampleLength:
+  Exclude:
+    - 'spec/support/shared_component_examples.rb'
 
 RSpec/ExpectInHook:
   Enabled: false

@@ -54,16 +54,45 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   # ============================================================================
-  # Bullet gem specific configuration:
+  # Prosopite gem specific configuration: (Bullet alternative)
+  # (see https://github.com/charkost/prosopite)
   # ============================================================================
-  # (see https://github.com/flyerhzm/bullet)
   config.after_initialize do
-    Bullet.enable = true
-    Bullet.bullet_logger = true
-    Bullet.raise = true # raise an error if n+1 query occurs
-    # Bullet.stacktrace_includes = ['goggles_db']
+    # [Steve, 20240221] Leave Prosopite disabled if it complains too much.
+    Prosopite.enabled = false # default: true
+    Prosopite.rails_logger = true
+    # Prosopite.prosopite_logger = true # default: false
+    Prosopite.raise = true
+    Prosopite.ignore_queries = [/active_storage_|events_by_pool_types|taggings/i]
 
-    # Detect eager-loaded associations which are not used
+    # ============================================================================
+    # Bullet gem specific configuration:
+    # (see https://github.com/flyerhzm/bullet)
+    # ============================================================================
+    # [Steve, 20210128] Note: Bullet doesn't support ActiveRecord 6.1 yet
+    # [Steve, 20240221] Leave Bullet disabled if it complains too much.
+    Bullet.enable = true
+
+    # Pop up a JavaScript alert in the browser:
+    # Bullet.alert = true
+
+    # Log to the Bullet log file (Rails.root/log/bullet.log):
+    # Bullet.bullet_logger = true
+    # Log warnings to your browser's console.log:
+    Bullet.console = true
+
+    Bullet.raise = true # raise an error if a query detector occurs
+    Bullet.stacktrace_includes = ['goggles_db']
+
+    # --- Bullet detectors: ---
+    # (Each of these settings defaults to true)
+    # Detect N+1 queries:
+    # Bullet.n_plus_one_query_enable = false
+
+    # Detect eager-loaded associations which are not used:
     Bullet.unused_eager_loading_enable = false
+
+    # Detect unnecessary COUNT queries which could be avoided with a counter_cache:
+    Bullet.counter_cache_enable = false
   end
 end

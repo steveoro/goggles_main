@@ -7,7 +7,7 @@
  * of the layout of the container element -- see below for the only limit on CSS styles.
  *
  *
- * == Basic behavior & ussage ==
+ * == Basic behavior & usage ==
  * Use a Stimulus controller to import & connect this widget to the page.
  *
  * The container node is animated and moved toward the swipe direction until it disappears from
@@ -16,6 +16,18 @@
  * The suggested follow-up behavior would be to either replace externally the whole container element
  * or programmatically update its contents and then reset its position with @see resetPosition()
  * during the gesture callbacks.
+ *
+ *
+ * === Supported features:
+ * - swiping back & forth through different data pages;
+ * - sets & updates an internal continuous index for the current data page to be shown (if any);
+ * - page-wrapping at the end.
+ *
+ *
+ * == Events: ==
+ * All called with the current dataIndex value (can be ignored if not needed by the callback):
+ * - onswipeleft(dataIndex)
+ * - onswiperight(dataIndex)
  *
  *
  * == Widget DOM/Styles ==
@@ -27,22 +39,24 @@
  *
  *
  * == Base parameters ==
- * @param {*} element the DOM node in the foreground that has to be moved left or right
- * @param {*} options any supported options (see below)
+ * @param {*} element,  the DOM node in the foreground that has to be moved left or right
+ * @param {*} options,  any supported options (see below)
  *
  *
  * == Options ==
- * @param {Number}    index         current index/data page displayed; default: 1
- * @param {Number}    total         total available index/pages count; default: 1
- * @param {boolean}   continuous    swiping will wrap against range limits (1..total); default: false
- * @param {boolean}   debug         toggle debug output to the console; default: false
- * @param {function}  onswipeleft   *callback*: swipe-left gesture performed
- * @param {function}  onswiperight  *callback*: swipe-right gesture performed
+ * @param {Number}    index,        current index/data page displayed; default: 1
+ * @param {Number}    total,        total available index/pages count; default: 1
+ * @param {boolean}   continuous,   swiping will wrap against range limits (1..total); default: false
+ * @param {boolean}   enableLeft,   enable swipe-left; default: false
+ * @param {boolean}   enableRight,  enable swipe-right; default: false
+ * @param {boolean}   debug,        toggle debug output to the console; default: false
+ * @param {function}  onswipeleft,  *callback*: swipe-left gesture performed
+ * @param {function}  onswiperight, *callback*: swipe-right gesture performed
  *
  *
  * == References ==
  * - [Steve A.] most of original code
- * - low-level touch support code adapted from: https://developers.google.com/web/fundamentals/design-and-ux/input/touch
+ * - Low-level touch support code & idea adapted from: https://developers.google.com/web/fundamentals/design-and-ux/input/touch
  */
 export default class SwipeElement {
   constructor (element, options) {
@@ -62,6 +76,8 @@ export default class SwipeElement {
     // == Options with defaults ==
     options = options || {}
     const continuous = options.continuous
+    const enableLeft = options.enableLeft
+    const enableRight = options.enableRight
     const debug = options.debug
     const totalIndex = options.total || 1
     let currentIndex = options.index || 1
@@ -73,6 +89,10 @@ export default class SwipeElement {
     // Perform client width here as this can be expensive and doesn't change until window.onresize:
     let itemWidth = swipeElement.clientWidth
     let slopeValue = itemWidth * (1 / 4)
+    // DEBUG
+    if (debug) {
+      console.log(`itemWidth: ${itemWidth}, slopeValue: ${slopeValue})`)
+    }
 
     // On resize, change the slope value:
     this.resize = function () {
@@ -187,7 +207,7 @@ export default class SwipeElement {
       // Check if we need to change state to left or right based on slope value
       if (Math.abs(differenceInX) > slopeValue) {
         if (currentState === STATE_DEFAULT) {
-          if (differenceInX > 0) {
+          if (enableLeft && differenceInX > 0) {
             newState = STATE_SWEPT_LEFT
             currentIndex++ // Update data index
             // DEBUG
@@ -205,7 +225,7 @@ export default class SwipeElement {
               }
               options.onswipeleft(currentIndex)
             }
-          } else {
+          } else if (enableRight && differenceInX < 0) {
             newState = STATE_SWEPT_RIGHT
             currentIndex-- // Update data index
             // DEBUG

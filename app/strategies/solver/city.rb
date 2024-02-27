@@ -59,7 +59,7 @@ module Solver
       return nil unless required_bindings.values.all?(&:present?)
 
       new_instance = GogglesDb::City.new
-      bindings.each { |key, solved| new_instance.send("#{key}=", solved) unless solved.nil? }
+      bindings.each { |key, solved| new_instance.send(:"#{key}=", solved) unless solved.nil? }
       new_instance.country = new_instance.iso_attributes['country'] unless new_instance.country.present? ||
                                                                            new_instance.country_code.to_s.empty?
       new_instance.save # Don't throw validation errors

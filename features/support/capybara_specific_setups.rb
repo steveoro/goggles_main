@@ -4,10 +4,18 @@ require 'capybara/rails'
 require 'capybara/cucumber'
 require 'capybara/session'
 
-# [Steve, 20230725] As of this writing, the following is the latest production version of
-# Chromedriver supported by Webdrivers (even though we actually have v.115 manually installed)
-# [Update, 20230809] Selenium 4.11+ handles web drivers by itself, so 'webdrivers' standalone is no longer required
-# Webdrivers::Chromedriver.required_version = '114.0.5735.90'
+# [Steve, 20230809] Selenium 4.11+ handles web drivers by itself, so 'webdrivers' standalone is no longer required.
+
+# == NOTE:
+# Make sure Chromedriver matches the installed version for Chrome. If not (Cucumber tests will fail),
+# replace the existing version (@ /usr/bin/chromedriver) with a more compatible one. This way:
+#
+# 1. Download a more recent version from https://googlechromelabs.github.io/chrome-for-testing/
+#    (chromedriver only, linux64, stable)
+# 2. Open the zip contents and move into its folder
+# 3. `sudo mv chromedriver /usr/bin/`
+# 4. `sudo chown root:root /usr/bin/chromedriver`
+# 5. Update '.circleci/config.yml' with the updated Chrome version
 require_relative 'download_helpers'
 
 # Add factories directly from core engine:

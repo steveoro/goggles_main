@@ -3,14 +3,15 @@
 #
 # = RelayLaps components module
 #
-#   - version:  7.01
+#   - version:  7-0.6.30
 #   - author:   Steve A.
 #
 module RelayLaps
   #
   # = RelayLaps::TableComponent
   #
-  # Collapsible table body (+tbody+) for relay lap data display.
+  # Collapsible table body (+tbody+) for relay lap data display
+  # (both MRSs & RelayLaps).
   #
   # - collapse DOM ID: "laps<MRR_id>"
   #   (typically, to be triggered by an external component)
@@ -31,6 +32,18 @@ module RelayLaps
     # Skips rendering unless @laps is enumerable and orderable :by_order
     def render?
       @relay_swimmers.respond_to?(:each) && @relay_swimmers.respond_to?(:by_order)
+    end
+
+    protected
+
+    # Returns the associated parent result instance (memoized)
+    def parent_result_id
+      @parent_result_id ||= @relay_swimmers.first&.meeting_relay_result_id
+    end
+
+    # Returns the DOM ID for this component
+    def dom_id
+      "laps-show#{parent_result_id}"
     end
   end
 end

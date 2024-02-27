@@ -12,7 +12,7 @@ Feature: Chrono time recording setup
     When I click on the new recording button
     Then I am redirected to the Chrono setup page
     When I select 'workshop' as the event container type
-    And I type 'MASTER CSI 2021' as selection for the 'season' pre-filled select field
+    And I type 'MASTER CSI' as selection for the 'season' pre-filled select field
     And I type '2° Trial CSI RE' as selection for the 'user_workshop' Select2 field
     Then I click on the 'next' button at the end of form step '1'
     And I see that form step '2' is displayed

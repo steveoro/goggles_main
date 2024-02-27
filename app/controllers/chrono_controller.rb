@@ -15,7 +15,9 @@ class ChronoController < ApplicationController
   # [GET] Lists the queue of pending lap registrations by the current_user
   def index
     # Retrieve only the master request, ignore the siblings (with UID: 'chrono-SEQ-IDX')
-    @queues = GogglesDb::ImportQueue.for_user(current_user).for_uid('chrono')
+    @queues = GogglesDb::ImportQueue.for_user(current_user)
+                                    .includes(:import_queues)
+                                    .for_uid('chrono')
   end
 
   # [GET] Download ImportQueues request as a JSON file.
@@ -59,7 +61,7 @@ class ChronoController < ApplicationController
     @last_chosen_city = last_chosen_city
     @seasons = GogglesDb::Season.includes(:season_type).in_range(Time.zone.today - 1.year, Time.zone.today + 3.months)
     @pool_types = GogglesDb::PoolType.all
-    @event_types = GogglesDb::EventType.all_eventable
+    @event_types = GogglesDb::EventType.all_individuals # FUTUREDEV: all_eventable requires actual timing support for MRR+MRS+RL
     @category_types = GogglesDb::Season.for_season_type(GogglesDb::SeasonType.mas_fin)
                                        .by_begin_date.last
                                        .category_types

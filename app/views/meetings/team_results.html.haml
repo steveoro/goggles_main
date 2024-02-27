@@ -17,6 +17,6 @@
 
         = render(partial: 'team_results_event_grid', locals: { meeting: @meeting, team: @team,
                  meeting_events_list: @meeting_events_list, managed_team_ids: @managed_team_ids,
-                 current_user_is_admin: @current_user_is_admin })
+                 user_teams: @user_teams, current_user_is_admin: @current_user_is_admin })
 
   .spacer-right

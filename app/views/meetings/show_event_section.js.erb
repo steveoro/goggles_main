@@ -1,5 +1,6 @@
 $('#loading-indicator').addClass('d-none')
-document.querySelector("#mevent-<%= @meeting_event.id %>").outerHTML = `<%=
+newAnchor = "#mevent-<%= @meeting_event.id %>"
+document.querySelector(newAnchor).outerHTML = `<%=
           escape_javascript(
             render(
               partial: 'show_event_section',
@@ -9,8 +10,11 @@ document.querySelector("#mevent-<%= @meeting_event.id %>").outerHTML = `<%=
                 event_index: @event_index,
                 prgs_for_event: @prgs_for_event,
                 managed_team_ids: @managed_team_ids,
-                current_swimmer_id: @current_swimmer_id
+                user_teams: @user_teams,
+                current_swimmer_id: @current_swimmer_id,
+                current_user_is_admin: @current_user_is_admin
               }) ) %>`;
 
 // Re-enable tooltips for shown sections:
 $('[data-toggle="tooltip"]').tooltip()
+location.hash = newAnchor

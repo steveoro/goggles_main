@@ -54,7 +54,7 @@ class SwimmerDecorator < Draper::Decorator
   # Returns the decorated base object instance, memoized.
   def decorated
     # Force eager loading in case the source object is 'unscoped':
-    @decorated ||= GogglesDb::Swimmer.includes(:gender_type)
+    @decorated ||= GogglesDb::Swimmer.includes(:gender_type).joins(:gender_type)
                                      .find_by(id: object.id)
                                      .decorate
   end

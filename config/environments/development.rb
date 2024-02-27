@@ -83,71 +83,45 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   # ============================================================================
-  # Bullet gem specific configuration:
+  # Prosopite gem specific configuration: (Bullet alternative)
+  # (see https://github.com/charkost/prosopite)
   # ============================================================================
-  # (see https://github.com/flyerhzm/bullet)
   config.after_initialize do
+    # [Steve, 20240221] Leave Prosopite disabled if it complains too much.
+    Prosopite.enabled = false # default: true
+    Prosopite.rails_logger = true
+    # Prosopite.prosopite_logger = true # default: false
+    Prosopite.raise = true
+    Prosopite.ignore_queries = [/active_storage_|events_by_pool_types|taggings/i]
+
+    # ============================================================================
+    # Bullet gem specific configuration:
+    # (see https://github.com/flyerhzm/bullet)
+    # ============================================================================
+    # [Steve, 20210128] Note: Bullet doesn't support ActiveRecord 6.1 yet
+    # [Steve, 20240221] Leave Bullet disabled if it complains too much.
     Bullet.enable = true
+
     # Pop up a JavaScript alert in the browser:
     # Bullet.alert = true
+
     # Log to the Bullet log file (Rails.root/log/bullet.log):
-    Bullet.bullet_logger = true
+    # Bullet.bullet_logger = true
     # Log warnings to your browser's console.log:
     Bullet.console = true
 
-    # Pop up Growl warnings if your system has Growl installed:
-    # Bullet.growl = true
-
-    # Send XMPP/Jabber notifications to the receiver indicated:
-    # Bullet.xmpp = {
-    #   account: 'bullets_account@jabber.org',
-    #   password: 'bullets_password_for_jabber',
-    #   receiver: 'your_account@jabber.org',
-    #   show_online_status: true
-    # }
-
-    # Add warnings directly to the Rails log:
-    Bullet.rails_logger = true
-
-    # Add other notifications:
-    # Bullet.honeybadger = true
-    # Bullet.bugsnag = true
-    # Bullet.airbrake = true
-    # Bullet.rollbar = true
-    # Bullet.sentry = true
-
-    # Adds the details in the bottom left corner of the page:
-    # Bullet.add_footer = true
-
-    # Stacktrace inclusion / exclusions:
-    # Bullet.stacktrace_includes = ['your_gem', 'your_middleware']
+    Bullet.raise = true # raise an error if a query detector occurs
     Bullet.stacktrace_includes = ['goggles_db']
-    # Bullet.stacktrace_excludes = [
-    #   'their_gem',
-    #   'their_middleware',
-    #   ['my_file.rb', 'my_method'], ['my_file.rb', 16..20]
-    # ]
-
-    # Add Slack notifications:
-    # Bullet.slack = {
-    #   webhook_url: 'http://some.slack.url',
-    #   channel: '#default',
-    #   username: 'notifier'
-    # }
-
-    # Raise errors, useful for making your specs fail unless they have optimized queries:
-    # (For this to work, all the configuration boilerplate must be invoked also on test environment)
-    # Bullet.raise = true
 
     # --- Bullet detectors: ---
     # (Each of these settings defaults to true)
     # Detect N+1 queries:
-    # Bullet.n_plus_one_query_enable     = false
+    # Bullet.n_plus_one_query_enable = false
 
     # Detect eager-loaded associations which are not used:
     Bullet.unused_eager_loading_enable = false
 
     # Detect unnecessary COUNT queries which could be avoided with a counter_cache:
-    # Bullet.counter_cache_enable        = false
+    Bullet.counter_cache_enable = false
   end
 end
