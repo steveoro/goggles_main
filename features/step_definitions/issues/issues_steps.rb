@@ -49,6 +49,8 @@ Then('I can\'t see any of the {string} \({string}) buttons on the results of the
 end
 
 Then('I can see the {string} \({string}) buttons on the results of the page') do |_issue_name, issue_type|
+  step("I wait until the slow-rendered page portion 'a.btn.issue-#{issue_type}-btn' is visible")
+
   10.times do
     wait_for_ajax
     if page.has_css?("a.btn.issue-#{issue_type}-btn")
@@ -56,18 +58,27 @@ Then('I can see the {string} \({string}) buttons on the results of the page') do
       putc '.'
       break
     else
-      putc '-'
+      putc 'W'
     end
   end
   expect(page).to have_css("a.btn.issue-#{issue_type}-btn")
 end
 
 Then('I click a random {string} button on the page') do |issue_type|
-  find("a.btn.issue-#{issue_type}-btn", visible: true) # make sure the page is rendered
+  step("I wait until the slow-rendered page portion 'a.btn.issue-#{issue_type}-btn' is visible")
   chosen_btn = find_all("a.btn.issue-#{issue_type}-btn").sample
-  chosen_btn.click
-  wait_for_ajax && sleep(0.5)
-  # Wait for the form to be rendered:
+  expect(chosen_btn).to be_visible
+  # NOTE
+  # We'll send the click event using script with its unique DOM ID
+  # because the web driver’s click() method is asynchronous and sometimes
+  # Capybara starts the code execution before JS finishes initializing its listeners.
+  # For an article about it, see:
+  # https://medium.com/@alieckaja/capybara-inconsistent-click-behavior-and-flickering-tests-f50b5fae8ab2
+  dom_id = chosen_btn[:id]
+  execute_script("document.querySelector('##{dom_id}').click()")
+  wait_for_ajax
+  sleep(0.5)
+  # Make sure the form is there:
   find("form#frm-#{issue_type}", visible: true)
 end
 # -----------------------------------------------------------------------------
@@ -126,7 +137,8 @@ end
 # ASSUMES/SETS:
 # - @latest_issue = GogglesDb::Issue.last
 When('I see my newly created issue') do
-  sleep(1) && wait_for_ajax
+  sleep(1)
+  wait_for_ajax
   expect(GogglesDb::Issue.count).to be_positive
   @latest_issue = GogglesDb::Issue.last
   # In case we come from a select2 drop-down input box, the label should be in the request text too:
@@ -135,7 +147,8 @@ When('I see my newly created issue') do
   # If there's a link to a last page, go to the last page:
   if page.has_css?('li.page-item span.last a.page-link')
     find('li.page-item span.last a.page-link').click
-    sleep(0.5) && wait_for_ajax
+    sleep(0.5)
+    wait_for_ajax
   end
   issue_grid = find('section#issues-grid table tbody', visible: true)
   last_row = issue_grid.find_all('tr', visible: true).last
