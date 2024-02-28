@@ -93,8 +93,9 @@ Rails.application.routes.draw do
   get 'user_workshops/for_team/:id',    to: 'user_workshops#for_team',    as: 'user_workshops_for_team'
 
   get 'tools/fin_score'
-  # TODO: move the following to a dedicated API endpoint:
   get 'tools/compute_fin_score', format: :json
+  get 'tools/delta_timings'
+  get 'tools/compute_deltas', format: :json
 
   # Catch-all redirect in case of 404s
   get '*path', to: 'application#redirect_missing'

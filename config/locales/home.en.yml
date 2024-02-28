@@ -19,6 +19,7 @@ en:
     current: '(current)'
     commands: 'commands'
     compute_fin_score: 'compute FIN score'
+    compute_deltas: 'compute Δt in between laps'
     my:
       go_to_dashboard_tooltip: go to your Dashboard
       dashboard_title: my Dashboard

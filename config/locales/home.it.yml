@@ -19,6 +19,7 @@ it:
     current: '(attuale)'
     commands: 'comandi'
     compute_fin_score: 'calcola punteggio FIN'
+    compute_deltas: 'calcola Δt passaggi gara'
     my:
       go_to_dashboard_tooltip: vai alla tua Dashboard
       dashboard_title: la mia Dashboard

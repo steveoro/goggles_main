@@ -10,3 +10,6 @@ it:
       target_timing:
         title: 'Tempo obiettivo'
         button_label: 'Calcola tempo'
+    delta_timings:
+      title: 'Δt passaggi'
+      button_label: 'Calcola Δt'

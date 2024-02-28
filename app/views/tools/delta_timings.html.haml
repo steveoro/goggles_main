@@ -1,0 +1,56 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    .row-fluid#deltas-title
+      %h4.text-center
+        %i.fa.fa-calculator
+        = t('tools.delta_timings.title')
+
+    = form_tag(tools_compute_deltas_path, id: 'frm-deltas', remote: true, method: :get) do
+      %table.table.table-sm
+        %thead
+          %tr
+            %th{ scope: 'row', class: 'border-0' }
+              .form-row.text-center
+                .col-2 Num.
+                .col-7 ⏱
+                .col-2.px-4.text-left Δt
+
+          %tbody.result-table-row.font-75rem
+            - 16.times do |index|
+              %tr.container{ id: "delta-row-#{index}"}
+                %td{ scope: 'row', class: 'border-0' }
+                  .form-row.text-right
+                    .col-2.my-1
+                      %small= index + 1
+
+                    .col-2
+                      .input-group
+                        = number_field_tag("m[#{index}]", nil, min: 0, max: 120, autofocus: true, type: 'number',
+                                          class: 'form-control form-control-sm text-right')
+                        .form-control-sm.ml-0.p-1
+                          %b= '\''
+                    .col-3
+                      .input-group
+                        = number_field_tag("s[#{index}]", nil, min: 0, max: 59, autofocus: true, type: 'number',
+                                          class: 'form-control form-control-sm text-right')
+                        .form-control-sm.ml-0.p-1
+                          %b= '"'
+                    .col-2
+                      = number_field_tag("h[#{index}]", nil, min: 0, max: 99, autofocus: true, type: 'number',
+                                        class: 'form-control form-control-sm text-right')
+                    .col-2.py-1.text-left
+                      %b{ id: "delta-#{index}" }
+            %tr.container
+              %td{ scope: 'row', class: 'border-0' }
+                .form-row
+                  %p &nbsp;
+
+
+      .fixed-bottom.backdrop-opaque.row-fluid.text-center
+        = submit_tag(t('tools.delta_timings.button_label'), id: 'btn-compute-deltas',
+                    class: 'btn btn-primary', 'aria-label' => 'Compute deltas', type: 'submit',
+                    onclick: "$('#loading-indicator').removeClass('d-none'); return true")
+
+  .spacer-right

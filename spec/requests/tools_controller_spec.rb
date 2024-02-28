@@ -165,4 +165,93 @@ RSpec.describe ToolsController do
   end
   #-- -------------------------------------------------------------------------
   #++
+
+  describe 'GET /delta_timings' do
+    context 'with an unlogged user' do
+      it 'is a redirect to the login path' do
+        get(tools_delta_timings_path)
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'with a logged-in user' do
+      before do
+        user = GogglesDb::User.first(50).sample
+        sign_in(user)
+      end
+
+      it 'is successful' do
+        get(tools_delta_timings_path)
+        expect(response).to be_successful
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  describe 'GET XHR /compute_deltas' do
+    context 'with an unlogged user' do
+      it 'is a redirect to the login path' do
+        get(tools_compute_deltas_path)
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'with a logged-in user' do
+      let(:current_user) { GogglesDb::User.first(50).sample }
+
+      before { sign_in(current_user) }
+
+      context 'making a plain HTML request,' do
+        before { get(tools_compute_deltas_path) }
+
+        it_behaves_like('invalid row id GET request')
+      end
+
+      context 'making an XHR request' do
+        let(:delta_t0) { Timing.new.from_hundredths(3300 + (600 * (rand - 0.5))) }
+        let(:delta_t1) { Timing.new.from_hundredths(3300 + (600 * (rand - 0.5))) }
+        let(:delta_t2) { Timing.new.from_hundredths(3300 + (600 * (rand - 0.5))) }
+        let(:delta_t3) { Timing.new.from_hundredths(3300 + (600 * (rand - 0.5))) }
+
+        let(:t1) { delta_t0 + delta_t1 }
+        let(:t2) { delta_t1 + delta_t2 }
+        let(:t3) { delta_t2 + delta_t3 }
+
+        let(:request_params) do
+          {
+            m: { '0' => delta_t0.minutes, '1' => t1.minutes, '2' => t2.minutes, '3' => t3.minutes },
+            s: { '0' => delta_t0.seconds, '1' => t1.seconds, '2' => t2.seconds, '3' => t3.seconds },
+            h: { '0' => delta_t0.hundredths, '1' => t1.hundredths, '2' => t2.minutes, '3' => t3.hundredths }
+          }
+        end
+
+        before do
+          expect(request_params).to be_a(Hash).and be_present
+        end
+
+        context 'with valid parameters,' do
+          before do
+            get(tools_compute_deltas_path, xhr: true, params: request_params)
+          end
+
+          it 'is successful' do
+            expect(response).to be_successful
+          end
+        end
+
+        context 'without valid parameters for any kind of request,' do
+          before do
+            get(tools_compute_deltas_path, xhr: true)
+          end
+
+          it 'is successful anyway (but won\'t compute anything)' do
+            expect(response).to be_successful
+          end
+        end
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 end

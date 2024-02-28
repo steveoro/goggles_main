@@ -1,0 +1,5 @@
+<%- @deltas&.each_with_index do |delta, index| %>
+  document.querySelector("#delta-<%= index %>").innerHTML = "<%= escape_javascript(delta) %>";
+<%- end %>
+
+$('#loading-indicator').addClass('d-none');

@@ -69,9 +69,46 @@ class ToolsController < ApplicationController
   #-- -------------------------------------------------------------------------
   #++
 
+  # Data entry for Delta timing computation in between laps.
+  # (Manual-only, no DB storage)
+  #
+  def delta_timings
+    # (no-ops)
+  end
+
+  # GET [XHR] - Compute deltas for each timing present on the form grid.
+  #
+  def compute_deltas # rubocop:disable Metrics/AbcSize
+    unless request.xhr?
+      flash[:warning] = I18n.t('search_view.errors.invalid_request')
+      redirect_to(root_path) && return
+    end
+
+    @deltas = []
+    prev_timing = Timing.new
+
+    16.times do |index|
+      next unless delta_t_params['m'].respond_to?(:fetch) &&
+                  delta_t_params['s'].respond_to?(:fetch) &&
+                  delta_t_params['h'].respond_to?(:fetch)
+
+      curr_timing = Timing.new(
+        minutes: delta_t_params['m'].fetch(index.to_s, 0),
+        seconds: delta_t_params['s'].fetch(index.to_s, 0),
+        hundredths: delta_t_params['h'].fetch(index.to_s, 0)
+      )
+      next if curr_timing.zero? || curr_timing < prev_timing
+
+      @deltas << (curr_timing - prev_timing)
+      prev_timing = curr_timing
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
   private
 
-  # Strong parameter checking for POST /fin_score
+  # Strong parameter checking for GET /fin_score
   def fin_score_params
     params.permit(%w[
                     season_id season
@@ -81,6 +118,11 @@ class ToolsController < ApplicationController
                     minutes seconds hundredths score
                     authenticity_token commit
                   ])
+  end
+
+  # Strong parameter checking for GET /compute_deltas
+  def delta_t_params
+    params.permit(m: {}, s: {}, h: {})
   end
 
   # Returns the parameter Hash for making the API request for
