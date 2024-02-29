@@ -70,11 +70,24 @@ When('I expand the details of a random event type and wait the stats to be displ
   expect(event_rows.count).to be_positive
 
   rnd_node = event_rows.sample
-  rnd_node.find('td.history-link label.switch-sm').click
   @expanded_stat_dom_id = rnd_node.find('td.history-link label.switch-sm a')[:id].split('toggle-').last
-  # Wait for the actual target row ID to be rendered:
-  sleep(1) && wait_for_ajax
-  find("tr##{@expanded_stat_dom_id}", visible: true)
+
+  until find("tr##{@expanded_stat_dom_id}").visible?
+    dom_id = rnd_node.find('td.history-link label.switch-sm')[:id]
+    step("I trigger the click event on the '##{dom_id}' DOM ID")
+    # Retry the click in a more standard way in case JS fails to expand the section:
+    rnd_node.find('td.history-link label.switch-sm').click unless find("tr##{@expanded_stat_dom_id}").visible?
+    # Wait for the expand animation to finish
+    5.times do
+      break if find("tr##{@expanded_stat_dom_id}").visible?
+
+      putc '.'
+      wait_for_ajax
+      sleep(0.5)
+    end
+    putc 'R' # signal repeat click&loop
+  end
+  expect(find("tr##{@expanded_stat_dom_id}")).to be_visible
 end
 
 # Uses @expanded_stat_dom_id
@@ -85,13 +98,12 @@ end
 When('I click on random event type link on the history recap') do
   tbody = find('section#swimmer-history-recap table tbody', visible: true)
   expect(tbody).to be_present
-  event_rows = find_all('tr.event-types', visible: true)
-  expect(event_rows.count).to be_positive
-
-  rnd_node = event_rows.sample
-  expect(rnd_node).to be_visible
-  expect(rnd_node.find('td.history-link a')).to be_visible
-  step("I trigger the click event on the '##{rnd_node[:id]} td.history-link a' DOM ID")
+  event_details_links = find_all('tr.event-types td.history-link a', visible: true)
+  expect(event_details_links.count).to be_positive
+  rnd_link = event_details_links.sample
+  expect(rnd_link).to be_visible
+  rnd_link.click
+  sleep(1)
 end
 #-- ---------------------------------------------------------------------------
 #++

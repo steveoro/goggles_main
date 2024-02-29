@@ -57,7 +57,6 @@ end
 When('I choose to add a 25m lap') do
   expect(@chosen_mir).to be_a(GogglesDb::AbstractResult).and be_valid
   before_add = find_all('tbody#laps-table-body tr td .lap-row').count
-
   step("I trigger the click event on the '#lap-edit-modal.modal a#lap-new25-#{@chosen_mir.id}' DOM ID")
 
   # XJS partial re-rending is pretty slow:

@@ -295,7 +295,6 @@ When('I expand the chosen MRR details') do
       end
       putc 'R' # signal repeat click&loop
     end
-
     expect(find("small#detail-mrs#{@chosen_mrs.id}")).to be_visible
   end
 end
