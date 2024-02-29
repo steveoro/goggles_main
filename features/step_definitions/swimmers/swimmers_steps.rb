@@ -89,7 +89,9 @@ When('I click on random event type link on the history recap') do
   expect(event_rows.count).to be_positive
 
   rnd_node = event_rows.sample
-  rnd_node.find('td.history-link a').click
+  expect(rnd_node).to be_visible
+  expect(rnd_node.find('td.history-link a')).to be_visible
+  step("I trigger the click event on the '##{rnd_node[:id]} td.history-link a' DOM ID")
 end
 #-- ---------------------------------------------------------------------------
 #++
@@ -129,7 +131,9 @@ end
 
 When('I click on random result link on the history detail grid') do
   node = find('section#swimmer-history-detail #data-grid table tbody', visible: true)
-  node.find_all('tr td.meeting_name a').sample.click
+  rnd_node = node.find_all('tr td.meeting_name a').sample
+  expect(rnd_node).to be_visible
+  rnd_node.click
 end
 #-- ---------------------------------------------------------------------------
 #++

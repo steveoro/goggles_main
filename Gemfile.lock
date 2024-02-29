@@ -315,7 +315,7 @@ GEM
       term-ansicolor
       yard (~> 0.9.12)
     json (2.7.1)
-    jwt (2.8.0)
+    jwt (2.8.1)
       base64
     kaminari (1.2.2)
       activesupport (>= 4.1.0)
@@ -348,7 +348,7 @@ GEM
       net-imap
       net-pop
       net-smtp
-    marcel (1.0.2)
+    marcel (1.0.3)
     matrix (0.4.2)
     method_source (1.0.0)
     mime-types (3.5.2)
@@ -413,6 +413,7 @@ GEM
       ast (~> 2.4.1)
       racc
     plus_codes (0.2.1)
+    prism (0.24.0)
     prosopite (1.4.2)
     pry (0.14.2)
       coderay (~> 1.1)
@@ -504,7 +505,7 @@ GEM
     rspec_pacman_formatter (0.1.7)
       colorize
       rspec
-    rubocop (1.60.2)
+    rubocop (1.61.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -515,8 +516,9 @@ GEM
       rubocop-ast (>= 1.30.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.30.0)
-      parser (>= 3.2.1.0)
+    rubocop-ast (1.31.0)
+      parser (>= 3.3.0.4)
+      prism (>= 0.24.0)
     rubocop-capybara (2.20.0)
       rubocop (~> 1.41)
     rubocop-factory_bot (2.25.1)
@@ -638,7 +640,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.34)
+    yard (0.9.35)
     zeitwerk (2.6.13)
 
 PLATFORMS
