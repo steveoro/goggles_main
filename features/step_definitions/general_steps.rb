@@ -99,6 +99,23 @@ Then('I scroll toward the end of the page to see the bottom of the page') do
   wait_for_ajax
 end
 
+# Clicks using a script.
+# Prevents inconsistent behaviour for Capybara node#click on modal dialogs.
+# (#click is run asynchronously and may trigger before the JS that has to be
+# loaded by the page is actually ready - see also note inside the implementation below.)
+#
+# == NOTES:
+# - +dom_id+ should include the '#' and be uniquely identifiable
+# - target should be able to receive the 'onclick' event (links, buttons, ...)
+#
+When('I trigger the click event on the {string} DOM ID') do |dom_id|
+  # Make sure the target link is visible first:
+  find(dom_id, visible: true)
+  execute_script("document.querySelector('#{dom_id}').click()")
+  wait_for_ajax
+  sleep(1)
+end
+
 # Click on OK/Yes
 When('I click on {string} accepting the confirmation request') do |string_css|
   find(string_css, visible: true) # make sure the node is visible
@@ -176,24 +193,22 @@ end
 # -----------------------------------------------------------------------------
 
 Then('I wait until the slow-rendered page portion {string} is visible') do |css_selector|
-  10.times do
+  30.times do
+    wait_for_ajax
     target_node = begin
-      find(css_selector, visible: true)
+      find(css_selector)
     rescue StandardError
       nil
     end
-    if target_node
-      wait_for_ajax
-      putc '+'
+
+    if target_node&.visible?
+      putc '!'
       break
-    end
-    begin
-      wait_for_ajax
+    else
       sleep(0.5)
       putc '-'
-    rescue StandardError
-      nil
     end
   end
+  expect(find(css_selector)).to be_visible
 end
 # -----------------------------------------------------------------------------

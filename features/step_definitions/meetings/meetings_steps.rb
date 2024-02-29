@@ -188,9 +188,7 @@ When('I click on the team name on the chosen result row, selecting it') do
   css_selector = "tbody.result-table-row#mir#{@chosen_mir.id} .team-result-link a"
   step("I wait until the slow-rendered page portion '#{css_selector}' is visible")
   expect(page).to have_css(css_selector)
-
-  find(css_selector).click
-  sleep(1) && wait_for_ajax
+  step("I trigger the click event on the '#{css_selector}' DOM ID")
 end
 
 # Uses @chosen_mir
@@ -198,25 +196,25 @@ When('I click on the swimmer name on the chosen result row, selecting it') do
   css_selector = "tbody.result-table-row#mir#{@chosen_mir.id} span.swimmer-results-link a"
   step("I wait until the slow-rendered page portion '#{css_selector}' is visible")
   expect(page).to have_css(css_selector)
-
-  find(css_selector).click
-  sleep(1) && wait_for_ajax
+  step("I trigger the click event on the '#{css_selector}' DOM ID")
 end
 
 # Uses @chosen_meeting
 Then('I am at the chosen team results page for the current meeting') do
   sleep(1)
   wait_for_ajax
-  expect(page.current_path.to_s).to include(meeting_team_results_path(@chosen_meeting.id))
+  find('section#meeting-team-results')
   step("I wait until the slow-rendered page portion 'section#meeting-team-results' is visible")
+  expect(page.current_path.to_s).to include(meeting_team_results_path(@chosen_meeting.id))
 end
 
 # Uses @chosen_meeting
 Then('I am at the chosen swimmer results page for the current meeting') do
   sleep(1)
   wait_for_ajax
-  expect(page.current_path.to_s).to include(meeting_swimmer_results_path(@chosen_meeting.id))
+  find('section#meeting-swimmer-results')
   step("I wait until the slow-rendered page portion 'section#meeting-swimmer-results' is visible")
+  expect(page.current_path.to_s).to include(meeting_swimmer_results_path(@chosen_meeting.id))
 end
 #-- ---------------------------------------------------------------------------
 #++

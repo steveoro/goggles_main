@@ -6,9 +6,7 @@ When('I click the button to manage its relay laps') do
   sleep(1) && wait_for_ajax
   expect(page).to have_css('a.btn.lap-edit-btn')
   expect(@chosen_mrr).to be_a(GogglesDb::MeetingRelayResult).and be_valid
-  btn = find("a.btn#lap-req-edit-modal-#{@chosen_mrr.id}", visible: true)
-  btn.click
-  sleep(1) && wait_for_ajax
+  step("I trigger the click event on the 'a.btn#lap-req-edit-modal-#{@chosen_mrr.id}' DOM ID")
 end
 
 # Uses:
@@ -108,7 +106,7 @@ When('I add a new relay swimmer if allowed or select the last MRS section') do
     wait_for_ajax && sleep(1)
     before_add = laps_table.find_all('tr td .lap-row').count
     # Click on add MRS row:
-    mrs_form.find_by_id('btn-add-mrs-row').click
+    step("I trigger the click event on the '#btn-add-mrs-row' DOM ID")
 
     # XJS partial re-rending is pretty slow:
     20.times do
@@ -133,7 +131,7 @@ When('I add a new relay sub-lap if allowed or possibly select the last sub-lap a
   expect(@chosen_mrr).to be_a(GogglesDb::MeetingRelayResult).and be_valid
   @chosen_mrr.reload
   dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
-  laps_table = dialog.find('tbody#laps-table-body', visible: true)
+  dialog.find('tbody#laps-table-body', visible: true)
   @chosen_mrs = @chosen_mrr.meeting_relay_swimmers.includes(:relay_laps).last # last created
   expect(@chosen_mrs).to be_a(GogglesDb::MeetingRelaySwimmer).and be_valid
 
@@ -148,7 +146,7 @@ When('I add a new relay sub-lap if allowed or possibly select the last sub-lap a
   # Detect if there are any free sublap slots available (which will make the "add sublap" button available):
   if @chosen_mrs.relay_laps.to_a.length < max_relay_laps
     before_add = find_all('tr td .sublap-row').count
-    laps_table.find("a#lap-new50-#{@chosen_mrs.id}", visible: true).click
+    step("I trigger the click event on the 'a#lap-new50-#{@chosen_mrs.id}' DOM ID")
 
     # XJS partial re-rending is pretty slow:
     50.times do
@@ -245,8 +243,7 @@ When('I click to save my edited relay {string} row') do |lap_type|
                   end
   # Make sure the form is rendered, then save the row:
   find("tbody tr td form#frm-#{lap_type}-row-#{overall_index}", visible: true)
-  find("##{lap_type}-save-row-#{overall_index}").click
-  wait_for_ajax && sleep(1)
+  step("I trigger the click event on the '##{lap_type}-save-row-#{overall_index}' DOM ID")
 end
 # -----------------------------------------------------------------------------
 
@@ -348,13 +345,8 @@ When('I click to delete my chosen relay swimmer and confirm the deletion') do
   event_type = @chosen_mrr.event_type
   overall_index = (@chosen_lap_idx + 1) * (event_type.phase_length_in_meters / 50)
 
-  hdr_row = find_by_id('lap-edit-modal', class: 'modal', visible: true)
-            .find("tbody tr#mrs-header-row-#{overall_index}", visible: true)
   before_deletion = find_all('tbody#laps-table-body tr td .lap-row').count
-  delete_btn = hdr_row.find("#lap-delete-row-#{overall_index}", visible: true)
-  accept_confirm { delete_btn.click }
-  wait_for_ajax
-  sleep(1)
+  step("I click on '#lap-delete-row-#{overall_index}' accepting the confirmation request")
 
   # XJS partial re-rending is pretty slow:
   30.times do

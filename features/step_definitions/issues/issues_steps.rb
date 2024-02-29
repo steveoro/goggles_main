@@ -68,16 +68,7 @@ Then('I click a random {string} button on the page') do |issue_type|
   step("I wait until the slow-rendered page portion 'a.btn.issue-#{issue_type}-btn' is visible")
   chosen_btn = find_all("a.btn.issue-#{issue_type}-btn").sample
   expect(chosen_btn).to be_visible
-  # NOTE
-  # We'll send the click event using script with its unique DOM ID
-  # because the web driver’s click() method is asynchronous and sometimes
-  # Capybara starts the code execution before JS finishes initializing its listeners.
-  # For an article about it, see:
-  # https://medium.com/@alieckaja/capybara-inconsistent-click-behavior-and-flickering-tests-f50b5fae8ab2
-  dom_id = chosen_btn[:id]
-  execute_script("document.querySelector('##{dom_id}').click()")
-  wait_for_ajax
-  sleep(0.5)
+  step("I trigger the click event on the '##{chosen_btn[:id]}' DOM ID")
   # Make sure the form is there:
   find("form#frm-#{issue_type}", visible: true)
 end

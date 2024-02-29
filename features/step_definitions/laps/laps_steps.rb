@@ -25,9 +25,7 @@ When('I click the button to manage its laps') do
   step("I wait until the slow-rendered page portion '#lap-req-edit-modal-#{@chosen_mir.id}' is visible")
   expect(page).to have_css("#lap-req-edit-modal-#{@chosen_mir.id}")
 
-  btn = find("a.btn#lap-req-edit-modal-#{@chosen_mir.id}", visible: true)
-  btn.click
-  sleep(1) && wait_for_ajax
+  step("I trigger the click event on the 'a#lap-req-edit-modal-#{@chosen_mir.id}' DOM ID")
 end
 
 # Uses:
@@ -59,7 +57,9 @@ end
 When('I choose to add a 25m lap') do
   expect(@chosen_mir).to be_a(GogglesDb::AbstractResult).and be_valid
   before_add = find_all('tbody#laps-table-body tr td .lap-row').count
-  find("#lap-edit-modal.modal a#lap-new25-#{@chosen_mir.id}", visible: true).click
+
+  step("I trigger the click event on the '#lap-edit-modal.modal a#lap-new25-#{@chosen_mir.id}' DOM ID")
+
   # XJS partial re-rending is pretty slow:
   20.times do
     wait_for_ajax
@@ -75,7 +75,8 @@ When('I see another empty lap row is added \(only if the last distance is less t
   @chosen_lap_idx = find_all('tbody#laps-table-body tr td .lap-row').count - 1
   # No empty lap will be created if we've selected a random result that already has laps
   # that fill all the available step distances:
-  if @chosen_mir.laps.by_distance.last.length_in_meters + 25 < @chosen_mir.event_type.length_in_meters
+  if @chosen_mir.laps.by_distance.present? &&
+     @chosen_mir.laps.by_distance.last.length_in_meters + 25 < @chosen_mir.event_type.length_in_meters
     expect(find("input#minutes_from_start_#{@chosen_lap_idx}").value).to eq('0')
     expect(find("input#seconds_from_start_#{@chosen_lap_idx}").value).to eq('0')
     expect(find("input#hundredths_from_start_#{@chosen_lap_idx}").value).to eq('0')
@@ -105,8 +106,7 @@ When('I click to save my edited lap') do
     seconds: find("input#seconds_from_start_#{@chosen_lap_idx}").value,
     hundredths: find("input#hundredths_from_start_#{@chosen_lap_idx}").value
   )
-  find("#lap-save-row-#{@chosen_lap_idx}").click
-  wait_for_ajax && sleep(1)
+  step("I trigger the click event on the '#lap-save-row-#{@chosen_lap_idx}' DOM ID")
 end
 
 # Uses:
@@ -122,9 +122,7 @@ When('I see my chosen lap has been correctly saved') do
 end
 
 When('I dismiss the lap modal editor by clicking on the close button') do
-  find_by_id('modal-close', class: 'btn', visible: true)
-  execute_script("document.querySelector('button#modal-close').click()")
-  wait_for_ajax && sleep(1)
+  step("I trigger the click event on the 'button#modal-close' DOM ID")
 end
 # -----------------------------------------------------------------------------
 
@@ -134,11 +132,8 @@ end
 # - @chosen_lap_idx, with the row count before deletion
 When('I click to delete my chosen lap and confirm the deletion') do
   before_deletion = find_all('tbody#laps-table-body tr td .lap-row').count
-  delete_btn = find("#lap-delete-row-#{@chosen_lap_idx}", visible: true)
-  accept_confirm do
-    delete_btn.click
-    sleep(1)
-  end
+  step("I click on '#lap-delete-row-#{@chosen_lap_idx}' accepting the confirmation request")
+
   # XJS partial re-rending is pretty slow:
   css_selector = 'tbody#laps-table-body tr td .lap-row'
   step("I wait until the slow-rendered page portion '#{css_selector}' is visible")
