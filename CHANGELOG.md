@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.6.34** [Steve A.] even more Cucumber specs stability fixes
 - **0.6.32** [Steve A.] bundle update; more stability fixes for Cucumber specs
 - **0.6.31** [Steve A.] added stand-alone "compute timing deltas" feature
 - **0.6.30** [Steve A.] re-sync w/ base engine; added Prosopite config in test & development environments for quick checking specific API endpoints, although kept it disabled as well as Bullet; misc specs updates after most query reviews

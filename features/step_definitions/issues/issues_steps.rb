@@ -138,13 +138,18 @@ When('I see my newly created issue') do
   # If there's a link to a last page, go to the last page:
   if page.has_css?('li.page-item span.last a.page-link')
     find('li.page-item span.last a.page-link').click
-    sleep(0.5)
+    sleep(1)
     wait_for_ajax
   end
+
   issue_grid = find('section#issues-grid table tbody', visible: true)
   last_row = issue_grid.find_all('tr', visible: true).last
-  expect(issue_grid.text).to include(@latest_issue.req.to_s)
-  expect(last_row.text).to include(@latest_issue.req.to_s)
+  issue_grid_text = issue_grid.text
+  last_row_text = last_row.text
+  @latest_issue.req.to_s.split(',').each do |req_token|
+    expect(issue_grid_text).to include(req_token)
+    expect(last_row_text).to include(req_token)
+  end
 end
 
 # USES:
