@@ -57,7 +57,7 @@ class IssuesGrid < BaseGrid
   # rubocop:disable Rails/OutputSafety
   column(:code, header: I18n.t('issues.grid.params.code'), html: true, mandatory: true, order: :code) do |asset|
     asset.decorate.code_flag << '&nbsp;'.html_safe << asset.decorate.long_label <<
-      "<br/><small><code class='text-secondary'>#{asset.req}</code></small>".html_safe
+      "<br/><small><p class='text-secondary'>#{asset.req.gsub('","', "\",\r\n\"")}</p></small>".html_safe
   end
   # rubocop:enable Rails/OutputSafety
 
