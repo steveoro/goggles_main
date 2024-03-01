@@ -284,7 +284,9 @@ When('I expand the chosen MRR details') do
 
   # No details to expand? Skip the test:
   if mrr_row.has_css?('label.switch-sm')
-    until find("small#detail-mrs#{@chosen_mrs.id}").visible?
+    5.times do
+      break if find("small#detail-mrs#{@chosen_mrs.id}").visible?
+
       mrr_row.find('label.switch-sm', visible: true).click
       # Wait for the expand animation to finish
       10.times do

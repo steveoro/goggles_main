@@ -72,7 +72,9 @@ When('I expand the details of a random event type and wait the stats to be displ
   rnd_node = event_rows.sample
   @expanded_stat_dom_id = rnd_node.find('td.history-link label.switch-sm a')[:id].split('toggle-').last
 
-  until find("tr##{@expanded_stat_dom_id}").visible?
+  10.times do
+    break if find("tr##{@expanded_stat_dom_id}").visible?
+
     dom_id = rnd_node.find('td.history-link label.switch-sm')[:id]
     step("I trigger the click event on the '##{dom_id}' DOM ID")
     # Retry the click in a more standard way in case JS fails to expand the section:
