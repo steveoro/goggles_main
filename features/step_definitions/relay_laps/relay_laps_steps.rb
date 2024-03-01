@@ -147,6 +147,8 @@ When('I add a new relay sub-lap if allowed or possibly select the last sub-lap a
 
   # Detect if there are any free sublap slots available (which will make the "add sublap" button available):
   if @chosen_mrs.relay_laps.to_a.length < max_relay_laps
+    # The lap/add button will be on the bottom of the page on very small screen displays:
+    step('I scroll toward the end of the page to see the bottom of the page')
     before_add = find_all('tr td .form-row.lap-row').count
     find("a#lap-new50-#{@chosen_mrs.id}", visible: true)
     step("I trigger the click event on the 'a#lap-new50-#{@chosen_mrs.id}' DOM ID")
