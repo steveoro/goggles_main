@@ -147,14 +147,21 @@ When('I add a new relay sub-lap if allowed or possibly select the last sub-lap a
 
   # Detect if there are any free sublap slots available (which will make the "add sublap" button available):
   if @chosen_mrs.relay_laps.to_a.length < max_relay_laps
+    wait_for_ajax
+    sleep(1)
     # The lap/add button will be on the bottom of the page on very small screen displays:
     step('I scroll toward the end of the page to see the bottom of the page')
     before_add = find_all('tr td .form-row.lap-row').count
-    find("a#lap-new50-#{@chosen_mrs.id}", visible: true)
-    step("I trigger the click event on the 'a#lap-new50-#{@chosen_mrs.id}' DOM ID")
+
+    # Drag the button onto itself to make it in the viewport, in case it isn't:
+    btn = find("a#lap-new50-#{@chosen_mrs.id}")
+    btn.drag_to(btn)
+    wait_for_ajax
+    sleep(0.5)
+    step("I trigger the click event on the '#lap-new50-#{@chosen_mrs.id}' DOM ID")
 
     # XJS partial re-rending is pretty slow:
-    50.times do
+    20.times do
       break if find_all('tr td .form-row.lap-row').count > before_add
 
       wait_for_ajax
