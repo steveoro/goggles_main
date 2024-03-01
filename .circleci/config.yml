@@ -704,73 +704,73 @@ workflows:
   test-and-deploy-latest:
     jobs:
       - persisted-data
-      # - brakeman:
-      #     requires:
-      #       - persisted-data
-      # - rubocop:
-      #     requires:
-      #       - persisted-data
-      # - zeitwerk:
-      #     requires:
-      #       - persisted-data
+      - brakeman:
+          requires:
+            - persisted-data
+      - rubocop:
+          requires:
+            - persisted-data
+      - zeitwerk:
+          requires:
+            - persisted-data
 
-      # - rspec-components:
-      #     requires:
-      #       - brakeman
-      #       - rubocop
-      #       - zeitwerk
-      # - rspec-decorators:
-      #     requires:
-      #       - brakeman
-      #       - rubocop
-      #       - zeitwerk
+      - rspec-components:
+          requires:
+            - brakeman
+            - rubocop
+            - zeitwerk
+      - rspec-decorators:
+          requires:
+            - brakeman
+            - rubocop
+            - zeitwerk
 
-      # - rspec-requests:
-      #     requires:
-      #       - brakeman
-      #       - rubocop
-      #       - zeitwerk
-      #     pre-steps:
-      #       - browser-tools/install-chrome:
-      #           chrome-version: 122.0.6261.69
-      #           replace-existing: true
-      #       - browser-tools/install-chromedriver
-      #       - run:
-      #           name: Check install
-      #           command: |
-      #             google-chrome --version
-      #             chromedriver --version
-      #             node -v
+      - rspec-requests:
+          requires:
+            - brakeman
+            - rubocop
+            - zeitwerk
+          pre-steps:
+            - browser-tools/install-chrome:
+                chrome-version: 122.0.6261.69
+                replace-existing: true
+            - browser-tools/install-chromedriver
+            - run:
+                name: Check install
+                command: |
+                  google-chrome --version
+                  chromedriver --version
+                  node -v
 
-      # - rspec-helpers:
-      #     requires:
-      #       - rspec-components
-      #       - rspec-decorators
-      # - rspec-mailers:
-      #     requires:
-      #       - rspec-components
-      #       - rspec-decorators
-      # - rspec-views:
-      #     requires:
-      #       - rspec-components
-      #       - rspec-decorators
+      - rspec-helpers:
+          requires:
+            - rspec-components
+            - rspec-decorators
+      - rspec-mailers:
+          requires:
+            - rspec-components
+            - rspec-decorators
+      - rspec-views:
+          requires:
+            - rspec-components
+            - rspec-decorators
 
-      # - rspec-jobs:
-      #     requires:
-      #       - rspec-helpers
-      # - rspec-strategies:
-      #     requires:
-      #       - rspec-mailers
-      # - rspec-integration:
-      #     requires:
-      #       - rspec-views
+      - rspec-jobs:
+          requires:
+            - rspec-helpers
+      - rspec-strategies:
+          requires:
+            - rspec-mailers
+      - rspec-integration:
+          requires:
+            - rspec-views
 
-      # - upload-coverage:
-      #     requires:
-      #       - rspec-requests
-      #       - rspec-jobs
-      #       - rspec-strategies
-      #       - rspec-integration
+      - upload-coverage:
+          requires:
+            - rspec-requests
+            - rspec-jobs
+            - rspec-strategies
+            - rspec-integration
 
       - cucumber-desktop:
           requires:
@@ -789,8 +789,7 @@ workflows:
 
       - cucumber-narrow:
           requires:
-            - persisted-data
-            # - rspec-requests
+            - rspec-requests
           pre-steps:
             - browser-tools/install-chrome:
                 chrome-version: 122.0.6261.69
@@ -805,8 +804,7 @@ workflows:
 
       - cucumber-tablet:
           requires:
-            - persisted-data
-            # - rspec-requests
+            - rspec-requests
           pre-steps:
             - browser-tools/install-chrome:
                 chrome-version: 122.0.6261.69
@@ -819,11 +817,11 @@ workflows:
                   chromedriver --version
                   node -v
 
-      # - docker-latest:
-      #     requires:
-      #       - cucumber-desktop
-      #       - cucumber-narrow
-      #       - cucumber-tablet
-      # - deploy-staging:
-      #     requires:
-      #       - docker-latest
+      - docker-latest:
+          requires:
+            - cucumber-desktop
+            - cucumber-narrow
+            - cucumber-tablet
+      - deploy-staging:
+          requires:
+            - docker-latest
