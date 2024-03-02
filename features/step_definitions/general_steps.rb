@@ -110,7 +110,7 @@ end
 #
 When('I trigger the click event on the {string} DOM ID') do |dom_id|
   # Make sure the target link is visible first:
-  find(dom_id, visible: true)
+  find(dom_id)
   execute_script("document.querySelector('#{dom_id}').click()")
   wait_for_ajax
   sleep(1)
