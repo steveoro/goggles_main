@@ -3,7 +3,7 @@
 class PopulateRelaysCounters < ActiveRecord::Migration[6.0]
   def self.up
     puts("\r\n--> Relay counters refresh...") # rubocop:disable Rails/Output
-    Rake::Task['app:normalize:relay_counters'].invoke
+    Rake::Task['normalize:relay_counters'].invoke
   end
 
   def self.down

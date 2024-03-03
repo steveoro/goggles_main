@@ -4,7 +4,7 @@
 class DataFixNormalizeMrsNewColumns < ActiveRecord::Migration[6.0]
   def self.up
     puts("\r\n--> MRS nil fix/normalization...")
-    Rake::Task['app:normalize:relay_laps'].invoke
+    Rake::Task['normalize:relay_laps'].invoke
   end
 
   def self.down
