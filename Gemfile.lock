@@ -1,7 +1,6 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 56a7af49339ef18da6f1ac3b15013f26c944c257
-  branch: dependabot/bundler/rails-6.1.7.7
+  revision: 8c42e6581fd02a9abd290742ef21ef4308b254fc
   specs:
     goggles_db (0.7.00)
       acts-as-taggable-on
