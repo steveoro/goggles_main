@@ -20,7 +20,7 @@ Main client UI app for version 7 and onward.
 ## Requires
 
 - Ruby 3.1.4
-- Rails 6.0.6.1+
+- Rails 6.1.7.1+
 - MariaDb 10.6.12+ or any other MySql equivalent version
 
 

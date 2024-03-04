@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.7.00** [Steve A.] update to Rails 6.1.7; specs adjustments
 - **0.6.34** [Steve A.] even more Cucumber specs stability fixes
 - **0.6.32** [Steve A.] bundle update; more stability fixes for Cucumber specs
 - **0.6.31** [Steve A.] added stand-alone "compute timing deltas" feature

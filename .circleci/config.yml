@@ -102,7 +102,7 @@ jobs:
       - checkout
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - ruby/rubocop-check:
           app-dir: ~/goggles_main
           label: Rubocop
@@ -115,7 +115,7 @@ jobs:
       - checkout
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           name: Brakeman
           command: |
@@ -130,7 +130,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
       - run:
@@ -148,7 +148,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
       - run:
@@ -176,7 +176,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
       - run:
@@ -204,7 +204,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
       - run:
@@ -232,7 +232,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
       - run:
@@ -260,7 +260,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
       - run:
@@ -288,7 +288,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
 
@@ -333,7 +333,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
       - run:
@@ -361,7 +361,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
       - run:
@@ -389,7 +389,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
       - run:
@@ -431,7 +431,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
       - node/install:
@@ -472,7 +472,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
       - node/install:
@@ -514,7 +514,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
       - node/install:
@@ -555,7 +555,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
           environment:
@@ -600,7 +600,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0630
+          key: goggles_main-v0700
       - run:
           <<: *common-db-setup
           environment:
