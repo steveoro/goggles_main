@@ -42,7 +42,7 @@ gem 'devise-i18n'
 gem 'factory_bot_rails'
 gem 'ffaker'
 gem 'font-awesome-rails'
-gem 'goggles_db', git: 'https://github.com/steveoro/goggles_db', branch: 'dependabot/bundler/rails-6.1.7.7'
+gem 'goggles_db', git: 'https://github.com/steveoro/goggles_db'
 gem 'google_sign_in' # See: https://github.com/basecamp/google_sign_in
 gem 'haml-rails'
 gem 'kaminari'
