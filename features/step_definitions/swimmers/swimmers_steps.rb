@@ -122,7 +122,7 @@ Then('I am at the detailed history page for the chosen event type and swimmer') 
   expect(@chosen_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
   sleep(1)
   wait_for_ajax
-  find('section#swimmer-history-detail', visible: true)
+  step("I wait until the slow-rendered page portion 'section#swimmer-history-detail' is visible")
   expect(page).to have_current_path(%r{swimmers/#{@chosen_swimmer.id}/history/\d+})
 end
 
