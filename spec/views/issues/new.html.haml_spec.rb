@@ -78,12 +78,15 @@ RSpec.describe 'issues/new.html.haml' do
       expect(subject.at_css('form#frm-type1b select#swimmer_select')).to be_present
     end
 
-    it 'enables (or disables) the DB-Swimmer lookup depending if the current user has management grants (or not)' do
-      if can_manage
-        expect(subject.at_css('form#frm-type1b select#swimmer_select').attr('disabled')).not_to be_present
-      else
-        expect(subject.at_css('form#frm-type1b select#swimmer_select').attr('disabled')).to be_present
-      end
+    # [20240201] Currently, the "TeamManager grant limit" for reporting missing results has been lifted
+    # it 'enables (or disables) the DB-Swimmer lookup depending if the current user has management grants (or not)' do
+    it 'has the DB-Swimmer lookup always enabled regardless if the current user has management grants (or not)' do
+      expect(subject.at_css('form#frm-type1b select#swimmer_select').attr('disabled')).not_to be_present
+      # if can_manage
+      #   expect(subject.at_css('form#frm-type1b select#swimmer_select').attr('disabled')).not_to be_present
+      # else
+      #   expect(subject.at_css('form#frm-type1b select#swimmer_select').attr('disabled')).to be_present
+      # end
     end
 
     it 'has the input field for the minutes' do

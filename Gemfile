@@ -7,8 +7,8 @@ ruby '3.1.4'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # [20210128] ActiveRecord 6.1 introduces too many changes for the current version
-gem 'rails', '>= 6.0.6', '< 6.1.0'
-gem 'rails-i18n', '~> 6.0'
+gem 'rails', '>= 6.1.7', '< 7'
+gem 'rails-i18n', '~> 6'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.4.4'
 # Use Puma as the app server
@@ -42,7 +42,7 @@ gem 'devise-i18n'
 gem 'factory_bot_rails'
 gem 'ffaker'
 gem 'font-awesome-rails'
-gem 'goggles_db', git: 'https://github.com/steveoro/goggles_db'
+gem 'goggles_db', git: 'https://github.com/steveoro/goggles_db', branch: 'dependabot/bundler/rails-6.1.7.7'
 gem 'google_sign_in' # See: https://github.com/basecamp/google_sign_in
 gem 'haml-rails'
 gem 'kaminari'
@@ -77,7 +77,7 @@ group :development do
   gem 'guard-spring'
   gem 'haml_lint', require: false
   gem 'inch', require: false # grades source documentation
-  gem 'listen', '~> 3.2'
+  gem 'listen', '>= 3.2'
   gem 'rubocop'
   gem 'rubocop-capybara'
   gem 'rubocop-performance'

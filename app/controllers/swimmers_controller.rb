@@ -68,7 +68,7 @@ class SwimmersController < ApplicationController
     event_list = GogglesDb::MeetingIndividualResult.includes(:event_type, :pool_type)
                                                    .where(swimmer_id: @swimmer.id, 'event_types.id': @event_type.id)
 
-    @max_updated_at = event_list.select(:updated_at).order(:updated_at).last&.updated_at.to_i
+    @max_updated_at = event_list.order(:updated_at).last&.updated_at.to_i
     @hash = prepare_full_summary_stats_for(@event_type, event_list)
   end
   # rubocop:enable Metrics/AbcSize
