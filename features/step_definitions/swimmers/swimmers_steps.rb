@@ -120,6 +120,8 @@ end
 # Uses just @chosen_swimmer and ignores the randomly chosen event type
 Then('I am at the detailed history page for the chosen event type and swimmer') do
   expect(@chosen_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
+  sleep(1)
+  wait_for_ajax
   find('section#swimmer-history-detail', visible: true)
   expect(page).to have_current_path(%r{swimmers/#{@chosen_swimmer.id}/history/\d+})
 end
