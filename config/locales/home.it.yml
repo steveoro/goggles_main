@@ -8,7 +8,7 @@ it:
     account_with_name: "Profilo (%{user_name})"
     issues: "Problemi?"
     please_wait: 'Attendi...'
-    copyright_notice: "(c) 2013-2022, FASAR Software, S. Alloro, M. Ligabue"
+    copyright_notice: "(c) 2013-2024, FASAR Software, S. Alloro, M. Ligabue"
     about_us: "Chi siamo"
     about_this: "Cos'è Goggles?"
     main_contact_email: "fasar.software@gmail.com"
