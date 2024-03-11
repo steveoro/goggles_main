@@ -104,6 +104,7 @@ Rails/SkipsModelValidations:
     - 'db/migrate/20230530165750_clear_non_existing_associated_user_id.rb'
     - 'db/migrate/20210630154722_data_fix_badges_with_null_entry_time_type.rb'
     - 'db/migrate/20240204165000_data_fix_remove_null_rank_values.rb'
+    - 'db/migrate/20240301123810_add_service_name_to_active_storage_blobs.active_storage.rb'
 
 Rake/Desc:
   Exclude:
