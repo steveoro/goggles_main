@@ -13,9 +13,8 @@ class HistoryGrid < BaseGrid
   # Returns the default scope for the grid. (#assets is the filtered version of it)
   scope do
     GogglesDb::MeetingIndividualResult.includes(
-      :meeting, :event_type, :pool_type,
-      :meeting_event, meeting_program: [:meeting, :pool_type, { meeting_event: [:event_type] }]
-    ).joins(:meeting, :pool_type).by_date(:desc)
+      meeting_program: [:pool_type, { meeting: %i[season season_type edition_type federation_type] }]
+    ).by_date(:desc)
   end
 
   filter(:pool_type, :enum, header: I18n.t('meetings.dashboard.pool_type_short'),
@@ -45,8 +44,9 @@ class HistoryGrid < BaseGrid
   #++
 
   column(:meeting_date, header: I18n.t('meetings.header_date'), html: true, mandatory: true,
-                        order: 'meetings.header_date') do |asset|
-    asset.meeting.decorate.meeting_date
+                        order: 'meeting_sessions.scheduled_date') do |asset|
+    # WAS: asset.meeting.decorate.meeting_date => order: 'meetings.header_date'
+    asset.meeting_session.scheduled_date
   end
 
   column(:meeting_name, header: I18n.t('meetings.meeting'), html: true, mandatory: true,
@@ -59,15 +59,23 @@ class HistoryGrid < BaseGrid
     asset.pool_type.length_in_meters
   end
 
-  column(:timing, header: '⏱', html: true, mandatory: true,
-                  order: 'minutes * 6000 + seconds * 100 + hundredths') do |asset|
+  column(:standard_points,
+         header: 'pts', html: true, mandatory: true,
+         order: Arel.sql('standard_points is not null desc, standard_points, meeting_sessions.scheduled_date desc'),
+         order_desc: Arel.sql('standard_points is not null desc, standard_points desc, meeting_sessions.scheduled_date desc')) do |asset|
+    asset.standard_points.to_f.zero? ? '-' : asset.standard_points
+  end
+
+  column(:timing,
+         header: '⏱', html: true, mandatory: true,
+         order: Arel.sql('minutes * 6000 + seconds * 100 + hundredths')) do |asset|
     timing = asset.to_timing
     timing.to_hundredths.zero? ? '-' : timing.to_s
   end
 
   column(:rank, header: '🏅', html: true, mandatory: true,
-                order: 'rank is not null desc, rank',
-                order_desc: 'rank is not null desc, rank desc') do |asset|
+                order: Arel.sql('rank is not null desc, rank, meeting_sessions.scheduled_date desc'),
+                order_desc: Arel.sql('rank is not null desc, rank desc, meeting_sessions.scheduled_date desc')) do |asset|
     if asset.rank.to_i.positive?
       render(RankingPosComponent.new(rank: asset.rank.to_i))
     else

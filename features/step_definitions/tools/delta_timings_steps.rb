@@ -19,3 +19,20 @@ end
 Then('I see {string} as the resulting delta-T value for row {int}') do |delta_t, index|
   expect(find("#delta-#{index}").text).to eq(delta_t)
 end
+
+When('I click on the compute delta-t TXT output button') do
+  click_link_or_button('btn-output-deltas')
+  wait_for_ajax
+  sleep(0.5)
+end
+
+Then('the output delta text dialog appears') do
+  expect(find_by_id('output-txt-modal')).to be_visible
+end
+
+Then('I see {string} as one of the output delta-T text values') do |delta_t|
+  expect(find_by_id('output').value).to include('TXT')
+    .and include("Δt: #{delta_t}")
+    .and include('CSV')
+    .and include(";`#{delta_t}`;")
+end

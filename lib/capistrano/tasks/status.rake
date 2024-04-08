@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 desc 'Check the overall remote server status and stats'
-task status: ['status:mailq', 'status:monit', 'status:mem', 'status:docker', 'status:weekly_stats'] do
+task status: ['status:mailq', 'status:monit', 'status:mem', 'status:docker', 'status:weekly_stats', 'status:jobs'] do
   # no-op
 end
 
@@ -105,6 +105,27 @@ namespace :status do
            ).split("\n")
     rescue StandardError
       info('Exception raised when connecting to the docker service!')
+    end
+  end
+
+  desc 'Checks the remote DelayedJob/ActiveJob status'
+  task :jobs do
+    puts("\r\n")
+    on roles(:app) do
+      info('********************')
+      info('**     ⚙ Jobs     **')
+      info('********************')
+      puts("\r\n")
+      puts ["[ #{fetch(:app_service)} ]---".rjust(80, '-')] +
+           capture(
+             :docker,
+             "exec #{fetch(:app_service)} sh -c 'bin/delayed_job status'"
+           ).split("\n") +
+           [''.rjust(80, '-')] +
+           capture(
+             :docker,
+             "exec #{fetch(:app_service)} sh -c 'bundle exec rails jobs:count'"
+           ).split("\n")
     end
   end
 end

@@ -22,7 +22,7 @@ Feature: Compute delta timings
     And a flash 'devise.sessions.signed_in' message is present
     And I am at the delta-time calculator page
 
-  Scenario Outline: compute delta-t
+  Scenario Outline: compute delta-t and output text
     Given I am already signed-in and at the root page
     And I browse to '/tools/delta_timings'
     When I insert 0, 31 and 25 in the timing row 0
@@ -34,3 +34,10 @@ Feature: Compute delta timings
     And I see "0'36\"07" as the resulting delta-T value for row 1
     And I see "0'32\"10" as the resulting delta-T value for row 2
     And I see "0'44\"15" as the resulting delta-T value for row 3
+
+    When I click on the compute delta-t TXT output button
+    Then the output delta text dialog appears
+    And I see "0'31\"25" as one of the output delta-T text values
+    And I see "0'36\"07" as one of the output delta-T text values
+    And I see "0'32\"10" as one of the output delta-T text values
+    And I see "0'44\"15" as one of the output delta-T text values

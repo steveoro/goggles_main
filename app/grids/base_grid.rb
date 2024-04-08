@@ -7,6 +7,8 @@
 class BaseGrid
   include Datagrid
 
+  self.cached = true
+
   self.default_column_options = {
     # Uncomment to disable the default order
     # order: false,

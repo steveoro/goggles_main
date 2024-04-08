@@ -110,7 +110,7 @@ class SwimmersController < ApplicationController
 
   # /history actions strong parameters checking
   def history_params
-    params.permit(:id, :event_type_id, :event_total)
+    params.permit(:page, :per_page, :id, :event_type_id, :event_total)
   end
 
   # Default whitelist for datagrid parameters
@@ -123,7 +123,7 @@ class SwimmersController < ApplicationController
                                   :descending, :order
                                 )
     # Set default ordering for the datagrid:
-    @grid_filter_params.merge(order: :timing) unless @grid_filter_params.key?(:order)
+    @grid_filter_params.merge(order: :meeting_date) unless @grid_filter_params.key?(:order)
     @grid_filter_params
   end
   #-- -------------------------------------------------------------------------
@@ -181,12 +181,12 @@ class SwimmersController < ApplicationController
       count25:,
       count50:,
       count: count25 + count50,
-      best_timing_mir: event_list.order(:minutes, :seconds, :hundredths).first,
-      best_timing_mir25: event_list25.order(:minutes, :seconds, :hundredths).first,
-      best_timing_mir50: event_list50.order(:minutes, :seconds, :hundredths).first,
-      worst_timing_mir: event_list.order(:minutes, :seconds, :hundredths).last,
-      worst_timing_mir25: event_list25.order(:minutes, :seconds, :hundredths).last,
-      worst_timing_mir50: event_list50.order(:minutes, :seconds, :hundredths).last,
+      best_timing_mir: event_list.where('rank > 0').order(:minutes, :seconds, :hundredths).first,
+      best_timing_mir25: event_list25.where('rank > 0').order(:minutes, :seconds, :hundredths).first,
+      best_timing_mir50: event_list50.where('rank > 0').order(:minutes, :seconds, :hundredths).first,
+      worst_timing_mir: event_list.where('rank > 0').order(:minutes, :seconds, :hundredths).last,
+      worst_timing_mir25: event_list25.where('rank > 0').order(:minutes, :seconds, :hundredths).last,
+      worst_timing_mir50: event_list50.where('rank > 0').order(:minutes, :seconds, :hundredths).last,
       max_score_mir: event_list.where('standard_points > 0').order(standard_points: :desc).first,
       max_score_mir25: event_list25.where('standard_points > 0').order(standard_points: :desc).first,
       max_score_mir50: event_list50.where('standard_points > 0').order(standard_points: :desc).first,

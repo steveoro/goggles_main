@@ -1,3 +1,5 @@
+-# haml-lint:disable ViewLength, ConsecutiveComments
+-# rubocop:disable Layout/SpaceInsideParens
 .wrapper-body
   .spacer-left
 
@@ -7,11 +9,29 @@
         %i.fa.fa-calculator
         = t('tools.delta_timings.title')
 
+    / Output modal:
+    %section#output-deltas
+      .modal.fade{ id: 'output-txt-modal', 'aria-hidden' => 'true', role: 'dialog', tabindex: '-1',
+                   'aria-labelledby' => 'Output text modal' }
+        .modal-dialog.modal-lg{ role: 'document' }
+          .modal-content
+            .modal-header
+              %h5.modal-title{ id: 'output-modal-title' }
+                %i.fa.fa-file-text-o
+                TXT / CSV
+              %button.close{ 'aria-label' => t('datagrid.edit_modal.close_btn'), 'data-dismiss' => 'modal' }
+                %span{ 'aria-hidden' => 'true' } &times;
+            .modal-body{ id: 'output-modal-body' }
+              .container
+                = text_area_tag(:output, '',
+                                rows: 16, autofocus: true, class: 'form-control',
+                                'aria-describedby' => 'output')
+
     = form_tag(tools_compute_deltas_path, id: 'frm-deltas', remote: true, method: :get) do
       %table.table.table-sm
         %thead
           %tr
-            %th{ scope: 'row', class: 'border-0' }
+            %th.border-0{ scope: 'row' }
               .form-row.text-center
                 .col-2 Num.
                 .col-7 ⏱
@@ -19,38 +39,66 @@
 
           %tbody.result-table-row.font-75rem
             - 16.times do |index|
-              %tr.container{ id: "delta-row-#{index}"}
-                %td{ scope: 'row', class: 'border-0' }
+              %tr.container{ id: "delta-row-#{index}" }
+                %td.border-0{ scope: 'row' }
                   .form-row.text-right
                     .col-2.my-1
                       %small= index + 1
 
                     .col-2
                       .input-group
-                        = number_field_tag("m[#{index}]", nil, min: 0, max: 120, autofocus: true, type: 'number',
-                                          class: 'form-control form-control-sm text-right')
+                        = number_field_tag("m[#{index}]", nil,
+                                           min: 0, max: 120, autofocus: true, type: 'number',
+                                           class: 'form-control form-control-sm text-right')
                         .form-control-sm.ml-0.p-1
                           %b= '\''
                     .col-3
                       .input-group
-                        = number_field_tag("s[#{index}]", nil, min: 0, max: 59, autofocus: true, type: 'number',
-                                          class: 'form-control form-control-sm text-right')
+                        = number_field_tag("s[#{index}]", nil,
+                                           min: 0, max: 59, autofocus: true, type: 'number',
+                                           class: 'form-control form-control-sm text-right')
                         .form-control-sm.ml-0.p-1
                           %b= '"'
                     .col-2
-                      = number_field_tag("h[#{index}]", nil, min: 0, max: 99, autofocus: true, type: 'number',
-                                        class: 'form-control form-control-sm text-right')
+                      = number_field_tag("h[#{index}]", nil,
+                                         min: 0, max: 99, autofocus: true, type: 'number',
+                                         class: 'form-control form-control-sm text-right')
                     .col-2.py-1.text-left
                       %b{ id: "delta-#{index}" }
             %tr.container
-              %td{ scope: 'row', class: 'border-0' }
+              %td.border-0{ scope: 'row' }
                 .form-row
                   %p &nbsp;
 
-
       .fixed-bottom.backdrop-opaque.row-fluid.text-center
-        = submit_tag(t('tools.delta_timings.button_label'), id: 'btn-compute-deltas',
-                    class: 'btn btn-primary', 'aria-label' => 'Compute deltas', type: 'submit',
-                    onclick: "$('#loading-indicator').removeClass('d-none'); return true")
+        = submit_tag(t('tools.delta_timings.button_label'),
+                     id: 'btn-compute-deltas',
+                     class: 'btn btn-primary', 'aria-label' => 'Compute deltas', type: 'submit',
+                     onclick: "$('#loading-indicator').removeClass('d-none'); return true")
+        = button_tag('TXT/CSV',
+                     id: 'btn-output-deltas', class: 'btn btn-secondary btn-sm',
+                     type: 'button', 'data-toggle' => 'modal', 'data-target' => '#output-txt-modal',
+                     onclick: 'collectDeltasIntoTxt();')
 
   .spacer-right
+
+:javascript
+  /* Simply collects all form field values into 2 formats for copy-paste convenience */
+  function collectDeltasIntoTxt() {
+    let txtOutput = "---8<---[TXT]\r\n"
+    let csvOutput = "\r\n---8<---[CSV ➡ \";\"=value sep., \"`\"=text sep.]\r\n"
+
+    for (let index = 0; index < 15; index++) {
+      let min, sec, hds, delta
+      min = document.querySelector(`#m_${index}`).value
+      sec = document.querySelector(`#s_${index}`).value
+      hds = document.querySelector(`#h_${index}`).value
+      if (min > 0 || sec > 0 || hds > 0) {
+        delta = document.querySelector(`#delta-${index}`).innerText
+        txtOutput += `${min}'${sec}"${hds} => Δt: ${delta} (${index + 1}, ${(index + 1) * 50}m)\r\n`
+        csvOutput += `${min};${sec};${hds};\`${min}'${sec}\"${hds}\`;\`${delta}\`;${index + 1};${(index + 1) * 50}\r\n`
+      }
+    }
+    document.querySelector('#output').value = `${txtOutput}\r\n${csvOutput}`
+  }
+-# rubocop:enable Layout/SpaceInsideParens
