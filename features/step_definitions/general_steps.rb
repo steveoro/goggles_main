@@ -7,13 +7,13 @@ When('I wait for {int} seconds') do |sleep_time_in_secs|
   end
 end
 
+# rubocop:disable Lint/Debugger
 Then('I debug') do
-  # rubocop:disable Lint/Debugger
   save_and_open_page
   save_and_open_screenshot
   binding.pry
-  # rubocop:enable Lint/Debugger
 end
+# rubocop:enable Lint/Debugger
 
 When('I browse to {string}') do |string_path|
   visit(string_path)
