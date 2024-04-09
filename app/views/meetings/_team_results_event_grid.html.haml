@@ -7,7 +7,7 @@
       - relay = meeting_event.event_type.relay?
       -# --- Header with unique ID for each starting event_type "group":
       %thead
-        %tr{ class: "#{relay ? 'bg-light-green' : 'bg-light-blue'}", id: "#{meeting_event.event_type.label}" }
+        %tr{ class: (relay ? 'bg-light-green' : 'bg-light-blue'), id: meeting_event.event_type.label }
           %td.text-right{ colspan: 1 }
             %b= link_to(meeting_event.event_type.label, meeting_show_path(id: meeting.id,
                         anchor: "mevent-#{meeting_event.id}"), { 'data-turbolinks' => 'false' })
@@ -17,7 +17,7 @@
           %td{ colspan: 2 }
             - if user_signed_in?
               = render(Issues::ReportMissingButtonComponent.new(parent_meeting: meeting,
-                      event_type: meeting_event.event_type))
+                       event_type: meeting_event.event_type))
           %td.text-center
             %i= I18n.t('meetings.standard_points')
           -# Commented out because meeting_points are currently always zero
@@ -29,7 +29,7 @@
                 GoggleCup
                 -# TODO
                 -# = team.get_current_goggle_cup_name_at(meeting.header_date)
-          - if meeting.startlist and !relay
+          - if meeting.startlist && !relay
             %td.text-center
               = "(#{t('meeting.entry_time')})"
 
@@ -38,12 +38,14 @@
         - mrrs = meeting_event.meeting_relay_results.includes(:team, :meeting_program, :gender_type,
                                 meeting_relay_swimmers: [:relay_laps],
                                 category_type: [:season]).for_team(team).order(:meeting_program_id)
-        = render(MRR::TableComponent.new(mrrs: mrrs, managed_team_ids:, user_teams:, current_user_is_admin:))
+        = render(MRR::TableComponent.new(mrrs: mrrs, managed_team_ids:, user_teams:,
+                                         current_user_is_admin:))
 
       - else # Individual results
-        - meeting_event.meeting_individual_results.for_team(team).joins(:swimmer, :category_type).includes(:category_type, :laps).by_swimmer.by_rank.each do |mir|
+        - domain = meeting_event.meeting_individual_results.for_team(team).joins(:swimmer, :category_type)
+        - domain.includes(:category_type, :laps).by_swimmer.by_rank.each do |mir|
           - can_report = user_signed_in? && current_user.swimmer_id.present? && current_user.swimmer_id == mir.swimmer_id
-          = render(MIR::TableRowComponent.new(mir: mir, lap_edit: can_edit_lap,
+          = render(MIR::TableRowComponent.new(mir:, lap_edit: can_edit_lap,
                                               report_mistake: can_edit_lap || can_report,
                                               show_category: true, show_team: false))
 

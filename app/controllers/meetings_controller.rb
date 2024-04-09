@@ -304,12 +304,12 @@ class MeetingsController < ApplicationController
 
   # Collects and returns all the MIR rows from the specified Meeting & Team tuple.
   def collect_team_mirs(meeting, team)
-    meeting.meeting_individual_results.for_team(team)
+    meeting.meeting_individual_results.includes(meeting_program: [meeting_event: :event_type]).for_team(team)
   end
 
   # Collects and returns all the MRR rows from the specified Meeting & Team tuple.
   def collect_team_mrrs(meeting, team)
-    meeting.meeting_relay_results.for_team(team)
+    meeting.meeting_relay_results.includes(meeting_program: [meeting_event: :event_type]).for_team(team)
   end
 
   # Maps the top scores for each gender & custom (Goggle-) cup.
@@ -325,17 +325,16 @@ class MeetingsController < ApplicationController
   def map_top_scores_from(mir_list)
     top_scores = {}
     if mir_list&.where('standard_points > 0')&.exists?
+      # NOTE: somehow ".order(standard_points: :desc).first" doesn't work 2 times in a row here after the upgrade to Rails 6.1:
       top_scores["#{GogglesDb::GenderType.male.code}-std"] = mir_list.for_gender_type(GogglesDb::GenderType.male)
-                                                                     .order(:standard_points)
-                                                                     .first
+                                                                     .max_by(&:standard_points)
       top_scores["#{GogglesDb::GenderType.female.code}-std"] = mir_list.for_gender_type(GogglesDb::GenderType.female)
-                                                                       .order(:standard_points)
-                                                                       .first
+                                                                       .max_by(&:standard_points)
     end
     if mir_list&.where('goggle_cup_points > 0')&.exists?
       # (GoggleCups are absolute in category & gender free)
       # XXX TODO: MIR.by_goggle_cup()
-      top_scores['gogglecup'] = mir_list.first # MISSING: .by_goggle_cup.first
+      top_scores['gogglecup'] = mir_list.where('goggle_cup_points > 0').order(:goggle_cup_points).last
     end
     top_scores
   end

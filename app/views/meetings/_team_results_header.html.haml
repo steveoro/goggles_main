@@ -1,13 +1,13 @@
 .card#team-results-title
   .card-body.alert-success.py-3#team-header-title
-    %b= render(Title::TeamShowLinkComponent.new(team: team))
+    %b= render(Title::TeamShowLinkComponent.new(team:))
 
 #team-results-header
   .container.my-3
     .row.border-bottom
       .col-7
         = I18n.t('meetings.meeting_stats.team_total_events')
-        - if team_outstanding_scores.to_i > 0
+        - if team_outstanding_scores.to_i.positive?
           %br/
           = I18n.t('meetings.meeting_stats.team_total_outstanding_scores')
         %br/
@@ -21,7 +21,7 @@
       .col
         = I18n.t('meetings.meeting_stats.events_ratio', team_tot: team_tot_events,
                 meeting_tot: @meeting.meeting_events.count)
-        - if team_outstanding_scores.to_i > 0
+        - if team_outstanding_scores.to_i.positive?
           %br/
           = team_outstanding_scores.to_i
           = tag.small('⭐')
@@ -29,31 +29,32 @@
           %br/
           - curr_rank = team_ranks&.fetch(rank, 0) || 0
           = curr_rank
-          = render(RankingPosComponent.new(rank: rank)) if rank < 4 && curr_rank.positive?
+          = render(RankingPosComponent.new(rank:)) if rank < 4 && curr_rank.positive?
           = tag.small('😬') if rank == 4 && curr_rank.positive?
 
     - %w[F-std M-std gogglecup].each do |key|
       - top_mir = top_scores&.fetch(key, nil)
-      - if top_mir.present?
-        .row.border-bottom
-          .col
-            %small
-              %i
-                - if key.start_with?('F')
-                  = t('meetings.meeting_stats.best_female_score')
-                - elsif key.start_with?('M')
-                  = t('meetings.meeting_stats.best_male_score')
-                - elsif key.start_with?('gogglecup')
-                  -# TODO/WIP: I18n.t('meetings.meeting_stats.best_score_for_cup', cup: team.get_current_goggle_cup_name_at(@meeting.header_date))
-                  Best GoggleCup points:
-          .col.text-left.d-flex.align-items-center
-            %b= top_mir.swimmer.complete_name
-          .col.d-flex.justify-content-between.align-items-center.mx-1
-            %span= top_mir.event_type.label
-            &nbsp;
-            %span= top_mir.to_timing
-            &nbsp;
-            = tag.small(class: top_mir.standard_points.to_f > 800.0 ? 'font-weight-bold' : '') do
-              = sprintf("%02.2f", top_mir.standard_points.to_f)
+      - next if top_mir.blank?
+
+      .row.border-bottom
+        .col
+          %small
+            %i
+              - if key.start_with?('F')
+                = t('meetings.meeting_stats.best_female_score')
+              - elsif key.start_with?('M')
+                = t('meetings.meeting_stats.best_male_score')
+              - elsif key.start_with?('gogglecup')
+                -# TODO/WIP: I18n.t('meetings.meeting_stats.best_score_for_cup', cup: team.get_current_goggle_cup_name_at(@meeting.header_date))
+                Best GoggleCup points:
+        .col.text-left.d-flex.align-items-center
+          %b= top_mir.swimmer.complete_name
+        .col.d-flex.justify-content-between.align-items-center.mx-1
+          %span= top_mir.event_type.label
+          &nbsp;
+          %span= top_mir.to_timing
+          &nbsp;
+          = tag.small(class: top_mir.standard_points.to_f > 800.0 ? 'font-weight-bold' : '') do
+            = format('%02.2f', top_mir.standard_points.to_f)
   .row
     &nbsp;
