@@ -1,7 +1,7 @@
-- @mirs.with_rank.by_rank.each_with_index do |mir, index|
-  = render(MIR::TableRowComponent.new(mir: mir, index: index, lap_edit: can_edit_lap?(mir),
+- mirs_with_rank.each_with_index do |mir, index|
+  = render(MIR::TableRowComponent.new(mir:, index:, lap_edit: can_edit_lap?(mir),
                                       report_mistake: can_report_mistake?(mir)))
 
-- @mirs.with_no_rank.by_timing.each_with_index do |mir, index|
-  = render(MIR::TableRowComponent.new(mir: mir, index: index, lap_edit: can_edit_lap?(mir),
+- mirs_with_no_rank.each_with_index do |mir, index|
+  = render(MIR::TableRowComponent.new(mir:, index:, lap_edit: can_edit_lap?(mir),
                                       report_mistake: can_report_mistake?(mir)))

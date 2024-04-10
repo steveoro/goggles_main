@@ -1,6 +1,7 @@
-- @mrrs.with_rank.by_rank.each_with_index do |mrr, index|
-  = render(MRR::TableRowComponent.new(mrr: mrr, index: index, lap_edit: can_edit_lap?(mrr),
+-# NOTE: original "by_timing" in Arel can't add table names 'cause' it's defined in an ancestor parent class (and due to joins table names here are required)
+- @mrrs.with_rank.by_rank.order(minutes: :desc, seconds: :desc, hundredths: :desc).each_with_index do |mrr, index|
+  = render(MRR::TableRowComponent.new(mrr:, index:, lap_edit: can_edit_lap?(mrr),
                                       report_mistake: can_report_mistake?(mrr)))
-- @mrrs.with_no_rank.by_timing.each_with_index do |mrr, index|
-  = render(MRR::TableRowComponent.new(mrr: mrr, index: index, lap_edit: can_edit_lap?(mrr),
+- @mrrs.with_no_rank.order(minutes: :desc, seconds: :desc, hundredths: :desc).each_with_index do |mrr, index|
+  = render(MRR::TableRowComponent.new(mrr:, index:, lap_edit: can_edit_lap?(mrr),
                                       report_mistake: can_report_mistake?(mrr)))

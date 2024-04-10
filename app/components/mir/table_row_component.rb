@@ -3,7 +3,7 @@
 #
 # = MIR components module
 #
-#   - version:  7-0.6.30
+#   - version:  7-0.7.08
 #   - author:   Steve A.
 #
 module MIR
@@ -49,57 +49,69 @@ module MIR
 
     # Memoized Meeting#id
     def meeting_id
-      @meeting_id ||= @mir&.parent_meeting&.id
+      return @meeting_id if @meeting_id.present?
+
+      @meeting_id = @mir&.parent_meeting&.id
     end
 
     # Memoized associated CategoryType code
     def category_code
-      @category_code ||= @mir&.category_type&.code
+      return @category_code if @category_code.present?
+
+      @category_code = @mir&.category_type&.code
     end
 
     # Memoized rank value
     def rank
-      @rank ||= @mir.rank
+      return @rank if @rank.present?
+
+      @rank = @mir.rank
     end
 
     # Memoized Swimmer association
     def swimmer
+      return @swimmer if @swimmer.present?
       return unless @mir.respond_to?(:swimmer_id) && @mir.swimmer_id.to_i.positive?
 
-      @swimmer ||= @mir.swimmer # GogglesDb::Swimmer.find_by(id: @mir.swimmer_id)
+      @swimmer = @mir.swimmer
     end
 
     # Memoized Team association
     def team
+      return @team if @team.present?
       return unless @mir.respond_to?(:team_id) && @mir.team_id.to_i.positive?
 
-      @team ||= @mir.team
+      @team = @mir.team
     end
 
     # Memoized SwimmingPool association
     def swimming_pool
+      return @swimming_pool if @swimming_pool.present?
       return unless @mir.respond_to?(:swimming_pool_id) && @mir.swimming_pool_id.to_i.positive?
 
-      @swimming_pool ||= @mir.swimming_pool
+      @swimming_pool = @mir.swimming_pool
     end
 
     # Memoized & generalized lap association
     def laps
-      # [Steve, 20230321] Although we have already defined an alias for user_laps
-      # in UserResults (as the #laps method), we cannot define two conflicting has_many clauses
-      # referring to the same destination model. Thus comes the quick hack below:
-      lap_includes_sym = @mir.is_a?(GogglesDb::UserResult) ? :user_laps : :laps
-      @laps ||= @mir.class.includes(lap_includes_sym).find_by(id: @mir.id).laps
+      return @laps if @laps.present?
+
+      # [Steve, 20240410] Moving laps relation (already sorted) to memory to prevent further queries:
+      @laps = @mir.laps.to_a.sort_by(&:length_in_meters)
     end
 
     # Memoized lap presence
     def includes_laps?
-      @includes_laps ||= laps&.count&.positive?
+      return @includes_laps if @includes_laps.present?
+
+      @includes_laps = laps&.present?
     end
 
     # Memoized season type
     def season_type
-      @season_type ||= @mir.season_type
+      return @season_type if @season_type.present?
+
+      @season_type = @mir.season_type
     end
 
     # Result score. Gives precedence to the standard FIN Championship scoring system, if set or used.

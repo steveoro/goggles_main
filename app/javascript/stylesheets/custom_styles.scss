@@ -55,7 +55,7 @@ table.table.table-responsive-sm thead tr th.sticky-header {
  */
 .table thead th.mevent-separator {
   border: 0;
-  padding-top: 4rem;
+  padding-top: 1rem;
   text-align: center;
 }
 .table thead th.mevent-links {
@@ -105,6 +105,10 @@ a.expand-button.collapsed:visited:after
 /**
       === Font size modificators ===
  */
+.font-90rem {
+  font-size: 0.90rem;
+}
+
 .font-75rem {
   font-size: 0.75rem;
 }

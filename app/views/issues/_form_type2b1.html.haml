@@ -55,24 +55,22 @@
         .form-row.px-3.mb-2
           .form-group.col-12.col-lg-3.pt-2.mt-1.mb-0
             = label_tag(:minutes, t('issues.type1b.form.result_label'))
-          .form-group.col-3.col-lg-2.mb-1
+          .form-group.col-4.col-md-3.col-lg-2.mb-1
             .input-group.mt-1
               = number_field_tag(:minutes, result_row.minutes, min: 0, max: 120, disabled: true,
-                                type: 'number', class: 'form-control text-right')
+                                type: 'number', class: 'form-control font-90rem text-right')
               .form-control-sm.ml-1.p-1
                 %b= '\''
-          .form-group.col-3.col-lg-2.mb-1
+          .form-group.col-4.col-md-3.col-lg-2.mb-1
             .input-group.mt-1
               = number_field_tag(:seconds, result_row.seconds, min: 0, max: 59, disabled: true,
-                                type: 'number', class: 'form-control text-right')
+                                type: 'number', class: 'form-control font-90rem text-right')
               .form-control-sm.ml-0.p-1
                 %b= '"'
-          .form-group.col-3.col-lg-2.mb-1
+          .form-group.col-4.col-md-3.col-lg-2.mb-1
             .input-group.mt-1
               = number_field_tag(:hundredths, result_row.hundredths, min: 0, max: 99, disabled: true,
-                                type: 'number', class: 'form-control text-right')
-              .form-control-sm.ml-1.p-1
-                &nbsp;
+                                type: 'number', class: 'form-control font-90rem text-right')
 
         .form-row.mb-2
           .form-group.col.mx-3

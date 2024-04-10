@@ -107,7 +107,7 @@ RSpec.describe MIR::TableComponent, type: :component do
   #-- -------------------------------------------------------------------------
   #++
 
-  context 'with an invalid parameter,' do
+  context 'with invalid parameters,' do
     subject do
       render_inline(
         described_class.new(

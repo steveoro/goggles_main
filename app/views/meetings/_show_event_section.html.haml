@@ -1,16 +1,17 @@
 - cache(cache_key_for_meeting(action: 'show_event_section', id: meeting_event.id, max_updated_at: @max_updated_at)) do
-  - if event_index.positive? # skip first separator
-    = render(Mevent::RowSeparatorComponent.new)
+  = render(Mevent::RowSeparatorComponent.new) if event_index.positive? # skip first separator
   = render(Mevent::RowTitleComponent.new(event_container: meeting_event, can_manage: user_signed_in?))
-  = render(Mevent::RowLinksComponent.new(meeting_events: meeting_events))
+  = render(Mevent::RowLinksComponent.new(meeting_events:))
   - prgs_for_event.each do |mprg|
     = render(Mprg::RowSeparatorComponent.new)
     = render(Mprg::RowLinksComponent.new(meeting_programs: prgs_for_event))
     = render(Mprg::RowTitleComponent.new(meeting_program: mprg))
     - if mprg.relay?
-      = render(MRR::TableComponent.new(mrrs: mprg.meeting_relay_results.includes(:team, :meeting_program,
-                                       :gender_type, meeting_relay_swimmers: [:relay_laps], category_type: [:season]),
-                                       managed_team_ids:, user_teams:, current_user_is_admin:))
+      - mrrs = mprg.meeting_relay_results.includes(:team, :meeting_program, :gender_type,
+                                                   meeting_relay_swimmers: [:relay_laps],
+                                                   category_type: :season).joins(:team, :meeting_program,
+                                                                                 :gender_type, category_type: :season)
+      = render(MRR::TableComponent.new(mrrs:, managed_team_ids:, user_teams:, current_user_is_admin:))
     - else
-      = render(MIR::TableComponent.new(mirs: mprg.meeting_individual_results.includes(:meeting, :swimmer, :team),
-                                       managed_team_ids:, current_swimmer_id:))
+      - mirs = mprg.meeting_individual_results.includes(:meeting, :swimmer, :team).joins(:meeting, :swimmer, :team)
+      = render(MIR::TableComponent.new(mirs:, managed_team_ids:, current_swimmer_id:))

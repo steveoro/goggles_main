@@ -9,6 +9,7 @@ document.querySelector('#laps-table-body').innerHTML = "<%=
 %>";
 document.querySelector('#result-row-delta').innerHTML = "Δt: <%= escape_javascript(@last_delta_timing.to_s) %>"
 document.querySelector('#lap-modal-alert-text').innerHTML = "<%= escape_javascript(@alert_msg) %>"
+$('#modal-loading-indicator').addClass('d-none');
 $('#lap-modal-alert').show().removeClass('d-none').delay(1500).fadeOut(1000);
 
 /*

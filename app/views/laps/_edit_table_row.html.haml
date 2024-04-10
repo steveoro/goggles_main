@@ -7,43 +7,48 @@
       = hidden_field_tag("show_category[#{index}]", show_category)
       = hidden_field_tag("show_team[#{index}]", show_team)
       .form-row.my-1.lap-row
-        .col-3.col-lg-2.mb-1
+        .col-12.col-md-3.col-lg-2.mb-1
           .input-group.mt-1
-            = number_field_tag("length_in_meters[#{index}]", lap.length_in_meters, min: 15, max: 1500,
-                               required: true, autofocus: true, type: 'number',
-                               class: 'form-control form-control-sm text-right')
+            = number_field_tag("length_in_meters[#{index}]", lap.length_in_meters,
+                               min: 15, max: 1500, required: true, autofocus: true, type: 'number',
+                               class: 'form-control form-control-sm col-5 text-right')
             .form-control-sm.ml-1.p-1
               %small
                 %b= 'm.'
-        .col-3.col-lg-2.mb-1
+        .col-4.col-md-3.col-lg-2.mb-1
           .input-group.mt-1
-            = number_field_tag("minutes_from_start[#{index}]", lap.minutes_from_start, min: 0, max: 120,
-                               required: true, autofocus: true, type: 'number',
+            = number_field_tag("minutes_from_start[#{index}]", lap.minutes_from_start,
+                               min: 0, max: 120, required: true, autofocus: true, type: 'number',
                                class: 'form-control form-control-sm text-right')
             .form-control-sm.ml-1.p-1
               %b= '\''
-        .col-3.col-lg-2.mb-1
+        .col-4.col-md-3.col-lg-2.mb-1
           .input-group.mt-1
-            = number_field_tag("seconds_from_start[#{index}]", lap.seconds_from_start, min: 0, max: 59,
-                               required: true, autofocus: true, type: 'number',
+            = number_field_tag("seconds_from_start[#{index}]", lap.seconds_from_start,
+                               min: 0, max: 59, required: true, autofocus: true, type: 'number',
                                class: 'form-control form-control-sm text-right')
             .form-control-sm.ml-0.p-1
               %b= '"'
-        .col-3.col-lg-2.mb-1
+        .col-4.col-md-3.col-lg-2.mb-1
           .input-group.mt-1
-            = number_field_tag("hundredths_from_start[#{index}]", lap.hundredths_from_start, min: 0, max: 99,
-                               required: true, autofocus: true, type: 'number',
+            = number_field_tag("hundredths_from_start[#{index}]", lap.hundredths_from_start,
+                               min: 0, max: 99, required: true, autofocus: true, type: 'number',
                                class: 'form-control form-control-sm text-right')
             .form-control-sm.ml-1.p-1
               &nbsp;
         .col.mb-1
-          = submit_tag(t('laps.modal.form.submit_save_btn'), id: "lap-save-row-#{index}",
-                        class: 'btn btn-sm btn-outline-primary my-1')
+          = submit_tag(t('laps.modal.form.submit_save_btn'),
+                       id: "lap-save-row-#{index}",
+                       class: 'btn btn-sm btn-outline-primary my-1',
+                       onclick: "$('#modal-loading-indicator').removeClass('d-none');")
           - if lap.id.to_i.positive?
             = link_to(lap_path(id: lap.id, "result_id[#{index}]": parent_result.id,
-                      "result_class[#{index}]": parent_result.class.name, "show_category[#{index}]": show_category,
-                      "show_team[#{index}]": show_team), method: :delete, remote: true,
+                               "result_class[#{index}]": parent_result.class.name,
+                               "show_category[#{index}]": show_category,
+                               "show_team[#{index}]": show_team),
+                      method: :delete, remote: true,
                       id: "lap-delete-row-#{index}", class: 'btn btn-sm btn-outline-danger',
+                      onclick: "$('#modal-loading-indicator').removeClass('d-none');",
                       data: { confirm: t('laps.modal.msgs.submit_delete_confirm',
                               lap_length: lap.length_in_meters) }) do
               %i.fa.fa-trash-o

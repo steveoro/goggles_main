@@ -3,7 +3,7 @@
 #
 # = MIR components module
 #
-#   - version:  7-0.6.30
+#   - version:  7-0.7.08
 #   - author:   Steve A.
 #
 module MIR
@@ -24,15 +24,22 @@ module MIR
     # - current_swimmer_id: current_user.swimmer_id value, if any.
     def initialize(mirs:, managed_team_ids:, current_swimmer_id:)
       super
-      @mirs = mirs
+      @mirs = if mirs.is_a?(ActiveRecord::Relation) && mirs.first.is_a?(GogglesDb::MeetingIndividualResult)
+                mirs&.joins(:season, :season_type, :meeting, :meeting_program, :swimmer, :team)
+                    &.left_outer_joins(:laps)
+                    &.includes(:swimmer, :team, :season_type,
+                               laps: [:meeting_individual_result],
+                               meeting_program: %i[meeting season])
+              else
+                mirs
+              end
       @managed_team_ids = managed_team_ids
       @current_swimmer_id = current_swimmer_id
     end
 
-    # Skips rendering unless @mirs is enumerable and orderable :by_timing
+    # Skips rendering unless @mirs is enumerable and orderable :by_timing & :by_rank
     def render?
-      @mirs.respond_to?(:each) && @mirs.respond_to?(:by_timing) && @mirs.respond_to?(:by_rank) &&
-        @mirs.respond_to?(:with_rank) && @mirs.respond_to?(:with_no_rank)
+      @mirs.respond_to?(:each) && @mirs.respond_to?(:by_timing) && @mirs.respond_to?(:by_rank)
     end
 
     protected
@@ -51,6 +58,30 @@ module MIR
     # Returns +true+ if the specified +mir+ row can show the "report mistake" button.
     def can_report_mistake?(mir)
       can_edit_lap?(mir) || mir.swimmer_id == @current_swimmer_id
+    end
+
+    private
+
+    def mirs_with_rank
+      return @mirs_with_rank if @mirs_with_rank.present?
+
+      # Notes:
+      # 1. Original "by_timing" & "with_rank" can't add table names because' helper methods are defined
+      #    in the AbstractResult ancestor class (and due to joins, table names here are required)
+      # 2. Trying to keep the list of MIRs in memory to avoid further queries
+      @mirs_with_rank = @mirs.by_rank.order(minutes: :desc, seconds: :desc, hundredths: :desc).to_a
+                             .select { |mir| mir.rank.positive? }
+    end
+
+    def mirs_with_no_rank
+      return @mirs_with_no_rank if @mirs_with_no_rank.present?
+
+      # Notes:
+      # 1. Original "by_timing" & "with_rank" can't add table names because' helper methods are defined
+      #    in the AbstractResult ancestor class (and due to joins, table names here are required)
+      # 2. Trying to keep the list of MIRs in memory to avoid further queries
+      @mirs_with_no_rank = @mirs.by_rank.order(minutes: :desc, seconds: :desc, hundredths: :desc).to_a
+                                .select { |mir| mir.rank.blank? || mir.rank.zero? }
     end
   end
 end

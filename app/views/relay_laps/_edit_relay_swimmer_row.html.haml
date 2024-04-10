@@ -13,7 +13,8 @@
           = link_to(relay_laps_path(result_id: relay_swimmer.id,
                     result_class: relay_swimmer.class.name.split('::').last, length_in_meters: 50),
                     method: :post, remote: true, id: "lap-new50-#{relay_swimmer.id}",
-                    class: 'btn btn-sm btn-outline-secondary m-1') do
+                    class: 'btn btn-sm btn-outline-secondary m-1',
+                    onclick: "$('#modal-loading-indicator').removeClass('d-none');") do
             %span
               %i.fa.fa-plus
               50m
@@ -21,6 +22,7 @@
                   "result_class[#{overall_index}]": relay_result.class.name.split('::').last),
                   method: :delete, remote: true, id: "lap-delete-row-#{overall_index}",
                   class: 'btn btn-sm btn-outline-danger',
+                  onclick: "$('#modal-loading-indicator').removeClass('d-none');",
                   data: { confirm: t('datagrid.edit_modal.delete_swimmer_fraction_confirm',
                           lap_length: relay_swimmer.length_in_meters,
                           swimmer_name: relay_swimmer.swimmer.complete_name) }) do
@@ -38,36 +40,36 @@
       = hidden_field_tag("result_id[#{overall_index}]", relay_result.id)
       = hidden_field_tag("result_class[#{overall_index}]", relay_result.class.name.split('::').last)
       .form-row.my-1.lap-row.border-bottom
-        .col-3.col-lg-2.mb-1
+        .col-12.col-md-3.col-lg-2.mb-1
           .input-group.mt-1
             = number_field_tag("length_in_meters[#{overall_index}]", relay_swimmer.length_in_meters,
                                min: 15, max: 1500, required: true, autofocus: true, type: 'text',
-                               class: 'form-control form-control-sm text-right')
+                               class: 'form-control form-control-sm col-5 text-right')
             .form-control-sm.ml-0.p-1
               %small
                 %b= 'm.'
-        .col-3.col-lg-2.mb-1
+        .col-4.col-md-3.col-lg-2.mb-1
           .input-group.mt-1
             = number_field_tag("minutes_from_start[#{overall_index}]", relay_swimmer.minutes_from_start,
                                min: 0, max: 120, required: true, autofocus: true, type: 'number',
                                class: 'form-control form-control-sm text-right')
             .form-control-sm.ml-0.p-1
               %b= '\''
-        .col-3.col-lg-2.mb-1
+        .col-4.col-md-3.col-lg-2.mb-1
           .input-group.mt-1
             = number_field_tag("seconds_from_start[#{overall_index}]", relay_swimmer.seconds_from_start,
                                min: 0, max: 59, required: true, autofocus: true, type: 'number',
                                class: 'form-control form-control-sm text-right')
             .form-control-sm.ml-0.p-1
               %b= '"'
-        .col-3.col-lg-2.mb-1
+        .col-4.col-md-3.col-lg-2.mb-1
           .input-group.mt-1
             = number_field_tag("hundredths_from_start[#{overall_index}]", relay_swimmer.hundredths_from_start,
                                min: 0, max: 99, required: true, autofocus: true, type: 'number',
                                class: 'form-control form-control-sm text-right')
         .col.mb-1
           = submit_tag(t('laps.modal.form.submit_save_btn'), id: "lap-save-row-#{overall_index}",
-                        class: 'btn btn-sm btn-outline-primary my-1',
-                        onclick: "$('#modal-loading-indicator').removeClass('d-none');")
+                       class: 'btn btn-sm btn-outline-primary my-1',
+                       onclick: "$('#modal-loading-indicator').removeClass('d-none');")
           %span.my-2.float-right{ id: "mrs-delta-#{overall_index}" }
             Δt: #{relay_swimmer.to_timing}

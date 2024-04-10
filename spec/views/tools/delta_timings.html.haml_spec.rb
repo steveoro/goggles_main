@@ -29,4 +29,8 @@ RSpec.describe 'tools/delta_timings.html.haml' do
   it 'renders the submit button' do
     expect(subject.css('#frm-deltas .btn#btn-compute-deltas')).to be_present
   end
+
+  it 'renders the output TXT/CSV button' do
+    expect(subject.css('#frm-deltas .btn#btn-output-deltas')).to be_present
+  end
 end

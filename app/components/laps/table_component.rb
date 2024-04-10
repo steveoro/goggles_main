@@ -3,7 +3,7 @@
 #
 # = Laps components module
 #
-#   - version:  7-0.5.01
+#   - version:  7-0.7.08
 #   - author:   Steve A.
 #
 module Laps
@@ -24,39 +24,28 @@ module Laps
     # Creates a new ViewComponent
     #
     # == Params
-    # - laps: the GogglesDb::Lap relation holding the list of laps to be displayed
+    # - laps: a GogglesDb::Lap array *already sorted #by_distance*, holding the list of laps to be displayed
     # - collapsed: (default: true) when +false+, it won't hide/collapse the lap sub-table at start
     def initialize(laps:, collapsed: true)
       super
       @laps = laps
       @collapsed = collapsed
+      @last_lap = laps&.last
+      @parent_result = @last_lap&.parent_result
     end
 
     # Skips rendering unless @laps is enumerable and orderable :by_distance
     def render?
-      @laps.present? && @laps.respond_to?(:each) && @laps.respond_to?(:by_distance)
+      @laps.present? && @laps.respond_to?(:each)
     end
 
     protected
 
-    # Returns the parent association name of the abstract lap instance (memoized)
-    def parent_association_name
-      @parent_association_name ||= @laps&.first&.class&.parent_association_sym
-    end
-
-    # Returns last available lap instance (memoized)
-    def last_lap
-      @last_lap ||= @laps&.includes(parent_association_name)&.by_distance&.last
-    end
+    attr_reader :parent_result, :last_lap
 
     # Returns the DOM ID for this component
     def dom_id
       "laps-show#{parent_result&.id}"
-    end
-
-    # Returns the associated parent result instance (memoized)
-    def parent_result
-      @parent_result ||= last_lap&.parent_result
     end
 
     # Returns an additional closing lap row filled using the end result for the "timing from start",

@@ -3,7 +3,7 @@
 #
 # = MRR components module
 #
-#   - version:  7-0.6.30
+#   - version:  7-0.7.08
 #   - author:   Steve A.
 #
 module MRR
@@ -24,7 +24,15 @@ module MRR
     # - current_user_is_admin: this should be +true+ only when the current_user has Admin grants; +false+ otherwise.
     def initialize(mrrs:, managed_team_ids:, user_teams: [], current_user_is_admin: false)
       super
-      @mrrs = mrrs.includes(:meeting, meeting_relay_swimmers: %i[swimmer relay_laps]) if mrrs.respond_to?(:first) && mrrs.first.is_a?(GogglesDb::MeetingRelayResult)
+      @mrrs = if mrrs.is_a?(ActiveRecord::Relation) && mrrs.first.is_a?(GogglesDb::MeetingRelayResult)
+                mrrs&.joins(:season, :meeting, :meeting_program, :team)
+                    &.left_outer_joins(:meeting_relay_swimmers, :relay_laps)
+                    &.includes(:meeting, :team,
+                               meeting_program: %i[meeting season],
+                               meeting_relay_swimmers: %i[swimmer relay_laps])
+              else
+                mrrs
+              end
       @managed_team_ids = managed_team_ids
       @user_teams = user_teams
       @current_user_is_admin = current_user_is_admin
