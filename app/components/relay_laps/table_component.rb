@@ -26,8 +26,8 @@ module RelayLaps
     # - relay_swimmer: the GogglesDb::MeetingRelaySwimmer relation holding the list of laps to be displayed
     def initialize(relay_swimmers:)
       super
-      @relay_swimmers = relay_swimmers&.joins(:season, :gender_type)
-                                      &.includes(:season, :gender_type)
+      @relay_swimmers = relay_swimmers&.joins(:season, :gender_type, meeting_program: :event_type)
+                                      &.includes(:season, :gender_type, meeting_program: :event_type)
     end
 
     # Skips rendering unless @laps is enumerable and orderable :by_order

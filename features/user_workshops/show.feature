@@ -19,9 +19,9 @@ Feature: Show user workshop details
 
   Scenario: signed-in w/o specific grants & browsing workshop details only shows the "report missing" buttons
     Given I am already signed-in and at the root page
-    And there are more than 5 workshops matching my query 'Lake'
-    When I search for 'Lake'
-    Then the 'workshop' search results are displayed, all matching 'Lake'
+    And there are more than 5 workshops matching my query 'Workshop'
+    When I search for 'Sukmouth Workshop'
+    Then the 'workshop' search results are displayed, all matching 'Sukmouth Workshop'
     When I click on the first 'workshop' result to browse to its detail page
     Then I am at the show page for the details of the workshop
     And I can see the 'report missing' ('type1b') buttons on the results of the page

@@ -30,7 +30,7 @@ module MIR
     # - :show_category  => when +true+, it will render the category name after the year of birth
     # - :show_team => when +true+ (default), it will render the link to the team results page associated with this MIR row
     #
-    def initialize(options = {})
+    def initialize(options = {}) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       super
       @mir = options[:mir]
       @index = options[:index] || 0
@@ -38,6 +38,9 @@ module MIR
       @report_mistake = options[:report_mistake] || false
       @show_category = options[:show_category] || false
       @show_team = options[:show_team] || options[:show_team].nil? # (default true)
+      @season_type = @mir.season.season_type if @mir.respond_to?(:season)
+      # [Steve, 20240410] Moving laps relation (already sorted) to memory to prevent further queries:
+      @laps = @mir.laps.to_a.sort_by(&:length_in_meters) if @mir.respond_to?(:laps)
     end
 
     # Skips rendering unless the member is properly set
@@ -46,6 +49,8 @@ module MIR
     end
 
     protected
+
+    attr_reader :season_type, :laps
 
     # Memoized Meeting#id
     def meeting_id
@@ -92,26 +97,11 @@ module MIR
       @swimming_pool = @mir.swimming_pool
     end
 
-    # Memoized & generalized lap association
-    def laps
-      return @laps if @laps.present?
-
-      # [Steve, 20240410] Moving laps relation (already sorted) to memory to prevent further queries:
-      @laps = @mir.laps.to_a.sort_by(&:length_in_meters)
-    end
-
     # Memoized lap presence
     def includes_laps?
       return @includes_laps if @includes_laps.present?
 
       @includes_laps = laps&.present?
-    end
-
-    # Memoized season type
-    def season_type
-      return @season_type if @season_type.present?
-
-      @season_type = @mir.season_type
     end
 
     # Result score. Gives precedence to the standard FIN Championship scoring system, if set or used.

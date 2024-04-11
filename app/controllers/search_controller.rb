@@ -99,7 +99,10 @@ class SearchController < ApplicationController
 
   # Sets the @user_workshops member
   def prepare_workshop_search_results
-    @user_workshops = GogglesDb::UserWorkshop.for_name(params['q'])
+    # NOTE: *** FIXME *** 'UserWorkshop#for_name' currently yields too many different results
+    @user_workshops = GogglesDb::UserWorkshop.includes(:edition_type)
+                                             .where('user_workshops.description like ?', "%#{params['q']}%")
+                                             .or(GogglesDb::UserWorkshop.where('code like ?', "%#{params['q']}%"))
                                              .page(params['page']).per(5)
   end
 

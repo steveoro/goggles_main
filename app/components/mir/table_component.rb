@@ -25,7 +25,7 @@ module MIR
     def initialize(mirs:, managed_team_ids:, current_swimmer_id:)
       super
       @mirs = if mirs.is_a?(ActiveRecord::Relation) && mirs.first.is_a?(GogglesDb::MeetingIndividualResult)
-                mirs&.joins(:season, :season_type, :meeting, :meeting_program, :swimmer, :team)
+                mirs&.joins(:meeting, :meeting_program, :swimmer, :team, season: :season_type)
                     &.left_outer_joins(laps: [:meeting_individual_result])
                     &.includes(:swimmer, :team, :season_type,
                                laps: [:meeting_individual_result],
@@ -69,8 +69,9 @@ module MIR
       # 1. Original "by_timing" & "with_rank" can't add table names because' helper methods are defined
       #    in the AbstractResult ancestor class (and due to joins, table names here are required)
       # 2. Trying to keep the list of MIRs in memory to avoid further queries
-      @mirs_with_rank = @mirs.by_rank.order(minutes: :desc, seconds: :desc, hundredths: :desc).to_a
-                             .select { |mir| mir.rank.positive? }
+      @mirs_with_rank = @mirs.includes(:season_type).by_rank
+                             .order(minutes: :desc, seconds: :desc, hundredths: :desc)
+                             .to_a.select { |mir| mir.rank.positive? }
     end
 
     def mirs_with_no_rank
@@ -80,8 +81,9 @@ module MIR
       # 1. Original "by_timing" & "with_rank" can't add table names because' helper methods are defined
       #    in the AbstractResult ancestor class (and due to joins, table names here are required)
       # 2. Trying to keep the list of MIRs in memory to avoid further queries
-      @mirs_with_no_rank = @mirs.by_rank.order(minutes: :desc, seconds: :desc, hundredths: :desc).to_a
-                                .select { |mir| mir.rank.blank? || mir.rank.zero? }
+      @mirs_with_no_rank = @mirs.includes(:season_type).by_rank
+                                .order(minutes: :desc, seconds: :desc, hundredths: :desc)
+                                .to_a.select { |mir| mir.rank.blank? || mir.rank.zero? }
     end
   end
 end

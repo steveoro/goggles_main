@@ -35,15 +35,16 @@
 
       - can_edit_lap = current_user_is_admin || managed_team_ids.nil? || managed_team_ids.include?(team.id)
       - if relay # Team Relay results
-        - mrrs = meeting_event.meeting_relay_results.includes(:team, :meeting_program, :gender_type,
-                                meeting_relay_swimmers: [:relay_laps],
-                                category_type: [:season]).for_team(team).order(:meeting_program_id)
-        = render(MRR::TableComponent.new(mrrs: mrrs, managed_team_ids:, user_teams:,
+        - mrrs = meeting_event.meeting_relay_results.includes(:team,
+                                                              :meeting_program, :gender_type,
+                                                              meeting_relay_swimmers: :relay_laps,
+                                                              category_type: [:season]).for_team(team).order(:meeting_program_id)
+        = render(MRR::TableComponent.new(mrrs:, managed_team_ids:, user_teams:,
                                          current_user_is_admin:))
 
       - else # Individual results
         - domain = meeting_event.meeting_individual_results.for_team(team).joins(:swimmer, :category_type)
-        - domain.includes(:category_type, :laps).by_swimmer.by_rank.each do |mir|
+        - domain.includes(:category_type, laps: :meeting_individual_result).by_swimmer.by_rank.each do |mir|
           - can_report = user_signed_in? && current_user.swimmer_id.present? && current_user.swimmer_id == mir.swimmer_id
           = render(MIR::TableRowComponent.new(mir:, lap_edit: can_edit_lap,
                                               report_mistake: can_edit_lap || can_report,
