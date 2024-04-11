@@ -26,7 +26,7 @@ module MIR
       super
       @mirs = if mirs.is_a?(ActiveRecord::Relation) && mirs.first.is_a?(GogglesDb::MeetingIndividualResult)
                 mirs&.joins(:season, :season_type, :meeting, :meeting_program, :swimmer, :team)
-                    &.left_outer_joins(:laps)
+                    &.left_outer_joins(laps: [:meeting_individual_result])
                     &.includes(:swimmer, :team, :season_type,
                                laps: [:meeting_individual_result],
                                meeting_program: %i[meeting season])
