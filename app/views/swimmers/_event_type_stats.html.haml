@@ -47,11 +47,12 @@
         = render(partial: 'event_type_stat_score_row', locals: { label: t('swimmers.history.stats.all_time'),
                  swimmer_id: @swimmer.id, stat_score_mir: hash[:min_score_mir] })
 
-      .row-fluid.bg-light-cyan2.mx-0.font-75rem.text-center.avg-score
-        %i= t('swimmers.history.stats.average')
-      = render(partial: 'event_type_avg_score_row', locals: { label: '25 m.',
-                avg_score: hash[:avg_score25] })
-      = render(partial: 'event_type_avg_score_row', locals: { label: '50 m.',
-                avg_score: hash[:avg_score50] })
-      = render(partial: 'event_type_avg_score_row', locals: { label: t('swimmers.history.stats.all_time'),
-                avg_score: hash[:avg_score] })
+      - if hash[:avg_score25] > 0 || hash[:avg_score50] > 0 || hash[:avg_score] > 0
+        .row-fluid.bg-light-cyan2.mx-0.font-75rem.text-center.avg-score
+          %i= t('swimmers.history.stats.average')
+        = render(partial: 'event_type_avg_score_row', locals: { label: '25 m.',
+                  avg_score: hash[:avg_score25] })
+        = render(partial: 'event_type_avg_score_row', locals: { label: '50 m.',
+                  avg_score: hash[:avg_score50] })
+        = render(partial: 'event_type_avg_score_row', locals: { label: t('swimmers.history.stats.all_time'),
+                  avg_score: hash[:avg_score] })

@@ -1,7 +1,8 @@
-.row.mx-0
-  .col-3.font-75rem
-    %i= label
-  .col-3
-    = format('%0.2f', avg_score.to_f)
-  .col
-    &nbsp;
+- if avg_score.to_f.positive?
+  .row.mx-0
+    .col-3.font-75rem
+      %i= label
+    .col-3
+      = format('%0.2f', avg_score.to_f)
+    .col
+      &nbsp;
