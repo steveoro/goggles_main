@@ -103,6 +103,7 @@ class SearchController < ApplicationController
     @user_workshops = GogglesDb::UserWorkshop.includes(:edition_type)
                                              .where('user_workshops.description like ?', "%#{params['q']}%")
                                              .or(GogglesDb::UserWorkshop.where('code like ?', "%#{params['q']}%"))
+                                             .by_date(:desc)
                                              .page(params['page']).per(5)
   end
 
