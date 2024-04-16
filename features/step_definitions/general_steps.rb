@@ -199,7 +199,7 @@ end
 # -----------------------------------------------------------------------------
 
 Then('I wait until the slow-rendered page portion {string} is visible') do |css_selector|
-  30.times do
+  15.times do
     wait_for_ajax
     target_node = begin
       find(css_selector)
@@ -215,6 +215,7 @@ Then('I wait until the slow-rendered page portion {string} is visible') do |css_
       putc '-'
     end
   end
+  expect(page).to have_css(css_selector)
   expect(find(css_selector)).to be_visible
 end
 # -----------------------------------------------------------------------------

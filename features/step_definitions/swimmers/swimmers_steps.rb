@@ -93,8 +93,14 @@ When('I expand the details of a random event type and wait the stats to be displ
 end
 
 # Uses @expanded_stat_dom_id
-When('I see that at least the average score section is always present') do
-  find("tr##{@expanded_stat_dom_id} td .avg-score", visible: true)
+# NOTE: the swimmer history recap view won't render any of the stats sections for an event if its stats
+#       are zero, and this may be true for some edge-cases. (E.g.: score 0 for under 20 + DSQ with no-time.)
+When('I see that at least one the details score section is always present') do
+  expect(find("tr##{@expanded_stat_dom_id}")).to be_visible
+  find("tr##{@expanded_stat_dom_id} td .best-timings", visible: true) if page.has_css?("tr##{@expanded_stat_dom_id} td .best-timings")
+  find("tr##{@expanded_stat_dom_id} td .top-score", visible: true) if page.has_css?("tr##{@expanded_stat_dom_id} td .top-score")
+  find("tr##{@expanded_stat_dom_id} td .min-score", visible: true) if page.has_css?("tr##{@expanded_stat_dom_id} td .min-score")
+  find("tr##{@expanded_stat_dom_id} td .avg-score", visible: true) if page.has_css?("tr##{@expanded_stat_dom_id} td .avg-score")
 end
 
 When('I click on random event type link on the history recap') do

@@ -60,6 +60,8 @@ end
 
 # Uses @chosen_mevent
 Then('I click on the chosen meeting event section, waiting for it to load') do
+  step('I scroll toward the end of the page to see the bottom of the page')
+  expect(find("thead th a#btn-load-mev-#{@chosen_mevent.id}")).to be_visible
   find("thead th a#btn-load-mev-#{@chosen_mevent.id}").click
   sleep(1) && wait_for_ajax
 
