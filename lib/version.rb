@@ -27,10 +27,10 @@ module Version
   MINOR = '7'
 
   # Patch version.
-  PATCH = '09'
+  PATCH = '10'
 
   # Current build version.
-  BUILD = '20240415'
+  BUILD = '20240425'
 
   # Full versioning for the current release.
   FULL = "#{MAJOR}.#{MINOR}.#{PATCH} (#{CORE}-#{BUILD})".freeze

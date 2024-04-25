@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.7.10** [Steve A.] re-sync w/ base engine & bundle update;
 - **0.7.09** [Steve A.] re-sync w/ base engine & bundle update; avoid showing nil or zero average scores in swimmer history recap
 - **0.7.08** [Steve A.] fixes for history grid ordering & history recap list; added a crude output dialog to the timing-delta compute tool page as quick copy-paste helper for TXT/CSV output; misc speed improvements to /meetings event-detail retrieval & misc Cucumber stability fixes; re-sync w/ base engine & bundle update
 - **0.7.06** [Steve A.] re-sync w/ base engine; bundle update
