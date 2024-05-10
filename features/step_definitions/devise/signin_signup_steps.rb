@@ -31,7 +31,7 @@ Given('the user row is signed-in') do
   expect(@current_user.current_sign_in_at).to be_present
 end
 
-# Requires a @current_user (uses 'current' as synonim of 'new' & 'my')
+# Requires a @current_user (uses 'current' as synonym of 'new' & 'my')
 When(/I fill the log-in form as (the current|the new|my) user/) do |_user_type|
   expect(@current_user).to be_a(GogglesDb::User).and be_valid
   wait_for_ajax && sleep(2)
