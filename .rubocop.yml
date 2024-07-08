@@ -131,6 +131,9 @@ RSpec/ExampleLength:
 RSpec/ExpectInHook:
   Enabled: false
 
+RSpec/ExpectInLet:
+  Enabled: false
+
 RSpec/InstanceVariable:
   AssignmentOnly: true
   Exclude:

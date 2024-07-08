@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  ruby: circleci/ruby@2.1.2
+  ruby: circleci/ruby@2.1.3
   browser-tools: circleci/browser-tools@1.4.8
   node: circleci/node@5.2.0
 
@@ -68,7 +68,7 @@ common-db-setup: &common-db-setup
     echo $RAILS_MASTER_KEY > config/master.key
     cp ./tmp/test.sql.bz2 db/dump/test.sql.bz2
     mv config/database_ci.yml config/database.yml
-    dockerize -wait tcp://localhost:3306 -timeout 1m
+    dockerize -wait tcp://localhost:3306 -timeout 2m
     echo "- RAILS_ENV...: $RAILS_ENV"
     echo "- BABEL_ENV...: $BABEL_ENV"
     echo "- NODE_ENV....: $NODE_ENV"
