@@ -26,7 +26,7 @@ common-config: &common-config
         GIT_LFS_SKIP_SMUDGE: 1
         AUTO_ARTIFACTS: 1
         ARTIFACTS_PATH: *ARTIFACTS_PATH
-    - image: cimg/mariadb:10.6.12
+    - image: cimg/mariadb:11.4.1
       environment:
         DATABASE_NAME: goggles_test
         DATABASE_USER: root
@@ -45,7 +45,7 @@ deploy-config: &deploy-config
         BUNDLE_PATH: vendor/bundle
         PAGER: cat
         GIT_LFS_SKIP_SMUDGE: 1
-    - image: cimg/mariadb:10.6.12
+    - image: cimg/mariadb:11.4.1
       environment:
         DATABASE_NAME: goggles
         DATABASE_USER: root

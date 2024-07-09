@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.7.12** [Steve A.] fixed MariaDB required version for CircleCI build; re-sync w/ base engine & bundle update
 - **0.7.11** [Steve A.] bundle update & minor rubocop adjustments; WIP
 - **0.7.10** [Steve A.] re-sync w/ base engine & bundle update;
 - **0.7.09** [Steve A.] re-sync w/ base engine & bundle update; avoid showing nil or zero average scores in swimmer history recap
