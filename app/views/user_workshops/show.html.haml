@@ -4,7 +4,7 @@
   .main-content#top-of-page
     = render(partial: 'meetings/meeting_header', locals: { meeting: @user_workshop })
     - cache(cache_key_for_meeting(action: 'workshop_show', id: @user_workshop.id, max_updated_at: @max_updated_at,
-            team_id: @team&.id, swimmer_id: @swimmer&.id)) do
+                                  team_id: @team&.id, swimmer_id: @swimmer&.id)) do
       %section#workshop-show-results
         %table.table.table-striped.table-sm
           - @user_workshop_events&.each_with_index do |event_type, index|
@@ -13,6 +13,6 @@
               = render(Mevent::RowSeparatorComponent.new) if index.positive? # skip first separator
               = render(Mevent::RowTitleComponent.new(event_container: results.first, can_manage: user_signed_in?))
             = render(MIR::TableComponent.new(mirs: results, managed_team_ids: @managed_team_ids,
-                    current_swimmer_id: @current_swimmer_id))
+                                             current_swimmer_id: @current_swimmer_id))
 
   .spacer-right

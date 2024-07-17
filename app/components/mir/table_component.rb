@@ -3,7 +3,7 @@
 #
 # = MIR components module
 #
-#   - version:  7-0.7.08
+#   - version:  7-0.7.16
 #   - author:   Steve A.
 #
 module MIR
@@ -18,7 +18,7 @@ module MIR
     # Creates a new ViewComponent
     #
     # == Params
-    # - mirs: the GogglesDb::MeetingIndividualResult relation holding the list of MIRs to be displayed
+    # - mirs: the GogglesDb::MeetingIndividualResult or GogglesDb::UserResult relation holding the list of results to be displayed
     # - managed_team_ids: array of integer Team IDs that can be "managed" by the current user;
     #                     a +nil+ value will disable the rendering check for the action buttons.
     # - current_swimmer_id: current_user.swimmer_id value, if any.
@@ -30,7 +30,7 @@ module MIR
                     &.includes(:swimmer, :team, :season_type,
                                laps: [:meeting_individual_result],
                                meeting_program: %i[meeting season])
-              elsif mirs.is_a?(ActiveRecord::Relation)
+              elsif mirs.is_a?(ActiveRecord::Relation) && mirs.first.is_a?(GogglesDb::UserResult)
                 mirs&.joins(:user_workshop, :swimmer, season: :season_type)
                     &.left_outer_joins(user_laps: [:user_result])
                     &.includes(:swimmer, :season_type, user_laps: [:user_result])
@@ -64,6 +64,7 @@ module MIR
 
     private
 
+    # Retrieves MIRs with a positive rank, considering specific ordering and including associated season types.
     def mirs_with_rank
       return @mirs_with_rank if @mirs_with_rank.present?
 
@@ -76,6 +77,7 @@ module MIR
                              .to_a.select { |mir| mir.rank.positive? }
     end
 
+    # Retrieves MIRs without a rank, tries to keep them in memory to avoid further queries.
     def mirs_with_no_rank
       return @mirs_with_no_rank if @mirs_with_no_rank.present?
 
