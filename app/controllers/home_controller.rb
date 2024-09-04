@@ -18,7 +18,7 @@ class HomeController < ApplicationController
   # [GET] Multi-section '#about' page.
   # Includes privacy_policy plus much more.
   def about
-    # (no-op)
+    @latest_calendars = GogglesDb::Calendar.where('calendars.updated_at > ?', DateTime.now - 30.days).order('calendars.updated_at DESC')
   end
 
   # [GET/POST] Show the '#contact_us' form, only for registered users.

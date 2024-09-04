@@ -24,3 +24,6 @@ it:
         error_please_reload: 'Si è verificato un errore durante il tag: ricarica la pagina per favore'
         by_user: "Commuta questo meeting come interessante per il tuo calendario personale"
         by_team: "Commuta questo meeting come interessante o 'prenotabile' per il calendario di squarda"
+    updated_calendars:
+      title: "Aggiornamenti dati dell' ultimo mese"
+      updated_at: "Aggiornato il"

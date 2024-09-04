@@ -21,10 +21,11 @@ RSpec.describe Footer::SocialUrlsComponent, type: :component do
       expect(rendered_button['href']).to eq(social_urls.linkedin)
     end
 
-    it 'renders the Twitter URL link' do
+    # (Link disabled for the time being)
+    it 'does NOT render the Twitter URL link' do
       rendered_button = subject.at_css('a#social-twitter-link')
-      expect(rendered_button).to be_present
-      expect(rendered_button['href']).to eq(social_urls.twitter)
+      expect(rendered_button).not_to be_present
+      # expect(rendered_button['href']).to eq(social_urls.twitter)
     end
   end
 

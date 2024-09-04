@@ -24,3 +24,6 @@ en:
         error_please_reload: 'An error as occurred during tagging: please reload the page'
         by_user: "Toggle this meeting as interesting for your personal calendar"
         by_team: "Toggle this meeting as interesting for the team calendar; choose team from the dropdown list"
+    updated_calendars:
+      title: "Latest data updates for the past month"
+      updated_at: "Updated at"

@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 3fb1dc54db5e0acc644282992e6b95aad991f59a
+  revision: 9492fe1a7b94ee2cf6b4675ad2e34b699424809e
   specs:
-    goggles_db (0.7.16)
+    goggles_db (0.7.18)
       acts-as-taggable-on
       acts_as_votable
       cities
@@ -150,7 +150,7 @@ GEM
       simplecov
     coderay (1.1.3)
     colorize (1.1.0)
-    concurrent-ruby (1.3.3)
+    concurrent-ruby (1.3.4)
     countries (6.0.1)
       unaccent (~> 0.3)
     country_select (9.0.0)
@@ -230,10 +230,10 @@ GEM
     factory_bot_rails (6.4.3)
       factory_bot (~> 6.4)
       railties (>= 5.0.0)
-    faraday (2.10.0)
-      faraday-net_http (>= 2.0, < 3.2)
+    faraday (2.11.0)
+      faraday-net_http (>= 2.0, < 3.4)
       logger
-    faraday-net_http (3.1.1)
+    faraday-net_http (3.3.0)
       net-http
     ffaker (2.23.0)
     ffi (1.17.0-x86_64-linux-gnu)
@@ -345,7 +345,7 @@ GEM
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    logger (1.6.0)
+    logger (1.6.1)
     loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -363,7 +363,7 @@ GEM
     mime-types-data (3.2024.0702)
     mini_magick (5.0.1)
     mini_mime (1.1.5)
-    minitest (5.24.1)
+    minitest (5.25.1)
     mize (0.6.0)
     msgpack (1.7.2)
     multi_json (1.15.0)
@@ -375,7 +375,7 @@ GEM
     nenv (0.3.0)
     net-http (0.4.1)
       uri
-    net-imap (0.4.14)
+    net-imap (0.4.15)
       date
       net-protocol
     net-pop (0.1.2)
@@ -429,7 +429,7 @@ GEM
     public_suffix (6.0.1)
     puma (6.4.2)
       nio4r (~> 2.0)
-    racc (1.8.0)
+    racc (1.8.1)
     rack (2.2.9)
     rack-protection (3.2.0)
       base64 (>= 0.1.0)
@@ -593,7 +593,7 @@ GEM
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
-    sprockets-rails (3.5.1)
+    sprockets-rails (3.5.2)
       actionpack (>= 6.1)
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
@@ -613,7 +613,7 @@ GEM
     term-ansicolor (1.10.4)
       mize (~> 0.5)
       tins (~> 1.0)
-    thor (1.3.1)
+    thor (1.3.2)
     tilt (2.4.0)
     timeout (0.4.1)
     tins (1.33.0)
@@ -624,7 +624,7 @@ GEM
     unaccent (0.4.0)
     unicode-display_width (2.5.0)
     uniform_notifier (1.16.0)
-    uri (0.13.0)
+    uri (0.13.1)
     version_gem (1.1.4)
     view_component (3.13.0)
       activesupport (>= 5.2.0, < 8.0)
@@ -653,7 +653,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.36)
-    zeitwerk (2.6.16)
+    zeitwerk (2.6.18)
 
 PLATFORMS
   x86_64-linux

@@ -10,7 +10,7 @@ en:
     please_wait: 'Wait...'
     copyright_notice: "(c) 2013-2024, FASAR Software, S. Alloro, M. Ligabue"
     about_us: "About us"
-    about_this: "What's Goggles?"
+    about_this: "Info/What's Goggles?"
     main_contact_email: "fasar.software@gmail.com"
     privacy_policy:
       title: 'Legal terms & Privacy policy'
@@ -41,9 +41,9 @@ en:
 
   about:
     go_back: "< Go back to the homepage"
-    title: 'Goggles!'
+    title: "What's Goggles?"
     point_1: "\"Master-Goggles\" (or, more informally, \"Goggles\") stems in between 2012 and 2013 from the hard passion of a couple of mad programmers which, by chance, happen to be also competitive swimmers (or, maybe, it's the other way around)."
-    point_2: "It's basically a collection of Master Swimming meeting results from National & Regional Championships, gathered from different sources, with a little help from its users."
+    point_2: "It's basically a collection of Masters' Swimming meeting results either from National & Regional Championships, gathered from different sources, with a little help from its users. Although not limited to those, it's currently focus are any Italian Master Swimming results published online and whatnot."
     point_3: "We don't have a commercial agenda: we just wanted a cozy place where we could browse our swimming results. ...And, frankly put, most \"official\" sites often aren't like what we wished for."
     point_4: "It's totally self-sponsored and totally free for its users. (But you can contribute, in case you want.)"
     point_5: "It's Open-Source, on LGPL License (see below)."
@@ -51,18 +51,18 @@ en:
   how_does_it_work:
     title: 'How does it work?'
     point_1: "Goggles' users data is a separate thing from the \"actual\" swimmers found inside the meeting results because these come from different data sources: the swimmers anagraphical data is published by Federations or individual Teams, whereas each single registered user provides us just an e-mail address, the full name and the year of birth."
-    point_2: "Goggles then tries to establish a link between the user name & year of birth with the swimmers data from the available Master Swimmers Meeting results (not always successfully, but it can be edited)."
-    point_3: "Having a link between the user and a swimmer among the results is not required and it's just a shortcut for displaying easily a dashboard with all the user's stats and the corresponding events, but having a registered user will allow you also to browse through the performance statistics of all other swimmers & teams as well."
-    point_4: "Goggles currently is very focused on the Italian Master Swimmer scene - but nothing so far prevents us from expanding it in the future. In between 2013 and 2019, Goggles has indexed almost all swimming result data from the National FIN Master Championship in Italy, as well the Regional CSI Championship for Emilia Romagna, but - sadly - just a handful of results from the UISP Master, the LEN Master and the FINA Master Championships."
+    point_2: "Goggles then tries to establish a link between the user name & year of birth with the swimmers data from the available Master Swimmers Meeting results (not always successfully, but it can be edited in case of a mismatch or any other issue)."
+    point_3: "Having a link between the user and a swimmer among the results is not required and it's just a shortcut for displaying easily a dashboard with all the user's stats and the corresponding events; but having a registered user will allow you also to browse through the performance statistics of all other swimmers & teams as well."
+    point_4: "As said above, Goggles currently is very focused on the Italian Master Swimmer scene - but nothing so far prevents us from expanding it in the future. In between 2013 and 2019, Goggles has indexed almost all swimming result data from the National FIN Master Championship in Italy, as well the Regional CSI Championship for Emilia Romagna, but - sadly - just a handful of results from the UISP Master, the LEN Master and the FINA Master Championships."
     point_5: "Even if your swimming results aren't here, you, or your Team Coach, can always queue them for registration using the integrated \"Chrono\" app or any of the available edit links you may find scattered around the meeting pages."
 
   who_we_are:
     title: 'Who we are:'
-    point_1: "Stefano <i>(Steve)</i> Alloro & Marco <i>(Leega)</i> Ligabue, \"senior\" master swimmers from the \"C.S.I. Ober Ferrari\" Team, from Reggio Emilia, Italy."
+    point_1: "Stefano <i>(Steve)</i> Alloro & Marco <i>(Leega)</i> Ligabue, \"senior\" master swimmers, originally enlisted within the \"C.S.I. Ober Ferrari\" Team, from Reggio Emilia, Italy. Since a handful of years only Steve (which is me) is actually maintaining Goggles, so don't bother asking Leega pointless questions as he'll surely reply \"Ask that to Steve\"."
 
   contributing:
     title: 'How can I contribute?'
-    point_1: "Send us your swimming results or even the single lap timings using the integrated \"Chrono\" application."
+    point_1: "Send us your swimming results or even the single lap timings either creating a specific request from the \"Issues?\" page, or by using the integrated \"Chrono\" application, if your user has been registered and accepted as a 'Team Manager'."
     point_2: "Developing or fixing the source code (through Pull-requests). You can start from here and head on to the WiKi for more information:"
     point_3: "Sponsoring the hosting of this project, even with tiny amounts:"
 
@@ -72,6 +72,8 @@ en:
     a_1: "Goggles v7+ is a complete rewrite and many features that were consolidated in the previous versions are yet to be developed. We aim to reintroduce them all (mostly), eventually & step by step."
     q_2: "I'd like to report an issue but the system forces me to be signed-up and logged, why?"
     a_2: "There's a whole dedicated FAQ section regarding how to report issues, but this requires user identification in order to prevent any kind of spamming. <i>(Afterall, there's a poor human being at the other side of this thing reading all your requests, so it's better to have his little precious time well distributed among all.)</i>"
+    q_3: "Showing the results from a certain meeting sometimes takes so much time I really wanna curse. I mean... Can't you do something about it?"
+    a_3: "Beside the obvious \"I'm working on it\" and \"Patience is a virtue\", be advised that Goggles runs on a *very* entry-level machine, it's self-managed, self-financed and self-maintened by a single gerbil running on a minature threadmill (which is me, Steve). So if the meeting result page you're trying to get to is somehow popular at the moment or has a lot of results in it, the tiny server may be crying for overwork in any case. Future updates will surely try to improve the speed of each page, but keep in mind the context and be possibly comprehensive."
 
   privacy_policy:
     title: "Privacy Policy"

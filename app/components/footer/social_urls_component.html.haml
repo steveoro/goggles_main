@@ -3,6 +3,7 @@
   &nbsp;
 - if @social_urls.linkedin.present?
   = link_to(tag.i('', class: 'fa fa-linkedin'), @social_urls.linkedin, id: 'social-linkedin-link')
-  &nbsp;
-- if @social_urls.twitter.present?
-  = link_to(tag.i('', class: 'fa fa-twitter'), @social_urls.twitter, id: 'social-twitter-link')
+  -# &nbsp;
+-# Twitter link disabled for the time being ("X" sucks big time):
+-# - if @social_urls.twitter.present?
+-#   = link_to(tag.i('', class: 'fa fa-twitter'), @social_urls.twitter, id: 'social-twitter-link')

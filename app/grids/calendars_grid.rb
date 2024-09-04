@@ -58,12 +58,8 @@ class CalendarsGrid < BaseGrid
                   end
       city_name = city_name&.split(/\s\d/)&.first # Keep just the city name for those cities that include a ZIP code
       city_name = content_tag(:b) { content_tag(:i, " - #{city_name}") }
-
-      if meeting.cancelled
-        content_tag(:del, MeetingDecorator.decorate(meeting).link_to_full_name + city_name)
-      else
-        content_tag(:div, MeetingDecorator.decorate(meeting).link_to_full_name + city_name)
-      end
+      cnt_tag = meeting.cancelled ? :del : :div
+      content_tag(cnt_tag, MeetingDecorator.decorate(meeting).link_to_full_name + city_name)
     else
       asset.meeting_name.to_s + city_name.to_s
     end
