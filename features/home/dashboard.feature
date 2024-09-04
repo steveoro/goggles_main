@@ -63,6 +63,7 @@ Feature: My Dashboard
     Given I have an associated swimmer on a team manager account and have already signed-in
     And I browse to '/home/dashboard'
     Then I am at my dashboard page
+    And I see the TEAM MANAGER label below my name in the #my-dashboard-title section
     And I see the button <button_id> <css_status>
     Examples:
       | button_id                | css_status |

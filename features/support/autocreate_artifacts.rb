@@ -60,4 +60,7 @@ After do |scenario|
   next unless ENV['AUTO_ARTIFACTS'] && scenario.failed?
 
   save_timestamped_artifacts(page, scenario)
+  # DEBUG ----------------------------------------------------------------
+  # save_and_open_screenshot && save_and_open_page && binding.pry
+  # ----------------------------------------------------------------------
 end

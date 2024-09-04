@@ -130,7 +130,7 @@ Capybara.register_driver(:headless_chrome) do |app|
 end
 
 [
-  [:headless_chrome_galaxyfold, 'Galaxy Fold'],
+  [:headless_chrome_galaxys20, 'Samsung Galaxy S20 Ultra'],
   [:headless_chrome_iphone5, 'iPhone 5'],
   [:headless_chrome_iphonese, 'iPhone SE'],
   [:headless_chrome_iphone12, 'iPhone 12 Pro'],

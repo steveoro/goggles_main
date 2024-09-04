@@ -52,6 +52,10 @@ Then('I am at my dashboard page') do
   expect(page).to have_current_path(home_dashboard_path, ignore_query: true)
 end
 
+Then('I see the TEAM MANAGER label below my name in the #my-dashboard-title section') do
+  expect(find_by_id('my-dashboard-title', visible: true)).to have_text('TEAM MANAGER')
+end
+
 # Checks if a button/link node id is either 'missing' or 'disabled' or not
 Then('I see the button {string} {string}') do |button_id, status|
   case status

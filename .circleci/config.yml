@@ -498,7 +498,7 @@ jobs:
                         --format junit,fileattribute=true --out ~/test-results/cucumber-narrow.xml" --verbose --split-by=timings
           environment:
             RAILS_ENV: test
-            CAPYBARA_DRV: headless_chrome_galaxyfold
+            CAPYBARA_DRV: headless_chrome_galaxys20
       - store_test_results:
           path: ~/test-results
       - store_artifacts:
