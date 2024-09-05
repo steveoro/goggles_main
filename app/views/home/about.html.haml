@@ -7,6 +7,7 @@
         %h4.text-center
           = t('calendars.updated_calendars.title')
         %ul
+          %i= t('calendars.updated_calendars.no_recent_updates') if @latest_calendars.blank?
           - @latest_calendars&.each do |calendar|
             .row.mt-2
               .col-sm

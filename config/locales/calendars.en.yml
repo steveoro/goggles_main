@@ -27,3 +27,4 @@ en:
     updated_calendars:
       title: "Latest data updates for the past month"
       updated_at: "Updated at"
+      no_recent_updates: "(No recent data updates during the last month)"
