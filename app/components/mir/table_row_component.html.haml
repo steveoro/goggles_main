@@ -5,6 +5,7 @@
   %tr
     %td.text-right
       = render(RankingPosComponent.new(rank:))
+      = render(Switch::RotatingComponent.new(target_id: "laps#{@mir.id}")) if includes_laps?
     %td.text-right.pl-0
       - if @mir.reaction_time > 0.0
         %small.text-muted
@@ -12,7 +13,6 @@
         &nbsp;
       = @mir.to_timing
       %br/
-      = render(Switch::RotatingComponent.new(target_id: "laps#{@mir.id}")) if includes_laps?
       = render(Laps::EditButtonComponent.new(parent_result: @mir, can_manage: @lap_edit,
                                              show_category: @show_category, show_team: @show_team))
       = render(Issues::ReportMistakeButtonComponent.new(result_row: @mir, can_manage: @report_mistake))

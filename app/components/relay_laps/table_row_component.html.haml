@@ -1,5 +1,5 @@
-%tr.collapse{ id: dom_id }
-  %td.text-muted.text-right{ colspan: 1 }
+%tr.table-info.collapse{ id: dom_id }
+  %td.py-0.text-muted.text-right{ colspan: 2 }
     %small
       = @relay_swimmer.stroke_type&.label
       - if @relay_swimmer.reaction_time > 0.0
@@ -7,16 +7,14 @@
         .text-muted
         R: #{@relay_swimmer.reaction_time}
 
-  %td.text-left{ colspan: 3 }
+  %td.py-0.text-left{ colspan: 2 }
     %small{ id: "detail-mrs#{@relay_swimmer.id}" }
-      - if Rails.env.development?
-        ID: #{@relay_swimmer.id}&nbsp;
       %i.text-muted
         #{SwimmerDecorator.decorate(swimmer).link_to_results(meeting.id)}
       %small= swimmer_year_and_age_label
       %br/
       - if @relay_swimmer.relay_laps.present?
-        %ul.pl-0
+        %ul.pl-3.mb-1
           - @relay_swimmer.relay_laps.by_distance.each do |sub_lap|
             %li{ id: "detail-rl#{sub_lap.id}" }
               #{sub_lap.to_timing} Δ
@@ -34,6 +32,8 @@
             #{timing_from_start} ⏱
             %small
               #{@relay_swimmer.length_in_meters} m
+              -# - if Rails.env.development? && @relay_swimmer.id.present?
+              -#   &nbsp;MRS ID: #{@relay_swimmer.id}
 
       - else
         #{@relay_swimmer.to_timing} Δ
@@ -43,3 +43,5 @@
         #{timing_from_start} ⏱
         %small
           #{@relay_swimmer.length_in_meters} m
+          -# - if Rails.env.development? && @relay_swimmer.id.present?
+          -#   &nbsp;MRS ID: #{@relay_swimmer.id}

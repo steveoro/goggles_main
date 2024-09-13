@@ -3,7 +3,7 @@
 #
 # = MRR components module
 #
-#   - version:  7-0.6.30
+#   - version:  7-0.7.19
 #   - author:   Steve A.
 #
 module MRR
