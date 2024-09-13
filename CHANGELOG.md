@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.7.19** [Steve A.] added collapsible section to the "latest calendar updates" list in the info page to prevent very long lists from cluttering the view;
 - **0.7.18** [Steve A.] re-sync w/ base engine; bundle updates & misc specs adjustments; added latest data update section to the info/about page; removed Patreon links for sponsorship; removed Twitter/X social link as that social media now sucks big time
 - **0.7.16** [Steve A.] re-sync w/ base engine & bundle update
 - **0.7.12** [Steve A.] fixed MariaDB required version for CircleCI build; re-sync w/ base engine & bundle update

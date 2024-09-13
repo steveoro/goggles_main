@@ -1,0 +1,21 @@
+.row.mt-2
+  .col-sm
+    %li
+      = calendar&.scheduled_date
+      - if calendar&.meeting
+        - city_name = calendar.meeting&.swimming_pools&.first&.city&.name || calendar.meeting_place
+        = MeetingDecorator.decorate(calendar.meeting).link_to_full_name
+        %i
+          = ' - '
+          = city_name
+      - else
+        = calendar&.meeting_name
+        %i
+          = ' - '
+          = calendar&.meeting_place
+  .col-sm-4
+    - if calendar&.updated_at
+      %small
+        %i
+          = t('calendars.updated_calendars.updated_at')
+          = I18n.l(calendar.updated_at.to_date)

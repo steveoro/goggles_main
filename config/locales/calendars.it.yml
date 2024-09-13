@@ -25,6 +25,6 @@ it:
         by_user: "Commuta questo meeting come interessante per il tuo calendario personale"
         by_team: "Commuta questo meeting come interessante o 'prenotabile' per il calendario di squarda"
     updated_calendars:
-      title: "Aggiornamenti risultati nell'ultimo mese"
+      title: "Aggiornamenti risultati nell'ultimo mese (%{total})"
       updated_at: "Aggiornato il"
       no_recent_updates: "(Nessun aggiornamento dati nell'ultimo mese)"

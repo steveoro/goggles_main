@@ -20,6 +20,7 @@ en:
     commands: 'commands'
     compute_fin_score: 'compute FIN score'
     compute_deltas: 'compute Δt in between laps'
+    show_label: 'Show'
     my:
       go_to_dashboard_tooltip: go to your Dashboard
       dashboard_title: my Dashboard
@@ -74,6 +75,15 @@ en:
     a_2: "There's a whole dedicated FAQ section regarding how to report issues, but this requires user identification in order to prevent any kind of spamming. <i>(Afterall, there's a poor human being at the other side of this thing reading all your requests, so it's better to have his little precious time well distributed among all.)</i>"
     q_3: "Showing the results from a certain meeting sometimes takes so much time I really wanna curse. I mean... Can't you do something about it?"
     a_3: "Beside the obvious \"I'm working on it\" and \"Patience is a virtue\", be advised that Goggles runs on a *very* entry-level machine, it's self-managed, self-financed and self-maintened by a single gerbil running on a minature threadmill (which is me, Steve). So if the meeting result page you're trying to get to is somehow popular at the moment or has a lot of results in it, the tiny server may be crying for overwork in any case. Future updates will surely try to improve the speed of each page, but keep in mind the context and be possibly comprehensive."
+    q_4: "Where do Goggles takes its data from? How reliable are they?"
+    a_4: "For the *official* results, as already written elsewhere, always check the official websites of any Federation involved in a meeting.<br/>Regarding Goggles, its main source for the data is the Event Calendar published by the Italian Swimming Federation (FIN). Data can also come from user contributions but, most of the times, it's imported directly from PDFs published by the organizers of the event when they become available. Data is converted, adapted, <i>manually</i> checked (sampling some events) and only then imported so that it can be aggregated with all other results."
+    a_4b: "The PDF reports (or any other data published on a site) may have mistakes, typos or incoherences in them. Then again, the conversion process may introduce some issues as well so don't treat the data shown here as error-free. To report any inconsistency, click on the '🚩' or '🏴' buttons that appear on each event page.<br/>Refer to the 'Issues?' page for more details."
+    q_5: "What do I do if I see my results have been wrongly aggregated by homonymy with another same-named swimmer or by mistake?"
+    a_5: "In order to separate data from two or more swimmers with the same name, gender and year of birth without knowing the swimmer's badge code (which is 'almost never' printed out on the meeting results reports), we need to know in which Teams the swimmer was registered to - and, possibly, in which year(s). It's really improbable that two swimmers having same name, gender and year of birth will be registered to the same team. Whenever that may happen, usually the Federations add a number or a code to the results to help discriminate between homonyms. If you incur in this problem, contact us directly through the 'Issues?' page."
+    q_6: "How come in the 'Latest data updates' section above sometimes very old Meeting results pop-up like you're lagging behind hard?"
+    a_6: "Yes, in some cases I'm lagging behind because my time is limited and the list of Meeting events to be imported is pretty long. But, possibly, Goggles doesn't loose track of what has happened or has been planned. So it's slowly progressing."
+    q_7: "So... What makes you do this? All this work for what? Tiny little numbers? ...What's your business plan?"
+    a_7: "\"<i>I</i> make myself do it.\" As already written, there's no damn 'business plan' behind Goggles, which is self-financed and self-managed. We just wanted a better way to record and aggregate all our swimming life without too much fuss. If you like it, good. If you don't, the Internet is big enough to for you to find your own green meadow to cultivate yourself - and have a good life."
 
   privacy_policy:
     title: "Privacy Policy"

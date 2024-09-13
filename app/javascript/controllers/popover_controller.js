@@ -57,6 +57,10 @@ export default class extends Controller {
 
     // *** Modals setup: ***
     // (none so far)
+
+    // *** Collapsible sections with switchable "More..."/"Less..." label setup: ***
+    $('.switchable-label-collapse').on('shown.bs.collapse', function () { $('#show-more-or-less').text('➖'); })
+    $('.switchable-label-collapse').on('hidden.bs.collapse', function () { $('#show-more-or-less').text('➕'); })
   }
   // ---------------------------------------------------------------------------
 }
