@@ -1,5 +1,7 @@
 %thead
-  - [GogglesDb::GenderType.female, GogglesDb::GenderType.male].each do |gender_type|
+  - [GogglesDb::GenderType.intermixed, GogglesDb::GenderType.female, GogglesDb::GenderType.male].each do |gender_type|
+    - next if @meeting_programs.where(gender_type_id: gender_type.id).blank?
+
     %tr
       %th.mprg-links
         &nbsp;#{gender_type.label}:

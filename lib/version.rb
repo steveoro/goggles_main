@@ -30,7 +30,7 @@ module Version
   PATCH = '19'
 
   # Current build version.
-  BUILD = '20240913'
+  BUILD = '20240916'
 
   # Full versioning for the current release.
   FULL = "#{MAJOR}.#{MINOR}.#{PATCH} (#{CORE}-#{BUILD})".freeze
