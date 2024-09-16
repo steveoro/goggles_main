@@ -27,7 +27,7 @@ module RelayLaps
 
     def initialize(relay_swimmers:)
       super
-      @relay_swimmers = relay_swimmers.joins(:season, :gender_type, meeting_program: :event_type)
+      @relay_swimmers = relay_swimmers&.joins(:season, :gender_type, meeting_program: :event_type)
                                       &.includes(:season, :gender_type, meeting_program: :event_type)
     end
 

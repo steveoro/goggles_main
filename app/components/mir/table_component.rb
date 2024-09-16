@@ -22,7 +22,7 @@ module MIR
     # - managed_team_ids: array of integer Team IDs that can be "managed" by the current user;
     #                     a +nil+ value will disable the rendering check for the action buttons.
     # - current_swimmer_id: current_user.swimmer_id value, if any.
-    def initialize(mirs:, managed_team_ids:, current_swimmer_id:)
+    def initialize(mirs:, managed_team_ids:, current_swimmer_id:) # rubocop:disable Metrics/PerceivedComplexity
       super
       @mirs = if mirs.is_a?(ActiveRecord::Relation) && mirs.first.is_a?(GogglesDb::MeetingIndividualResult)
                 # NOTE: adding left_outer_joins to the query below will slow down the rendering significantly:
