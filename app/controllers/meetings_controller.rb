@@ -86,7 +86,7 @@ class MeetingsController < ApplicationController
     end
 
     @meeting_event = GogglesDb::MeetingEvent.find(meeting_params[:id])
-    @meeting_events = @meeting_event.meeting.meeting_events.by_order
+    @meeting_events = @meeting_event.meeting.meeting_events.by_order.to_a
     @event_index = @meeting_events.find_index(@meeting_event)
     @prgs_for_event = GogglesDb::MeetingProgram.where(meeting_event_id: meeting_params[:id])
                                                .includes(:gender_type, category_type: :season)

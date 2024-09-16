@@ -3,7 +3,7 @@
 #
 # = MIR components module
 #
-#   - version:  7-0.7.16
+#   - version:  7-0.7.19
 #   - author:   Steve A.
 #
 module MIR
@@ -22,17 +22,19 @@ module MIR
     # - managed_team_ids: array of integer Team IDs that can be "managed" by the current user;
     #                     a +nil+ value will disable the rendering check for the action buttons.
     # - current_swimmer_id: current_user.swimmer_id value, if any.
-    def initialize(mirs:, managed_team_ids:, current_swimmer_id:) # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
+    def initialize(mirs:, managed_team_ids:, current_swimmer_id:)
       super
       @mirs = if mirs.is_a?(ActiveRecord::Relation) && mirs.first.is_a?(GogglesDb::MeetingIndividualResult)
+                # NOTE: adding left_outer_joins to the query below will slow down the rendering significantly:
+                # &.left_outer_joins(laps: [:meeting_individual_result])
                 mirs&.joins(:meeting, :meeting_program, :swimmer, :team, season: :season_type)
-                    &.left_outer_joins(laps: [:meeting_individual_result])
                     &.includes(:swimmer, :team, :season_type,
                                laps: [:meeting_individual_result],
                                meeting_program: %i[meeting season])
               elsif mirs.is_a?(ActiveRecord::Relation) && mirs.first.is_a?(GogglesDb::UserResult)
+                # NOTE: adding left_outer_joins to the query below will slow down the rendering significantly:
+                # &.left_outer_joins(user_laps: [:user_result])
                 mirs&.joins(:user_workshop, :swimmer, season: :season_type)
-                    &.left_outer_joins(user_laps: [:user_result])
                     &.includes(:swimmer, :season_type, user_laps: [:user_result])
               end
       @managed_team_ids = managed_team_ids

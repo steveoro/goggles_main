@@ -3,7 +3,7 @@
 #
 # = MRR components module
 #
-#   - version:  7-0.7.08
+#   - version:  7-0.7.19
 #   - author:   Steve A.
 #
 module MRR
@@ -25,9 +25,10 @@ module MRR
     def initialize(mrrs:, managed_team_ids:, user_teams: [], current_user_is_admin: false)
       super
       @mrrs = if mrrs.is_a?(ActiveRecord::Relation) && mrrs.first.is_a?(GogglesDb::MeetingRelayResult)
-                mrrs&.joins(:season, :meeting, :meeting_program, :team)
-                    &.left_outer_joins(:meeting_relay_swimmers, :relay_laps)
-                    &.includes(:meeting, :team,
+                # NOTE: adding left_outer_joins to the query below will slow down the rendering significantly:
+                # &.left_outer_joins(:meeting_relay_swimmers, :relay_laps)
+                mrrs&.joins(:category_type, :season, :meeting, :meeting_program, :team)
+                    &.includes(:meeting, :team, :category_type,
                                meeting_program: %i[meeting season],
                                meeting_relay_swimmers: %i[swimmer relay_laps])
               else
