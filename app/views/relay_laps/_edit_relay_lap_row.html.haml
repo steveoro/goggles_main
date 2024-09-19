@@ -1,6 +1,8 @@
+-# haml-lint:disable LineLength
 %tr.container
-  %td{ scope: 'row', class: 'border-0' }
-    - overall_index = swimmer_index * event_type.phase_length_in_meters / 50 + sub_index + 1 # Index relative to all sub-laps (RelayLaps)
+  %td.border-0.py-0{ scope: 'row' }
+    -# 'overall_index' is relative to all sub-laps (RelayLaps):
+    - overall_index = (swimmer_index * (event_type.phase_length_in_meters / 50)) + sub_index + 1
     = form_tag(relay_lap_path(relay_lap.id), id: "frm-sublap-row-#{overall_index}", method: :put, remote: true) do
       -# Editing relay laps requires the parent MRS for the update to succeed:
       = hidden_field_tag("result_id[#{overall_index}]", relay_swimmer.id)

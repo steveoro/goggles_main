@@ -4,7 +4,7 @@
                                  team: @show_team ? '1' : '0' }}
   %tr
     %td.text-right
-      = render(RankingPosComponent.new(rank:))
+      = render(RankingPosComponent.new(rank:, dsq_notes: @mir.disqualification_notes))
       = render(Switch::RotatingComponent.new(target_id: "laps#{@mir.id}")) if includes_laps?
     %td.text-right.pl-0
       - if @mir.reaction_time > 0.0

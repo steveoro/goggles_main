@@ -1,5 +1,5 @@
 %tr
-  %td{ scope: 'col' }
+  %td.py-0{ scope: 'col' }
     = form_tag(lap_path(lap.id), id: "frm-lap-row-#{index + 1}", method: :put, remote: true) do
       = hidden_field_tag("result_id[#{index}]", parent_result.id)
       = hidden_field_tag("result_class[#{index}]", parent_result.class.name.split('::').last)

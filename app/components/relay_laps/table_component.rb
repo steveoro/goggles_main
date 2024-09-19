@@ -3,7 +3,7 @@
 #
 # = RelayLaps components module
 #
-#   - version:  7-0.7.08
+#   - version:  7-0.7.19
 #   - author:   Steve A.
 #
 module RelayLaps
@@ -27,8 +27,7 @@ module RelayLaps
 
     def initialize(relay_swimmers:)
       super
-      @relay_swimmers = relay_swimmers&.joins(:season, :gender_type, meeting_program: :event_type)
-                                      &.includes(:season, :gender_type, meeting_program: :event_type)
+      @relay_swimmers = relay_swimmers&.joins(:gender_type)&.includes(:gender_type)
     end
 
     # Skips rendering unless @laps is enumerable and orderable :by_order

@@ -51,6 +51,8 @@ class LapsController < ApplicationController
     end
 
     @alert_msg = I18n.t('laps.modal.msgs.create_successful')
+    # Store overall edits counter:
+    GogglesDb::APIDailyUse.increase_for!("CREATE-LAP-#{current_user.id}")
     @last_delta_timing = @parent_result.to_timing - last_lap.timing_from_start if last_lap
     render(:update)
   end
@@ -102,6 +104,8 @@ class LapsController < ApplicationController
     end
 
     @alert_msg = I18n.t('laps.modal.msgs.submit_successful')
+    # Store overall edits counter:
+    GogglesDb::APIDailyUse.increase_for!("EDIT-LAP-#{current_user.id}")
     last_lap = @parent_result.laps.by_distance.last
     @last_delta_timing = @parent_result.to_timing - last_lap.timing_from_start if last_lap
   end
@@ -118,6 +122,7 @@ class LapsController < ApplicationController
     if @curr_lap&.destroy
       @alert_msg = I18n.t('laps.modal.msgs.destroy_successful')
       @alert_class = 'alert-success'
+      GogglesDb::APIDailyUse.increase_for!("DELETE-LAP-#{current_user.id}")
     elsif @curr_lap
       @alert_msg = I18n.t('datagrid.edit_modal.delete_failed')
       @alert_class = 'alert-danger'

@@ -7,8 +7,8 @@ RSpec.describe 'home/about.html.haml' do
   context 'when rendering with data,' do
     before { render }
 
-    it 'always shows the #latest-calendars section (even without recent updates)' do
-      node = Nokogiri::HTML.fragment(rendered).at_css('.row-fluid#latest-calendars')
+    it 'always shows the #updated-calendars section (even without recent updates)' do
+      node = Nokogiri::HTML.fragment(rendered).at_css('.row-fluid#updated-calendars')
       expect(node).to be_present
       expect(node.text).to include(I18n.t('calendars.updated_calendars.title'))
     end

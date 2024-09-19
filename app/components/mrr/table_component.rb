@@ -22,18 +22,23 @@ module MRR
     # - user_teams: array of Team instances to which the current user belongs, if any; an empty array otherwise;
     #               note that this parameter should never be +nil+.
     # - current_user_is_admin: this should be +true+ only when the current_user has Admin grants; +false+ otherwise.
-    def initialize(mrrs:, managed_team_ids:, user_teams: [], current_user_is_admin: false)
+    def initialize(mrrs:, managed_team_ids:, user_teams: [], current_user_is_admin: false) # rubocop:disable Metrics/PerceivedComplexity
       super
       @mrrs = if mrrs.is_a?(ActiveRecord::Relation) && mrrs.first.is_a?(GogglesDb::MeetingRelayResult)
                 # NOTE: adding left_outer_joins to the query below will slow down the rendering significantly:
                 # &.left_outer_joins(:meeting_relay_swimmers, :relay_laps)
-                mrrs&.joins(:category_type, :season, :meeting, :meeting_program, :team)
-                    &.includes(:meeting, :team, :category_type,
-                               meeting_program: %i[meeting season],
-                               meeting_relay_swimmers: %i[swimmer relay_laps])
+                mrrs&.joins(:category_type, :team)
+                    &.includes(:team, :category_type, :meeting,
+                               meeting_relay_swimmers: %i[relay_laps])
+                    &.order(minutes: :asc, seconds: :asc, hundredths: :asc)
               else
                 mrrs
               end
+      @mrrs_with_rank = []
+      @mrrs_with_no_rank = []
+      @mrrs.each do |mrr|
+        mrr.rank.positive? ? @mrrs_with_rank << mrr : @mrrs_with_no_rank << mrr
+      end
       @managed_team_ids = managed_team_ids
       @user_teams = user_teams
       @current_user_is_admin = current_user_is_admin

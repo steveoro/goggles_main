@@ -22,7 +22,7 @@ Feature: Standard landing or root page
 
   Scenario: browsing the about page
     When I browse to '/home/about'
-    Then I see the 'latest-calendars' section
+    Then I see the 'updated-calendars' section
     And I see the 'about' section
     And I see the 'how-does-it-work' section
     And I see the 'who-we-are' section

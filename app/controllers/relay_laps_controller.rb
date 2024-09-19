@@ -78,6 +78,9 @@ class RelayLapsController < ApplicationController
     if valid_request && new_zeroed_lap(target_length, relay_order).save
       @alert_msg = I18n.t('laps.modal.msgs.create_successful')
       @alert_class = 'alert-success'
+      # Store overall edits counter:
+      GogglesDb::APIDailyUse.increase_for!("CREATE-RELAYLAP-#{current_user.id}")
+
     elsif valid_request
       @alert_msg = I18n.t('search_view.errors.submit_generic_failure')
       @alert_class = 'alert-danger'
@@ -125,6 +128,8 @@ class RelayLapsController < ApplicationController
     if recompute_delta_for!(@curr_lap) && recompute_following_laps_timings!(@curr_lap)
       @alert_msg = I18n.t('laps.modal.msgs.submit_successful')
       @alert_class = 'alert-success'
+      # Store overall edits counter:
+      GogglesDb::APIDailyUse.increase_for!("EDIT-RELAYLAP-#{current_user.id}")
     else
       @alert_msg = I18n.t('search_view.errors.submit_generic_failure')
       @alert_class = 'alert-danger'
@@ -143,6 +148,7 @@ class RelayLapsController < ApplicationController
     if @curr_lap&.destroy
       @alert_msg = I18n.t('laps.modal.msgs.destroy_successful')
       @alert_class = 'alert-success'
+      GogglesDb::APIDailyUse.increase_for!("DELETE-RELAYLAP-#{current_user.id}")
     elsif @curr_lap
       @alert_msg = I18n.t('datagrid.edit_modal.delete_failed')
       @alert_class = 'alert-danger'

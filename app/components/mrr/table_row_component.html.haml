@@ -1,7 +1,7 @@
 %tbody.result-table-row{ id: "mrr#{@mrr.id}" }
   %tr
     %td.text-right
-      = render(RankingPosComponent.new(rank:))
+      = render(RankingPosComponent.new(rank:, dsq_notes: @mrr.disqualification_notes))
       = render(Switch::RotatingComponent.new(target_id: "laps#{@mrr.id}")) if mrs.present?
     %td.text-right.pl-0
       - if @mrr.reaction_time > 0.0

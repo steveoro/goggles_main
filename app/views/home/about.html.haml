@@ -3,26 +3,8 @@
 
   .main-content
     .container.mb-4.py-3.shadow-box.bg-light-green
-      .row-fluid#latest-calendars
-        %h4.text-center
-          = t('calendars.updated_calendars.title', total: @latest_calendars&.count)
-        %ul
-          %i= t('calendars.updated_calendars.no_recent_updates') if @latest_calendars.blank?
-          - @latest_calendars&.first(5)&.each do |calendar|
-            = render(partial: 'updated_calendar', locals: { calendar: })
-
-          - if @latest_calendars.present? && @latest_calendars.count > 5
-            .collapse.switchable-label-collapse#latest-calendars-more{ 'aria-labelledby' => 'latest-calendars-more',
-                                                                       'data-parent' => '#latest-calendars' }
-              - @latest_calendars&.to_a&.from(5)&.each do |calendar|
-                = render(partial: 'updated_calendar', locals: { calendar: })
-            %button.btn.btn-link.text-left.px-0.collapsed{ 'aria-controls' => 'latest-calendars-more',
-                                                           'aria-expanded' => 'false',
-                                                           'data-target' => '#latest-calendars-more',
-                                                           'data-toggle' => 'collapse' }
-              %span
-                = t('home.show_label')
-                %span#show-more-or-less ➕
+      .row-fluid#updated-calendars
+        = render(partial: 'updated_calendars', locals: { updated_calendars: @updated_calendars })
 
     .row-fluid.my-4
       %hr/
