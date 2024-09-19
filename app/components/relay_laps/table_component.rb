@@ -27,7 +27,8 @@ module RelayLaps
 
     def initialize(relay_swimmers:)
       super
-      @relay_swimmers = relay_swimmers&.joins(:gender_type)&.includes(:gender_type)
+      @relay_swimmers = relay_swimmers&.joins(:gender_type, :event_type)
+                                      &.includes(:gender_type, :event_type)
     end
 
     # Skips rendering unless @laps is enumerable and orderable :by_order
