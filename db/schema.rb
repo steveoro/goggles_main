@@ -326,6 +326,24 @@ ActiveRecord::Schema.define(version: 2024_09_18_190000) do
     t.index ["team_id"], name: "fk_computed_season_rankings_teams"
   end
 
+  create_table "data_import_swimmer_aliases", id: :integer, charset: "utf8mb3", collation: "utf8mb3_general_ci", force: :cascade do |t|
+    t.integer "lock_version", default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "complete_name", limit: 100
+    t.integer "swimmer_id"
+    t.index ["swimmer_id", "complete_name"], name: "idx_swimmer_id_complete_name", unique: true
+  end
+
+  create_table "data_import_team_aliases", id: :integer, charset: "utf8mb3", collation: "utf8mb3_general_ci", force: :cascade do |t|
+    t.integer "lock_version", default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "name", limit: 60
+    t.integer "team_id"
+    t.index ["team_id", "name"], name: "idx_team_id_name", unique: true
+  end
+
   create_table "day_part_types", id: :integer, charset: "utf8mb3", collation: "utf8mb3_general_ci", force: :cascade do |t|
     t.integer "lock_version", default: 0
     t.datetime "created_at"
@@ -868,12 +886,13 @@ ActiveRecord::Schema.define(version: 2024_09_18_190000) do
     t.integer "seconds", limit: 2, default: 0
     t.integer "hundredths", limit: 2, default: 0
     t.integer "meeting_relay_result_id"
-    t.integer "length_in_meters", default: 0
-    t.integer "minutes_from_start", limit: 3, default: 0
-    t.integer "seconds_from_start", limit: 2, default: 0
-    t.integer "hundredths_from_start", limit: 2, default: 0
+    t.integer "length_in_meters", default: 0, null: false
+    t.integer "minutes_from_start", limit: 3, default: 0, null: false
+    t.integer "seconds_from_start", limit: 2, default: 0, null: false
+    t.integer "hundredths_from_start", limit: 2, default: 0, null: false
     t.integer "relay_laps_count", default: 0, null: false
     t.index ["badge_id"], name: "fk_meeting_relay_swimmers_badges"
+    t.index ["length_in_meters"], name: "index_meeting_relay_swimmers_on_length_in_meters"
     t.index ["meeting_relay_result_id"], name: "fk_meeting_relay_swimmers_meeting_relay_results"
     t.index ["relay_order"], name: "relay_order"
     t.index ["stroke_type_id"], name: "fk_meeting_relay_swimmers_stroke_types"
@@ -1258,15 +1277,6 @@ ActiveRecord::Schema.define(version: 2024_09_18_190000) do
     t.index ["eventable"], name: "idx_is_eventable"
   end
 
-  create_table "swimmer_aliases", id: :integer, charset: "utf8mb3", collation: "utf8mb3_general_ci", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "complete_name", limit: 100
-    t.integer "swimmer_id"
-    t.index ["swimmer_id", "complete_name"], name: "idx_swimmer_id_complete_name", unique: true
-  end
-
   create_table "swimmer_level_types", id: :integer, charset: "utf8mb3", collation: "utf8mb3_general_ci", force: :cascade do |t|
     t.integer "lock_version", default: 0
     t.datetime "created_at"
@@ -1415,15 +1425,6 @@ ActiveRecord::Schema.define(version: 2024_09_18_190000) do
     t.index ["team_id"], name: "fk_team_affiliations_teams"
   end
 
-  create_table "team_aliases", id: :integer, charset: "utf8mb3", collation: "utf8mb3_general_ci", force: :cascade do |t|
-    t.integer "lock_version", default: 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "name", limit: 60
-    t.integer "team_id"
-    t.index ["team_id", "name"], name: "idx_team_id_name", unique: true
-  end
-
   create_table "team_lap_templates", id: :integer, charset: "utf8mb3", collation: "utf8mb3_general_ci", force: :cascade do |t|
     t.integer "lock_version", default: 0
     t.integer "part_order", limit: 3, default: 0
@@ -1547,7 +1548,7 @@ ActiveRecord::Schema.define(version: 2024_09_18_190000) do
     t.index ["user_id", "achievement_id"], name: "index_user_achievements_on_user_id_and_achievement_id", unique: true
   end
 
-  create_table "user_laps", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "user_laps", charset: "latin1", collation: "latin1_swedish_ci", force: :cascade do |t|
     t.integer "user_result_id", null: false
     t.integer "swimmer_id", null: false
     t.decimal "reaction_time", precision: 5, scale: 2
@@ -1666,7 +1667,7 @@ ActiveRecord::Schema.define(version: 2024_09_18_190000) do
     t.index ["user_id", "description"], name: "index_user_trainings_on_user_id_and_description"
   end
 
-  create_table "user_workshops", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "user_workshops", charset: "latin1", collation: "latin1_swedish_ci", force: :cascade do |t|
     t.integer "lock_version", default: 0
     t.date "header_date"
     t.string "header_year", limit: 10
