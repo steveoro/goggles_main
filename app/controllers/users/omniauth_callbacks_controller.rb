@@ -53,6 +53,8 @@ module Users
       @user = GogglesDb::User.from_omniauth(request.env['omniauth.auth'])
       if @user.is_a?(GogglesDb::User) && @user.persisted?
         flash[:notice] = I18n.t('devise.omniauth_callbacks.success', kind: @user.provider.to_s.split('_').first.titleize)
+        # Clear last seasons IDs cookie on a new sign-in:
+        cookies[:last_seasons_ids] = nil
         sign_in_and_redirect(@user, event: :authentication) # this will throw if @user is not activated
 
       else

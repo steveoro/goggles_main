@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.7.20** [Steve A.] bundle updates; auto-clear last_season_id cookie after sign-in
 - **0.7.19** [Steve A.] added collapsible section to the "latest calendar updates" list in the info page to prevent very long lists from cluttering the view; added more FAQs; support for intermixed gender links in relay results on meeting/show; minor optimization: removed outer joins from meetings/show components to prevent object allocations to blow up with many results on the page; additional query optimizations by trial-and-error; added migrations from DB project; output additional user stats from stats:: rake command; re-sync w/ base engine; bundle updates
 - **0.7.18** [Steve A.] re-sync w/ base engine; bundle updates & misc specs adjustments; added latest data update section to the info/about page; removed Patreon links for sponsorship; removed Twitter/X social link as that social media now sucks big time
 - **0.7.16** [Steve A.] re-sync w/ base engine & bundle update
