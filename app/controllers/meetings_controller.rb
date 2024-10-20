@@ -89,8 +89,8 @@ class MeetingsController < ApplicationController
     @meeting_events = @meeting_event.meeting.meeting_events.by_order.to_a
     @event_index = @meeting_events.find_index(@meeting_event)
     @prgs_for_event = GogglesDb::MeetingProgram.where(meeting_event_id: meeting_params[:id])
-                                               .includes(:gender_type, category_type: :season)
-                                               .joins(:gender_type, category_type: :season)
+                                               .includes(:meeting, :gender_type, :category_type, :season, :meeting_individual_results)
+                                               .joins(:gender_type, :category_type, :season)
                                                .order('category_types.age_begin, gender_types.id DESC')
     update_user_teams_for_seasons_ids([@meeting_event.season.id])
     update_managed_teams_for_seasons_ids([@meeting_event.season.id])
