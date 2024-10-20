@@ -36,10 +36,12 @@ module MIR
                 mirs&.joins(:user_workshop, :swimmer, season: :season_type)
                     &.includes(:swimmer, :season_type, user_laps: [:user_result])
                     &.order(minutes: :asc, seconds: :asc, hundredths: :asc)
+              else
+                mirs
               end
       @mirs_with_rank = []
       @mirs_with_no_rank = []
-      @mirs.each do |mir|
+      @mirs&.each do |mir|
         mir.rank.positive? ? @mirs_with_rank << mir : @mirs_with_no_rank << mir
       end
       @managed_team_ids = managed_team_ids
