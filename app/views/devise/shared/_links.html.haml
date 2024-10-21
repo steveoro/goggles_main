@@ -11,21 +11,22 @@
         = t('.sign_in_with_provider', provider: 'Google')
         %span.px-1
         %i.fa.fa.fa-google
-    - resource_class.omniauth_providers.each do |provider|
-      = link_to(omniauth_authorize_path(resource_name, provider),
-                type: 'button', method: :post, class: 'btn btn-primary my-1', id: "#{provider}-login-btn",
-                data: { turbo: false, turbolinks: false, disable_with: t('home.please_wait'), class: 'disabled' }) do
-        = t('.sign_in_with_provider', provider: provider.to_s.split('_').first.titleize)
-        %span.px-1
-          :ruby
-            case provider
-            when :facebook
-              icon = 'facebook-square'
-            when :twitter
-              icon = 'twitter-square'
-            end
-          %i.fa.fa{ class: "fa-#{icon}" }
-      %br/
+    -# [Steve, 20241021] Disabled Facebook login for the time being:
+    -# - resource_class.omniauth_providers.each do |provider|
+    -#   = link_to(omniauth_authorize_path(resource_name, provider),
+    -#             type: 'button', method: :post, class: 'btn btn-primary my-1', id: "#{provider}-login-btn",
+    -#             data: { turbo: false, turbolinks: false, disable_with: t('home.please_wait'), class: 'disabled' }) do
+    -#     = t('.sign_in_with_provider', provider: provider.to_s.split('_').first.titleize)
+    -#     %span.px-1
+    -#       :ruby
+    -#         case provider
+    -#         when :facebook
+    -#           icon = 'facebook-square'
+    -#         when :twitter
+    -#           icon = 'twitter-square'
+    -#         end
+    -#       %i.fa.fa{ class: "fa-#{icon}" }
+    -#   %br/
   %small
     - if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
       = link_to(t('.forgot_your_password'), new_password_path(resource_name), id: 'forgot-pwd-link')

@@ -14,18 +14,19 @@ Feature: Existing user sign-in
     And I get redirected to '/'
     And a flash 'devise.sessions.signed_in' message is present
 
-  @omniauth
-  Scenario Outline: Successful OAuth sign-in
-    Given I am not signed in
-    And I have an existing account with an email valid for '<provider_sym>' sign-in
-    When I browse to '/users/sign_in'
-    And I click on '#<provider_sym>-login-btn'
-    Then the user row is signed-in
-    And I get redirected to '/'
-    And a successful Omniauth flash message for '<provider_name>' is present
-    Examples:
-      | provider_sym  | provider_name |
-      | facebook      | Facebook      |
+  # [Steve, 20241021] Disabled Facebook login for the time being:
+  # @omniauth
+  # Scenario Outline: Successful OAuth sign-in
+  #   Given I am not signed in
+  #   And I have an existing account with an email valid for '<provider_sym>' sign-in
+  #   When I browse to '/users/sign_in'
+  #   And I click on '#<provider_sym>-login-btn'
+  #   Then the user row is signed-in
+  #   And I get redirected to '/'
+  #   And a successful Omniauth flash message for '<provider_name>' is present
+  #   Examples:
+  #     | provider_sym  | provider_name |
+  #     | facebook      | Facebook      |
 
   Scenario: Failing direct sign-in: wrong credentials
     Given I am not signed in
@@ -43,14 +44,15 @@ Feature: Existing user sign-in
     Then I am still at the '/users/sign_in' path
     And a flash 'devise.failure.unconfirmed' message is present
 
-  @omniauth
-  Scenario: Failing OAuth sign-in
-    Given I am not signed in
-    And I have an existing account but I don't have credentials for '<provider_sym>' sign-in
-    When I browse to '/users/sign_in'
-    And I click on '#<provider_sym>-login-btn'
-    And I get redirected to '/users/sign_up'
-    And a flash 'devise.customizations.invalid_credentials' message is present
-    Examples:
-      | provider_sym  |
-      | facebook      |
+  # [Steve, 20241021] Disabled Facebook login for the time being:
+  # @omniauth
+  # Scenario: Failing OAuth sign-in
+  #   Given I am not signed in
+  #   And I have an existing account but I don't have credentials for '<provider_sym>' sign-in
+  #   When I browse to '/users/sign_in'
+  #   And I click on '#<provider_sym>-login-btn'
+  #   And I get redirected to '/users/sign_up'
+  #   And a flash 'devise.customizations.invalid_credentials' message is present
+  #   Examples:
+  #     | provider_sym  |
+  #     | facebook      |
