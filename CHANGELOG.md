@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.7.22** [Steve A.] minor cosmetic change for main index page (animated background), plus backdrop for the search box; memoized & filtered last_seasons_ids for calendars to remove just-ended seasons with results
 - **0.7.21** [Steve A.] disabled Facebook Omniauth login for... reasons; added FAQ Q&A about resetting the cookies w/ sign-off + sign-in
 - **0.7.20** [Steve A.] bundle updates; auto-clear last_season_id cookie after sign-in; minor Cucumber fixes regarding calendar features domain preparation
 - **0.7.19** [Steve A.] added collapsible section to the "latest calendar updates" list in the info page to prevent very long lists from cluttering the view; added more FAQs; support for intermixed gender links in relay results on meeting/show; minor optimization: removed outer joins from meetings/show components to prevent object allocations to blow up with many results on the page; additional query optimizations by trial-and-error; added migrations from DB project; output additional user stats from stats:: rake command; re-sync w/ base engine; bundle updates

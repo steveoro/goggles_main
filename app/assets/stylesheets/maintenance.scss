@@ -19,6 +19,9 @@ video.full-screen {
   transform: translateX(-50%) translateY(-50%);
   transition: 1s opacity;
 }
+video.opacity-01 {
+  opacity: 0.15;
+}
 
 .maintenance h1 {
   text-align: center;
