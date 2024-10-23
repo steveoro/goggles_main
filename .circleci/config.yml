@@ -1,8 +1,8 @@
 version: 2.1
 orbs:
-  ruby: circleci/ruby@2.1.4
+  ruby: circleci/ruby@2.3.0
   browser-tools: circleci/browser-tools@1.4.8
-  node: circleci/node@5.3.0
+  node: circleci/node@6.3.0
 
 ARTIFACTS_PATH: &ARTIFACTS_PATH ~/test-artifacts
 
@@ -57,6 +57,8 @@ web-assets: &web-assets
     echo "- RAILS_ENV...: $RAILS_ENV"
     echo "- BABEL_ENV...: $BABEL_ENV"
     echo "- NODE_ENV....: $NODE_ENV"
+    echo "- Node `node -v`"
+    echo "- `openssl version`"
     bin/rails assets:precompile
 
 common-db-setup: &common-db-setup
@@ -70,8 +72,6 @@ common-db-setup: &common-db-setup
     mv config/database_ci.yml config/database.yml
     dockerize -wait tcp://localhost:3306 -timeout 2m
     echo "- RAILS_ENV...: $RAILS_ENV"
-    echo "- BABEL_ENV...: $BABEL_ENV"
-    echo "- NODE_ENV....: $NODE_ENV"
     bin/rails db:rebuild from=test
     bin/rails db:migrate
     ./tmp/cc-test-reporter before-build

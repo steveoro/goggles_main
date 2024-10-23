@@ -60,7 +60,7 @@ end
 # Fills @expired_calendars with any additional row
 Given('at least {int} calendar rows are expired') do |tot_calendar_rows|
   @expired_calendars ||= []
-  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:278)
+  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:342)
   # (The following matches more closely what's been done by the calendar controller)
   last_season = GogglesDb::Season.find_by(id: GogglesDb::LastSeasonId.all.first)
   # Alternatively:

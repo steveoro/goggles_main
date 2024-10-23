@@ -351,7 +351,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     # [!!!] References to@last_season_ids in specs & features - CHECK & UPDATE ALSO:
     # - features/step_definitions/calendars/calendars_steps.rb:16
     # - features/step_definitions/calendars/given_any_calendars_steps.rb:10:42:65
-    # - features/step_definitions/devise/given_any_user_steps.rb:105:191:240
+    # - features/step_definitions/devise/given_any_user_steps.rb:105:191:242
     # - spec/support/shared_team_managers_context.rb:4
 
     Rails.logger.info("\r\n\r\n----> @last_seasons_ids recomputed. Elapsed time: #{Time.zone.now - start}")

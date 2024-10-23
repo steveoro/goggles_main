@@ -102,7 +102,7 @@ end
 # - @matching_swimmer
 # - @last_seasons_ids => list of valid Season IDs considered as "manageable"
 Given('I have an associated swimmer on a confirmed team manager account') do
-  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:278)
+  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:342)
   @last_seasons_ids = GogglesDb::LastSeasonId.all.map(&:id)
   # [Steve, 20230608] WAS:
   # @last_seasons_ids = [
@@ -188,28 +188,24 @@ end
 # - @associated_mirs => MIRS associated to the @managed_team
 # - @last_seasons_ids => list of valid Season IDs considered as "manageable"
 Given('I have a confirmed team manager account managing some existing MIRs') do
-  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:278)
+  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:342)
   @last_seasons_ids = GogglesDb::LastSeasonId.all.map(&:id)
-  # Alternatively:
-  # @last_seasons_ids = [
-  #   GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin).id
-  # ]
-  last_season_id = @last_seasons_ids.first
 
   # Make sure we choose a team w/ results by selecting the meeting first & the team manager afterwards,
   # creating also anything that's beeen missing:
   meeting_with_results = GogglesDb::Meeting.includes(:meeting_individual_results).joins(:meeting_individual_results)
-                                           .where(season_id: last_season_id)
+                                           .where(season_id: @last_seasons_ids)
                                            .by_date(:desc).first(25)
                                            .sample
   @managed_team = meeting_with_results.meeting_individual_results.sample.team
+  meeting_season_id = meeting_with_results.season_id
   expect(@managed_team).to be_a(GogglesDb::Team).and be_valid
   @associated_mirs = GogglesDb::MeetingIndividualResult.includes(meeting: :season).joins(meeting: :season)
-                                                       .where(team_id: @managed_team.id, 'meetings.season_id': last_season_id)
+                                                       .where(team_id: @managed_team.id, 'meetings.season_id': meeting_season_id)
   expect(@associated_mirs.count).to be_positive
 
-  team_affiliation = GogglesDb::TeamAffiliation.where(team_id: @managed_team.id, season_id: last_season_id).first ||
-                     FactoryBot.create(:team_affiliation, season: GogglesDb::Season.find(last_season_id))
+  team_affiliation = GogglesDb::TeamAffiliation.where(team_id: @managed_team.id, season_id: meeting_season_id).first ||
+                     FactoryBot.create(:team_affiliation, season: GogglesDb::Season.find(meeting_season_id))
   managed_aff = GogglesDb::ManagedAffiliation.where(team_affiliation_id: team_affiliation.id).first ||
                 FactoryBot.create(:managed_affiliation, team_affiliation:)
 
@@ -234,7 +230,7 @@ end
 # - @last_seasons_ids => list of valid Season IDs considered as "manageable"
 Given('I have a confirmed team manager account managing some existing MRRs') do
   # Consider last season *including* results:
-  # (NOTE: cfr. app/controllers/application_controller.rb:278)
+  # (NOTE: cfr. app/controllers/application_controller.rb:342)
 
   # == Less restrictive: "any MRRs"
   @last_seasons_ids = GogglesDb::LastSeasonId.all.map(&:id)
@@ -284,7 +280,7 @@ end
 #
 Given('I have a confirmed team manager account managing some existing MRRs with possible sublaps') do
   # Consider last season *including* results:
-  # (NOTE: cfr. app/controllers/application_controller.rb:278)
+  # (NOTE: cfr. app/controllers/application_controller.rb:342)
 
   @last_seasons_ids = [
     GogglesDb::Season.includes(
@@ -370,7 +366,7 @@ end
 # - @associated_urs => UserResults associated to the @managed_team
 # - @last_seasons_ids => list of valid Season IDs considered as "manageable"
 Given('I have a confirmed team manager account managing some existing URs') do
-  # NOTE: this must also match app/controllers/application_controller.rb:278
+  # NOTE: this must also match app/controllers/application_controller.rb:342
   @last_seasons_ids = GogglesDb::LastSeasonId.all.map(&:id)
   # [Steve, 20230608] WAS:
   # @last_seasons_ids = [
