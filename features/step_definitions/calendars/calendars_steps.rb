@@ -13,9 +13,7 @@ When('I am at the Calendars {string} page') do |page_name|
 end
 
 Then('I can see the pagination controls on the calendar current page when there are enough rows') do
-  # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:278)
-  last_season = GogglesDb::Season.joins(meetings: :meeting_individual_results)
-                                 .last_season_by_type(GogglesDb::SeasonType.mas_fin)
+  last_season = GogglesDb::Season.find_by(id: GogglesDb::LastSeasonId.all.first)
   if GogglesDb::Calendar.where(season_id: last_season.id).count > 10
     find('#pagination-top nav#paginator-controls')
     find('#pagination-bottom nav#paginator-controls')

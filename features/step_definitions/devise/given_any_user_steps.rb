@@ -189,9 +189,11 @@ end
 # - @last_seasons_ids => list of valid Season IDs considered as "manageable"
 Given('I have a confirmed team manager account managing some existing MIRs') do
   # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:278)
-  @last_seasons_ids = [
-    GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin).id
-  ]
+  @last_seasons_ids = GogglesDb::LastSeasonId.all.map(&:id)
+  # Alternatively:
+  # @last_seasons_ids = [
+  #   GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin).id
+  # ]
   last_season_id = @last_seasons_ids.first
 
   # Make sure we choose a team w/ results by selecting the meeting first & the team manager afterwards,
@@ -235,10 +237,12 @@ Given('I have a confirmed team manager account managing some existing MRRs') do
   # (NOTE: cfr. app/controllers/application_controller.rb:278)
 
   # == Less restrictive: "any MRRs"
-  @last_seasons_ids = [
-    GogglesDb::Season.joins(meetings: :meeting_relay_results)
-                     .last_season_by_type(GogglesDb::SeasonType.mas_fin).id
-  ]
+  @last_seasons_ids = GogglesDb::LastSeasonId.all.map(&:id)
+  # Alternatively:
+  # @last_seasons_ids = [
+  #   GogglesDb::Season.joins(meetings: :meeting_relay_results)
+  #                    .last_season_by_type(GogglesDb::SeasonType.mas_fin).id
+  # ]
   last_season_id = @last_seasons_ids.first
 
   # Make sure we choose a team w/ results by selecting the meeting first & the team manager afterwards,

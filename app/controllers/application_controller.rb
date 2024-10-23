@@ -348,18 +348,10 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     # (this is required by many features):
     @last_seasons_ids = GogglesDb::LastSeasonId.all.map(&:id)
     @last_seasons = GogglesDb::Season.unscoped.where(id: @last_seasons_ids)
-    # [Steve, 20230608] WAS:
-    # [
-    #   GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin),
-    #   GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).by_season(:desc).first&.season,
-    #   GogglesDb::Season.joins(meetings: :meeting_individual_results).last_season_by_type(GogglesDb::SeasonType.mas_fin),
-    #   GogglesDb::UserWorkshop.for_season_type(GogglesDb::SeasonType.mas_fin).joins(:user_results, :season).by_season(:desc).first&.season
-    # ].compact.sort.uniq
-
-    # [!!!] Whenever the above ^^ changes, CHECK & UPDATE ALSO:
-    # - features/step_definitions/calendars/calendars_steps.rb:17
-    # - features/step_definitions/calendars/given_any_calendars_steps.rb:8:37:56
-    # - features/step_definitions/devise/given_any_user_steps.rb:105:191:265
+    # [!!!] References to@last_season_ids in specs & features - CHECK & UPDATE ALSO:
+    # - features/step_definitions/calendars/calendars_steps.rb:16
+    # - features/step_definitions/calendars/given_any_calendars_steps.rb:10:42:65
+    # - features/step_definitions/devise/given_any_user_steps.rb:105:191:240
     # - spec/support/shared_team_managers_context.rb:4
 
     Rails.logger.info("\r\n\r\n----> @last_seasons_ids recomputed. Elapsed time: #{Time.zone.now - start}")

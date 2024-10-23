@@ -4,9 +4,12 @@
 Given('there are at least {int} calendar rows available') do |tot_calendar_rows|
   @unexpired_calendars ||= []
   @expired_calendars ||= []
-  # In September, new seson starts without any Meetings or results, so we won't join the tables
+  # In September, new season starts without any Meetings or results, so we won't join the tables
   # and instead add any required meeting manually here:
-  last_season = GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin)
+  # (The following matches more closely what's been done by the calendar controller)
+  last_season = GogglesDb::Season.find_by(id: GogglesDb::LastSeasonId.all.first)
+  # Alternatively:
+  # last_season = GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin)
   GogglesDb::Calendar.for_season(last_season).each do |calendar|
     if calendar.meeting && calendar.meeting.header_date >= Time.zone.today # unexpired
       @unexpired_calendars << calendar
@@ -35,7 +38,10 @@ end
 Given('at least {int} calendar rows are not expired') do |tot_calendar_rows|
   @unexpired_calendars ||= []
   # (See note above)
-  last_season = GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin)
+  # (The following matches more closely what's been done by the calendar controller)
+  last_season = GogglesDb::Season.find_by(id: GogglesDb::LastSeasonId.all.first)
+  # Alternatively:
+  # last_season = GogglesDb::Season.last_season_by_type(GogglesDb::SeasonType.mas_fin)
   remaining_required_rows = tot_calendar_rows - @unexpired_calendars.count
   remaining_required_rows = 0 if remaining_required_rows.negative?
   days_until_end_of_season = (last_season.end_date - 60.days - Time.zone.today).to_i
@@ -55,8 +61,11 @@ end
 Given('at least {int} calendar rows are expired') do |tot_calendar_rows|
   @expired_calendars ||= []
   # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:278)
-  last_season = GogglesDb::Season.joins(meetings: :meeting_individual_results)
-                                 .last_season_by_type(GogglesDb::SeasonType.mas_fin)
+  # (The following matches more closely what's been done by the calendar controller)
+  last_season = GogglesDb::Season.find_by(id: GogglesDb::LastSeasonId.all.first)
+  # Alternatively:
+  # last_season = GogglesDb::Season.joins(meetings: :meeting_individual_results)
+  #                                .last_season_by_type(GogglesDb::SeasonType.mas_fin)
   remaining_required_rows = tot_calendar_rows - @expired_calendars.count
   remaining_required_rows = 0 if remaining_required_rows.negative?
   days_from_start_of_season = (Time.zone.today - last_season.begin_date - 1.day).to_i
