@@ -3,7 +3,7 @@
 #
 # = RelayLaps components module
 #
-#   - version:  7-0.7.19
+#   - version:  7-0.7.23
 #   - author:   Steve A.
 #
 module RelayLaps

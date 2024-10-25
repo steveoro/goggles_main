@@ -3,7 +3,7 @@
 #
 # = MRR components module
 #
-#   - version:  7-0.7.19
+#   - version:  7-0.7.23
 #   - author:   Steve A.
 #
 module MRR
@@ -22,7 +22,7 @@ module MRR
     # - user_teams: array of Team instances to which the current user belongs, if any; an empty array otherwise;
     #               note that this parameter should never be +nil+.
     # - current_user_is_admin: this should be +true+ only when the current_user has Admin grants; +false+ otherwise.
-    def initialize(mrrs:, managed_team_ids:, user_teams: [], current_user_is_admin: false) # rubocop:disable Metrics/PerceivedComplexity
+    def initialize(mrrs:, managed_team_ids:, user_teams: [], current_user_is_admin: false) # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
       super
       @mrrs = if mrrs.is_a?(ActiveRecord::Relation) && mrrs.first.is_a?(GogglesDb::MeetingRelayResult)
                 # NOTE: adding left_outer_joins to the query below will slow down the rendering significantly:
@@ -36,8 +36,9 @@ module MRR
               end
       @mrrs_with_rank = []
       @mrrs_with_no_rank = []
+      # To be included in ranking, a MRR row must have both a positive rank & timing:
       @mrrs.each do |mrr|
-        mrr.rank.positive? ? @mrrs_with_rank << mrr : @mrrs_with_no_rank << mrr
+        mrr.rank.positive? && mrr.to_timing.positive? ? @mrrs_with_rank << mrr : @mrrs_with_no_rank << mrr
       end
       @managed_team_ids = managed_team_ids
       @user_teams = user_teams

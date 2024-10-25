@@ -41,8 +41,9 @@ module MIR
               end
       @mirs_with_rank = []
       @mirs_with_no_rank = []
+      # To be included in ranking, a MIR row must have both a positive rank & timing:
       @mirs&.each do |mir|
-        mir.rank.positive? ? @mirs_with_rank << mir : @mirs_with_no_rank << mir
+        mir.rank.positive? && mir.to_timing.positive? ? @mirs_with_rank << mir : @mirs_with_no_rank << mir
       end
       @managed_team_ids = managed_team_ids
       @current_swimmer_id = current_swimmer_id
