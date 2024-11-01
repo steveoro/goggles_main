@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.7.24** [Steve A.] more FAQs
 - **0.7.23** [Steve A.] require that a result must have both a positive rank & timing to be considered for ranking; ease requirements for 'latest' build as cucumber features are currently very flaky due to query slowness; bundle updates
 - **0.7.22** [Steve A.] minor cosmetic change for main index page (animated background), plus backdrop for the search box; memoized & filtered last_seasons_ids for calendars to remove just-ended seasons with results
 - **0.7.21** [Steve A.] disabled Facebook Omniauth login for... reasons; added FAQ Q&A about resetting the cookies w/ sign-off + sign-in
