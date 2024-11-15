@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 36f2c8b44eea072b41bf11855aaa039f15779392
+  revision: 54e62f9c80d0589fccb8e80cdfc5717a80b2d82d
   specs:
-    goggles_db (0.7.23)
+    goggles_db (0.7.24)
       acts-as-taggable-on
       acts_as_votable
       cities
@@ -125,10 +125,10 @@ GEM
       racc
     browser (5.3.1)
     builder (3.3.0)
-    bullet (7.2.0)
+    bullet (8.0.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
-    capistrano (3.19.1)
+    capistrano (3.19.2)
       airbrussh (>= 1.0.0)
       i18n
       rake (>= 10.0.0)
@@ -190,22 +190,22 @@ GEM
     cucumber-html-formatter (21.7.0)
       cucumber-messages (> 19, < 27)
     cucumber-messages (22.0.0)
-    cucumber-rails (3.0.0)
+    cucumber-rails (3.0.1)
       capybara (>= 3.11, < 4)
       cucumber (>= 5, < 10)
       railties (>= 5.2, < 8)
-    cucumber-tag-expressions (6.1.0)
+    cucumber-tag-expressions (6.1.1)
     daemons (1.4.1)
     datagrid (1.8.2)
       railties (>= 6.1)
-    date (3.3.4)
+    date (3.4.0)
     debug_inspector (1.2.0)
     delayed-web (0.4.9)
       rails (>= 3.2.13)
-    delayed_job (4.1.12)
-      activesupport (>= 3.0, < 8.0)
-    delayed_job_active_record (4.1.10)
-      activerecord (>= 3.0, < 8.0)
+    delayed_job (4.1.13)
+      activesupport (>= 3.0, < 9.0)
+    delayed_job_active_record (4.1.11)
+      activerecord (>= 3.0, < 9.0)
       delayed_job (>= 3.0, < 5)
     devise (4.9.4)
       bcrypt (~> 3.0)
@@ -231,16 +231,16 @@ GEM
     factory_bot_rails (6.4.4)
       factory_bot (~> 6.5)
       railties (>= 5.0.0)
-    faraday (2.12.0)
-      faraday-net_http (>= 2.0, < 3.4)
+    faraday (2.12.1)
+      faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-net_http (3.3.0)
-      net-http
+    faraday-net_http (3.4.0)
+      net-http (>= 0.5.0)
     ffaker (2.23.0)
     ffi (1.17.0-x86_64-linux-gnu)
-    font-awesome-rails (4.7.0.8)
-      railties (>= 3.2, < 8.0)
+    font-awesome-rails (4.7.0.9)
+      railties (>= 3.2, < 9.0)
     formatador (1.1.0)
     fuzzy-string-match (1.0.1)
       RubyInline (>= 3.8.6)
@@ -252,7 +252,7 @@ GEM
       google-id-token (>= 1.4.0)
       oauth2 (>= 1.4.0)
       rails (>= 5.2.0)
-    guard (2.18.1)
+    guard (2.19.0)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
       lumberjack (>= 1.0.12, < 2.0)
@@ -309,7 +309,7 @@ GEM
       rainbow
       rubocop (>= 1.0)
       sysexits (~> 1.1)
-    hashdiff (1.1.1)
+    hashdiff (1.1.2)
     hashie (5.0.0)
     http-accept (1.7.0)
     http-cookie (1.0.7)
@@ -321,7 +321,7 @@ GEM
       sparkr (>= 0.2.0)
       term-ansicolor
       yard (~> 0.9.12)
-    json (2.7.4)
+    json (2.8.2)
     jwt (2.9.3)
       base64
     kaminari (1.2.2)
@@ -363,11 +363,11 @@ GEM
     mime-types (3.6.0)
       logger
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2024.1001)
+    mime-types-data (3.2024.1105)
     mini_magick (5.0.1)
     mini_mime (1.1.5)
     minitest (5.25.1)
-    msgpack (1.7.3)
+    msgpack (1.7.5)
     multi_json (1.15.0)
     multi_test (1.1.0)
     multi_xml (0.7.1)
@@ -375,9 +375,9 @@ GEM
     mysql2 (0.5.6)
     n_plus_one_control (0.7.2)
     nenv (0.3.0)
-    net-http (0.4.1)
+    net-http (0.5.0)
       uri
-    net-imap (0.5.0)
+    net-imap (0.5.1)
       date
       net-protocol
     net-pop (0.1.2)
@@ -392,7 +392,7 @@ GEM
       net-protocol
     net-ssh (7.3.0)
     netrc (0.11.0)
-    nio4r (2.7.3)
+    nio4r (2.7.4)
     nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
     notiffany (0.1.3)
@@ -419,9 +419,9 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
-    ostruct (0.6.0)
+    ostruct (0.6.1)
     parallel (1.26.3)
-    parser (3.3.5.0)
+    parser (3.3.6.0)
       ast (~> 2.4.1)
       racc
     plus_codes (0.2.1)
@@ -489,7 +489,7 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.3.9)
-    rouge (4.4.0)
+    rouge (4.5.1)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -516,7 +516,7 @@ GEM
     rspec_pacman_formatter (0.1.7)
       colorize
       rspec
-    rubocop (1.67.0)
+    rubocop (1.68.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -526,22 +526,23 @@ GEM
       rubocop-ast (>= 1.32.2, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.32.3)
+    rubocop-ast (1.36.1)
       parser (>= 3.3.1.0)
     rubocop-capybara (2.21.0)
       rubocop (~> 1.41)
     rubocop-factory_bot (2.26.1)
       rubocop (~> 1.61)
-    rubocop-performance (1.22.1)
+    rubocop-performance (1.23.0)
       rubocop (>= 1.48.1, < 2.0)
       rubocop-ast (>= 1.31.1, < 2.0)
-    rubocop-rails (2.19.0)
+    rubocop-rails (2.27.0)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
-      rubocop (>= 1.33.0, < 2.0)
+      rubocop (>= 1.52.0, < 2.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
     rubocop-rake (0.6.0)
       rubocop (~> 1.0)
-    rubocop-rspec (3.1.0)
+    rubocop-rspec (3.2.0)
       rubocop (~> 1.61)
     rubocop-rspec_rails (2.30.0)
       rubocop (~> 1.61)
@@ -564,13 +565,13 @@ GEM
       railties (>= 4.0.0)
     scenic-mysql_adapter (1.1.0)
       scenic (>= 1.4.0)
-    selenium-webdriver (4.25.0)
+    selenium-webdriver (4.26.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    semantic_range (3.0.0)
+    semantic_range (3.1.0)
     shellany (0.0.1)
     simple_command (1.0.1)
     simplecov (0.13.0)
@@ -614,7 +615,7 @@ GEM
       tins (~> 1.0)
     thor (1.3.2)
     tilt (2.4.0)
-    timeout (0.4.1)
+    timeout (0.4.2)
     tins (1.37.0)
       bigdecimal
       sync
@@ -623,9 +624,9 @@ GEM
     unaccent (0.4.0)
     unicode-display_width (2.6.0)
     uniform_notifier (1.16.0)
-    uri (0.13.1)
+    uri (1.0.2)
     version_gem (1.1.4)
-    view_component (3.19.0)
+    view_component (3.20.0)
       activesupport (>= 5.2.0, < 8.1)
       concurrent-ruby (~> 1.0)
       method_source (~> 1.0)
@@ -716,7 +717,7 @@ DEPENDENCIES
   rubocop-capybara
   rubocop-factory_bot
   rubocop-performance
-  rubocop-rails (= 2.19)
+  rubocop-rails
   rubocop-rake
   rubocop-rspec
   rubocop-rspec_rails

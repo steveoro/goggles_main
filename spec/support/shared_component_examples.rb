@@ -7,7 +7,7 @@ shared_examples_for 'RankingPosComponent rendering a ranking position' do |ranki
   it 'renders a UNICODE medal for rank 0..3 or just the ranking number for any other value' do
     case ranking_num
     when 0..3
-      expect(rendered_result).to include(%w[🚫 🥇 🥈 🥉][ranking_num])
+      expect(rendered_result).to include(%w[➖ 🥇 🥈 🥉][ranking_num])
     else
       expect(rendered_result).to include(ranking_num.to_s)
     end

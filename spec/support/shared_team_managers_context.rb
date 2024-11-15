@@ -3,7 +3,7 @@
 RSpec.shared_context('current_user is a team manager on last FIN season ID') do
   let(:last_season_id) do
     # (The following matches more closely what's been done by the calendar controller)
-    GogglesDb::LastSeasonId.all.first
+    GogglesDb::LastSeasonId.first
     # Alternatively:
     # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:342)
     # GogglesDb::Season.joins(meetings: :meeting_individual_results)

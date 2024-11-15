@@ -52,8 +52,8 @@ RSpec.describe 'home/dashboard.html.haml' do
       end
 
       it 'includes the section title' do
-        expect(parsed_node.at_css('section#my-dashboard-title h3')).to be_present
-        expect(parsed_node.at_css('section#my-dashboard-title h3').text).to include(current_user.swimmer.complete_name)
+        expect(parsed_node.at_css('section#my-dashboard-title')).to be_present
+        expect(parsed_node.at_css('section#my-dashboard-title').text).to include(current_user.swimmer.complete_name)
       end
 
       it_behaves_like('/home/dashboard rendered view')

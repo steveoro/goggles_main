@@ -3,7 +3,7 @@
 #
 # = Meeting components module
 #
-#   - version:  7.3.05
+#   - version:  7-0.7.24
 #   - author:   Steve A.
 #
 module Meeting
@@ -31,43 +31,30 @@ module Meeting
       super
       @meeting = meeting
       @subpage_target_id = subpage_target_id
+      return if @meeting.blank?
+
       @meeting_date = choose_abstract_meeting_date(meeting)
       @swimming_pool = choose_abstract_meeting_pool(meeting)
     end
 
     # Skips rendering unless the member is properly set
     def render?
-      @meeting.class.ancestors.include?(GogglesDb::AbstractMeeting)
+      @meeting.present? && @meeting.class.ancestors.include?(GogglesDb::AbstractMeeting)
     end
 
     private
 
-    # TODO: use meeting.decorate.meeting_date
-
     # Sets the @meeting_date member
     def choose_abstract_meeting_date(meeting)
-      if meeting.respond_to?(:meeting_sessions)
-        msession = meeting&.meeting_sessions&.by_order&.first
-        msession&.scheduled_date
-
-      elsif meeting.respond_to?(:header_date)
-        meeting&.header_date
-      end
+      meeting.decorate.meeting_date
     end
-
-    # TODO: use meeting.decorate.meeting_pool
 
     # Sets the @swimming_pool member
-    # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
     def choose_abstract_meeting_pool(meeting)
-      if meeting.respond_to?(:meeting_sessions)
-        msession = meeting&.meeting_sessions&.by_order&.first
-        SwimmingPoolDecorator.decorate(msession&.swimming_pool) if msession&.swimming_pool
+      pool = meeting.decorate.meeting_pool
+      return if pool.blank?
 
-      elsif meeting.respond_to?(:swimming_pool) && meeting.swimming_pool
-        SwimmingPoolDecorator.decorate(meeting.swimming_pool)
-      end
+      SwimmingPoolDecorator.decorate(pool)
     end
-    # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
   end
 end

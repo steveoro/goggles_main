@@ -29,7 +29,7 @@ class HistoryGrid < BaseGrid
 
   filter(:meeting_date, :date, header: I18n.t('swimmers.history.params.meeting_date_label'),
                                input_options: { maxlength: 10, placeholder: 'YYYY-MM-DD' }) do |value, scope|
-    scope.where('meetings.header_date >= ?', value)
+    scope.where(meetings: { header_date: value.. })
   end
 
   filter(:meeting_name, :string, header: I18n.t('meetings.meeting')) do |value, scope|

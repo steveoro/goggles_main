@@ -9,7 +9,7 @@ Then('the {string} search results are displayed, all matching {string}') do |mod
   results_node = find("##{model_downcase_name.tr('_', '-')}-results")
   expect(results_node.text).not_to be_empty
   within(results_node) do
-    find('table tbody').all('tr').each do |tr_node|
+    find('table tbody').all('tr').each do |tr_node| # rubocop:disable Rails/FindEach
       expect(tr_node.find('td a').text).to match(/#{query_string}/i)
       expect(tr_node.find('td a')[:href]).to match(%r{#{model_downcase_name}s/show/\d+}i)
     end

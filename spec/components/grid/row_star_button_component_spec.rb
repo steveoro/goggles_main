@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Grid::RowStarButtonComponent, type: :component do
   include Rails.application.routes.url_helpers
 
-  let(:expired_meeting) { GogglesDb::Meeting.where('header_date < ?', Time.zone.today).last(50).sample }
+  let(:expired_meeting) { GogglesDb::Meeting.where(header_date: ...Time.zone.today).last(50).sample }
   let(:unexpired_meeting) { FactoryBot.create(:meeting, header_date: Time.zone.today + 25.days) }
   let(:tagged_meeting) do
     meeting = FactoryBot.create(:meeting, header_date: Time.zone.today + 25.days)

@@ -21,6 +21,6 @@ class IssueCleanerJob < ApplicationJob
 
   # Performs the Job; parameters are currently ignored here.
   def perform(*_args)
-    GogglesDb::Issue.deletable.where('updated_at < ?', OBSOLESCENCE_MARK.ago).delete_all
+    GogglesDb::Issue.deletable.where(updated_at: ...OBSOLESCENCE_MARK.ago).delete_all
   end
 end

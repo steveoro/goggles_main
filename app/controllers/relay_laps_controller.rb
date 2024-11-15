@@ -201,7 +201,7 @@ class RelayLapsController < ApplicationController
   # Returns the correct sibling class for the "parent result" (MRR or MRS), given the :result_class parameter
   # within the context of the row forms (1 parameter x N rows).
   def result_class_from_row_params
-    return GogglesDb::MeetingRelayResult if rows_params[:result_class]&.values&.first&.to_s&.include?('RelayResult')
+    return GogglesDb::MeetingRelayResult if rows_params.fetch(:result_class, {}).values.first.to_s.include?('RelayResult')
 
     GogglesDb::MeetingRelaySwimmer
   end
@@ -209,7 +209,7 @@ class RelayLapsController < ApplicationController
   # Returns the correct sibling class for the lap, given the :result_class parameter
   # within the context of the row forms (1 parameter x N rows).
   def lap_class_from_row_params
-    return GogglesDb::MeetingRelaySwimmer if rows_params[:result_class]&.values&.first&.to_s&.include?('RelayResult')
+    return GogglesDb::MeetingRelaySwimmer if rows_params.fetch(:result_class, {}).values.first.to_s.include?('RelayResult')
 
     GogglesDb::RelayLap
   end
@@ -262,8 +262,8 @@ class RelayLapsController < ApplicationController
     valid_params = request.xhr? && (request.put? || request.delete?) &&
                    rows_params[:id].present? &&
                    lap_class_from_row_params.exists?(rows_params[:id]) &&
-                   rows_params[:result_id]&.values&.first&.present? &&
-                   rows_params[:result_class]&.values&.first&.present? &&
+                   rows_params[:result_id]&.values&.first.present? &&
+                   rows_params[:result_class]&.values&.first.present? &&
                    result_class_from_row_params.exists?(rows_params[:result_id].values.first)
     handle_invalid_request && return unless valid_params
 
@@ -370,7 +370,7 @@ class RelayLapsController < ApplicationController
 
     # MRS but no sub-laps OR RL w/o sub-laps? Return the previous MRS if any:
     @relay_result.meeting_relay_swimmers
-                 .where('length_in_meters < ?', edited_lap.length_in_meters)
+                 .where(length_in_meters: ...edited_lap.length_in_meters)
                  .order(:length_in_meters)
                  .last
     # NOTE: previous lap precedence => MRS over RL
@@ -426,7 +426,7 @@ class RelayLapsController < ApplicationController
     # Include the containing MRS in the external loop, but consider only laps greater than
     # the edited one (which could also be an MRS):
     @relay_result.meeting_relay_swimmers
-                 .where('length_in_meters >= ?', starting_mrs.length_in_meters)
+                 .where(length_in_meters: starting_mrs.length_in_meters..)
                  .order(:length_in_meters)
                  .each do |following_mrs|
       following_mrs.relay_laps

@@ -31,7 +31,7 @@ class RankingPosComponent < ViewComponent::Base
       when 3
         '🥉'
       else
-        @rank.to_i.zero? ? '🚫' : @rank.to_s
+        @rank.to_i.zero? ? '➖' : @rank.to_s
       end
     end
   end

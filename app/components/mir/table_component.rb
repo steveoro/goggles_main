@@ -3,7 +3,7 @@
 #
 # = MIR components module
 #
-#   - version:  7-0.7.19
+#   - version:  7-0.7.24
 #   - author:   Steve A.
 #
 module MIR
@@ -20,20 +20,22 @@ module MIR
     # == Params
     # - mirs: the GogglesDb::MeetingIndividualResult or GogglesDb::UserResult relation holding the list of results to be displayed
     # - managed_team_ids: array of integer Team IDs that can be "managed" by the current user;
-    #                     a +nil+ value will disable the rendering check for the action buttons.
+    #                     a +nil+ value =begin  =endwill disable the rendering check for the action buttons.
     # - current_swimmer_id: current_user.swimmer_id value, if any.
     def initialize(mirs:, managed_team_ids:, current_swimmer_id:) # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
       super
+      @managed_team_ids = managed_team_ids
+      @current_swimmer_id = current_swimmer_id
       @mirs = if mirs.is_a?(ActiveRecord::Relation) && mirs.first.is_a?(GogglesDb::MeetingIndividualResult)
                 # NOTE: adding left_outer_joins to the query below will slow down the rendering significantly:
                 # &.left_outer_joins(laps: [:meeting_individual_result])
-                mirs&.joins(:swimmer, :team, :meeting_program)
+                mirs.joins(:swimmer, :team, :meeting_program)
                     &.includes(:swimmer, :team, :meeting_program, laps: [:meeting_individual_result])
                     &.order(minutes: :asc, seconds: :asc, hundredths: :asc)
               elsif mirs.is_a?(ActiveRecord::Relation) && mirs.first.is_a?(GogglesDb::UserResult)
                 # NOTE: adding left_outer_joins to the query below will slow down the rendering significantly:
                 # &.left_outer_joins(user_laps: [:user_result])
-                mirs&.joins(:user_workshop, :swimmer, season: :season_type)
+                mirs.joins(:user_workshop, :swimmer, season: :season_type)
                     &.includes(:swimmer, :season_type, user_laps: [:user_result])
                     &.order(minutes: :asc, seconds: :asc, hundredths: :asc)
               else
@@ -41,12 +43,12 @@ module MIR
               end
       @mirs_with_rank = []
       @mirs_with_no_rank = []
+      return unless @mirs.respond_to?(:each)
+
       # To be included in ranking, a MIR row must have both a positive rank & timing:
       @mirs&.each do |mir|
         mir.rank.positive? && mir.to_timing.positive? ? @mirs_with_rank << mir : @mirs_with_no_rank << mir
       end
-      @managed_team_ids = managed_team_ids
-      @current_swimmer_id = current_swimmer_id
     end
 
     # Skips rendering unless @mirs is enumerable and orderable :by_timing & :by_rank

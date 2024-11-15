@@ -6,7 +6,7 @@ RSpec.describe Grid::TeamStarButtonComponent, type: :component do
   let(:user) { GogglesDb::User.first(50).sample }
   let(:user_teams) { GogglesDb::Team.first(50).sample(2) }
   let(:user_team_ids) { user_teams.map(&:id) }
-  let(:expired_meeting) { GogglesDb::Meeting.where('header_date < ?', Time.zone.today).last(50).sample }
+  let(:expired_meeting) { GogglesDb::Meeting.where(header_date: ...Time.zone.today).last(50).sample }
   let(:unexpired_meeting) { FactoryBot.create(:meeting, header_date: Time.zone.today + 25.days) }
   let(:tagged_meeting) do
     meeting = FactoryBot.create(:meeting, header_date: Time.zone.today + 25.days)

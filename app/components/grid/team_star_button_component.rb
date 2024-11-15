@@ -113,7 +113,7 @@ module Grid
     # Returns the list of Team IDs with which the current Meeting was already tagged, or an empty
     # array otherwise.
     def already_tagged_for_ids
-      return [] unless meeting&.tags_by_team_list&.present?
+      return [] if meeting&.tags_by_team_list.blank?
       return @already_tagged_for_ids if @already_tagged_for_ids.present?
 
       tags_by_team_list = meeting&.tags_by_team_list

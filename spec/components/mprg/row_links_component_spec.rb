@@ -18,9 +18,9 @@ RSpec.describe Mprg::RowLinksComponent, type: :component do
       expect(fixture_event.meeting_programs.count).to be_positive
     end
 
-    it 'renders a table header with 2 table rows' do
+    it 'renders a table header with 2 table-header rows' do
       expect(subject.css('thead tr')).to be_present
-      expect(subject.css('thead tr').count).to eq(2)
+      expect(subject.css('thead tr').first.css('th').count).to eq(2)
     end
 
     it 'renders as many links to programs as the specified association' do

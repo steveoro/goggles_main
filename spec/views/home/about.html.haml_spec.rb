@@ -10,7 +10,7 @@ RSpec.describe 'home/about.html.haml' do
     it 'always shows the #updated-calendars section (even without recent updates)' do
       node = Nokogiri::HTML.fragment(rendered).at_css('.row-fluid#updated-calendars')
       expect(node).to be_present
-      expect(node.text).to include(I18n.t('calendars.updated_calendars.title'))
+      expect(node.text).to include(I18n.t('calendars.updated_calendars.title', total: nil))
     end
 
     it 'shows the #about section' do

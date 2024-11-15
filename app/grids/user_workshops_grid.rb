@@ -16,7 +16,7 @@ class UserWorkshopsGrid < BaseGrid
   filter(:workshop_date, :date, header: I18n.t('user_workshops.dashboard.params.workshop_date_label'),
                                 input_options: { maxlength: 10, placeholder: 'YYYY-MM-DD' }) do |value, scope|
     scope.includes(season: [:season_type])
-         .where('header_date >= ?', value)
+         .where(header_date: value..)
   end
 
   filter(:workshop_name, :string, header: I18n.t('user_workshops.workshop')) do |value, scope|

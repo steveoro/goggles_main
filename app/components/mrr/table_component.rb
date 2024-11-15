@@ -3,7 +3,7 @@
 #
 # = MRR components module
 #
-#   - version:  7-0.7.23
+#   - version:  7-0.7.24
 #   - author:   Steve A.
 #
 module MRR
@@ -24,10 +24,13 @@ module MRR
     # - current_user_is_admin: this should be +true+ only when the current_user has Admin grants; +false+ otherwise.
     def initialize(mrrs:, managed_team_ids:, user_teams: [], current_user_is_admin: false) # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
       super
+      @managed_team_ids = managed_team_ids
+      @user_teams = user_teams
+      @current_user_is_admin = current_user_is_admin
       @mrrs = if mrrs.is_a?(ActiveRecord::Relation) && mrrs.first.is_a?(GogglesDb::MeetingRelayResult)
                 # NOTE: adding left_outer_joins to the query below will slow down the rendering significantly:
                 # &.left_outer_joins(:meeting_relay_swimmers, :relay_laps)
-                mrrs&.joins(:category_type, :team)
+                mrrs.joins(:category_type, :team)
                     &.includes(:team, :category_type, :meeting,
                                meeting_relay_swimmers: %i[relay_laps])
                     &.order(minutes: :asc, seconds: :asc, hundredths: :asc)
@@ -36,13 +39,12 @@ module MRR
               end
       @mrrs_with_rank = []
       @mrrs_with_no_rank = []
+      return unless @mrrs.respond_to?(:each)
+
       # To be included in ranking, a MRR row must have both a positive rank & timing:
       @mrrs.each do |mrr|
         mrr.rank.positive? && mrr.to_timing.positive? ? @mrrs_with_rank << mrr : @mrrs_with_no_rank << mrr
       end
-      @managed_team_ids = managed_team_ids
-      @user_teams = user_teams
-      @current_user_is_admin = current_user_is_admin
     end
 
     # Skips rendering unless @mrrs is enumerable and orderable :by_timing

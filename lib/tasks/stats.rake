@@ -28,7 +28,7 @@ namespace :stats do
     days_up_to = ENV.include?('days') ? ENV['days'].to_i : 7
     ending_date = Date.today - days_up_to.days
     puts "- days: #{days_up_to} => Keeping all stats between #{ending_date} .. #{Date.today}"
-    old_rows = GogglesDb::APIDailyUse.where('day < ?', ending_date)
+    old_rows = GogglesDb::APIDailyUse.where(day: ...ending_date)
     puts "Found #{old_rows.count} old stats rows: clearing that up..."
     old_rows.delete_all
     puts 'Done.'

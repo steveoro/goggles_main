@@ -10,7 +10,7 @@ class DataFixWrongCountryCodeCities < ActiveRecord::Migration[6.0]
     Rails.logger.debug { "Count at start: #{count}" }
 
     # Give priority to the ISO definition:
-    GogglesDb::City.where(wrong_cc_condition).each do |city|
+    GogglesDb::City.where(wrong_cc_condition).find_each do |city|
       city.country = city.iso_attributes['country']
       city.country_code = city.iso_attributes['country_code']
       city.save!

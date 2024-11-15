@@ -175,7 +175,7 @@ class LapsController < ApplicationController
   # Returns the correct sibling class for the AbstractResult, given the :result_class parameter
   # within the context of the row forms (1 parameter x N rows).
   def result_class_from_row_params
-    return GogglesDb::MeetingIndividualResult if rows_params[:result_class]&.values&.first&.to_s&.include?('IndividualResult')
+    return GogglesDb::MeetingIndividualResult if rows_params.fetch(:result_class, {}).values.first.to_s.include?('IndividualResult')
 
     GogglesDb::UserResult
   end
@@ -183,7 +183,7 @@ class LapsController < ApplicationController
   # Returns the correct sibling class for the AbstractLap, given the :result_class parameter
   # within the context of the row forms (1 parameter x N rows).
   def lap_class_from_row_params
-    return GogglesDb::Lap if rows_params[:result_class]&.values&.first&.to_s&.include?('IndividualResult')
+    return GogglesDb::Lap if rows_params.fetch(:result_class, {}).values.first.to_s.include?('IndividualResult')
 
     GogglesDb::UserLap
   end
@@ -234,8 +234,8 @@ class LapsController < ApplicationController
     valid_params = request.xhr? && (request.put? || request.delete?) &&
                    rows_params[:id].present? &&
                    lap_class_from_row_params.exists?(rows_params[:id]) &&
-                   rows_params[:result_id]&.values&.first&.present? &&
-                   rows_params[:result_class]&.values&.first&.present? &&
+                   rows_params[:result_id]&.values&.first.present? &&
+                   rows_params[:result_class]&.values&.first.present? &&
                    result_class_from_row_params.exists?(rows_params[:result_id].values.first)
     handle_invalid_request && return unless valid_params
 
