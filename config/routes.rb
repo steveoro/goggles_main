@@ -26,6 +26,7 @@ Rails.application.routes.draw do
 
   get 'home/index'
   get 'home/about'
+  get 'home/latest_updates'
   get 'home/contact_us'
   post 'home/contact_us'
   get 'home/reactivate'

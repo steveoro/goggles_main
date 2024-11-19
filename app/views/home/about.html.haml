@@ -4,7 +4,7 @@
   .main-content
     .container.mb-4.py-3.shadow-box.bg-light-green
       .row-fluid#updated-calendars
-        = render(partial: 'updated_calendars', locals: { updated_calendars: @updated_calendars })
+        = render(partial: 'updated_calendars', locals: { updated_calendars: @updated_calendars, initial_rows: 5 })
 
     .row-fluid.my-4
       %hr/

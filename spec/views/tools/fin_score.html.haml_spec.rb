@@ -40,6 +40,10 @@ RSpec.describe 'tools/fin_score.html.haml' do
       .to eq('hidden')
   end
 
+  it 'renders the standard timing container to display the category record time' do
+    expect(subject.css('#frm-fin-score #standard-timing-label')).to be_present
+  end
+
   it 'renders the CategoryType select component' do
     expect(subject.css('#frm-fin-score #category_type_select')).to be_present
   end

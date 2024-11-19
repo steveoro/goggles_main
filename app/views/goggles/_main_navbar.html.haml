@@ -31,12 +31,15 @@
         .dropdown-menu{ 'aria-labelledby' => 'navbar-dropdown' }
           - if @current_user_is_manager || @current_user_is_admin
             = link_to("⏱ #{t('chrono.title')}", chrono_index_path, id: 'link-chrono', class: 'dropdown-item')
-          = link_to("🔢 #{t('home.compute_fin_score')}", tools_fin_score_path, id: 'link-compute-score',
-                    class: 'dropdown-item')
-          = link_to("🔢 #{t('home.compute_deltas')}", tools_delta_timings_path, id: 'link-compute-deltas',
-                    class: 'dropdown-item')
+          = link_to("🔢 #{t('home.compute_fin_score')}", tools_fin_score_path,
+                    id: 'link-compute-score', class: 'dropdown-item')
+          = link_to("🔢 #{t('home.compute_deltas')}", tools_delta_timings_path,
+                    id: 'link-compute-deltas', class: 'dropdown-item')
           .dropdown-divider
+          = link_to(t('calendars.updated_calendars.command_name'), home_latest_updates_path,
+                    id: 'link-updated-calendars', class: 'dropdown-item')
           - if @current_user_is_admin
+            .dropdown-divider
             = link_to('🛠 DelayedJob web UI', '/jobs', id: 'link-jobs', class: 'dropdown-item')
       %li.nav-item
         %a.nav-link.disabled{ 'aria-disabled' => 'true', href: '#', tabindex: '-1' } &nbsp;

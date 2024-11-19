@@ -65,6 +65,7 @@ class ToolsController < ApplicationController
 
     store_params_in_cookies
     @result = JSON.parse(res.body)
+    @standard_timing_label = @result['standard_timing_label']
   end
   #-- -------------------------------------------------------------------------
   #++

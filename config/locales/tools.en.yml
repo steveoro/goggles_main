@@ -10,6 +10,7 @@ en:
       target_timing:
         title: 'Target timing'
         button_label: 'Compute time'
+      record_timing_label: 'Record: '
     delta_timings:
       title: 'Δt laps'
       button_label: 'Compute Δt'

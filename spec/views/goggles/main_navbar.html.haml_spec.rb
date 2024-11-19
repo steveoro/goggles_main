@@ -24,12 +24,28 @@ RSpec.describe 'goggles/_main_navbar.html.haml' do
       expect(navbar_content).to be_present
     end
 
-    it 'shows the compute FIN score command in the navbar' do
+    it 'shows the "compute FIN score" command in the navbar' do
       expect(navbar_content.at_css('a#link-compute-score')).to be_present
       expect(navbar_content.at_css('a#link-compute-score').attributes['href'].value).to include(tools_fin_score_path)
       expect(
         navbar_content.at_css('a#link-compute-score').text
       ).to include(ERB::Util.html_escape(I18n.t('home.compute_fin_score')))
+    end
+
+    it 'shows the "compute deltas" command in the navbar' do
+      expect(navbar_content.at_css('a#link-compute-deltas')).to be_present
+      expect(navbar_content.at_css('a#link-compute-deltas').attributes['href'].value).to include(tools_delta_timings_path)
+      expect(
+        navbar_content.at_css('a#link-compute-deltas').text
+      ).to include(ERB::Util.html_escape(I18n.t('home.compute_deltas')))
+    end
+
+    it 'shows the "latest updates" command in the navbar' do
+      expect(navbar_content.at_css('a#link-updated-calendars')).to be_present
+      expect(navbar_content.at_css('a#link-updated-calendars').attributes['href'].value).to include(home_latest_updates_path)
+      expect(
+        navbar_content.at_css('a#link-updated-calendars').text
+      ).to include(ERB::Util.html_escape(I18n.t('calendars.updated_calendars.command_name')))
     end
   end
 

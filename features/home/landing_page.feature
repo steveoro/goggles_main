@@ -32,6 +32,11 @@ Feature: Standard landing or root page
     And I see the 'legal-terms' section
     And I see the link to go back to the root page
 
+  Scenario: browsing the latest updates page
+    When I browse to '/home/latest_updates'
+    Then I see the 'updated-calendars' section
+    And I see the link to go back to the root page
+
   Scenario: using the contact us form requires authentication
     Given I have a confirmed account
     When I browse to '/home/contact_us'

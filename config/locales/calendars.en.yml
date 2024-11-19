@@ -25,6 +25,7 @@ en:
         by_user: "Toggle this meeting as interesting for your personal calendar"
         by_team: "Toggle this meeting as interesting for the team calendar; choose team from the dropdown list"
     updated_calendars:
-      title: "Latest data updates for the past month (%{total})"
-      updated_at: "Updated at"
+      command_name: "📓 Show latest data updates"
+      title: "Latest data updates during the past month (%{total})"
+      updated_at: "Upd. at:"
       no_recent_updates: "(No recent data updates during the last month)"

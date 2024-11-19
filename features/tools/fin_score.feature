@@ -23,7 +23,13 @@ Feature: Compute FIN target score or target timing
     And a flash 'devise.sessions.signed_in' message is present
     And I am at the FIN score & time calculator page
 
-  # [Steve, 20211206] *UNSTABLE*/FLAKY: skipped
+  Scenario: the score calculator shows the form controls and the category record time
+    Given I am already signed-in and at the root page
+    And I browse to '/tools/fin_score'
+    Then I see the 'frm-fin-score' section of the page
+    And I see the 'record-time-column' section of the page
+
+  # [Steve, 20211206] *UNSTABLE*/FLAKY due to AJAX API usage: skipped
   # - sometimes the stub is detected, sometimes it is not
   # - see features/support/webmock.rb
   # - even with "--no-strict-flaky --retry 2" as Cucumber options it still fails sometimes

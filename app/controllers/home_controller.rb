@@ -18,7 +18,12 @@ class HomeController < ApplicationController
   # [GET] Multi-section '#about' page.
   # Includes privacy_policy plus much more.
   def about
-    @updated_calendars = GogglesDb::Calendar.where('calendars.updated_at > ?', DateTime.now - 30.days).order('calendars.updated_at DESC')
+    @updated_calendars = collect_latest_updates(30.days)
+  end
+
+  # [GET] Similarly to '#about' (but dedicated) retrieves the latest calendar updates.
+  def latest_updates
+    @updated_calendars = collect_latest_updates(30.days)
   end
 
   # [GET/POST] Show the '#contact_us' form, only for registered users.
@@ -60,6 +65,11 @@ class HomeController < ApplicationController
       subject_text: "Msg from '#{current_user.name}'",
       content_body: params['body']
     ).deliver_later
+  end
+
+  # Returns the latest 'updated_at' calendar rows, limited by a range of days.
+  def collect_latest_updates(days_range)
+    GogglesDb::Calendar.where('calendars.updated_at > ?', DateTime.now - days_range).order('calendars.updated_at DESC')
   end
 
   # Processes a reactivation request for an account email and sets the resulting flash message accordingly.

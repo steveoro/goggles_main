@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 54e62f9c80d0589fccb8e80cdfc5717a80b2d82d
+  revision: a421d05c0083e6adb870d7e365a3663d11b7011e
   specs:
-    goggles_db (0.7.24)
+    goggles_db (0.7.25)
       acts-as-taggable-on
       acts_as_votable
       cities
@@ -426,7 +426,7 @@ GEM
       racc
     plus_codes (0.2.1)
     prosopite (1.4.2)
-    pry (0.14.2)
+    pry (0.15.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (6.0.1)
@@ -607,7 +607,7 @@ GEM
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     sync (0.5.0)
-    sys-uname (1.3.0)
+    sys-uname (1.3.1)
       ffi (~> 1.1)
     sysexits (1.2.0)
     temple (0.10.3)

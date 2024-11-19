@@ -1,0 +1,11 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    .row-fluid#updated-calendars
+      = render(partial: 'updated_calendars', locals: { updated_calendars: @updated_calendars, initial_rows: 10 })
+
+    .row-fluid
+      %p.mx-2= link_to(t('about.go_back'), root_path)
+
+  .spacer-right

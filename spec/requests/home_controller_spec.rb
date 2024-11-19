@@ -24,6 +24,13 @@ RSpec.describe HomeController do
       expect(response).to have_http_status(:success)
     end
   end
+
+  describe 'GET /latest_updates' do
+    it 'returns http success' do
+      get(home_latest_updates_path)
+      expect(response).to have_http_status(:success)
+    end
+  end
   #-- -------------------------------------------------------------------------
   #++
 

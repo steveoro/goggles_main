@@ -9,6 +9,7 @@ if (<%= @target_type %> == 1) {
   $('.target-time').fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(200)
 }
 else {
-  $('#score').val(<%= @result['score'] %>)
+  $('#score').val(`<%= @result['score'] %>`)
   $('.target-score').fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(200)
 }
+$('#standard-timing-label').text(`<%= @standard_timing_label.to_s.html_safe %>`)

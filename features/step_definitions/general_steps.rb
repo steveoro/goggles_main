@@ -91,6 +91,10 @@ Then('an error message from the edit form is present') do
 end
 # -----------------------------------------------------------------------------
 
+Then('I see the {string} section of the page') do |section_css|
+  find("##{section_css}", visible: true)
+end
+
 Then('I scroll toward the end of the page to see the bottom of the page') do
   # Go down a lot towards the bottom of the page first:
   # (useful especially for small device screens)

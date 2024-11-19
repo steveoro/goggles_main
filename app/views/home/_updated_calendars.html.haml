@@ -1,19 +1,21 @@
 %h4.text-center
   = t('calendars.updated_calendars.title', total: updated_calendars&.count)
-%ul
-  %i= t('calendars.updated_calendars.no_recent_updates') if updated_calendars.blank?
-  - updated_calendars&.first(5)&.each do |calendar|
+%ul.pl-3
+  - if updated_calendars.blank?
+    %i= t('calendars.updated_calendars.no_recent_updates')
+  - updated_calendars&.first(initial_rows)&.each do |calendar|
     = render(partial: 'updated_calendar_row', locals: { calendar: })
 
-  - if updated_calendars.present? && updated_calendars.count > 5
+  - if updated_calendars.present? && updated_calendars.count > initial_rows
     .collapse.switchable-label-collapse#updated-calendars-more{ 'aria-labelledby' => 'updated-calendars-more',
                                                                 'data-parent' => '#updated-calendars' }
-      - updated_calendars&.to_a&.from(5)&.each do |calendar|
+      - updated_calendars&.to_a&.from(initial_rows)&.each do |calendar|
         = render(partial: 'updated_calendar_row', locals: { calendar: })
-    %button.btn.btn-link.text-left.px-0.collapsed{ 'aria-controls' => 'updated-calendars-more',
-                                                   'aria-expanded' => 'false',
-                                                   'data-target' => '#updated-calendars-more',
-                                                   'data-toggle' => 'collapse' }
-      %span
-        = t('home.show_label')
-        %span#show-more-or-less ➕
+    %p.row.my-3
+      %button.btn.btn-outline-primary.collapsed{ 'aria-controls' => 'updated-calendars-more',
+                                                 'aria-expanded' => 'false',
+                                                 'data-target' => '#updated-calendars-more',
+                                                 'data-toggle' => 'collapse' }
+        %span
+          = t('home.show_label')
+          %i.fa.fa-plus#show-more-or-less

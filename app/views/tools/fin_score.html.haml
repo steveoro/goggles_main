@@ -18,13 +18,20 @@
 
       .container.mt-2
         .row
-          .col-auto
+          .col-7
             .form-group
               .field
                 = hidden_field_tag('season_id', @last_fin_season&.id)
                 = label_tag(:season, t('tools.fin_score.timings_from_season'))
-                = text_field_tag(:season, @last_fin_season&.decorate&.display_label, disabled: true,
-                                 class: 'form-control text-muted')
+                = text_field_tag(:season, @last_fin_season&.decorate&.display_label,
+                                 disabled: true, class: 'form-control text-muted')
+          .col-5#record-time-column
+            .form-group
+              %i= t('tools.fin_score.record_timing_label')
+              .mt-2.pt-1
+                %b#standard-timing-label
+
+        .row
           = render(ComboBox::DbLookupComponent.new(nil, t('meetings.category'), 'category_type',
                                                    required: true, values: category_type_options(@category_types)))
           .col-auto
@@ -32,8 +39,9 @@
               .field
                 = label_tag(:gender_type_id, t('swimmers.sex'))
                 %b.text-success *
-                = select_tag(:gender_type_id, options_from_collection_for_select(@gender_types, 'id', 'label',
-                             current_user&.swimmer&.gender_type_id || cookies[:gender_type_id]),
+                - gender_type_id = current_user&.swimmer&.gender_type_id || cookies[:gender_type_id]
+                - select_opts = options_from_collection_for_select(@gender_types, 'id', 'label', gender_type_id)
+                = select_tag(:gender_type_id, select_opts,
                              required: true, autofocus: true, class: 'form-control',
                              onsubmit: "$('.target-score').val(''); return true")
 
@@ -52,10 +60,10 @@
                     .col-auto
                       = number_field_tag(:hundredths, 0, in: 0..99, autofocus: true, class: 'form-control target-time')
             .row-fluid.text-center
-              = submit_tag(t('tools.fin_score.compute_score.button_label'), id: 'btn-fin-score',
-                          class: 'btn btn-primary', 'aria-label' => 'Compute score', type: 'submit',
-                          onclick: "$('.target-score').val(''); return true",
-                          onsubmit: "$('#loading-indicator').removeClass('d-none'); return true")
+              = submit_tag(t('tools.fin_score.compute_score.button_label'),
+                           id: 'btn-fin-score', class: 'btn btn-primary', 'aria-label' => 'Compute score',
+                           type: 'submit', onclick: "$('.target-score').val(''); return true",
+                           onsubmit: "$('#loading-indicator').removeClass('d-none'); return true")
         .offset-sm-1
         .col-auto
           .container.bg-light-blue.ml-2.mt-2.mb-4.py-3.shadow-box
@@ -65,10 +73,10 @@
                   = label_tag(:score, t('tools.fin_score.compute_score.title'))
                   = number_field_tag(:score, 0, in: 0..9999, autofocus: true, class: 'form-control target-score')
             .row-fluid.text-center
-              = submit_tag(t('tools.fin_score.target_timing.button_label'), id: 'btn-fin-timing',
-                          class: 'btn btn-primary', 'aria-label' => 'Compute time', type: 'submit',
-                          onclick: "$('.target-time').val(''); return true",
-                          onsubmit: "$('#loading-indicator').removeClass('d-none'); return true")
+              = submit_tag(t('tools.fin_score.target_timing.button_label'),
+                           id: 'btn-fin-timing', class: 'btn btn-primary', 'aria-label' => 'Compute time',
+                           type: 'submit', onclick: "$('.target-time').val(''); return true",
+                           onsubmit: "$('#loading-indicator').removeClass('d-none'); return true")
 
     .row-fluid.mb-4
       %small
