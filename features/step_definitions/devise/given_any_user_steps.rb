@@ -8,6 +8,13 @@ Given('I have a confirmed account') do
 end
 
 # Sets @current_user
+Given('I have a confirmed account that is not mapped onto an existing swimmer') do
+  @current_user = FactoryBot.create(:user, first_name: 'no_swimmer', last_name: 'should_match_this!', current_sign_in_at: nil)
+  expect(@current_user.confirmed_at).to be_present
+  expect(@current_user.current_sign_in_at).to be nil
+end
+
+# Sets @current_user
 Given('I have an unconfirmed account') do
   @current_user = FactoryBot.create(:user, confirmed_at: nil, current_sign_in_at: nil)
   expect(@current_user.confirmed_at).to be nil

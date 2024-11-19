@@ -16,8 +16,9 @@ Feature: My past meetings index
     And a flash 'devise.sessions.signed_in' message is present
     And I am at my past meetings page
 
-  Scenario: logged-in user without associated swimmer browsing the index
-    Given I am already signed-in and at the root page
+  Scenario: logged-in user without associated swimmer browsing the meeting index
+    Given I have a confirmed account that is not mapped onto an existing swimmer
+    And I sign-in with my existing account
     When I browse to '/meetings'
     Then I get redirected to '/'
     And a flash 'home.my.errors.no_associated_swimmer' message is present
