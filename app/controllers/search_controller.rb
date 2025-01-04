@@ -32,7 +32,7 @@ class SearchController < ApplicationController
       return
     end
 
-    if params['q'].blank? # Ignore empty requests
+    if search_query.blank? # Ignore empty requests
       redirect_to root_path
       return
     end
@@ -67,12 +67,17 @@ class SearchController < ApplicationController
 
   private
 
+  # Returns the search query, cleaned of extra spaces.
+  def search_query
+    params['q'].to_s.squeeze(' ').strip
+  end
+
   # Sets the @swimmers member
   def prepare_swimmer_search_results
     # @see [goggles_api]/app/api/goggles/swimmers_api.rb:132
     # (NOTE: fulltext search filters like #for_name do not need strong checking)
-    like_value = "%#{params['q']}%"
-    @swimmers = GogglesDb::Swimmer.for_name(params['q'])
+    like_value = "%#{search_query}%"
+    @swimmers = GogglesDb::Swimmer.for_name(search_query)
                                   .where('complete_name LIKE ?', like_value)
                                   .page(params['page']).per(5)
   end
@@ -80,20 +85,20 @@ class SearchController < ApplicationController
   # Sets the @teams member
   def prepare_team_search_results
     @teams = GogglesDb::Team.includes([:city])
-                            .for_name(params['q']).by_name
+                            .for_name(search_query).by_name
                             .page(params['page']).per(5)
   end
 
   # Sets the @swimming_pools member
   def prepare_pool_search_results
     @swimming_pools = GogglesDb::SwimmingPool.includes([:city])
-                                             .for_name(params['q']).by_name
+                                             .for_name(search_query).by_name
                                              .page(params['page']).per(5)
   end
 
   # Sets the @meetings member
   def prepare_meeting_search_results
-    @meetings = GogglesDb::Meeting.for_name(params['q'])
+    @meetings = GogglesDb::Meeting.for_name(search_query)
                                   .page(params['page']).per(5)
   end
 
@@ -101,8 +106,8 @@ class SearchController < ApplicationController
   def prepare_workshop_search_results
     # NOTE: *** FIXME *** 'UserWorkshop#for_name' currently yields too many different results
     @user_workshops = GogglesDb::UserWorkshop.includes(:edition_type)
-                                             .where('user_workshops.description like ?', "%#{params['q']}%")
-                                             .or(GogglesDb::UserWorkshop.where('code like ?', "%#{params['q']}%"))
+                                             .where('user_workshops.description like ?', "%#{search_query}%")
+                                             .or(GogglesDb::UserWorkshop.where('code like ?', "%#{search_query}%"))
                                              .by_date(:desc)
                                              .page(params['page']).per(5)
   end

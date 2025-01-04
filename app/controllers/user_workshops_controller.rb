@@ -116,10 +116,15 @@ class UserWorkshopsController < ApplicationController
 
   # Prepares the internal @team variable; falls backs to the first associated team found for the current swimmer if
   # available and not already filtered by :team_id.
-  def validate_team
+  def validate_team # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     @team = GogglesDb::Team.where(id: user_workshop_params[:team_id]).first
     return unless user_signed_in? && current_user
 
+    # See ApplicationController:88:112 (update_user_teams_for_seasons_ids)
+    @team = @user_teams.last if @team.nil? && @user_teams.present?
+    return if @team
+
+    # Fallback to the first associated team found for the current user:
     @team = current_user.swimmer&.associated_teams&.first if @team.nil?
   end
 
