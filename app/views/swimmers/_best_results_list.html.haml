@@ -1,0 +1,22 @@
+%h6.text-center.bg-light-blue.mt-2
+  #{t('swimmers.radiography.best_5y_results')}
+.table-responsive
+  %table.table.table-striped.table-hover.table-sm
+    %thead
+      %tr
+        %th= t('swimmers.radiography.event_type')
+        %th= t('swimmers.radiography.pool_type')
+        %th= t('swimmers.radiography.best_timing')
+        %th= GogglesDb::Meeting.model_name.human
+        %th= t('swimmers.radiography.meeting_date')
+        %th= t('swimmers.radiography.season')
+    %tbody
+      - best_results.each do |result|
+        %tr
+          %td= result.event_type.code
+          %td= result.pool_type.code
+          %td.text-end
+            %strong= result.to_timing
+          %td.small= link_to(result.meeting.description, meeting_show_path(id: result.meeting.id))
+          %td.small= result.meeting.header_date
+          %td.small= result.season.decorate.short_label

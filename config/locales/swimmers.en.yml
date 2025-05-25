@@ -37,6 +37,12 @@ en:
       relay_disqualifications: Relay disqualifications
       all_meetings: All meetings
       all_workshops: All workshops
+      best_5y_results: Best results during the last 5 years
+      event_type: Event
+      pool_type: Pool
+      best_timing: Timing
+      meeting_date: Meeting date
+      season: Season
     history:
       filter: 'Filter:'
       params:

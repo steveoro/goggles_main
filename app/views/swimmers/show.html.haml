@@ -51,4 +51,9 @@
             %tbody
               = render(partial: 'swimmer_stats', locals: { stat: @stats.result })
 
+    - if @best_results.present?
+      %section.container.my-2#best-results
+        .row-fluid
+          = render(partial: 'best_results_list', locals: { best_results: @best_results })
+
   .spacer-right

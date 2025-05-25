@@ -37,6 +37,12 @@ it:
       relay_disqualifications: Squalifiche in staffette
       all_meetings: Tutti i meeting
       all_workshops: Tutti i collegiali
+      best_5y_results: Migliori risultati negli ultimi 5 anni
+      event_type: Evento
+      pool_type: Vasca
+      best_timing: Tempo
+      meeting_date: Data
+      season: Stagione
     history:
       filter: 'Filtro:'
       params:

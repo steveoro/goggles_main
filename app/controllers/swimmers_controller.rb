@@ -19,6 +19,10 @@ class SwimmersController < ApplicationController
     end
 
     @stats = GogglesDb::SwimmerStat.new(@swimmer)
+    @best_results = GogglesDb::BestSwimmer5yResult.includes(:event_type, :pool_type, :season, :meeting,
+                                                            swimmer: [:gender_type, { badges: :category_type }],
+                                                            season: [:federation_type, { season_type: :federation_type }])
+                                                  .where(swimmer_id: @swimmer.id)
   end
   #-- -------------------------------------------------------------------------
   #++

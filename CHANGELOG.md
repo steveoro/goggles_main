@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.8.07** [Steve A.] re-sync w/ base engine; bundle updates; added "best 5y results" list to "radiography" page
 - **0.8.00** [Steve A.] re-sync w/ base engine; bundle updates; fixed current @user_teams update during #validate_team for various controllers; render session dates in calendars; squeeze & strip additional spaces from searches to improve results
 - **0.7.25** [Steve A.] added current standard timing display in compute FIN score; added dedicated "latest updates" page, reusing partial from "about" page; re-sync w/ base engine; bundle updates
 - **0.7.24** [Steve A.] more FAQs; replaced "where('rank > 0')" with "with_time" scope when considering swimmer best & worst timing summary stats in SwimmersController; bundle & rubocop updates
