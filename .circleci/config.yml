@@ -335,6 +335,8 @@ jobs:
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
             patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
+      - browser-tools/install_chrome
+      - browser-tools/install_chromedriver
       - run:
           <<: *common-db-setup
 
@@ -498,6 +500,8 @@ jobs:
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
             patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
+      - browser-tools/install_chrome
+      - browser-tools/install_chromedriver
       - run:
           <<: *common-db-setup
       - node/install:
@@ -544,6 +548,8 @@ jobs:
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
             patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
+      - browser-tools/install_chrome
+      - browser-tools/install_chromedriver
       - run:
           <<: *common-db-setup
       - node/install:
@@ -591,6 +597,8 @@ jobs:
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
             patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
+      - browser-tools/install_chrome
+      - browser-tools/install_chromedriver
       - run:
           <<: *common-db-setup
       - node/install:
@@ -816,16 +824,17 @@ workflows:
             - brakeman
             - rubocop
             - zeitwerk
-          pre-steps:
-            - browser-tools/install_browser_tools:
-                chrome-version: 122.0.6261.69
-                replace-existing: true
-            - run:
-                name: Check install
-                command: |
-                  google-chrome --version
-                  chromedriver --version
-                  node -v
+          # NOT WORKING ANYMORE:
+          # pre-steps:
+          #   - browser-tools/install_browser_tools:
+          #       chrome-version: 122.0.6261.69
+          #       replace-existing: true
+          #   - run:
+          #       name: Check install
+          #       command: |
+          #         google-chrome --version
+          #         chromedriver --version
+          #         node -v
 
       - rspec-helpers:
           requires:
@@ -860,44 +869,47 @@ workflows:
       - cucumber-desktop:
           requires:
             - persisted-data
-          pre-steps:
-            - browser-tools/install_browser_tools:
-                chrome-version: 122.0.6261.69
-                replace-existing: true
-            - run:
-                name: Check install
-                command: |
-                  google-chrome --version
-                  chromedriver --version
-                  node -v
+          # NOT WORKING ANYMORE:
+          # pre-steps:
+          #   - browser-tools/install_browser_tools:
+          #       chrome-version: 122.0.6261.69
+          #       replace-existing: true
+          #   - run:
+          #       name: Check install
+          #       command: |
+          #         google-chrome --version
+          #         chromedriver --version
+          #         node -v
 
       - cucumber-narrow:
           requires:
             - rspec-requests
-          pre-steps:
-            - browser-tools/install_browser_tools:
-                chrome-version: 122.0.6261.69
-                replace-existing: true
-            - run:
-                name: Check install
-                command: |
-                  google-chrome --version
-                  chromedriver --version
-                  node -v
+          # NOT WORKING ANYMORE:
+          # pre-steps:
+          #   - browser-tools/install_browser_tools:
+          #       chrome-version: 122.0.6261.69
+          #       replace-existing: true
+          #   - run:
+          #       name: Check install
+          #       command: |
+          #         google-chrome --version
+          #         chromedriver --version
+          #         node -v
 
       - cucumber-tablet:
           requires:
             - rspec-requests
-          pre-steps:
-            - browser-tools/install_browser_tools:
-                chrome-version: 122.0.6261.69
-                replace-existing: true
-            - run:
-                name: Check install
-                command: |
-                  google-chrome --version
-                  chromedriver --version
-                  node -v
+          # NOT WORKING ANYMORE:
+          # pre-steps:
+          #   - browser-tools/install_browser_tools:
+          #       chrome-version: 122.0.6261.69
+          #       replace-existing: true
+          #   - run:
+          #       name: Check install
+          #       command: |
+          #         google-chrome --version
+          #         chromedriver --version
+          #         node -v
 
       - docker-latest:
           requires:
