@@ -1,8 +1,8 @@
 version: 2.1
 orbs:
-  ruby: circleci/ruby@2.3.0
-  browser-tools: circleci/browser-tools@1.4.8
-  node: circleci/node@6.3.0
+  ruby: circleci/ruby@2.5.3
+  browser-tools: circleci/browser-tools@2.0.0
+  node: circleci/node@7.1.0
 
 ARTIFACTS_PATH: &ARTIFACTS_PATH ~/test-artifacts
 
@@ -102,7 +102,13 @@ jobs:
       - checkout
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          # NOTE: apply this after the install-deps step (or it will be overwritten)
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - ruby/rubocop-check:
           app-dir: ~/goggles_main
           label: Rubocop
@@ -115,7 +121,12 @@ jobs:
       - checkout
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           name: Brakeman
           command: |
@@ -130,7 +141,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -148,7 +164,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -176,7 +197,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -204,7 +230,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -232,7 +263,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -260,7 +296,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -288,7 +329,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
 
@@ -333,7 +379,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -361,7 +412,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -389,7 +445,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -431,7 +492,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
       - node/install:
@@ -472,7 +538,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
       - node/install:
@@ -514,7 +585,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
       - node/install:
@@ -555,7 +631,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
           environment:
@@ -600,7 +681,12 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0723
+          key: goggles_main-v0807
+      - run:
+          name: Apply ActiveSupport logger patch
+          # Patch the logger loading order issue in activesupport 6.1.7.8
+          command: |
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.8 < patches/activesupport-6.1.7.8-logger.patch
       - run:
           <<: *common-db-setup
           environment:
