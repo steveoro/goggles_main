@@ -108,7 +108,7 @@ jobs:
           # Patch the logger loading order issue in activesupport 6.1.7.10
           # NOTE: apply this after the install-deps step (or it will be overwritten)
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - ruby/rubocop-check:
           app-dir: ~/goggles_main
           label: Rubocop
@@ -126,7 +126,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           name: Brakeman
           command: |
@@ -146,7 +146,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -169,7 +169,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -202,7 +202,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -235,7 +235,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -268,7 +268,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -301,7 +301,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -334,7 +334,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
 
@@ -384,7 +384,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -417,7 +417,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -450,7 +450,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
       - run:
@@ -497,7 +497,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
       - node/install:
@@ -543,7 +543,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
       - node/install:
@@ -590,7 +590,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
       - node/install:
@@ -636,7 +636,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
           environment:
@@ -686,7 +686,7 @@ jobs:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
           command: |
-            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7.10-logger.patch
+            patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
       - run:
           <<: *common-db-setup
           environment:
