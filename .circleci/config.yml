@@ -817,10 +817,9 @@ workflows:
             - rubocop
             - zeitwerk
           pre-steps:
-            - browser-tools/install-chrome:
+            - browser-tools/install_browser_tools:
                 chrome-version: 122.0.6261.69
                 replace-existing: true
-            - browser-tools/install-chromedriver
             - run:
                 name: Check install
                 command: |
@@ -862,10 +861,9 @@ workflows:
           requires:
             - persisted-data
           pre-steps:
-            - browser-tools/install-chrome:
+            - browser-tools/install_browser_tools:
                 chrome-version: 122.0.6261.69
                 replace-existing: true
-            - browser-tools/install-chromedriver
             - run:
                 name: Check install
                 command: |
@@ -877,10 +875,9 @@ workflows:
           requires:
             - rspec-requests
           pre-steps:
-            - browser-tools/install-chrome:
+            - browser-tools/install_browser_tools:
                 chrome-version: 122.0.6261.69
                 replace-existing: true
-            - browser-tools/install-chromedriver
             - run:
                 name: Check install
                 command: |
@@ -892,10 +889,9 @@ workflows:
           requires:
             - rspec-requests
           pre-steps:
-            - browser-tools/install-chrome:
+            - browser-tools/install_browser_tools:
                 chrome-version: 122.0.6261.69
                 replace-existing: true
-            - browser-tools/install-chromedriver
             - run:
                 name: Check install
                 command: |
