@@ -68,6 +68,8 @@ RUN bundle config build.nokogiri --use-system-libraries
 COPY ./config/database.docker.yml ./config/database.yml
 
 RUN bundle check || bundle install
+# Apply patch for ActiveSupport logger issue
+RUN patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch
 RUN yarn install --check-files
 
 # Keep the version argument at the end to avoid early cache miss during builds:
