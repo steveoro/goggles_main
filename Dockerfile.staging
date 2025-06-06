@@ -69,7 +69,7 @@ COPY ./config/database.docker.yml ./config/database.yml
 
 RUN bundle check || bundle install
 # Apply patch for ActiveSupport logger issue (idempotent with || true)
-RUN patch -p1 -N -d vendor/bundle/ruby/3.1.0/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch || true
+RUN patch -p1 -N -d /usr/local/bundle/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch || true
 RUN yarn install --check-files
 
 # Keep the version argument at the end to avoid early cache miss during builds:
