@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'goggles_db/version'
+require 'version'
 
 # = ApplicationMailer
 #

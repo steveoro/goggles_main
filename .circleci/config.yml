@@ -346,12 +346,11 @@ jobs:
           node-version: '16.13'
       - restore_cache:
           keys:
-            - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
             - yarn-cache-v1-{{ checksum "yarn.lock" }}
       - run:
           <<: *web-assets
       - save_cache:
-          key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - public/packs-test
             - tmp/cache/webpacker
@@ -510,12 +509,11 @@ jobs:
           node-version: '16.13'
       - restore_cache:
           keys:
-            - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
             - yarn-cache-v1-{{ checksum "yarn.lock" }}
       - run:
           <<: *web-assets
       - save_cache:
-          key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - public/packs-test
             - tmp/cache/webpacker
@@ -558,12 +556,11 @@ jobs:
           node-version: '16.13'
       - restore_cache:
           keys:
-            - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
             - yarn-cache-v1-{{ checksum "yarn.lock" }}
       - run:
           <<: *web-assets
       - save_cache:
-          key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - public/packs-test
             - tmp/cache/webpacker
@@ -607,12 +604,11 @@ jobs:
           node-version: '16.13'
       - restore_cache:
           keys:
-            - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
             - yarn-cache-v1-{{ checksum "yarn.lock" }}
       - run:
           <<: *web-assets
       - save_cache:
-          key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-test" }}
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - public/packs-test
             - tmp/cache/webpacker
@@ -660,7 +656,7 @@ jobs:
           docker_layer_caching: true
       - restore_cache:
           keys:
-            - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
+            - yarn-cache-v1-{{ checksum "yarn.lock" }}
       - run:
           <<: *web-assets
           environment:
@@ -668,7 +664,7 @@ jobs:
             NODE_ENV: production
             BABEL_ENV: production
       - save_cache:
-          key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - public/packs
             - tmp/cache/webpacker
@@ -710,7 +706,7 @@ jobs:
           docker_layer_caching: true
       - restore_cache:
           keys:
-            - yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
+            - yarn-cache-v1-{{ checksum "yarn.lock" }}
       - run:
           <<: *web-assets
           environment:
@@ -718,7 +714,7 @@ jobs:
             NODE_ENV: production
             BABEL_ENV: production
       - save_cache:
-          key: yarn-cache-v1-{{ checksum "yarn.lock" }}-{{ checksum "tmp/cache/webpacker/last-compilation-digest-production" }}
+          key: yarn-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - public/packs
             - tmp/cache/webpacker
