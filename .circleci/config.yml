@@ -103,7 +103,7 @@ jobs:
       - checkout
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -122,7 +122,7 @@ jobs:
       - checkout
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -142,7 +142,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -165,7 +165,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -198,7 +198,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -231,7 +231,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -264,7 +264,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -297,7 +297,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -330,7 +330,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -382,7 +382,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -415,7 +415,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -448,7 +448,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -495,7 +495,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -543,7 +543,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -592,7 +592,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -640,7 +640,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10
@@ -690,7 +690,7 @@ jobs:
           at: ~/goggles_main/tmp
       - ruby/install-deps:
           app-dir: ~/goggles_main
-          key: goggles_main-v0808
+          key: goggles_main-v0810
       - run:
           name: Apply ActiveSupport logger patch
           # Patch the logger loading order issue in activesupport 6.1.7.10

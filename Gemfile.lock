@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 81ceef0a802e6b2e1d4096cdba202ebd7a66fa4a
+  revision: f755a33dce2cd6cecfbb19e704c679a957c96c3f
   specs:
-    goggles_db (0.8.08)
+    goggles_db (0.8.10)
       acts-as-taggable-on
       acts_as_votable
       cities

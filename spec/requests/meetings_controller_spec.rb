@@ -103,7 +103,7 @@ RSpec.describe MeetingsController do
     end
 
     context 'making an XHR request with missing or invalid parameters,' do
-      before { get(meeting_show_event_section_path(id: -1), xhr: true) }
+      before { get(meeting_show_event_section_path(id: 0), xhr: true) }
 
       it_behaves_like('invalid row id GET request')
     end

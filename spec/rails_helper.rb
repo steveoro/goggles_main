@@ -84,6 +84,19 @@ RSpec.configure do |config|
   config.include(Devise::Test::IntegrationHelpers, type: :request)
   config.include(Devise::Test::IntegrationHelpers, type: :controller)
 
+  # Configure Warden test mode for proper cleanup between request specs
+  config.before(:suite) do
+    Warden.test_mode!
+  end
+
+  config.after(:each, type: :request) do
+    Warden.test_reset!
+  end
+
+  config.after(:suite) do
+    Warden.test_reset!
+  end
+
   # Add ViewComponent helpers:
   config.include ViewComponent::TestHelpers, type: :component
 

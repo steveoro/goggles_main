@@ -133,7 +133,10 @@ RSpec.describe ChronoController do
       end
 
       context 'with an invalid :id parameter,' do
-        before { get(chrono_download_path(id: -1)) }
+        before do
+          expect(GogglesDb::ImportQueue.exists?(id: 0)).to be false
+          get(chrono_download_path(id: 0))
+        end
 
         it 'redirects to either to /chrono/index or to the root_path (depending on credentials)' do
           expect(response).to be_a_redirect
@@ -506,7 +509,10 @@ RSpec.describe ChronoController do
 
     shared_examples_for('chrono#delete for an authorized user') do
       context 'with an invalid :id parameter,' do
-        before { delete(chrono_delete_path(id: -1)) }
+        before do
+          expect(GogglesDb::ImportQueue.exists?(id: 0)).to be false
+          delete(chrono_delete_path(id: 0))
+        end
 
         it 'redirects to /chrono/index with a flash error message' do
           expect(response).to redirect_to(chrono_index_path)

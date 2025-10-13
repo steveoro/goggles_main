@@ -38,7 +38,7 @@ RSpec.describe TaggingsController do
       end
 
       context 'making an XHR request with missing or invalid parameters,' do
-        before { post(taggings_by_user_path(meeting_id: -1), xhr: true) }
+        before { post(taggings_by_user_path(meeting_id: 0), xhr: true) }
 
         it_behaves_like('invalid row id GET request')
       end

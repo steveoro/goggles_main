@@ -65,9 +65,10 @@ RSpec.describe IssuesController do
     context 'with a logged-in user' do
       context 'but with an invalid row ID' do
         before do
+          expect(GogglesDb::Issue.exists?(id: 0)).to be false
           user = GogglesDb::User.first(50).sample
           sign_in(user)
-          delete(issues_destroy_path(id: -1))
+          delete(issues_destroy_path(id: 0))
         end
 
         it 'is a redirect to the \'my reports\' page' do
@@ -225,7 +226,7 @@ RSpec.describe IssuesController do
     context 'with a logged-in user' do
       context 'but missing some required parameters' do
         before do
-          user = GogglesDb::User.first(50).sample
+          user = FactoryBot.create(:user)
           sign_in(user)
           wrong_params = params.dup
           wrong_params.delete(wrong_params.keys.sample)
@@ -245,11 +246,9 @@ RSpec.describe IssuesController do
 
       context 'and valid parameters' do
         before do
-          # Choosing from the latest users so that we may skip over any existing
-          # team managers, which may fail creation of an issue type '0' if the user
-          # is already a TM for the same requested team (improbable but already happened with
-          # the first(50)).
-          user = GogglesDb::User.last(50).sample
+          # Create a fresh user for each test to avoid conflicts with existing team managers
+          # or hitting the SPAM_LIMIT due to random user selection
+          user = FactoryBot.create(:user)
           sign_in(user)
           post(
             path_to_be_tested,

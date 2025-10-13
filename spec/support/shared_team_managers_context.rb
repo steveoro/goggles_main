@@ -3,18 +3,26 @@
 RSpec.shared_context('current_user is a team manager on last FIN season ID') do
   let(:last_season_id) do
     # (The following matches more closely what's been done by the calendar controller)
-    GogglesDb::LastSeasonId.first
+    # NOTE: at the start of a Season, with no results yet, this will yield errors:
+    # GogglesDb::LastSeasonId.first.id
+
     # Alternatively:
     # Consider last season *including* results (NOTE: cfr. app/controllers/application_controller.rb:342)
     # GogglesDb::Season.joins(meetings: :meeting_individual_results)
     #                  .last_season_by_type(GogglesDb::SeasonType.mas_fin).id
+
+    # FASTER: get last MIR and use its associated season_id:
+    GogglesDb::MeetingIndividualResult.includes(:meeting).last.meeting.season_id
   end
 
   let(:meeting_with_results) do
-    GogglesDb::Meeting.includes(:meeting_individual_results).joins(:meeting_individual_results)
-                      .where(season_id: last_season_id)
-                      .by_date(:desc).first(25)
-                      .sample
+    meeting = GogglesDb::Meeting.includes(:meeting_individual_results).joins(:meeting_individual_results)
+                                .where(season_id: last_season_id)
+                                .by_date(:desc).first(25)
+                                .sample
+    expect(meeting).to be_a(GogglesDb::Meeting).and be_valid
+    expect(meeting.meeting_individual_results.count).to be_positive
+    meeting
   end
 
   let(:managed_team) { meeting_with_results.meeting_individual_results.sample.team }

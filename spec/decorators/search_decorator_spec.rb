@@ -23,7 +23,10 @@ RSpec.describe SearchDecorator, type: :decorator do
     context 'with an empty search-results collection' do
       subject { described_class.rendering_parameters(results_collection) }
 
-      let(:results_collection) { GogglesDb::Swimmer.where(id: -1) }
+      let(:results_collection) do
+        expect(GogglesDb::Swimmer.where(id: 0).empty?).to be true
+        GogglesDb::Swimmer.where(id: 0)
+      end
 
       before { expect(results_collection.empty?).to be true }
 
