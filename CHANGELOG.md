@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.8.10** [Steve A.] re-sync w/ base engine; bundle updates; removed CodeClimate from CircleCI build setup
 - **0.8.09** [Steve A.] fixed patch path for ActiveSupport logger
 - **0.8.08** [Steve A.] made the patch idempotent, so it will be silently skipped if already applied
 - **0.8.07** [Steve A.] re-sync w/ base engine; bundle updates; added "best 5y results" list to "radiography" page; applied patch for ActiveSupport logger loading order issue in activesupport 6.1.7.10; updated circleci config
