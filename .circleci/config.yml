@@ -69,8 +69,7 @@ common-db-setup: &common-db-setup
     sudo apt-get install mysql-client
     mkdir -p tmp ~/test-results "$ARTIFACTS_PATH"
     echo $RAILS_MASTER_KEY > config/master.key
-    # We're not persisting the DB dump on CircleCI anymore:
-    # cp ./tmp/test.sql.bz2 db/dump/test.sql.bz2
+    cp ./tmp/test.sql.bz2 db/dump/test.sql.bz2
     mv config/database_ci.yml config/database.yml
     dockerize -wait tcp://localhost:3306 -timeout 2m
     echo "- RAILS_ENV...: $RAILS_ENV"
@@ -80,22 +79,22 @@ common-db-setup: &common-db-setup
 
 
 jobs:
-  # persisted-data:
-  #   <<: *common-config
-  #   # parallelism: 1 (no actual need here)
-  #   steps:
-  #     - run:
-  #         name:  Setup persisted data
-  #         command: |
-  #           mkdir -p tmp
-  #           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
-  #           chmod +x ./tmp/cc-test-reporter
-  #           curl -L -o ./tmp/test.sql.bz2 "https://github.com/steveoro/goggles_db/raw/master/spec/dummy/db/dump/test.sql.bz2"
-  #     - persist_to_workspace:
-  #         root: tmp
-  #         paths:
-  #           - cc-test-reporter
-  #           - test.sql.bz2
+  persisted-data:
+    <<: *common-config
+    # parallelism: 1 (no actual need here)
+    steps:
+      - run:
+          name:  Setup persisted data
+          command: |
+            mkdir -p tmp
+            # curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
+            # chmod +x ./tmp/cc-test-reporter
+            curl -L -o ./tmp/test.sql.bz2 "https://github.com/steveoro/goggles_db/raw/master/spec/dummy/db/dump/test.sql.bz2"
+      - persist_to_workspace:
+          root: tmp
+          paths:
+            # - cc-test-reporter
+            - test.sql.bz2
 
   rubocop:
     <<: *common-config
@@ -756,23 +755,23 @@ jobs:
 workflows:
   build-and-deploy-versioned:
     jobs:
-      # - persisted-data:
-      #     filters:
-      #       tags:
-      #         only: /^\d+\.\d+.*/
-      #       branches:
-      #         ignore: /.*/
+      - persisted-data:
+          filters:
+            tags:
+              only: /^\d+\.\d+.*/
+            branches:
+              ignore: /.*/
       - brakeman:
-          # requires:
-          #   - persisted-data
+          requires:
+            - persisted-data
           filters:
             tags:
               only: /^\d+\.\d+.*/
             branches:
               ignore: /.*/
       - zeitwerk:
-          # requires:
-          #   - persisted-data
+          requires:
+            - persisted-data
           filters:
             tags:
               only: /^\d+\.\d+.*/
@@ -799,16 +798,16 @@ workflows:
 
   test-and-deploy-latest:
     jobs:
-      # - persisted-data
-      - brakeman
-      # requires:
-      #   - persisted-data
-      - rubocop
-      # requires:
-      #   - persisted-data
-      - zeitwerk
-      # requires:
-      #   - persisted-data
+      - persisted-data
+      - brakeman:
+          requires:
+            - persisted-data
+      - rubocop:
+          requires:
+            - persisted-data
+      - zeitwerk:
+          requires:
+            - persisted-data
 
       - rspec-components:
           requires:
@@ -870,19 +869,18 @@ workflows:
 
       - cucumber-desktop:
           requires:
-            # - persisted-data
             - rspec-components
-      # NOT WORKING ANYMORE:
-      # pre-steps:
-      #   - browser-tools/install_browser_tools:
-      #       chrome-version: 122.0.6261.69
-      #       replace-existing: true
-      #   - run:
-      #       name: Check install
-      #       command: |
-      #         google-chrome --version
-      #         chromedriver --version
-      #         node -v
+          # NOT WORKING ANYMORE:
+          # pre-steps:
+          #   - browser-tools/install_browser_tools:
+          #       chrome-version: 122.0.6261.69
+          #       replace-existing: true
+          #   - run:
+          #       name: Check install
+          #       command: |
+          #         google-chrome --version
+          #         chromedriver --version
+          #         node -v
 
       - cucumber-narrow:
           requires:
