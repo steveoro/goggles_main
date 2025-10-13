@@ -30,7 +30,9 @@ RSpec.describe MeetingDecorator, type: :decorator do
     context 'for a meeting with more than 1 session,' do
       let(:meeting_multiple_sessions) do
         # Count meeting_sessions for each meeting, and pick a random meeting with more than 1 session:
-        m = GogglesDb::Meeting.joins(:meeting_sessions).group('meetings.id').having('count(meeting_sessions.id) > 1').sample
+        m = GogglesDb::Meeting.joins(:meeting_sessions).group('meetings.id')
+                              .having('count(meeting_sessions.id) > 1')
+                              .last(50).sample
         described_class.decorate(m)
       end
 
