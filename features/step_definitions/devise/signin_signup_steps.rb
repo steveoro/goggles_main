@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 # Also reloads @current_user if defined
+# Uses Warden.test_reset! to properly clear authentication state in test mode
 Given('I am not signed in') do
-  current_driver = Capybara.current_driver
-  begin
-    Capybara.current_driver = :rack_test
-    page.driver.submit :delete, destroy_user_session_path, {}
-  ensure
-    Capybara.current_driver = current_driver
-  end
+  # Clear Warden session to ensure no user is signed in
+  # This is more reliable than submitting a DELETE request in concurrent test runs
+  Warden.test_reset!
+
+  # Reload @current_user to ensure we have fresh data from the database
+  # and to verify that the user record itself exists (but is not signed in)
   @current_user&.reload
 end
 
