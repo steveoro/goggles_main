@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# Configure Warden test mode for proper session cleanup between scenarios
+# Configure Warden test mode for proper cleanup between scenarios
+# (similar to RSpec configuration in spec/rails_helper.rb)
 Before do
   Warden.test_mode!
 end
