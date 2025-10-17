@@ -1,5 +1,14 @@
 # frozen_string_literal: true
 
+# Configure Warden test mode for proper session cleanup between scenarios
+Before do
+  Warden.test_mode!
+end
+
+After do
+  Warden.test_reset!
+end
+
 # Setup test mode for Omniauth
 Before('@omniauth') do
   OmniAuth.config.test_mode = true
