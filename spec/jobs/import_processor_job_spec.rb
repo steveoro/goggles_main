@@ -78,7 +78,10 @@ RSpec.describe ImportProcessorJob do
         :import_queue,
         batch_sql: true
       )
-      file_path = Rails.root.join('tmp', 'storage', "test-data-#{fixture_row.id}.sql")
+      # Make sure temp path exists:
+      temp_path = Rails.root.join('tmp/storage')
+      FileUtils.mkdir_p(temp_path)
+      file_path = temp_path.join("test-data-#{fixture_row.id}.sql")
       File.write(file_path, 'This is not valid SQL!')
       fixture_row.data_file.attach(
         io: File.open(file_path),
