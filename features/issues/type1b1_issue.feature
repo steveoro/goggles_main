@@ -7,10 +7,12 @@ Feature: Reporting an issue of type "1b1"
 
   Scenario: reporting an issue of type "1b1" requires an associated swimmer
     Given I have a confirmed account with associated swimmer and existing MIRs
-    And I sign-in with my existing account
+    And I am not signed in
+    When I sign-in with my existing account
     And I have already selected a random meeting and an event from any of my available results
-    When I browse to see the selected meeting details
+    And I browse to see the selected meeting details
     Then I am at the show page for the details of the meeting
+
     When I click on the chosen meeting event section, waiting for it to load
     Then I see the results of the chosen meeting event
     And I can see the 'report mistake' ('type1b1') buttons on the results of the page

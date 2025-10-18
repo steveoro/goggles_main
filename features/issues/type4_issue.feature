@@ -6,8 +6,8 @@ Feature: Reporting an issue of type "4"
   ("generic application error or bug")
 
   Scenario: a new type "4" request can be issued only by a signed-in user
-    Given I am not signed in
-    But I have a confirmed account
+    Given I have a confirmed account
+    And I am not signed in
     When I browse to '/issues/faq_index'
     Then I get redirected to '/users/sign_in'
     When I fill the log-in form as the confirmed user

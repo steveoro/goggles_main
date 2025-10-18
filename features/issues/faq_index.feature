@@ -6,8 +6,8 @@ Feature: Issues FAQ index
   With links and explanations to report them
 
   Scenario: accessing the issues FAQ index requires authentication
-    Given I am not signed in
-    But I have a confirmed account
+    Given I have a confirmed account
+    And I am not signed in
     When I browse to '/issues/faq_index'
     Then I get redirected to '/users/sign_in'
     When I fill the log-in form as the confirmed user

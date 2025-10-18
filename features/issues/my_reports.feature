@@ -6,8 +6,8 @@ Feature: Reported issues list
   And I want to be able to also manage them (see the details or kill a request already sent)
 
   Scenario: accessing "My reports" list requires authentication
-    Given I am not signed in
-    But I have a confirmed account
+    Given I have a confirmed account
+    And I am not signed in
     When I browse to '/issues/my_reports'
     Then I get redirected to '/users/sign_in'
     When I fill the log-in form as the confirmed user
