@@ -3,21 +3,25 @@
 # Also reloads @current_user if defined
 # Uses Warden.test_reset! to properly clear authentication state in test mode
 Given('I am not signed in') do
-  # Clear Warden session to ensure no user is signed in
-  # This should be even more reliable than submitting a DELETE request in concurrent test runs
+  # CRITICAL: Reset Capybara session to clear browser cookies (Selenium drivers)
+  # This is essential for CI environments where browser state persists between scenarios
+  Capybara.reset_session!
+
+  # Clear Warden test mode state (Rails-side session)
   Warden.test_reset!
 
-  # Submit sign-out request via rack_test driver
-  current_driver = Capybara.current_driver
-  begin
-    Capybara.current_driver = :rack_test
-    page.driver.submit :delete, destroy_user_session_path, {}
-  ensure
-    Capybara.current_driver = current_driver
-  end
+  # Force a page visit to ensure the session reset takes effect
+  # This is crucial in CI environments where the browser needs to make a request
+  # with the new (empty) session before the session state is truly cleared
+  visit('/') # Visit root page to ensure session reset is applied
+
+  # Verify sign-out worked: ensure no sign-out link is present (user is not signed in)
+  # This is critical for debugging CI failures
+  sleep(0.5) # Small wait for page to render
+  expect(page).to have_no_css('#link-logout', visible: :all)
 
   # Reload @current_user to ensure we have fresh data from the database
-  # and to verify that the user record itself exists (but is not signed in)
+  # The user record exists but should not be signed in anymore
   @current_user&.reload
 end
 

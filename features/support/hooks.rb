@@ -2,11 +2,21 @@
 
 # Configure Warden test mode for proper cleanup between scenarios
 # (similar to RSpec configuration in spec/rails_helper.rb)
-Before do
+#
+# Note: Warden.test_mode! should be called once per test suite, not per scenario.
+# Calling it before every scenario can interfere with session management.
+BeforeAll do
   Warden.test_mode!
 end
 
+# Reset Warden and Capybara session after each scenario to ensure clean state
 After do
+  Warden.test_reset!
+  # Also reset Capybara session to clear browser cookies in Selenium drivers
+  Capybara.reset_session!
+end
+
+AfterAll do
   Warden.test_reset!
 end
 
