@@ -2,13 +2,38 @@
 
 # Also reloads @current_user if defined
 # Uses Warden.test_reset! to properly clear authentication state in test mode
+#
+# NOTE: The Before hook already clears sessions at scenario start, but this step
+# provides an explicit mid-scenario sign-out if needed, plus verification.
 Given('I am not signed in') do
-  # CRITICAL: Reset Capybara session to clear browser cookies (Selenium drivers)
-  # This is essential for CI environments where browser state persists between scenarios
-  Capybara.reset_session!
-
   # Clear Warden test mode state (Rails-side session)
   Warden.test_reset!
+
+  # Explicitly expire all Devise sessions via rack_test driver
+  # This directly calls the Devise sign_out endpoint which is more reliable
+  # than just clearing cookies in CI environments
+  current_driver = Capybara.current_driver
+  begin
+    Capybara.current_driver = :rack_test
+    page.driver.submit :delete, destroy_user_session_path, {}
+  rescue StandardError => e
+    # Ignore errors if session doesn't exist or endpoint is unavailable
+    Rails.logger.debug { "Sign-out error (expected if not signed in): #{e.message}" }
+  ensure
+    Capybara.current_driver = current_driver
+  end
+
+  # CRITICAL: Reset Capybara session to clear browser cookies (Selenium drivers)
+  # This must come AFTER the explicit sign-out to ensure cookies are cleared
+  Capybara.reset_session!
+
+  # For Selenium drivers: explicitly delete all cookies as an extra safeguard
+  begin
+    page.driver.browser.manage.delete_all_cookies if page.driver.respond_to?(:browser) && page.driver.browser.respond_to?(:manage)
+  rescue StandardError => e
+    # Ignore errors if browser isn't ready
+    Rails.logger.debug { "Cookie deletion skipped: #{e.message}" }
+  end
 
   # Force a page visit to ensure the session reset takes effect
   # This is crucial in CI environments where the browser needs to make a request
@@ -17,7 +42,7 @@ Given('I am not signed in') do
 
   # Verify sign-out worked: ensure no sign-out link is present (user is not signed in)
   # This is critical for debugging CI failures
-  sleep(0.5) # Small wait for page to render
+  wait_for_ajax && sleep(1) # Wait for page to fully render
   expect(page).to have_no_css('#link-logout', visible: :all)
 
   # Reload @current_user to ensure we have fresh data from the database
