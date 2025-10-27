@@ -87,10 +87,7 @@ Performance/CollectionLiteralInLoop:
 
 Rails/BulkChangeTable:
   Exclude:
-    - 'db/migrate/20210513155157_change_user_results.rb'
-    - 'db/migrate/20210513170020_add_seq_to_import_queues.rb'
-    - 'db/migrate/20210514131355_rename_associations_in_user_results.rb'
-    - 'db/migrate/20210611120440_add_support_fields_to_import_queues.rb'
+    - 'db/migrate/*'
 
 # Excluded files here were already corrected in later migrations:
 Rails/ThreeStateBooleanColumn:
