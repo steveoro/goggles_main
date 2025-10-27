@@ -39,5 +39,5 @@ module Version
   SEMANTIC = "#{MAJOR}.#{MINOR}.#{PATCH}".freeze
 
   # Current internal DB version (independent from migrations and framework release)
-  DB = '2.08.8'
+  DB = '2.08.11'
 end
