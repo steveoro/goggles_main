@@ -10,30 +10,47 @@ end
 
 # CRITICAL: Ensure clean state BEFORE each scenario starts
 # This is essential in CI with parallel execution where sessions can persist
-Before do
+Before do |scenario|
+  # Log which scenario is starting (helpful for debugging CI failures)
+  Rails.logger.info { "\n=== Starting scenario: #{scenario.name} ===" }
+
   # Reset Warden session state
   Warden.test_reset!
 
-  # Reset Capybara session to clear browser cookies (Selenium drivers)
-  Capybara.reset_session!
-
-  # For Selenium drivers: explicitly delete all cookies (if browser is active)
-  begin
-    page.driver.browser.manage.delete_all_cookies if page.driver.respond_to?(:browser) && page.driver.browser.respond_to?(:manage)
-  rescue StandardError => e
-    # Ignore errors if browser isn't initialized yet
-    Rails.logger.debug { "Cookie deletion skipped (browser not ready): #{e.message}" }
-  end
+  # Reset Capybara sessions (plural - resets ALL sessions)
+  Capybara.reset_sessions!
 end
 
-# Also reset after each scenario for good measure
-After do
+# More aggressive cleanup AFTER each scenario
+# This runs AFTER the scenario completes, giving us access to the browser
+After do |scenario|
+  Rails.logger.info { "=== Cleaning up after scenario: #{scenario.name} ===" }
+
+  # For Selenium drivers: quit the browser entirely
+  # This ensures no state carries over to the next scenario
+  begin
+    if Capybara.current_session.driver.respond_to?(:quit)
+      Capybara.current_session.driver.quit
+      Rails.logger.debug { 'Browser quit after scenario' }
+    end
+  rescue StandardError => e
+    Rails.logger.debug { "Browser quit skipped: #{e.message}" }
+  end
+
+  # Reset all sessions
+  Capybara.reset_sessions!
   Warden.test_reset!
-  Capybara.reset_session!
 end
 
 AfterAll do
   Warden.test_reset!
+
+  # Final cleanup: quit all browser instances
+  begin
+    Capybara.current_session.driver.quit if Capybara.current_session.driver.respond_to?(:quit)
+  rescue StandardError
+    # Ignore - browser may already be closed
+  end
 end
 
 # Setup test mode for Omniauth
