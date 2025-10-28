@@ -6,6 +6,7 @@ Given('I am not signed in') do
   # Clear Warden session to ensure no user is signed in
   # This is more reliable than submitting a DELETE request in concurrent test runs
   Warden.test_reset!
+  current_driver = Capybara.current_driver
 
   begin
     Capybara.current_driver = :rack_test
