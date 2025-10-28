@@ -7,6 +7,29 @@ Given('I have a confirmed account') do
   expect(@current_user.current_sign_in_at).to be nil
 end
 
+# Creates a user in DB but stores only credentials in @user_credentials
+# without setting @current_user (to prevent any session initialization)
+# Use this BEFORE testing anonymous access redirects
+# Sets @user_credentials
+Given('there is a confirmed account available') do
+  user = FactoryBot.create(:user, current_sign_in_at: nil)
+  expect(user.confirmed_at).to be_present
+  expect(user.current_sign_in_at).to be nil
+  # Store only credentials, not the user object itself
+  @user_credentials = { email: user.email, password: user.password }
+end
+
+# Retrieves the user by email from @user_credentials and sets @current_user
+# Use this AFTER verifying redirects, when ready to sign in
+# Uses @user_credentials
+# Sets @current_user
+Given('I retrieve the confirmed account') do
+  expect(@user_credentials).to be_present
+  @current_user = GogglesDb::User.find_by(email: @user_credentials[:email])
+  expect(@current_user).to be_a(GogglesDb::User).and be_valid
+  expect(@current_user.confirmed_at).to be_present
+end
+
 # Sets @current_user
 Given('I have a confirmed account that is not mapped onto an existing swimmer') do
   @current_user = FactoryBot.create(:user, first_name: 'no_swimmer', last_name: 'should_match_this!', current_sign_in_at: nil)

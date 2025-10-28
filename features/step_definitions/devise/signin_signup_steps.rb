@@ -63,6 +63,22 @@ When('I fill the log-in form as the confirmed user') do
   btn.click
 end
 
+# Uses @user_credentials instead of @current_user
+# This variant doesn't require @current_user to be set, preventing any session initialization
+When('I fill the log-in form with the available credentials') do
+  expect(@user_credentials).to be_present
+  wait_for_ajax && sleep(2)
+  find_by_id('login-box', visible: true) # wait for rendering ("visit" doesn't)
+  fill_in('user_email', with: @user_credentials[:email])
+  fill_in('user_password', with: @user_credentials[:password])
+  btn = find_by_id('login-btn', visible: true)
+  page.scroll_to(btn) # force the button into the center of the viewport
+  wait_for_ajax && sleep(0.5)
+  btn.click
+  # Now that we've signed in, retrieve and set @current_user for subsequent steps
+  @current_user = GogglesDb::User.find_by(email: @user_credentials[:email])
+end
+
 # Requires a @current_user
 Given('the user row is signed-in') do
   @current_user.reload
