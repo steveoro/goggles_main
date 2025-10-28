@@ -2,17 +2,11 @@
 
 # Also reloads @current_user if defined
 # Uses Warden.test_reset! to properly clear authentication state in test mode
-#
-# NOTE: The Before hook already clears sessions at scenario start, but this step
-# provides an explicit mid-scenario sign-out if needed, plus verification.
 Given('I am not signed in') do
-  # Clear Warden test mode state (Rails-side session)
+  # Clear Warden session to ensure no user is signed in
+  # This is more reliable than submitting a DELETE request in concurrent test runs
   Warden.test_reset!
 
-  # Explicitly expire all Devise sessions via rack_test driver
-  # This directly calls the Devise sign_out endpoint which is more reliable
-  # than just clearing cookies in CI environments
-  current_driver = Capybara.current_driver
   begin
     Capybara.current_driver = :rack_test
     page.driver.submit :delete, destroy_user_session_path, {}

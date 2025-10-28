@@ -6,7 +6,8 @@ Feature: Reporting an issue of type "3b"
   ("change swimmer association - free select")
 
   Scenario: a new type "3b" request can be issued only by a signed-in user
-    Given there is a confirmed account available
+    Given no user session exists
+    And there is a confirmed account available
     When I browse to '/issues/faq_index'
     Then I get redirected to '/users/sign_in'
     When I fill the log-in form with the available credentials

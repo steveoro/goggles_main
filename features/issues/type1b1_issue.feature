@@ -6,7 +6,8 @@ Feature: Reporting an issue of type "1b1"
   ("wrong result in existing Meeting")
 
   Scenario: reporting an issue of type "1b1" requires an associated swimmer
-    Given I have a confirmed account with associated swimmer and existing MIRs
+    Given no user session exists
+    And I have a confirmed account with associated swimmer and existing MIRs
     And I am not signed in
     When I sign-in with my existing account
     And I have already selected a random meeting and an event from any of my available results
