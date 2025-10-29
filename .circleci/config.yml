@@ -60,6 +60,8 @@ web-assets: &web-assets
     echo "- NODE_ENV....: $NODE_ENV"
     echo "- Node `node -v`"
     echo "- `openssl version`"
+    # Use legacy OpenSSL provider for Node 20 compatibility with webpack 4
+    export NODE_OPTIONS=--openssl-legacy-provider
     bin/rails assets:precompile
 
 common-db-setup: &common-db-setup
@@ -674,7 +676,7 @@ jobs:
           command: |
             echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
             docker pull $DOCKERHUB_USERNAME/goggles-main:latest
-            RAILS_ENV=staging bundle exec rails assets:precompile
+            NODE_OPTIONS=--openssl-legacy-provider RAILS_ENV=staging bundle exec rails assets:precompile
             docker build -t $DOCKERHUB_USERNAME/goggles-main:latest --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.staging .
             docker push $DOCKERHUB_USERNAME/goggles-main:latest
 
@@ -725,7 +727,7 @@ jobs:
             echo "Git Tag: << pipeline.git.tag >>"
             echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
             docker pull $DOCKERHUB_USERNAME/goggles-main:latest
-            RAILS_ENV=production bundle exec rails assets:precompile
+            NODE_OPTIONS=--openssl-legacy-provider RAILS_ENV=production bundle exec rails assets:precompile
             docker build -t $DOCKERHUB_USERNAME/goggles-main:prod-<< pipeline.git.tag >> --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.prod .
             docker push $DOCKERHUB_USERNAME/goggles-main:prod-<< pipeline.git.tag >>
 
