@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.8.12** [Steve A.] updated container base image to ruby:3.1.4-alpine3.19
 - **0.8.11** [Steve A.] re-sync'ed w/ base engine; bundle updates; updated version to 0.8.11
 - **0.8.10** [Steve A.] re-sync w/ base engine; bundle updates; specs stability fixes; removed CodeClimate from CircleCI build setup; rel. 0.8.10
 - **0.8.09** [Steve A.] fixed patch path for ActiveSupport logger
