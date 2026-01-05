@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'goggles_db/version'
+
 class AddStringKeysToDataImportTables < ActiveRecord::Migration[6.1]
   def change
     # Add string key columns to DataImportMeetingIndividualResult
