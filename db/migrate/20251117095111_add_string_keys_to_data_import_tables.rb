@@ -36,9 +36,8 @@ class AddStringKeysToDataImportTables < ActiveRecord::Migration[6.1]
     # Fix column naming differences between data_import tables and target tables
     rename_column(:data_import_laps, :breath_number, :breath_cycles) # (same as laps table)
     rename_column(:data_import_relay_laps, :breath_number, :breath_cycles) # (same as relay_laps table)
-    # # Never needed (reversible syntax):
-    remove_columns(:data_import_meeting_relay_swimmers, :breath_number, :underwater_kicks, :underwater_seconds,
-                   type: :integer, default: 0)
+    # Columns never needed (reversible syntax):
+    remove_columns(:data_import_meeting_relay_swimmers, :breath_number, :underwater_kicks, :underwater_seconds, type: :integer)
 
     # Add indexes for faster lookups by keys
     add_index(:data_import_meeting_individual_results, :swimmer_key, name: 'idx_di_mir_swimmer_key')
