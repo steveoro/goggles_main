@@ -1,0 +1,1 @@
+/home/steve/Projects/goggles_db/.windsurf/workflows/goggles-column-change.md
