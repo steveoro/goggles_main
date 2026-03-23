@@ -1,1 +1,0 @@
-/home/steve/Projects/goggles_db/.windsurf/workflows/goggles-new-model.md
