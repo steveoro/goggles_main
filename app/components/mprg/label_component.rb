@@ -12,7 +12,6 @@ module Mprg
     # == Params
     # - meeting_program: an undecorated GogglesDb::MeetingProgram model instance
     def initialize(meeting_program:)
-      super
       @meeting_program = meeting_program
     end
 

@@ -23,7 +23,6 @@ module MRR
     #               note that this parameter should never be +nil+.
     # - current_user_is_admin: this should be +true+ only when the current_user has Admin grants; +false+ otherwise.
     def initialize(mrrs:, managed_team_ids:, user_teams: [], current_user_is_admin: false) # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
-      super
       @managed_team_ids = managed_team_ids
       @user_teams = user_teams
       @current_user_is_admin = current_user_is_admin

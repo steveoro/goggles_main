@@ -41,7 +41,6 @@ module Switch
     # rendered.
     #
     def initialize(field_name: nil, target_id: nil, option_classes: '')
-      super
       @target_id = target_id
       @option_classes = option_classes
       @field_name = field_name

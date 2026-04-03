@@ -21,7 +21,6 @@ module Mprg
     # == Params
     # - meeting_program: an undecorated GogglesDb::MeetingProgram association
     def initialize(meeting_programs:)
-      super
       @meeting_programs = meeting_programs
     end
 

@@ -16,7 +16,6 @@ class FlashAlertComponent < ViewComponent::Base
   # - title: an additional text title (can be +nil+)
   # - body: the actual text body of the message
   def initialize(symbol:, body:, title: nil)
-    super
     @symbol = symbol
     @title = title
     @body = body

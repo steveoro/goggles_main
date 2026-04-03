@@ -24,7 +24,6 @@ module RelayLaps
     # == Params
     # - relay_swimmer: the GogglesDb::MeetingRelaySwimmer model instance to be displayed
     def initialize(relay_swimmer:)
-      super
       @relay_swimmer = relay_swimmer
     end
 

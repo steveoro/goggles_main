@@ -14,7 +14,6 @@ class RankingPosComponent < ViewComponent::Base
   # - dsq_notes: any text note to be displayed as a tooltip, typically for DSQ results only; default: +nil+
   # - css: any class customization; default +nil+
   def initialize(rank:, dsq_notes: nil, css: nil)
-    super
     @rank = rank
     @dsq_notes = dsq_notes
     @css = css

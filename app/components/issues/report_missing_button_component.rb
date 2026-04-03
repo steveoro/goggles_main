@@ -24,7 +24,6 @@ module Issues
     #   later in the form, choosing among the events of the meeting.
     #
     def initialize(options = {})
-      super
       @parent_meeting = options[:parent_meeting]
       @event_type = options[:event_type]
     end

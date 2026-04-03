@@ -46,7 +46,6 @@ module Switch
     # - class: ''      => CSS classes names for switch rendering customization
     #                     ('red', 'round', ...)
     def initialize(label1, target1, label2, target2, options = {})
-      super
       @hidden_id = options[:hidden_id]
       @label1 = label1
       @label2 = label2

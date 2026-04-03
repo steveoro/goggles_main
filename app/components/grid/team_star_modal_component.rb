@@ -28,7 +28,6 @@ module Grid
     #  list of selectable Teams for the current user, either managed-by or just belonging-to (*required*)
     #
     def initialize(current_user:, user_teams:)
-      super
       @current_user = current_user
       @user_teams = user_teams.presence || []
     end

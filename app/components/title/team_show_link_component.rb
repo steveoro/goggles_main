@@ -27,7 +27,6 @@ module Title
     # - <tt>link_extra_params</tt>: additional parameters for the <tt>action_link_method</tt>;
     #                               defaults to +nil+.
     def initialize(team:, action_link_method: :link_to_full_name, link_extra_params: nil)
-      super
       @deco_team = TeamDecorator.decorate(team) if team
       @action_link_method = action_link_method
       @link_extra_params = link_extra_params

@@ -27,7 +27,6 @@ module Laps
     # - lap: the GogglesDb::Lap model instance to be displayed
     # - collapsed: (default: true) when +false+, it won't hide/collapse the lap row at start
     def initialize(lap:, collapsed: true)
-      super
       @lap = lap
       @collapsed = collapsed
     end

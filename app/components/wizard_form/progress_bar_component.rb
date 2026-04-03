@@ -31,7 +31,6 @@ module WizardForm
     #   Array of strings or unicode icons, one for each progressive step; defaults to ["\u0031", "\u0032", "\u0033"]
     #
     def initialize(options = {})
-      super
       @titles = options[:titles] || %w[1 2 3]
       @icons  = options[:icons]  || %w[\u0031\ufe0f \u0032\ufe0f \u0033\ufe0f]
     end

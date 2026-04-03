@@ -21,7 +21,6 @@ module Meeting
     # == Params
     # - meeting: an undecorated GogglesDb::Meeting model instance
     def initialize(meeting:)
-      super
       @meeting = meeting
     end
 

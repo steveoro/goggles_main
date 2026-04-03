@@ -39,6 +39,9 @@ Layout/LineLength:
   Exclude:
   - 'bin/bundle'
 
+Lint/MissingSuper:
+  Enabled: false
+
 Metrics/AbcSize:
   Max: 26
   Exclude:

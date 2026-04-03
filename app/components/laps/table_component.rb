@@ -27,7 +27,6 @@ module Laps
     # - laps: a GogglesDb::Lap array *already sorted #by_distance*, holding the list of laps to be displayed
     # - collapsed: (default: true) when +false+, it won't hide/collapse the lap sub-table at start
     def initialize(laps:, collapsed: true)
-      super
       @laps = laps
       @collapsed = collapsed
       @last_lap = laps&.last

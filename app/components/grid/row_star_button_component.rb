@@ -31,7 +31,6 @@ module Grid
     #  (optional; default +true+)
     #
     def initialize(asset_row:, current_user:, saved_ok: true)
-      super
       @asset_row = asset_row
       @current_user = current_user
       @saved_ok = saved_ok

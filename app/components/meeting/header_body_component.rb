@@ -28,7 +28,6 @@ module Meeting
     # - meeting: an undecorated GogglesDb::Meeting model instance
     # - subpage_target_id: the DOM ID for a collapsible sub-page of additional details
     def initialize(meeting:, subpage_target_id: 'more-details')
-      super
       @meeting = meeting
       @subpage_target_id = subpage_target_id
       return if @meeting.blank?

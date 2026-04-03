@@ -27,7 +27,6 @@ module Meeting
     # == Params
     # - meeting: an undecorated GogglesDb::Meeting model instance
     def initialize(meeting:)
-      super
       @meeting = meeting
       # Fallback to team_id for UserWorkshops / nils:
       @home_team = meeting.respond_to?(:home_team) ? meeting.home_team : meeting&.team

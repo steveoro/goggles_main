@@ -13,7 +13,7 @@
 
 require 'simplecov'
 SimpleCov.start 'rails'
-puts 'SimpleCov required and started.'
+puts 'SimpleCov required and started.' # rubocop:disable RSpec/Output
 
 # DISABLED:
 # unless ENV['CODECOV_TOKEN'].to_s.empty?
@@ -65,7 +65,7 @@ Rails.root.glob('spec/support/**/*.rb').each { |f| require f }
 begin
   ActiveRecord::Migration.maintain_test_schema!
 rescue ActiveRecord::PendingMigrationError
-  puts e.to_s.strip
+  puts e.to_s.strip # rubocop:disable RSpec/Output
   exit 1
 end
 

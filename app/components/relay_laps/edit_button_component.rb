@@ -23,7 +23,6 @@ module RelayLaps
     # - <tt>:can_manage</tt>     => (default: false) master flag to enable the rendering of the component;
     #
     def initialize(relay_result:, can_manage: false)
-      super
       @relay_result = relay_result
       @can_manage = can_manage
     end

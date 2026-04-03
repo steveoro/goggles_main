@@ -27,7 +27,6 @@ module Laps
     #                               displaying the link to the team results page associated with this MIR row.
     #
     def initialize(parent_result:, show_category: false, show_team: true)
-      super
       @parent_result = parent_result
       @show_category = show_category
       @show_team = show_team

@@ -23,7 +23,6 @@ module Switch
     # - <tt>option_classes</tt>: additional CSS class names for customization.
     #
     def initialize(target_id:, option_classes: '')
-      super
       @target_id = target_id
       @option_classes = option_classes
     end

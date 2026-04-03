@@ -28,7 +28,6 @@ module Mevent
     # - can_manage: when +true+ the row-action button "report missing" will be rendered; default: false
     #
     def initialize(event_container:, can_manage: false)
-      super
       @event_container = event_container
       @can_manage = can_manage
     end

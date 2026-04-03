@@ -25,7 +25,6 @@ module Mevent
     # == Params
     # - meeting_events: an undecorated GogglesDb::MeetingEvent association or an Array
     def initialize(meeting_events:)
-      super
       @meeting_events = meeting_events
     end
 

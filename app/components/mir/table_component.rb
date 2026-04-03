@@ -23,7 +23,6 @@ module MIR
     #                     a +nil+ value =begin  =endwill disable the rendering check for the action buttons.
     # - current_swimmer_id: current_user.swimmer_id value, if any.
     def initialize(mirs:, managed_team_ids:, current_swimmer_id:) # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
-      super
       @managed_team_ids = managed_team_ids
       @current_swimmer_id = current_swimmer_id
       @mirs = if mirs.is_a?(ActiveRecord::Relation) && mirs.first.is_a?(GogglesDb::MeetingIndividualResult)

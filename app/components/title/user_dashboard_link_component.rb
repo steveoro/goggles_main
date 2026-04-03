@@ -19,7 +19,6 @@ module Title
     # == Params
     # - user: a valid User instance
     def initialize(user:)
-      super
       @user = user
     end
 

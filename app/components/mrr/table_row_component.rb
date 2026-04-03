@@ -25,7 +25,6 @@ module MRR
     # - :lap_edit       => when +true+, it will render the "lap edit" row-action button
     # - :report_mistake => when +true+, it will render the "report mistake" row-action button
     def initialize(options = {})
-      super
       @mrr = options[:mrr]
       @index = options[:index] || 0
       @lap_edit = options[:lap_edit] || false

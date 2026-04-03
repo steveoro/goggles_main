@@ -63,7 +63,6 @@ module ComboBox
     # - wrapper_class: 'col-auto' => CSS class for the wrapping DIV
     #
     def initialize(api_url, label, base_name, options = {})
-      super
       @api_url = api_url.present? ? "#{base_api_url}/api/v3/#{api_url}" : nil
       @api_url2 = "#{base_api_url}/api/v3" if options[:use_2_api] # Toggle secondary call by setting the shared base URL
       @label = label

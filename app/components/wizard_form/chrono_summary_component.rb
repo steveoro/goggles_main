@@ -30,7 +30,6 @@ module WizardForm
     # - skip_notice: skip the 'required fields are ready/missing' notice sections (default: false => render them)
     #
     def initialize(options = {})
-      super
       @swimmer = options[:swimmer] || ''
       @event = options[:event] || ''
       @title = options[:title] || ''

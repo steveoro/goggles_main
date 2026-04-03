@@ -22,7 +22,6 @@ module Issues
     # - <tt>can_manage</tt>: master flag to enable the rendering of the component; default: false
     #
     def initialize(result_row:, can_manage: false)
-      super
       @result_row = result_row
       @can_manage = can_manage
     end

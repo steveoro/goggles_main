@@ -20,7 +20,6 @@ module RelayLaps
     # - <tt>:relay_result</tt>  => [required] a valid instance of the parent <tt>GogglesDb::MeetingRelayResult</tt>;
     #                               must be already serialized (not new) since the ID is needed.
     def initialize(relay_result:)
-      super
       @relay_result = relay_result
     end
 

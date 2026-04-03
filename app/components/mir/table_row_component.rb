@@ -31,7 +31,6 @@ module MIR
     # - :show_team => when +true+ (default), it will render the link to the team results page associated with this MIR row
     #
     def initialize(options = {}) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-      super
       @mir = options[:mir]
       @index = options[:index] || 0
       @lap_edit = options[:lap_edit] || false

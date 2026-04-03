@@ -24,7 +24,6 @@ module Title
     # - <tt>:parent_link</tt> Parent URL for the parent text
     #
     def initialize(title:, css_icon:, parent_title:, parent_link:, title_link: nil)
-      super
       @title = title
       @title_link = title_link
       @css_icon = css_icon

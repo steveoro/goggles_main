@@ -29,7 +29,7 @@
             %td.pt-2
               - can_edit_lap = current_user_is_admin || managed_team_ids.nil? || managed_team_ids.include?(mir.team_id)
               - can_manage = user_signed_in? && current_user.swimmer_id == mir.swimmer_id
-              = render(partial: 'swimmer_results_header_timing_cell.html', locals: { mir: mir,
+              = render(partial: 'swimmer_results_header_timing_cell', locals: { mir: mir,
                        can_edit_lap: can_edit_lap, can_manage: can_manage })
 
             %td.pt-2
