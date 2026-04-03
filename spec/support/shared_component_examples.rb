@@ -96,7 +96,7 @@ shared_examples_for 'an AbstractMeeting detail page rendering main \'header\' de
   let(:parsed_node) { Nokogiri::HTML.fragment(subject) }
 
   it 'shows the swimming pool name, when set' do
-    if (fixture_row.respond_to?(:swimming_pools) && fixture_row.swimming_pools.count.positive?) ||
+    if (fixture_row.respond_to?(:swimming_pools) && fixture_row.swimming_pools.any?) ||
        (fixture_row.respond_to?(:swimming_pool) && fixture_row.swimming_pool.present?)
       expect(parsed_node.at_css('td#swimming-pool')).to be_present
       expect(parsed_node.at_css('td#swimming-pool').text).to include(

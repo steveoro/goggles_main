@@ -81,7 +81,7 @@ RSpec.describe 'teams/show.html.haml' do
           node_html = Nokogiri::HTML.fragment(rendered).css('section#team-stats table .first-meeting a')[0].to_html
           expect(node_html).to eq(view.meeting_show_link(stats_row.results[0]['first_meeting']))
         end
-        if stats_row.results.count > 1 && stats_row.results[1]['first_meeting'].present?
+        if stats_row.results.many? && stats_row.results[1]['first_meeting'].present?
           node_html = Nokogiri::HTML.fragment(rendered).css('section#team-stats table .first-meeting a')[1].to_html
           expect(node_html).to eq(view.meeting_show_link(stats_row.results[1]['first_meeting']))
         end
@@ -93,7 +93,7 @@ RSpec.describe 'teams/show.html.haml' do
           node_html = Nokogiri::HTML.fragment(rendered).css('section#team-stats table .last-meeting a')[0].to_html
           expect(node_html).to eq(view.meeting_show_link(stats_row.results[0]['last_meeting']))
         end
-        if stats_row.results.count > 1 && stats_row.results[1]['last_meeting'].present?
+        if stats_row.results.many? && stats_row.results[1]['last_meeting'].present?
           node_html = Nokogiri::HTML.fragment(rendered).css('section#team-stats table .last-meeting a')[1].to_html
           expect(node_html).to eq(view.meeting_show_link(stats_row.results[1]['last_meeting']))
         end

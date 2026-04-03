@@ -213,7 +213,7 @@ module Solver
     # - nested: the name of the nested entity that may include the key
     # - sub_key: both '<sub_key>' & '<sub_key>_id' are checked for presence
     def nested_key?(nested, sub_key)
-      req&.fetch(nested, nil)&.fetch(sub_key, nil) || req&.fetch(nested, nil)&.fetch("#{sub_key}_id", nil)
+      req&.dig(nested, sub_key) || req&.dig(nested, "#{sub_key}_id")
     end
 
     # Returns a value for the corresponding key, if present in the attributes.
@@ -229,7 +229,7 @@ module Solver
     # - sub_key: nested sub-key for the value retrieval
     #
     def value_from_req(key:, nested:, sub_key:)
-      req&.fetch(key, nil) || req&.fetch(nested, nil)&.fetch(sub_key, nil)
+      req&.fetch(key, nil) || req&.dig(nested, sub_key)
     end
 
     # Should return the first entity row found that matches at least one of the key attributes.

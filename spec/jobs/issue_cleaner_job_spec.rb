@@ -24,7 +24,7 @@ RSpec.describe IssueCleanerJob do
       5.times do
         FactoryBot.create(
           issue_factory,
-          status: (GogglesDb::Issue::MAX_PROCESSABLE_STATE + 1..6).to_a.sample,
+          status: ((GogglesDb::Issue::MAX_PROCESSABLE_STATE + 1)..6).to_a.sample,
           updated_at: IssueCleanerJob::OBSOLESCENCE_MARK.ago - 1.minute
         )
       end

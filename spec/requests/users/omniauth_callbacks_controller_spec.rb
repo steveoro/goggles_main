@@ -6,7 +6,6 @@ require 'rails_helper'
 # as an example for correctly mocking OAuth requests in case of any future Cucumber tests.
 # We'll just stick to plain route checking for RSpec request examples.
 #
-# rubocop:disable Metrics/BlockLength
 RSpec.describe Users::OmniauthCallbacksController do
   let(:existing_user) { GogglesDb::User.first(50).sample }
   let(:new_user) { FactoryBot.build(:user) }
@@ -157,4 +156,3 @@ RSpec.describe Users::OmniauthCallbacksController do
     end
   end
 end
-# rubocop:enable Metrics/BlockLength

@@ -85,14 +85,16 @@ module Grid
     end
 
     # "Starred" flag: +true+ if the asset has already been tagged by a user
-    def starred
-      @starred ||= enabled && already_tagged_for_ids.present?
+    def starred?
+      return already_tagged_for_ids.present? if enabled
+
+      false
     end
 
     # CSS icon class
     def css_icon
       return 'fa fa-minus' if expired?
-      return 'fa fa-calendar' if enabled && @saved_ok && starred
+      return 'fa fa-calendar' if enabled && @saved_ok && starred?
       return 'fa fa-calendar-o' if enabled && @saved_ok
       return 'fa fa-minus-circle' unless enabled
 
@@ -102,7 +104,7 @@ module Grid
     # Memoized CSS class for highlighting the icon.
     def css_highlight
       return 'text-secondary' if expired?
-      return 'text-success' if enabled && @saved_ok && starred
+      return 'text-success' if enabled && @saved_ok && starred?
       return 'text-secondary' if enabled && @saved_ok
 
       'text-danger'

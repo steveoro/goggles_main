@@ -312,12 +312,12 @@ class MeetingsController < ApplicationController
 
   # Collects and returns all the MIR rows from the specified Meeting & Team tuple.
   def collect_team_mirs(meeting, team)
-    meeting.meeting_individual_results.includes(meeting_program: [meeting_event: :event_type]).for_team(team)
+    meeting.meeting_individual_results.includes(meeting_program: [{ meeting_event: :event_type }]).for_team(team)
   end
 
   # Collects and returns all the MRR rows from the specified Meeting & Team tuple.
   def collect_team_mrrs(meeting, team)
-    meeting.meeting_relay_results.includes(meeting_program: [meeting_event: :event_type]).for_team(team)
+    meeting.meeting_relay_results.includes(meeting_program: [{ meeting_event: :event_type }]).for_team(team)
   end
 
   # Maps the top scores for each gender & custom (Goggle-) cup.

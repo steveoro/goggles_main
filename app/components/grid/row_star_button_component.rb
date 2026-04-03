@@ -75,7 +75,7 @@ module Grid
     end
 
     # "Starred" flag: +true+ if the asset has already been tagged by a user
-    def starred
+    def starred?
       return meeting.tags_by_user_list.include?("u#{@current_user.id}") if enabled
 
       false
@@ -84,7 +84,7 @@ module Grid
     # CSS icon class
     def css_icon
       return 'fa fa-minus' if expired?
-      return 'fa fa-star' if enabled && @saved_ok && starred
+      return 'fa fa-star' if enabled && @saved_ok && starred?
       return 'fa fa-star-o' if enabled && @saved_ok
       return 'fa fa-minus-circle' unless enabled
 
@@ -94,7 +94,7 @@ module Grid
     # Memoized CSS class for highlighting the icon.
     def css_highlight
       return 'text-secondary' if expired?
-      return 'text-warning' if enabled && @saved_ok && starred
+      return 'text-warning' if enabled && @saved_ok && starred?
       return 'text-primary' if enabled && @saved_ok
 
       'text-danger'

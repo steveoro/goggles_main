@@ -39,7 +39,7 @@ module WizardForm
     # Skips rendering unless both the parameters are properly set
     def render?
       @titles.respond_to?(:count) && @icons.respond_to?(:count) &&
-        @titles.count.positive? && @titles.count == @icons.count
+        @titles.any? && @titles.count == @icons.count
     end
   end
 end

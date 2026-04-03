@@ -1,11 +1,11 @@
-require:
-  - rubocop-factory_bot
-  - rubocop-capybara
-  - rubocop-performance
-  - rubocop-rails
-  - rubocop-rake
-  - rubocop-rspec
-  - rubocop-rspec_rails
+plugins:
+- rubocop-factory_bot
+- rubocop-capybara
+- rubocop-performance
+- rubocop-rails
+- rubocop-rake
+- rubocop-rspec
+- rubocop-rspec_rails
 
 inherit_from: .rubocop_todo.yml
 
@@ -24,9 +24,9 @@ AllCops:
   NewCops: enable
   TargetRubyVersion: 3.1.4
   Exclude:
-    - 'db/schema.rb'
-    - 'vendor/**/*'
-    - 'node_modules/**/*'
+  - 'db/schema.rb'
+  - 'vendor/**/*'
+  - 'node_modules/**/*'
 
 FactoryBot/SyntaxMethods:
   Enabled: false
@@ -37,25 +37,25 @@ FactoryBot/SyntaxMethods:
 Layout/LineLength:
   Max: 165
   Exclude:
-    - 'bin/bundle'
+  - 'bin/bundle'
 
 Metrics/AbcSize:
   Max: 26
   Exclude:
-    - 'bin/bundle'
-    - 'db/migrate/*'
-    - 'app/controllers/users/omniauth_callbacks_controller.rb'
-    - 'app/decorators/swimming_pool_decorator.rb'
+  - 'bin/bundle'
+  - 'db/migrate/*'
+  - 'app/controllers/users/omniauth_callbacks_controller.rb'
+  - 'app/decorators/swimming_pool_decorator.rb'
 
 Metrics/BlockLength:
   Max: 40
-  CountAsOne: ['array', 'heredoc']
+  CountAsOne: [ 'array', 'heredoc' ]
   Exclude:
-    - 'db/schema.rb'
-    - 'lib/capistrano/tasks/db.rake'
-    - 'lib/capistrano/tasks/status.rake'
-    - 'lib/tasks/stats.rake'
-    - 'spec/**/*'
+  - 'db/schema.rb'
+  - 'lib/capistrano/tasks/db.rake'
+  - 'lib/capistrano/tasks/status.rake'
+  - 'lib/tasks/stats.rake'
+  - 'spec/**/*'
 
 Metrics/ClassLength:
   Max: 120
@@ -67,64 +67,61 @@ Metrics/ClassLength:
 Metrics/CyclomaticComplexity:
   Max: 8
   Exclude:
-    - 'bin/bundle'
+  - 'bin/bundle'
 
 Metrics/MethodLength:
   Max: 35
   Exclude:
-    - 'db/migrate/*'
+  - 'db/migrate/*'
 
 Metrics/PerceivedComplexity:
   Exclude:
-    - 'bin/bundle'
-
+  - 'bin/bundle'
 
 # We use arrays to group multiple similar specs under a single implementation
 Performance/CollectionLiteralInLoop:
   Exclude:
-    - 'spec/**/*'
-
+  - 'spec/**/*'
 
 Rails/BulkChangeTable:
   Exclude:
-    - 'db/migrate/*'
+  - 'db/migrate/*'
 
 # Excluded files here were already corrected in later migrations:
 Rails/ThreeStateBooleanColumn:
   Exclude:
-    - 'db/migrate/20210513113601_create_goggles_db_user_workshops.rb'
-    - 'db/migrate/20220228114607_add_cancelled_to_calendars.rb'
-    - 'db/migrate/20220801110842_add_sql_batch_field_to_import_queues.rb'
+  - 'db/migrate/20210513113601_create_goggles_db_user_workshops.rb'
+  - 'db/migrate/20220228114607_add_cancelled_to_calendars.rb'
+  - 'db/migrate/20220801110842_add_sql_batch_field_to_import_queues.rb'
 
 Rails/SkipsModelValidations:
   Exclude:
-    - 'app/controllers/users/sessions_controller.rb'
-    - 'db/migrate/20230530165750_clear_non_existing_associated_user_id.rb'
-    - 'db/migrate/20210630154722_data_fix_badges_with_null_entry_time_type.rb'
-    - 'db/migrate/20240204165000_data_fix_remove_null_rank_values.rb'
-    - 'db/migrate/20240301123810_add_service_name_to_active_storage_blobs.active_storage.rb'
-    - 'db/migrate/20240716115552_data_fix_null_badge_numbers.rb'
+  - 'app/controllers/users/sessions_controller.rb'
+  - 'db/migrate/20230530165750_clear_non_existing_associated_user_id.rb'
+  - 'db/migrate/20210630154722_data_fix_badges_with_null_entry_time_type.rb'
+  - 'db/migrate/20240204165000_data_fix_remove_null_rank_values.rb'
+  - 'db/migrate/20240301123810_add_service_name_to_active_storage_blobs.active_storage.rb'
+  - 'db/migrate/20240716115552_data_fix_null_badge_numbers.rb'
 
 Rake/Desc:
   Exclude:
-    - 'lib/tasks/cucumber.rake'
+  - 'lib/tasks/cucumber.rake'
 
 Rake/DuplicateTask:
   Exclude:
-    - 'lib/tasks/cucumber.rake'
+  - 'lib/tasks/cucumber.rake'
 
 Rake/MethodDefinitionInTask:
   Exclude:
-    - 'lib/capistrano/tasks/db.rake'
-    - 'lib/tasks/stats.rake'
-
+  - 'lib/capistrano/tasks/db.rake'
+  - 'lib/tasks/stats.rake'
 
 RSpec/IndexedLet:
   Enabled: false
 
 RSpec/ExampleLength:
   Exclude:
-    - 'spec/support/shared_component_examples.rb'
+  - 'spec/support/shared_component_examples.rb'
 
 RSpec/ExpectInHook:
   Enabled: false
@@ -135,15 +132,14 @@ RSpec/ExpectInLet:
 RSpec/InstanceVariable:
   AssignmentOnly: true
   Exclude:
-    - 'spec/views/chrono/index.html.haml_spec.rb'
-    - 'spec/views/tools/fin_score.html.haml_spec.rb'
+  - 'spec/views/chrono/index.html.haml_spec.rb'
+  - 'spec/views/tools/fin_score.html.haml_spec.rb'
 
 RSpec/MultipleMemoizedHelpers:
   Max: 10
   Exclude:
-    - 'spec/decorators/iq_request/chrono_rec_param_adapter_spec.rb'
-    - 'spec/requests/tools_controller_spec.rb'
-
+  - 'spec/decorators/iq_request/chrono_rec_param_adapter_spec.rb'
+  - 'spec/requests/tools_controller_spec.rb'
 
 Style/ClassAndModuleChildren:
   Exclude:
@@ -151,15 +147,15 @@ Style/ClassAndModuleChildren:
 
 Style/Documentation:
   Exclude:
-    - 'db/migrate/**/*'
-    - 'spec/**/*'
-    - 'test/**/*'
-    - 'config/application.rb'
-    - 'app/controllers/application_controller.rb'
-    - 'app/helpers/application_helper.rb'
-    - 'app/mailers/application_mailer.rb'
-    - 'app/models/application_record.rb'
+  - 'db/migrate/**/*'
+  - 'spec/**/*'
+  - 'test/**/*'
+  - 'config/application.rb'
+  - 'app/controllers/application_controller.rb'
+  - 'app/helpers/application_helper.rb'
+  - 'app/mailers/application_mailer.rb'
+  - 'app/models/application_record.rb'
 
 Style/FormatStringToken:
   Exclude:
-    - 'lib/capistrano/tasks/*'
+  - 'lib/capistrano/tasks/*'

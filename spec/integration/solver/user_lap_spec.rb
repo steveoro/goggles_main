@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 
-# rubocop:disable Metrics/BlockLength
 RSpec.describe Solver::UserLap, type: :integration do
   #
   # MULTIPLE requests, each with mixed NEW & EXISTING VALID data
@@ -230,4 +229,3 @@ RSpec.describe Solver::UserLap, type: :integration do
   #-- -------------------------------------------------------------------------
   #++
 end
-# rubocop:enable Metrics/BlockLength

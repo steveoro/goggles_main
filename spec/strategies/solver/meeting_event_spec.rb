@@ -169,7 +169,7 @@ RSpec.describe Solver::MeetingEvent, type: :strategy do
           :meeting_event,
           meeting_session_id: msession.id,
           event_type_id: GogglesDb::EventsByPoolType.eventable
-                                                    .for_pool_type(msession.pool_type)
+                         .for_pool_type(msession.pool_type)
                                                     .sample
                                                     .event_type_id,
           heat_type_id: GogglesDb::HeatType::FINALS_ID,

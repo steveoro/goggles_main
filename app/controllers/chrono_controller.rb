@@ -266,7 +266,7 @@ class ChronoController < ApplicationController
     parent_id = nil
 
     # Compute & store delta timing in each lap data row: (lap_data: 1..3, index 0..2)
-    if laps_list.count > 1
+    if laps_list.many?
       laps_list[1..]&.each_with_index do |lap_data, index|
         delta_timing = compute_delta_timing_from_lap_data(lap_data, laps_list[index])
         lap_data['minutes'] = delta_timing.minutes

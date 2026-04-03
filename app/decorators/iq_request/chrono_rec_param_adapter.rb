@@ -134,8 +134,8 @@ module IqRequest
 
       # Find the user_id if present (fail fast if it's neither @ root level nor nested)
       user_id = request_hash.fetch('user_id', nil) ||
-                request_hash.fetch('user_lap', nil)&.fetch('user_result', nil)&.fetch('user_id', nil) ||
-                request_hash.fetch('lap', nil)&.fetch('meeting_individual_result', nil)&.fetch('user_id', nil)
+                request_hash.dig('user_lap', 'user_result', 'user_id') ||
+                request_hash.dig('lap', 'meeting_individual_result', 'user_id')
       instance = IqRequest::ChronoRecParamAdapter.new(GogglesDb::User.find_by(id: user_id), {})
       instance.request_hash = request_hash
       instance

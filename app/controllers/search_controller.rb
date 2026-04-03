@@ -124,7 +124,7 @@ class SearchController < ApplicationController
       flash.now[:alert] = I18n.t('search_view.no_results')
     else
       flash.now[:info] = "#{I18n.t('search_view.found_total_matches', count: total_count)} \
-                      #{pagination_required? ? I18n.t('search_view.swipe_left_or_right') : ''}".html_safe
+                      #{I18n.t('search_view.swipe_left_or_right') if pagination_required?}".html_safe
     end
   end
 

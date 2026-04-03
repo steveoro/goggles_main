@@ -15,11 +15,12 @@ require 'simplecov'
 SimpleCov.start 'rails'
 puts 'SimpleCov required and started.'
 
-unless ENV['CODECOV_TOKEN'].to_s.empty?
-  require 'codecov'
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov
-  puts 'CodeCov.io selected for reporting output.'
-end
+# DISABLED:
+# unless ENV['CODECOV_TOKEN'].to_s.empty?
+#   require 'codecov'
+#   SimpleCov.formatter = SimpleCov::Formatter::Codecov
+#   puts 'CodeCov.io selected for reporting output.'
+# end
 
 # Add DSL for "N+1 query" issues directly inside RSpec:
 require 'n_plus_one_control/rspec'
@@ -63,7 +64,7 @@ Rails.root.glob('spec/support/**/*.rb').each { |f| require f }
 # If you are not using ActiveRecord, you can remove these lines.
 begin
   ActiveRecord::Migration.maintain_test_schema!
-rescue ActiveRecord::PendingMigrationError => e
+rescue ActiveRecord::PendingMigrationError
   puts e.to_s.strip
   exit 1
 end
@@ -72,13 +73,13 @@ require 'view_component/test_helpers'
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = Rails.root.join('/spec/fixtures')
+  config.fixture_paths = [Rails.root.join('spec/fixtures').to_s]
 
   # Add custom request spec path for Grape APIs: (for a standard Rails API test suite these are expected to be in /spec/requests/)
-  config.include(RSpec::Rails::RequestExampleGroup, type: :request, file_path: %r{spec/api})
+  # config.include(RSpec::Rails::RequestExampleGroup, type: :request, file_path: %r{spec/api})
 
   # Add helpers to get Devise working with RSpec:
-  config.include(Devise::TestHelpers, type: :features)
+  # config.include(Devise::TestHelpers, type: :features)
   config.include(Devise::Test::ControllerHelpers, type: :view) # (<-- these helpers include the Devise.mappings)
   config.include(Devise::Test::IntegrationHelpers, type: :view) # (<-- whereas, these do not)
   config.include(Devise::Test::IntegrationHelpers, type: :request)
@@ -108,11 +109,11 @@ RSpec.configure do |config|
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 
-  # RSpec Rails can automatically mix in different behaviours to your tests
+  # RSpec Rails can automatically mix in different behaviors to your tests
   # based on their file location, for example enabling you to call `get` and
   # `post` in specs under `spec/controllers`.
   #
-  # You can disable this behaviour by removing the line below, and instead
+  # You can disable this behavior by removing the line below, and instead
   # explicitly tag your specs with their type, e.g.:
   #
   #     RSpec.describe UsersController, type: :controller do

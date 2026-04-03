@@ -373,7 +373,7 @@ RSpec.describe ChronoHelper do
       end
 
       it 'includes the previous Swimmer teams IDs as value (if there are any)' do
-        return true unless available_teams.count.positive?
+        return true unless available_teams.any?
 
         nodes = Nokogiri::HTML.fragment(subject).css('option')
         domain_ids = available_teams.map(&:id)
@@ -383,7 +383,7 @@ RSpec.describe ChronoHelper do
       end
 
       it 'includes the previous Swimmer teams names as option text (if there are any)' do
-        return true unless available_teams.count.positive?
+        return true unless available_teams.any?
 
         nodes = Nokogiri::HTML.fragment(subject).css('option')
         domain_labels = available_teams.map(&:editable_name)
@@ -393,7 +393,7 @@ RSpec.describe ChronoHelper do
       end
 
       it 'pre-selects the previous choice (Swimmer first associated Team, if there are any)' do
-        return true unless available_teams.count.positive?
+        return true unless available_teams.any?
 
         node = Nokogiri::HTML.fragment(subject).css("option[selected='selected']")
         expect(node).to be_present

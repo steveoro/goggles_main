@@ -314,9 +314,9 @@ Given('I have a confirmed team manager account managing some existing MRRs with 
 
   @last_seasons_ids = [
     GogglesDb::Season.includes(
-      meetings: [meeting_relay_results: { meeting_event: :event_type }]
+      meetings: [{ meeting_relay_results: { meeting_event: :event_type } }]
     ).joins(
-      meetings: [meeting_relay_results: { meeting_event: :event_type }]
+      meetings: [{ meeting_relay_results: { meeting_event: :event_type } }]
     ).where(
       'event_types.code': %w[S4X100SL S4X100MI S4X200SL M4X100SL M4X100MI M4X200SL]
     ).last_season_by_type(GogglesDb::SeasonType.mas_fin).id

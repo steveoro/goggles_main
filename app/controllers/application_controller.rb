@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   before_action :configure_devise_permitted_parameters, if: :devise_controller?
 
   # Prosopite will work only when enabled in config/environments/<ENV>.rb
-  if Rails.env.test? || Rails.env.development?
+  if Rails.env.local?
     around_action :n_plus_one_detection
 
     def n_plus_one_detection

@@ -27,7 +27,7 @@ module Users
     def create
       # Avoid hCaptcha check in test environment - Don't even start
       # checking hcaptcha if under test environment:
-      unless Rails.env.test? || verify_hcaptcha
+      unless Rails.env.test? || verify_hcaptcha?
         redirect_to(new_user_registration_url, alert: I18n.t('captcha.error'))
         return
       end
@@ -72,7 +72,7 @@ module Users
     end
 
     # Checks client response against hCaptcha's /siteverify
-    def verify_hcaptcha
+    def verify_hcaptcha?
       res = RestClient.post(
         'https://hcaptcha.com/siteverify',
         "response=#{params['h-captcha-response']}&" \

@@ -95,7 +95,7 @@ module Solver
     # Filtered hash of minimum required field bindings for the finder strategy
     def finder_required_bindings
       required_keys = %i[meeting_id scheduled_date session_order]
-      filtered_bindings = @bindings.select { |key, _value| required_keys.include?(key) }
+      filtered_bindings = @bindings.slice(*required_keys)
       # ASSUMES: finder bindings have already been solved (so that meeting_id is already set)
       # ALSO: do not force a session_order if we already have a value from the bindings
       filtered_bindings[:session_order] ||= compute_session_order_from_bindings
@@ -105,7 +105,7 @@ module Solver
     # Filtered hash of minimum required field bindings for the creator strategy
     def creator_required_bindings
       required_keys = %i[meeting_id]
-      @bindings.select { |key, _value| required_keys.include?(key) }
+      @bindings.slice(*required_keys)
     end
 
     # Computes a possible session order assuming the specified meeting is valid

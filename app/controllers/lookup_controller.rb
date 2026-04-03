@@ -18,7 +18,7 @@ class LookupController < ApplicationController
   # - 'user[year_of_birth]'
   #
   def matching_swimmers
-    permitted = params.require(:user).permit(:first_name, :last_name, :year_of_birth)
+    permitted = params.expect(user: %i[first_name last_name year_of_birth])
 
     if permitted.key?(:first_name) && permitted.key?(:last_name) && permitted.key?(:year_of_birth)
       matches = GogglesDb::User.new(permitted).matching_swimmers

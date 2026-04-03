@@ -110,7 +110,7 @@ module Solver
     # Filtered hash of minimum required field bindings
     def required_bindings
       required_keys = %i[meeting_relay_result_id stroke_type_id swimmer_id badge_id]
-      @bindings.select { |key, _value| required_keys.include?(key) }
+      @bindings.slice(*required_keys)
     end
 
     # Returns an esteem of the existing MeetingRelaySwimmer order for the associated MeetingRelayResult,

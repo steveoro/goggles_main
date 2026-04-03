@@ -1,5 +1,5 @@
 # --- Common stuff:
-FROM ruby:3.1.4-alpine3.19 AS common_builder
+FROM ruby:3.4.7-alpine3.22 AS common_builder
 ENV BUNDLER_VERSION=2.4.15 \
     INSTALL_PATH=/app
 
@@ -64,12 +64,18 @@ ENV RAILS_ENV=production \
 
 WORKDIR $INSTALL_PATH
 COPY . ./
-RUN bundle config build.nokogiri --use-system-libraries
+RUN bundle config set --local build.nokogiri --use-system-libraries && \
+    bundle config set --local retry 3 && \
+    bundle config set --local timeout 30
+
 COPY ./config/database.docker.yml ./config/database.yml
 
+# As in goggles_api:
+# RUN bundle install --jobs 4 --retry 3 || \
+#     bundle install --jobs 4 --retry 5 --full-index
+# Original:
 RUN bundle check || bundle install
-# Apply patch for ActiveSupport logger issue (idempotent with || true)
-RUN patch -p1 -N -d /usr/local/bundle/gems/activesupport-6.1.7.10 < patches/activesupport-6.1.7-logger.patch || true
+
 RUN yarn install --check-files
 
 # Keep the version argument at the end to avoid early cache miss during builds:
