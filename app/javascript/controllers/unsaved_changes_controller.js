@@ -26,7 +26,7 @@ import { Controller } from '@hotwired/stimulus'
  * == Actions:
  * - Page/Form should bind to:
  *    - 'beforeunload@window->unsaved-changes#leavingPage'
- *    - 'turbolinks:before-visit@window->unsaved-changes#leavingPage'
+ *    - 'turbo:before-visit@window->unsaved-changes#leavingPage'
  *
  * - Edit fields should bind to:
  *    - 'change->unsaved-changes#formIsChanged'
@@ -65,7 +65,7 @@ export default class extends Controller {
   leavingPage (event) {
     if (this.isFormChanged()) {
       const msg = this.data.get('message')
-      if (event.type === 'turbolinks:before-visit') {
+      if (event.type === 'turbo:before-visit') {
         if (!window.confirm(msg)) {
           event.preventDefault()
         }

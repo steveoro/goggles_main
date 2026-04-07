@@ -5,7 +5,7 @@
     = render(partial: 'meeting_header', locals: { meeting: @meeting })
     = render(partial: 'meeting_navs', locals: { meeting: @meeting, active_tab: 'results', can_tap_to_results: @default_team_or_swimmer_in_meeting })
 
-    %section#meeting-show-results{ 'data-turbolinks-permanent' => true }
+    %section#meeting-show-results{ 'data-turbo-permanent' => true }
       %table.table.table-striped.table-sm
         - @meeting_events&.by_order&.each do |meeting_event|
           %thead.mevent-separator{ id: "mevent-#{meeting_event.id}" }

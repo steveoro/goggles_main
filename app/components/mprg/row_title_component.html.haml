@@ -3,5 +3,5 @@
     %th{ colspan: 4, class: style_classes }
       %b= render(Mprg::LabelComponent.new(meeting_program: @meeting_program))
       &nbsp;
-      = link_to('#top-of-page', data: { turbolinks: false }) do
+      = link_to('#top-of-page', data: { turbo: false }) do
         %i.mt-1.float-right.text-light.fa.fa-arrow-up

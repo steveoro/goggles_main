@@ -1,0 +1,27 @@
+default: &default
+  clear_solid_queue_finished_jobs:
+    command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
+    schedule: every hour at minute 10
+  issue_cleaner:
+    class: IssueCleanerJob
+    queue: issues
+    schedule: every 5 minutes
+  import_processor:
+    class: ImportProcessorJob
+    queue: iq
+    schedule: every 3 minutes
+  # TODO
+  # database_backup_morning:
+  #   class: DatabaseBackupJob
+  #   queue: low_priority
+  #   schedule: every day at 8am
+  # database_backup_evening:
+  #   class: DatabaseBackupJob
+  #   queue: low_priority
+  #   schedule: every day at 8pm
+
+development: {}
+  # <<: *default
+
+production:
+  <<: *default

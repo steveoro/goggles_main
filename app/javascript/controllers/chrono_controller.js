@@ -1,24 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
 import TimerElement from '../src/timer_element'
-import Backbone from 'backbone'
-import Backgrid from 'backgrid'
-import $ from 'jquery'
-
-// Row data model:
-const Timing = Backbone.Model.extend({
-  defaults: {
-    order: 0,
-    hours: 0, // (not currently used)
-    minutes: 0,
-    seconds: 0,
-    hundredths: 0,
-    meters: 0,
-    labelOverall: '',
-    trash: 'x',
-    gridRef: null // internal reference
-  }
-})
-// -----------------------------------------------------------------------------
 
 /**
  * = StimulusJS Chrono controller =
@@ -83,8 +64,8 @@ export default class extends Controller {
    * Initialization boilerplate for the TimerElement.
    */
   connect () {
-    // DEBUG
-    // console.log('Connecting ChronoController...')
+    this.laps = []
+    this.deleteEnabled = false
 
     if (this.hasTimerTarget && this.hasLapsGridTarget) {
       this.timerWidget = new TimerElement(this.timerTarget, {
@@ -108,129 +89,140 @@ export default class extends Controller {
       })
       this.setupLapsGrid()
     }
-
-    /**
-     * Takes a "timing" object or a Timing model with compatible field names and
-     * returns the formatted labelTime string field.
-     */
-    this.updateLabelTime = function (timing) {
-      // DEBUG
-      // console.log('updateLabelTime()')
-      // console.log(this)
-      // console.log(timing)
-
-      // Format digit strings:
-      // let labelHours = `${timing.hours < 10 ? '0' + timing.hours : timing.hours}` // (unused)
-      const labelMins = `${timing.minutes < 10 ? '0' + timing.minutes : timing.minutes}`
-      const labelSecs = `${timing.seconds < 10 ? '0' + timing.seconds : timing.seconds}`
-      const labelHundredths = `${timing.hundredths < 10 ? '0' + timing.hundredths : timing.hundredths}`
-      return `${labelMins}'${labelSecs}"${labelHundredths}`
-    }
   }
-  // ---------------------------------------------------------------------------
 
   /**
-   * == initLapGrid() ==
-   * Setup laps grid
+   * Takes a timing object and returns the formatted label.
    */
-  setupLapsGrid () {
-    const LapTimings = Backbone.Collection.extend({
-      model: Timing
-    })
-    const lapTimings = new LapTimings()
-    const confirmMessage = this.data.get('delete-message')
-    const columns = [
-      {
-        name: 'order', // The key of the model attribute
-        label: '#', // The name to display in the header
-        // editable: true,  // (By default every cell in a column is editable)
-        sortable: true,
-        // Defines a cell type, and ID is displayed as an integer without the ',' separating 1000s.
-        cell: Backgrid.IntegerCell.extend({ orderSeparator: '' })
-      },
-      /* ( not currently shown: )
-      {
-        name: "hours",
-        label: "h",
-        sortable: false,
-        // The cell type can be a reference of a Backgrid.Cell subclass, any Backgrid.Cell subclass instances like *id* above, or a string
-        // An integer cell is a number cell that displays humanized integers
-        cell: "integer" // This is converted to "StringCell" and a corresponding class in the Backgrid package namespace is looked up
-      },
-      */
-      {
-        name: 'minutes',
-        label: 'min',
-        sortable: false,
-        cell: Backgrid.IntegerCell.extend({ orderSeparator: '' })
-      },
-      {
-        name: 'seconds',
-        label: 'sec',
-        sortable: false,
-        cell: Backgrid.IntegerCell.extend({ orderSeparator: '' })
-      },
-      {
-        name: 'hundredths',
-        label: '1/100',
-        sortable: false,
-        cell: Backgrid.IntegerCell.extend({ orderSeparator: '' })
-      },
-      {
-        name: 'meters',
-        label: 'm',
-        sortable: false,
-        cell: Backgrid.IntegerCell.extend({ orderSeparator: '' })
-      },
-      {
-        name: 'labelTime',
-        label: 't',
-        editable: false,
-        sortable: false,
-        cell: 'string'
-      },
-      {
-        name: 'trash',
-        label: '',
-        editable: false,
-        sortable: false,
-        cell: Backgrid.StringCell.extend({
-          render: function () {
-            const btn = $('<button>', {
-              tabIndex: -1,
-              class: 'btn btn-xs btn-outline-danger btn-delete-lap',
-              disabled: true,
-              text: 'X',
-              role: 'button'
-            })
-            const cid = this.model.cid
-            const rowAttr = this.model.attributes
-            btn.on('click', function () {
-              if (confirm(`${confirmMessage}\r\n(${rowAttr.labelTime})`)) {
-                const modelRow = rowAttr.gridRef.collection.get(cid)
-                rowAttr.gridRef.removeRow(modelRow)
-              }
-            })
-            this.$el.empty()
-            this.$el.append(btn)
-            this.delegateEvents()
-            return this
-          }
-        })
-      }
-    ]
-
-    // Initialize the Grid instance:
-    this.grid = new Backgrid.Grid({
-      columns: columns,
-      collection: lapTimings,
-      emptyText: '- - -'
-    })
-
-    // Render the grid and attach the root of the target node:
-    this.lapsGridTarget.append(this.grid.render().el)
+  updateLabelTime (timing) {
+    const labelMins = `${timing.minutes < 10 ? '0' + timing.minutes : timing.minutes}`
+    const labelSecs = `${timing.seconds < 10 ? '0' + timing.seconds : timing.seconds}`
+    const labelHundredths = `${timing.hundredths < 10 ? '0' + timing.hundredths : timing.hundredths}`
+    return `${labelMins}'${labelSecs}"${labelHundredths}`
   }
-  // ---------------------------------------------------------------------------
+
+  setupLapsGrid () {
+    this.lapsGridTarget.innerHTML = ''
+    this.gridTable = document.createElement('table')
+    this.gridTable.className = 'table table-sm backgrid'
+    this.gridTable.innerHTML = `
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>min</th>
+          <th>sec</th>
+          <th>1/100</th>
+          <th>m</th>
+          <th>t</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    `
+    this.gridBody = this.gridTable.querySelector('tbody')
+    this.lapsGridTarget.append(this.gridTable)
+    this.renderLapsGrid()
+  }
+
+  createNumericInput (value, min, max, onChange) {
+    const input = document.createElement('input')
+    input.type = 'number'
+    input.className = 'form-control form-control-sm'
+    input.value = value
+    input.min = min
+    input.max = max
+    input.addEventListener('input', onChange)
+    return input
+  }
+
+  renderLapsGrid () {
+    this.gridBody.innerHTML = ''
+
+    if (this.laps.length < 1) {
+      const emptyRow = document.createElement('tr')
+      emptyRow.className = 'empty'
+      const cell = document.createElement('td')
+      cell.colSpan = 7
+      cell.textContent = '- - -'
+      emptyRow.append(cell)
+      this.gridBody.append(emptyRow)
+      return
+    }
+
+    this.laps.forEach((lap, index) => {
+      const row = document.createElement('tr')
+
+      const orderCell = document.createElement('td')
+      orderCell.textContent = `${lap.order}`
+      row.append(orderCell)
+
+      const minutesCell = document.createElement('td')
+      minutesCell.append(this.createNumericInput(
+        lap.minutes, 0, 99,
+        (event) => this.updateLapField(index, 'minutes', event.target.value)
+      ))
+      row.append(minutesCell)
+
+      const secondsCell = document.createElement('td')
+      secondsCell.append(this.createNumericInput(
+        lap.seconds, 0, 59,
+        (event) => this.updateLapField(index, 'seconds', event.target.value)
+      ))
+      row.append(secondsCell)
+
+      const hundredthsCell = document.createElement('td')
+      hundredthsCell.append(this.createNumericInput(
+        lap.hundredths, 0, 99,
+        (event) => this.updateLapField(index, 'hundredths', event.target.value)
+      ))
+      row.append(hundredthsCell)
+
+      const metersCell = document.createElement('td')
+      metersCell.append(this.createNumericInput(
+        lap.meters, 0, 99999,
+        (event) => this.updateLapField(index, 'meters', event.target.value)
+      ))
+      row.append(metersCell)
+
+      const labelCell = document.createElement('td')
+      labelCell.textContent = lap.labelTime
+      row.append(labelCell)
+
+      const actionCell = document.createElement('td')
+      const deleteBtn = document.createElement('button')
+      deleteBtn.type = 'button'
+      deleteBtn.className = 'btn btn-xs btn-outline-danger btn-delete-lap'
+      deleteBtn.textContent = 'X'
+      deleteBtn.disabled = !this.deleteEnabled
+      deleteBtn.addEventListener('click', () => this.deleteLap(index))
+      actionCell.append(deleteBtn)
+      row.append(actionCell)
+
+      this.gridBody.append(row)
+    })
+  }
+
+  updateLapField (index, field, value) {
+    const lap = this.laps[index]
+    if (!lap) {
+      return
+    }
+    lap[field] = parseInt(value, 10) || 0
+    lap.labelTime = this.updateLabelTime(lap)
+    this.renderLapsGrid()
+  }
+
+  deleteLap (index) {
+    const lap = this.laps[index]
+    if (!lap) {
+      return
+    }
+    const confirmMessage = this.data.get('delete-message') || 'Delete lap?'
+    if (confirm(`${confirmMessage}\r\n(${lap.labelTime})`)) {
+      this.laps.splice(index, 1)
+      this.renderLapsGrid()
+    }
+  }
 
   /**
    * == start/Stop action ==
@@ -253,7 +245,9 @@ export default class extends Controller {
       // Disable "save" button:
       if (this.hasBtnSaveTarget) {
         this.btnSaveTarget.setAttribute('disabled', 'true')
-        this.btnDownloadJSONTarget.classList.add('disabled')
+        if (this.hasBtnDownloadJSONTarget) {
+          this.btnDownloadJSONTarget.classList.add('disabled')
+        }
       }
     }
   }
@@ -276,7 +270,9 @@ export default class extends Controller {
     // Disable "save" button:
     if (this.hasBtnSaveTarget) {
       this.btnSaveTarget.setAttribute('disabled', 'true')
-      this.btnDownloadJSONTarget.classList.add('disabled')
+      if (this.hasBtnDownloadJSONTarget) {
+        this.btnDownloadJSONTarget.classList.add('disabled')
+      }
     }
   }
 
@@ -298,7 +294,9 @@ export default class extends Controller {
     // Enable "save" button:
     if (this.hasBtnSaveTarget) {
       this.btnSaveTarget.removeAttribute('disabled')
-      this.btnDownloadJSONTarget.classList.remove('disabled')
+      if (this.hasBtnDownloadJSONTarget) {
+        this.btnDownloadJSONTarget.classList.remove('disabled')
+      }
     }
   }
 
@@ -315,30 +313,28 @@ export default class extends Controller {
    * and triggers the data submit.
    */
   save (_event) {
-    // DEBUG
-    // console.log('save() action')
     _event.preventDefault()
 
     if (confirm(this.data.get('post-message')) && this.hasPayloadTarget) {
       // Prepare payload:
-      const dataPayload = this.grid.collection.map((model) => {
+      const dataPayload = this.laps.map((lap) => {
         return {
-          order: model.attributes.order,
+          order: lap.order,
           minutes: 0,
           seconds: 0,
           hundredths: 0,
-          minutes_from_start: model.attributes.minutes,
-          seconds_from_start: model.attributes.seconds,
-          hundredths_from_start: model.attributes.hundredths,
-          length_in_meters: model.attributes.meters,
-          label: model.attributes.labelTime
+          minutes_from_start: lap.minutes,
+          seconds_from_start: lap.seconds,
+          hundredths_from_start: lap.hundredths,
+          length_in_meters: lap.meters,
+          label: lap.labelTime
         }
       })
-      $(this.payloadTarget).val(JSON.stringify(dataPayload))
+      this.payloadTarget.value = JSON.stringify(dataPayload)
 
       // Post & Save data:
       if (this.hasMainFormTarget) {
-        $(this.mainFormTarget).trigger('submit')
+        this.mainFormTarget.submit()
       }
       return true
     }
@@ -352,30 +348,28 @@ export default class extends Controller {
    * Assumes 'json_header' contains valid JSON data.
    */
   downloadJSON (_event) {
-    // DEBUG
-    // console.log('downloadCsv() action')
     _event.preventDefault()
 
-    if ((this.grid.collection.length < 1) ||
+    if ((this.laps.length < 1) ||
       (this.hasHeaderTarget && this.headerTarget.value.toString().length < 1)) {
       console.log('No data to export: skipping')
       return false
     }
 
     // Prepare payload:
-    const dataPayload = this.grid.collection.map((model) => {
+    const dataPayload = this.laps.map((lap) => {
       const jsonHeader = JSON.parse(this.headerTarget.value)
-      jsonHeader.order = model.attributes.order
-      jsonHeader.label = model.attributes.labelTime
-      jsonHeader.lap.order = model.attributes.order
+      jsonHeader.order = lap.order
+      jsonHeader.label = lap.labelTime
+      jsonHeader.lap.order = lap.order
       jsonHeader.lap.minutes = 0
       jsonHeader.lap.seconds = 0
       jsonHeader.lap.hundredths = 0
-      jsonHeader.lap.minutes_from_start = model.attributes.minutes
-      jsonHeader.lap.seconds_from_start = model.attributes.seconds
-      jsonHeader.lap.hundredths_from_start = model.attributes.hundredths
-      jsonHeader.lap.length_in_meters = model.attributes.meters
-      jsonHeader.lap.label = model.attributes.labelTime
+      jsonHeader.lap.minutes_from_start = lap.minutes
+      jsonHeader.lap.seconds_from_start = lap.seconds
+      jsonHeader.lap.hundredths_from_start = lap.hundredths
+      jsonHeader.lap.length_in_meters = lap.meters
+      jsonHeader.lap.label = lap.labelTime
       return jsonHeader
     })
 
@@ -404,14 +398,9 @@ export default class extends Controller {
    * "onreset" controller handler, called from the corresponding widget event
    */
   afterReset () {
-    // DEBUG
-    // console.log(`afterReset()`)
-
-    // Erase all lap rows:
-    if (this.hasLapsGridTarget) {
-      this.grid.remove()
-      this.setupLapsGrid()
-    }
+    this.laps = []
+    this.deleteEnabled = false
+    this.renderLapsGrid()
   }
 
   /**
@@ -420,12 +409,10 @@ export default class extends Controller {
    *                         { order:, hours:, minutes:, seconds:, hundredths: }
    */
   afterStop (timing) {
-    // DEBUG
-    // console.log(`afterStop()`)
-
     // Add the final lap row:
     this.afterLap(timing)
-    $('.btn-delete-lap').removeAttr('disabled')
+    this.deleteEnabled = true
+    this.renderLapsGrid()
   }
 
   /**
@@ -434,30 +421,19 @@ export default class extends Controller {
    *                         { order:, hours:, minutes:, seconds:, hundredths: }
    */
   afterLap (timing) {
-    // DEBUG
-    // console.log(`afterLap()`)
-
-    // Add a new lap row:
-    if (this.hasLapsGridTarget) {
-      const lengthInMt = parseInt(this.data.get('lap-length')) || 50
-      const lapTimeModel = new Timing({
-        order: timing.order,
-        hours: timing.hours,
-        minutes: timing.minutes,
-        seconds: timing.seconds,
-        hundredths: timing.hundredths,
-        meters: timing.order * lengthInMt,
-        labelTime: this.updateLabelTime(timing),
-        gridRef: this.grid
-      })
-      // Bind change events to cell updates:
-      lapTimeModel.on(
-        'change:hours change:minutes change:seconds change:hundredths',
-        (model) => { model.set('labelTime', this.updateLabelTime(model.attributes)) },
-        this
-      )
-
-      this.grid.insertRow([lapTimeModel])
+    if (!this.hasLapsGridTarget) {
+      return
     }
+    const lengthInMt = parseInt(this.data.get('lap-length'), 10) || 50
+    this.laps.push({
+      order: timing.order,
+      hours: timing.hours,
+      minutes: timing.minutes,
+      seconds: timing.seconds,
+      hundredths: timing.hundredths,
+      meters: timing.order * lengthInMt,
+      labelTime: this.updateLabelTime(timing)
+    })
+    this.renderLapsGrid()
   }
 }

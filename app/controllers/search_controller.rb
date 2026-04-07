@@ -26,7 +26,7 @@ class SearchController < ApplicationController
   # GET HTML [raw] --> refreshed_content
   #
   def smart
-    unless request.xhr? || params['raw'].present?
+    unless request.xhr? || params['raw'].present? || turbo_frame_request?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to root_path
       return
@@ -61,7 +61,6 @@ class SearchController < ApplicationController
           }
         )
       end
-      format.js
     end
   end
 

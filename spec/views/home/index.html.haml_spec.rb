@@ -23,8 +23,10 @@ RSpec.describe 'home/index.html.haml' do
       expect(node.inner_html).to be_empty
     end
 
-    it 'includes the empty search result div' do
-      expect(rendered).to match(%r{\sid=['"]search-results['"]></div>})
+    it 'includes the empty search result turbo frame' do
+      node = Nokogiri::HTML.fragment(rendered).at_css('turbo-frame#search-results')
+      expect(node).to be_present
+      expect(node.inner_html.strip).to be_empty
     end
   end
 end

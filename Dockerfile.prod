@@ -24,14 +24,12 @@ RUN apk add --update --no-cache \
     mariadb-client \
     mariadb-dev \
     netcat-openbsd \
-    nodejs \
     openssl \
     pkgconfig \
     shadow \
     shared-mime-info \
     ssmtp \
-    tzdata \
-    yarn
+    tzdata
 
 # Run as a specific user: (WIP: yarn requires more privileges)
 # ARG USER_ID
@@ -50,7 +48,6 @@ RUN gem install bundler -v $BUNDLER_VERSION
 # --- Image-specific stuff:
 FROM common_builder
 ENV RAILS_ENV=production \
-    NODE_ENV=production \
     DATABASE_NAME=goggles \
     DATABASE_HOST=goggles-db \
     DATABASE_PORT=3306 \
@@ -75,10 +72,7 @@ COPY ./config/database.docker.yml ./config/database.yml
 # Original:
 RUN bundle check || bundle install
 
-# Build JavaScript and CSS assets
-RUN yarn install --check-files
-RUN yarn build
-RUN yarn build:css
+RUN bundle exec rails dartsass:build
 
 # Keep the version argument at the end to avoid early cache miss during builds:
 ARG TAG

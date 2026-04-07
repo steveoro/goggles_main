@@ -20,7 +20,7 @@
           %tr.text-right
             %td.pt-2{ colspan: 2 }
               %b= link_to(mir.meeting_event.event_type.long_label, meeting_show_path(id: meeting.id,
-                          anchor: "mevent-#{mir.meeting_event.id}"), { 'data-turbolinks' => 'false' })
+                          anchor: "mevent-#{mir.meeting_event.id}"), { data: { turbo: false } })
               &nbsp;
               - if mir.standard_points.to_f > 800.0
                 = tag.small('⭐')

@@ -1,9 +1,12 @@
 import { Controller } from '@hotwired/stimulus'
-import $ from 'jquery'
-
-require('select2')
+import TomSelect from 'tom-select'
 
 /**
+ * Lookup controller refactored for importmap runtime.
+ * Uses TomSelect instead of jQuery/Select2.
+ * 
+ * Original docs:
+ *
  * = StimulusJS generic Lookup controller =
  *
  * Prepares and manages a generic lookup combo-box for input selection.
@@ -90,30 +93,33 @@ export default class extends Controller {
     fieldBaseName: String
   }
 
-  /**
-   * Sets up the Select2 widget used for the lookup-combo box to which this
-   * controller instance connects.
-   */
   connect () {
-    if (this.hasFieldTarget) {
-      // DEBUG
-      // console.log('Target found.')
-      this.refreshWidgetSetup()
+    if (!this.hasFieldTarget) {
+      return
+    }
+    this.jwt = null
+    this.jwtPromise = null
+    this.tomSelect = null
+    this.setupTomSelect()
+  }
+
+  disconnect () {
+    if (this.tomSelect) {
+      this.tomSelect.destroy()
+      this.tomSelect = null
     }
   }
 
-  /**
-   * Performs a programmatic refresh of the JWT if needed, followed by a reset of
-   * the Select2 setups.
-   * Otherwise it just sets up the Select2 widget for static data handling.
-   */
-  refreshWidgetSetup () {
-    if (this.hasApiUrlValue) {
-      this.fetchJWT()
-        .then((jwt) => this.initSelect2Widget(this.fieldTarget, jwt))
-    } else {
-      this.initSelect2Widget(this.fieldTarget, null)
+  get baseName () {
+    if (this.hasFieldBaseNameValue && this.fieldBaseNameValue) {
+      return this.fieldBaseNameValue
     }
+    return this.fieldTarget.id.replace(/_select$/, '')
+  }
+
+  csrfToken () {
+    const node = document.querySelector('meta[name=csrf-token]')
+    return node ? node.content : ''
   }
 
   /**
@@ -127,12 +133,15 @@ export default class extends Controller {
     return fetch('/api_sessions/jwt.json', {
       method: 'POST',
       headers: {
-        'X-CSRF-Token': $('meta[name=csrf-token]').attr('content'),
-        'Content-type': 'application/json;charset=UTF-8'
+        'X-CSRF-Token': this.csrfToken(),
+        'Content-Type': 'application/json;charset=UTF-8'
       }
-    }).then(resp => { return resp.json() })
-      .then(json => { return json.jwt })
-      .catch(error => console.error('fetchJWT error:', error))
+    }).then((resp) => resp.json())
+      .then((json) => json.jwt)
+      .catch((error) => {
+        console.error('fetchJWT error:', error)
+        return null
+      })
   }
 
   /**
@@ -143,11 +152,28 @@ export default class extends Controller {
    * @param {String} entityId the desired row ID
    * @returns the 'fetch' Promise that resolves to the an object mapping all entity row details
    */
+  async ensureJWT () {
+    if (!this.hasApiUrlValue) {
+      return null
+    }
+    if (this.jwt) {
+      return this.jwt
+    }
+    if (!this.jwtPromise) {
+      this.jwtPromise = this.fetchJWT().then((jwt) => {
+        this.jwt = jwt
+        this.jwtPromise = null
+        return jwt
+      })
+    }
+    return this.jwtPromise
+  }
+
   async fetchEntityDetails (jwt, entityName, entityId) {
     // DEBUG
     // console.log(`fetchEntityDetails('${entityName}', ${entityId})`)
     // Return an empty object if the secondary API endpoint is not defined:
-    if (!this.hasApiUrl2Value) {
+    if (!this.hasApiUrl2Value || !entityName || !entityId) {
       return {}
     }
 
@@ -155,614 +181,368 @@ export default class extends Controller {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${jwt}`,
-        'Content-type': 'application/json;charset=UTF-8'
+        'Content-Type': 'application/json;charset=UTF-8'
       }
-    }).then(resp => { return resp.json() })
-      .catch(error => console.error('fetchEntityDetails error:', error))
+    }).then((resp) => resp.json())
+      .catch((error) => {
+        console.error('fetchEntityDetails error:', error)
+        return {}
+      })
   }
 
-  /**
-   * Returns the Select2 AJAX options for data retrieval for the lookup options
-   * if the apiUrlValue has been set up.
-   *
-   * @param {String} jwt a valid JWT
-   */
-  chooseSelect2AjaxOptions (jwt) {
-    let ajaxOptions = null
-    if (this.hasApiUrlValue) {
-      // DEBUG
-      // console.log('Preparing for AJAX...')
-      // console.log(this.apiUrlValue)
-
-      ajaxOptions = {
-        url: this.apiUrlValue,
-        dataType: 'json',
-        method: 'GET',
-        delay: 250,
-
-        // Compose payload:
-        data: (params) => this.prepareAPIPayload(params),
-
-        // Set authorization header:
-        beforeSend: (xhr) => {
-          try {
-            if (jwt == null) {
-              console.error('Null JWT before setting header!')
-            }
-          } catch {
-            console.error('Undefined JWT before setting header!')
-          }
-          xhr.setRequestHeader('Authorization', `Bearer ${jwt}`)
-        },
-
-        // Handle JWT expiration:
-        error: (_xhr, _textStatus, errorThrown) => {
-          if (errorThrown === 'Unauthorized') {
-            console.warn('Session expired, refreshing...')
-            this.refreshWidgetSetup()
-          } else if (errorThrown !== 'abort') {
-            console.error(errorThrown)
-          }
-        },
-
-        // Parse results into Select2 data format:
-        processResults: (data, params) => this.processAPIResults(data, params)
+  setupTomSelect () {
+    const staticOptions = this.optionsFromSelectElement()
+    this.tomSelect = new TomSelect(this.fieldTarget, {
+      options: staticOptions,
+      valueField: 'id',
+      labelField: 'text',
+      searchField: ['text'],
+      placeholder: this.hasPlaceholderValue ? this.placeholderValue : '',
+      maxOptions: 100,
+      create: this.hasFreeTextValue && this.freeTextValue
+        ? (input) => ({ id: input, text: input, label: input })
+        : false,
+      shouldLoad: (query) => !this.hasApiUrlValue || query.length >= 3,
+      load: (query, callback) => {
+        this.loadRemoteOptions(query, callback)
+      },
+      onInitialize: () => {
+        this.syncCurrentSelection()
+      },
+      onChange: () => {
+        this.syncCurrentSelection()
       }
+    })
+  }
+
+  optionsFromSelectElement () {
+    return Array.from(this.fieldTarget.options).map((option) => this.optionNodeToObject(option))
+  }
+
+  optionNodeToObject (option) {
+    const data = {
+      id: option.value,
+      text: option.text,
+      label: option.text
     }
-    return ajaxOptions
+
+    Object.entries(option.dataset || {}).forEach(([key, value]) => {
+      data[this.camelToSnake(key)] = value
+    })
+    return data
   }
-  // ---------------------------------------------------------------------------
+
+  camelToSnake (value) {
+    return value.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
+  }
 
   /**
    * Prepares (adjusts) the parameters for the outgoing API call.
-   * @param {Object} params the base API query parameters as per Select2 API ('term', 'page')
+   * @param {Object} term the query parameter
    */
-  prepareAPIPayload (params) {
-    // NOTE: avoid pre-setting { select2_format: true } as a default to get always a more rich result dataset
+  prepareAPIPayload (term) {
     const queryParams = {}
 
-    // Ask for the simplified select2_format just in special cases:
     if (this.hasFieldBaseNameValue && this.fieldBaseNameValue === 'team') {
       queryParams.select2_format = true
     }
 
-    // Add an in-bound API query parameter, if specified:
-    if (this.hasFieldBaseNameValue && this.hasBoundQueryValue && document.querySelector(`#${this.fieldBaseNameValue}_${this.boundQueryValue}`)) {
-      queryParams[this.boundQueryValue] = document.querySelector(`#${this.fieldBaseNameValue}_${this.boundQueryValue}`).value
-    }
-
-    // Finalize API parameters:
-    // - 'term': actual query term
-    // - 'page': support for infinite scrolling
-    // - 'select2_format': ignored by the API if the endpoint doesn't implement it
-    if (this.hasQueryColumnValue) {
-      // Bespoke query term:
-      queryParams[this.queryColumnValue] = params.term
-    } else {
-      // Default query term ('name'):
-      queryParams.name = params.term
-    }
-    queryParams.page = params.page
-    return queryParams
-  }
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Parses the API result data into the Select2 widget data format.
-   * @param {Object} data resulting array of data objects
-   * @param {Object} params parameters used for the API query
-   */
-  processAPIResults (data, params) {
-    params.page = params.page || 1 // ('page': support for infinite scrolling)
-    // DEBUG
-    // console.log('results from API call:')
-    // console.log(data)
-
-    if (data.results) { // Already formatted in simplified select2 format? ('results' array)
-      return data
-    } else { // Prepare the bespoke select2 format:
-      return {
-        results: data.map((row) => {
-          // Recognize Swimmer from defined data attributes:
-          if (row.complete_name && row.year_of_birth) {
-            return this.setDataMembersForSwimmer(row)
-          }
-          // Recognize SwimmingPool:
-          if (row.pool_type_id && row.name) {
-            return this.setDataMembersForSwimmingPool(row)
-          }
-          // Recognize Meeting/Workshop:
-          if (row.code && row.description && row.header_date && row.header_year && row.edition) {
-            return this.setDataMembersForMeetings(row)
-          }
-          // Recognize City:
-          if ((row.region || row.area) && row.name) {
-            const area = row.region || row.area
-            return { id: row.id, text: row.name, area: area }
-          }
-
-          // Generic Lookup entity support by checking for long_label or label:
-          if (row.long_label) {
-            return { id: row.id, text: row.long_label }
-          }
-          if (row.label) {
-            return { id: row.id, text: row.label }
-          }
-          // New decorators support (long = "display_", standard = "short_"):
-          if (row.display_label) {
-            return { id: row.id, text: row.display_label }
-          }
-          if (row.short_label) {
-            return { id: row.id, text: row.short_label }
-          }
-
-          // Any other default case (just id, text):
-          return { id: row.id, text: row.text }
-        }),
-        pagination: {
-          more: (params.page * 30) < data.total_count
-        }
+    if (this.hasFieldBaseNameValue && this.hasBoundQueryValue) {
+      const boundNode = document.querySelector(`#${this.fieldBaseNameValue}_${this.boundQueryValue}`)
+      if (boundNode) {
+        queryParams[this.boundQueryValue] = boundNode.value
       }
     }
-  }
-  // ---------------------------------------------------------------------------
 
-  /**
-   * Returns the usual text label used for displaying a row of the specified entityName.
-   * @param {String} entityName a snake_case name of the key entity
-   * @param {Object} resultRow  the result object holding the entity attributes
-   */
-  getLabelForEntity (entityName, resultRow) {
-    if (entityName === 'swimmer') {
-      return `${resultRow.complete_name} (${resultRow.year_of_birth})`
+    if (this.hasQueryColumnValue && this.queryColumnValue) {
+      queryParams[this.queryColumnValue] = term
+    } else {
+      queryParams.name = term
     }
-    if (entityName === 'swimming_pool') {
-      return `${resultRow.name} (${resultRow.nick_name})`
-    }
-    if (entityName === 'meeting' || entityName === 'user_workshop') {
-      return `${resultRow.description} (${resultRow.header_date})`
-    }
-    // Defaults, in priority order:
-    return resultRow.label || resultRow.name || resultRow.description
+
+    queryParams.page = 1
+    return queryParams
   }
 
-  /**
-   * Returns an object with all the custom 'data' members for a Swimmer option lookup,
-   * plus the obligatory id key & text label for display.
-   * @param {Object} resultRow result object holding Swimmer detailed data fields
-   */
-  setDataMembersForSwimmer (resultRow) {
+  async loadRemoteOptions (query, callback) {
+    if (!this.hasApiUrlValue) {
+      callback()
+      return
+    }
+
+    if (!query || query.length < 3) {
+      callback([])
+      return
+    }
+
+    try {
+      const jwt = await this.ensureJWT()
+      const payload = this.prepareAPIPayload(query)
+      const queryString = new URLSearchParams(payload).toString()
+      const response = await fetch(`${this.apiUrlValue}?${queryString}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          'Content-Type': 'application/json;charset=UTF-8'
+        }
+      })
+
+      if (response.status === 401) {
+        this.jwt = null
+        this.jwtPromise = null
+        callback([])
+        return
+      }
+
+      const data = await response.json()
+      const parsed = this.processAPIResults(data)
+      callback(parsed.results || [])
+    } catch (error) {
+      console.error('loadRemoteOptions error:', error)
+      callback([])
+    }
+  }
+
+  processAPIResults (data) {
+    if (data && Array.isArray(data.results)) {
+      return data
+    }
+
+    const rows = Array.isArray(data) ? data : []
     return {
-      id: resultRow.id,
-      complete_name: resultRow.complete_name,
-      first_name: resultRow.first_name,
-      last_name: resultRow.last_name,
-      year_of_birth: resultRow.year_of_birth,
-      gender_type_id: resultRow.gender_type_id,
-      text: this.getLabelForEntity('swimmer', resultRow)
+      results: rows.map((row) => this.normalizeRow(row))
     }
   }
 
-  /**
-   * Returns an object with all the custom 'data' members for a SwimmingPool option lookup,
-   * plus the obligatory id key & text label for display.
-   * @param {Object} resultRow result data object holding SwimmingPool detailed data fields
-   */
-  setDataMembersForSwimmingPool (resultRow) {
-    return {
-      id: resultRow.id,
-      name: resultRow.name,
-      nick_name: resultRow.nick_name,
-      city_id: resultRow.city_id,
-      pool_type_id: resultRow.pool_type_id,
-      text: this.getLabelForEntity('swimming_pool', resultRow)
+  normalizeRow (row) {
+    if (row.complete_name && row.year_of_birth) {
+      return {
+        id: row.id,
+        complete_name: row.complete_name,
+        first_name: row.first_name,
+        last_name: row.last_name,
+        year_of_birth: row.year_of_birth,
+        gender_type_id: row.gender_type_id,
+        text: `${row.complete_name} (${row.year_of_birth})`
+      }
     }
+
+    if (row.pool_type_id && row.name) {
+      return {
+        id: row.id,
+        name: row.name,
+        nick_name: row.nick_name,
+        city_id: row.city_id,
+        pool_type_id: row.pool_type_id,
+        text: `${row.name} (${row.nick_name})`
+      }
+    }
+
+    if (row.code && row.description && row.header_date && row.header_year && row.edition) {
+      return {
+        id: row.id,
+        code: row.code,
+        description: row.description,
+        header_date: row.header_date,
+        header_year: row.header_year,
+        edition: row.edition,
+        edition_type_id: row.edition_type_id,
+        season_id: row.season_id,
+        swimming_pool_id: row.swimming_pool_id,
+        team_id: row.team_id,
+        timing_type_id: row.timing_type_id,
+        text: `${row.description} (${row.header_date})`
+      }
+    }
+
+    if ((row.region || row.area) && row.name) {
+      return { id: row.id, text: row.name, area: row.region || row.area }
+    }
+
+    if (row.long_label || row.label || row.display_label || row.short_label) {
+      return { id: row.id, text: row.long_label || row.label || row.display_label || row.short_label }
+    }
+
+    return { id: row.id, text: row.text || row.name || row.description || `${row.id}` }
   }
 
-  /**
-   * Returns an object with all the custom 'data' members for a Meeting/UserWorkshop option lookup,
-   * plus the obligatory id key & text label for display.
-   * @param {Object} resultRow result data object holding Meeting/UserWorkshop detailed data fields
-   */
-  setDataMembersForMeetings (resultRow) {
-    return {
-      id: resultRow.id,
-      code: resultRow.code,
-      description: resultRow.description,
-      header_date: resultRow.header_date,
-      header_year: resultRow.header_year,
-      edition: resultRow.edition,
-      edition_type_id: resultRow.edition_type_id,
-      season_id: resultRow.season_id,
-      swimming_pool_id: resultRow.swimming_pool_id,
-      team_id: resultRow.team_id,
-      timing_type_id: resultRow.timing_type_id,
-      text: this.getLabelForEntity('meeting', resultRow)
-    }
-  }
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Returns a new Map extracted from the selection data of the specified Select2 widget.
-   * @param {Object} targetWidget the Select2 target widget
-   */
-  prepareMapDataFromCurrentSelection (targetWidget) {
-    // DEBUG
-    // console.log('prepareMapDataFromCurrentSelection()')
-    // console.log("=> $(targetWidget).find(':selected').first().data()")
-    // console.log($(targetWidget).find(':selected').first().data())
-    // console.log("=> $(targetWidget).select2('data')")
-    // console.log($(targetWidget).select2('data'))
-
-    const mapData = new Map()
-    mapData.set('id', $(targetWidget).find(':selected').first().val())
-    mapData.set('label', $(targetWidget).find(':selected').first().text())
-    if ($(targetWidget).find(':selected').first().data()) {
-      this.copyObjectToMap($(targetWidget).find(':selected').first().data(), mapData)
-    }
-    return mapData
-  }
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Copies all attributes of a specified Object into a Map of key attributes and values.
-   * The method skips certain attributes which may be found when dealing with internal data objects
-   * from the Select2 widget.
-   * Both object and destMap are assumed to be existing and defined.
-   *
-   * @param {Object} object   an Object with data properties
-   * @param {Map}    destMap  the destination data Map
-   * @returns the converted/enriched Map object data
-   */
   copyObjectToMap (object, destMap) {
-    if (object && destMap) {
-      Object.entries(object)
-        .forEach(
-          ([key, value]) => {
-            // Skip peculiar attributes:
-            if (key !== 'text' && key !== 'selected' && key !== 'select2Id') {
-              destMap.set(key, value)
-            }
-          }
-        )
+    if (!object || !destMap) {
+      return destMap
     }
+
+    Object.entries(object).forEach(([key, value]) => {
+      if (key !== 'text' && key !== 'selected' && key !== 'select2Id' && key !== '$order') {
+        destMap.set(key, value)
+      }
+    })
     return destMap
   }
 
-  /**
-   * Sets the text color of the span text identified by '#<BASE_NAME>-presence'.
-   * @param {String}  baseName base name for the presence indicator.
-   * @param {boolean} hasLabel true sets the flag span text to green; red (default) otherwise.
-   */
   presenceLedUpdate (baseName, hasLabel) {
-    if (document.querySelector(`#${baseName}-presence`)) {
-      // Make sure the "status led" is green when there's a selection and vice-versa:
-      // Given that setHiddenFieldsValue() may be invoked twice on some occasions,
-      // we'll do an explicit check instead of relying on the simple outcome of toggleClass():
-      if (hasLabel) {
-        $(`#${baseName}-presence`).addClass('text-success')
-        $(`#${baseName}-presence`).removeClass('text-danger')
-      } else {
-        $(`#${baseName}-presence`).addClass('text-danger')
-        $(`#${baseName}-presence`).removeClass('text-success')
-      }
+    const node = document.querySelector(`#${baseName}-presence`)
+    if (!node) {
+      return
     }
+    node.classList.toggle('text-success', hasLabel)
+    node.classList.toggle('text-danger', !hasLabel)
   }
 
-  /**
-   * Sets the visibility of the span text identified by '#<BASE_NAME>-new'.
-   * @param {String}  baseName base name for the presence indicator.
-   * @param {boolean} visible true/false to toggle the 'd-none' CSS class.
-   */
   newLedUpdate (baseName, visible) {
-    // DEBUG
-    // console.log(`newLedUpdate('${baseName}', ${visible})`)
-    if (document.querySelector(`#${baseName}-new`)) {
-      if (visible) {
-        $(`#${baseName}-new`).removeClass('d-none')
-      } else {
-        $(`#${baseName}-new`).addClass('d-none')
+    const node = document.querySelector(`#${baseName}-new`)
+    if (!node) {
+      return
+    }
+    node.classList.toggle('d-none', !visible)
+  }
+
+  setFieldValue (fieldId, value) {
+    const node = document.querySelector(`#${fieldId}`)
+    if (node) {
+      node.value = value == null ? '' : value
+    }
+  }
+
+  setOrCreateBoundOption (baseName, value, label = null) {
+    const selectNode = document.querySelector(`#${baseName}_select`)
+    if (!selectNode) {
+      return
+    }
+
+    const resolvedLabel = label || this.findLabelForSelectValue(selectNode, value)
+
+    if (selectNode.tomselect) {
+      if (!selectNode.tomselect.options[value] && resolvedLabel) {
+        selectNode.tomselect.addOption({ id: value, text: resolvedLabel, label: resolvedLabel })
       }
-    }
-  }
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Setter for all the hidden fields stored in the lookup option data (id, label, ...).
-   * (Does nothing if the data field is not found.)
-   *
-   * @param {String} baseName base name for the context of the provided data map and base prefix for
-   *                          all the hidden fields;
-   * @param {Object} mapData a Map including all attribute names and values that have to be
-   *                         stored on hidden field tags having DOM IDs = "<BASE_NAME>_<ATTR_NAME>"
-   *
-   * == Example: ==
-   *
-   * mapData = { id: 1, label: "whatever", another_field: "anything", ... }
-   *
-   * - stores 1          as value of the DOM node having ID "<BASE_NAME>_id"
-   * - stores "whatever" as value of the DOM node having ID "<BASE_NAME>_label"
-   * - stores "anything" as value of the DOM node having ID "<BASE_NAME>_another_field"
-   */
-  setHiddenFieldsValue (baseName, mapData) {
-    // DEBUG
-    // console.log('setHiddenFieldsValue()')
-    // console.log(mapData)
-
-    if (baseName && mapData) {
-      /*
-       * Free-input text case handling => Input field value is "NEW" or unmatched in database
-       * Clear the ID field if it's equal to the label.
-       */
-      if (mapData.get('id') === mapData.get('label')) {
-        mapData.set('id', 0)
-        this.newLedUpdate(baseName, true)
-
-        // Peculiar cases:
-        // 1. SwimmingPool: clear pre-existing values set by cookies when we're setting new records
-        if (baseName.startsWith('swimming_pool') && mapData.get('label')) {
-          document.querySelector('#swimming_pool_name').value = mapData.get('label')
-          document.querySelector('#swimming_pool_nick_name').value = null
-          document.querySelector('#swimming_pool_city_id').value = null
-          document.querySelector('#swimming_pool_pool_type_id').value = null
-        }
-        // 1. Swimmer: update complete_name
-        if (baseName.startsWith('swimmer') && mapData.get('label') && document.querySelector(`#${baseName}_complete_name`)) {
-          document.querySelector(`#${baseName}_complete_name`).value = mapData.get('label')
-        }
-      } else {
-        this.newLedUpdate(baseName, false) // Hide the "new" led/flag if there's a result match
-      }
-
-      // "Status led" update for the main data input:
-      this.presenceLedUpdate(baseName, mapData.has('label'))
-      const baseSelector = `#${baseName}_`
-
-      // Set each hidden field tag value from data map only if the DOM node is found:
-      mapData.forEach(
-        (value, key) => {
-          // If a kwy field is found (prefixed with base name), trigger all the related changes,
-          // including any '<BASE_NAME><key>_select' value selects (which will work only on Select2
-          // widget with pre-fixed list of options):
-          if (document.querySelector(`${baseSelector}${key}`)) {
-            // DEBUG
-            // console.log(`Found DOM field for '${key}': [${baseSelector}${key}] <= ${value}`)
-            document.querySelector(`${baseSelector}${key}`).value = value
-            /*
-             * Trigger a sub-entity change for in-bound select2 widgets.
-             * (Updates only the linked sub-entity's hidden id & label)
-             *
-             * If the current field name ("key") ends with "_id" (as in 'swimming_pool_id', or 'city_id'),
-             * then it's assumed to imply the Rails convention for an association column name.
-             * Thus, we check if there's also a possible Select2 widget bound to this by a similar name,
-             * and we update that too when found.
-             *
-             * The naming convention is:
-             * - "key" ("<something>_id") DOM node for source value
-             *   => "key-minus-id_select" ("<something>_select") DOM node for target change
-             *
-             * == Example ==
-             * - key: "pool_type_id" => target select: "pool_type_select"
-             */
-            const boundSelectBaseName = key.split('_id')[0]
-            const boundSelectID = `#${boundSelectBaseName}_select`
-
-            // Process bound select widgets & hidden fields (but skip special cases handled elsewhere)
-            if (key.endsWith('_id') && (key !== 'city_id') && document.querySelector(boundSelectID)) {
-              this.setOrCreateSelect2Option(boundSelectBaseName, value, null)
-            }
-          }
-
-          // If there's another Select2 widget with an DOM ID based on the current key and the current
-          // value holds nested details, we can go deep with recursion and update its fields too:
-          // (but skip special cases handled elsewhere)
-          if (!key.endsWith('_id') && (key !== 'city') && document.querySelector(`#${key}_select`) && value.id) {
-            // DEBUG
-            console.log(`Nested data details w/ '#${key}_select' widget found: going deep...`)
-            const nestedLabel = this.getLabelForEntity(key, value)
-            this.setOrCreateSelect2Option(key, value.id, nestedLabel)
-            const nestedMap = new Map()
-            this.copyObjectToMap(value, nestedMap)
-            nestedMap.set('label', nestedLabel)
-            this.setHiddenFieldsValue(key, nestedMap)
-          }
-        }
-      )
-
-      this.handleSpecialCases(mapData)
-    }
-  }
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Selects a specific key value among the available options.
-   * If the option is not available, it will be added programmatically.
-   *
-   * @param {String} boundSelectBaseName  the DOM ID base name for all the widget bound to the current target
-   * @param {String} value the key value for the selection in the bound widget
-   * @param {String} label the label text for the selection in the bound widget;
-   *                       if not defined, the current data selection will be used instead (if available)
-   */
-  setOrCreateSelect2Option (boundSelectBaseName, value, label) {
-    const boundSelectID = `#${boundSelectBaseName}_select`
-    // Set the value, creating a new option if necessary:
-    if ($(boundSelectID).find("option[value='" + value + "']").length) {
-      $(boundSelectID).val(value).trigger('change')
-    } else if (label) { // Otherwise, create a new Option and pre-select it by default:
-      const newOption = new Option(label, value, true, true)
-      // Append it to the select
-      $(boundSelectID).append(newOption).trigger('change')
-    }
-
-    // Set also the related hidden fields:
-    $(`#${boundSelectBaseName}_id`).val(value)
-    if (label) {
-      $(`#${boundSelectBaseName}_label`).val(label)
-    } else if ($(boundSelectID).select2('data').length > 0) {
-      // Set the label from the Option if possible and the label parameter was not set:
-      $(`#${boundSelectBaseName}_label`).val(
-        $(boundSelectID).select2('data')[0].text
-      )
-    }
-    // Update the correlated presence "status led":
-    this.presenceLedUpdate(boundSelectBaseName, $(`#${boundSelectBaseName}_label`).val().length > 0)
-  }
-
-  /**
-   * Additional binding steps taken depending by specific field names that differ from the usual
-   * ActiveRecord convention naming scheme ("<FIELD_NAME>_id" => "<FIELD_NAME>" association).
-   *
-   * Does a bunch domain-specific, quick & dirty update-triggering stuff in other bound widgets,
-   * but only if the target DOM IDs are found and mapData contains any one among the following attribute keys:
-   *
-   * - year_of_birth  => updates #category_type_select (ID + label)
-   * - gender_type_id => updates #gender_type_id
-   * - city_id        => updates #city_select
-   * - pool_type_id   => updates #pool_type_select
-   *
-   * - (FUTUREDEV: add more here)
-   *
-   * @param {Object} mapData a Map including all attribute names for the current selection
-   */
-  handleSpecialCases (mapData) {
-    /*
-     * Special case #1:
-     * - 'year_of_birth' => update 'category_type_select'
-     * (selection dataset assumed to be already present)
-     */
-    if (mapData.get('year_of_birth') && document.querySelector('#category_type_select')) {
-      const age = (new Date().getFullYear() - mapData.get('year_of_birth'))
-      const code = Math.floor(age / 5) * 5
-      // Find the ID value looking for the displayed code:
-      const valueId = $('#category_type_select').find(`option:contains('M${code}')`).first().val()
-      $('#category_type_select').val(valueId)
-      $('#category_type_select').trigger('change')
-      // Programmatically set also any related fields:
-      $('#category_type_id').val(valueId)
-      // If the API request went trough, update the hidden label with the 'text' property of the Select2 option:
-      const valueLabels = $('#category_type_select').select2('data')
-      if (valueLabels.length > 0) {
-        $('#category_type_label').val(valueLabels[0].text)
-      }
-    }
-    /*
-     * Special case #2:
-     * - 'gender_type_id' => update 'gender_type_id' standard select_tag
-     * (selection dataset assumed to be already present)
-     */
-    if (mapData.get('gender_type_id') && document.querySelector('#gender_type_id')) {
-      const valueId = mapData.get('gender_type_id')
-      $('#gender_type_id').val(valueId)
-      $('#gender_type_id').trigger('change')
-    }
-
-    /*
-     * Special case #3: 'city_id' w/ city object => update 'city_select'
-     * (selection dataset will be created if missing)
-     */
-    if (mapData.get('city_id') && mapData.get('city') && document.querySelector('#city_select')) {
-      // DEBUG
-      // console.log('city details:')
-      // console.log(mapData.get('city'))
-      this.setOrCreateSelect2Option('city', mapData.get('city_id'), mapData.get('city').name)
-      // Programmatically set also any other related fields:
-      $('#city_country_code').val(mapData.get('city').country_code)
-      $('#city_area').val(mapData.get('city').area)
-    }
-
-    /*
-     * Special case #4: 'pool_type_id' w/ PoolType object => update 'pool_type_select'
-     * (selection dataset will be created if missing)
-     */
-    if (mapData.get('pool_type_id') && mapData.get('pool_type') && document.querySelector('#pool_type_select')) {
-      // DEBUG
-      console.log('pool type details:')
-      console.log(mapData.get('pool_type'))
-      const valueId = mapData.get('pool_type_id')
-      $('#pool_type_id').val(valueId)
-      $('#pool_type_id').trigger('change')
-    }
-  }
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Tries to resolve the current selected row details with all its details by using the secondary API
-   * endpoint (with the fieldBaseNameValue as the single-row fetch endpoint).
-   *
-   * In any case, when mapData is defined the hidden fields are updated with the values of the
-   * defined attributes.
-   *
-   * @param {String} jwt a valid JWT
-   * @param {Object} mapData a Map including all attribute names for the current selection
-   */
-  async enrichMapDataWithDetails (jwt, mapData) {
-    // DEBUG
-    // console.log('enrichMapDataWithDetails')
-    if (this.hasApiUrl2Value && this.hasFieldBaseNameValue && (mapData.get('id') > 0)) {
-      return this.fetchEntityDetails(jwt, this.fieldBaseNameValue, mapData.get('id'))
-        .then((json) => {
-          // Add or replace the display label into the JSON result:
-          json.label = mapData.get('label')
-          // DEBUG
-          // console.log('enrichMapDataWithDetails result:')
-          // console.log(json)
-          this.copyObjectToMap(json, mapData)
-          this.setHiddenFieldsValue(this.hasFieldBaseNameValue ? this.fieldBaseNameValue : '', mapData)
-        })
+      selectNode.tomselect.setValue(value, true)
     } else {
-      this.setHiddenFieldsValue(this.hasFieldBaseNameValue ? this.fieldBaseNameValue : '', mapData)
+      const existing = Array.from(selectNode.options).find((option) => `${option.value}` === `${value}`)
+      if (!existing && resolvedLabel) {
+        selectNode.appendChild(new Option(resolvedLabel, value))
+      }
+      selectNode.value = value
+      selectNode.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+
+    this.setFieldValue(`${baseName}_id`, value)
+    this.setFieldValue(`${baseName}_label`, resolvedLabel || '')
+    this.presenceLedUpdate(baseName, (resolvedLabel || '').length > 0)
+  }
+
+  findLabelForSelectValue (selectNode, value) {
+    const option = Array.from(selectNode.options).find((node) => `${node.value}` === `${value}`)
+    return option ? option.text : ''
+  }
+
+  handleSpecialCases (mapData) {
+    const yearOfBirth = parseInt(mapData.get('year_of_birth'), 10)
+    if (yearOfBirth > 0) {
+      const categorySelect = document.querySelector('#category_type_select')
+      if (categorySelect) {
+        const age = new Date().getFullYear() - yearOfBirth
+        const code = Math.floor(age / 5) * 5
+        const option = Array.from(categorySelect.options).find((node) => (node.text || '').includes(`M${code}`))
+        if (option) {
+          this.setOrCreateBoundOption('category_type', option.value, option.text)
+        }
+      }
+    }
+
+    if (mapData.get('gender_type_id') && document.querySelector('#gender_type_id')) {
+      this.setFieldValue('gender_type_id', mapData.get('gender_type_id'))
+    }
+
+    if (mapData.get('city_id') && mapData.get('city')) {
+      const city = mapData.get('city')
+      this.setOrCreateBoundOption('city', mapData.get('city_id'), city.name)
+      this.setFieldValue('city_country_code', city.country_code)
+      this.setFieldValue('city_area', city.area)
+    }
+
+    if (mapData.get('pool_type_id') && mapData.get('pool_type')) {
+      this.setFieldValue('pool_type_id', mapData.get('pool_type_id'))
     }
   }
-  // ---------------------------------------------------------------------------
 
-  /**
-   * Resolves internally the JWT value and then initializes the specified Select2 widget.
-   * (This needs to be called each time the JWT expires or changes.)
-   *
-   * @param {Object} target the target widget for Select2 setup
-   * @param {String} jwt    a yet-to-be-resolved JWT for the current API sessions
-   */
-  initSelect2Widget (target, jwt) {
-    const currJWT = jwt
-    $(target).select2({
-      placeholder: this.placeholderValue,
-      minimumInputLength: 3,
-      width: 'style',
-      theme: 'bootstrap4',
-      tags: this.freeTextValue, // (the 'tags' option will enable free-text input)
-      ajax: this.chooseSelect2AjaxOptions(currJWT),
-      cache: true
-    })
-
-    // Preset target hidden fields if there's a pre-selection already:
-    if ($(target).find(':selected').val()) {
-      // DEBUG
-      // console.log('select2 => :selected')
-      const mapData = this.prepareMapDataFromCurrentSelection(target)
-      this.setHiddenFieldsValue(this.hasFieldBaseNameValue ? this.fieldBaseNameValue : '', mapData)
+  setHiddenFieldsValue (baseName, mapData) {
+    if (!baseName || !mapData) {
+      return
     }
-    // Update target hidden fields also when the drop-down menu is closing.
-    // Note: 'change' & 'select2:select' events) may not always be triggered due to AJAX delay,
-    // especially if the "free-text" tag option is set - in which case we need to consider
-    // as a valid selection any value that is written in the input box.
-    $(target).on('select2:closing', (_event) => {
-      // DEBUG
-      // console.log('select2 => select2:closing')
-      const mapData = this.prepareMapDataFromCurrentSelection(target)
-      this.setHiddenFieldsValue(this.hasFieldBaseNameValue ? this.fieldBaseNameValue : '', mapData)
+
+    if (`${mapData.get('id')}` === `${mapData.get('label')}`) {
+      mapData.set('id', 0)
+      this.newLedUpdate(baseName, true)
+
+      if (baseName.startsWith('swimming_pool') && mapData.get('label')) {
+        this.setFieldValue('swimming_pool_name', mapData.get('label'))
+        this.setFieldValue('swimming_pool_nick_name', '')
+        this.setFieldValue('swimming_pool_city_id', '')
+        this.setFieldValue('swimming_pool_pool_type_id', '')
+      }
+      if (baseName.startsWith('swimmer') && mapData.get('label')) {
+        this.setFieldValue(`${baseName}_complete_name`, mapData.get('label'))
+      }
+    } else {
+      this.newLedUpdate(baseName, false)
+    }
+
+    this.presenceLedUpdate(baseName, !!mapData.get('label'))
+    const baseSelector = `${baseName}_`
+
+    mapData.forEach((value, key) => {
+      this.setFieldValue(`${baseSelector}${key}`, value)
+
+      const boundSelectBaseName = key.split('_id')[0]
+      const boundSelectNode = document.querySelector(`#${boundSelectBaseName}_select`)
+      if (key.endsWith('_id') && key !== 'city_id' && boundSelectNode) {
+        this.setOrCreateBoundOption(boundSelectBaseName, value)
+      }
+
+      if (!key.endsWith('_id') && key !== 'city' && value && value.id && document.querySelector(`#${key}_select`)) {
+        const nestedMap = new Map()
+        this.copyObjectToMap(value, nestedMap)
+        nestedMap.set('label', value.label || value.name || value.description || '')
+        this.setOrCreateBoundOption(key, value.id, nestedMap.get('label'))
+        this.setHiddenFieldsValue(key, nestedMap)
+      }
     })
 
-    // Update target hidden fields when the actual selection occurs:
-    // (To limit the total of API calls, this should be the only place where the secondary call occurs)
-    $(target).on('select2:select', (event) => {
-      // DEBUG
-      // console.log('select2 => select2:select')
-      // const mapData = this.prepareMapDataFromCurrentSelection(target)
-      const mapData = new Map()
-      mapData.set('label', event.params.data.text)
-      this.copyObjectToMap(event.params.data, mapData)
-      this.enrichMapDataWithDetails(currJWT, mapData)
-    })
+    this.handleSpecialCases(mapData)
   }
-  // ---------------------------------------------------------------------------
+
+  async enrichMapDataWithDetails (mapData) {
+    if (!this.hasApiUrl2Value || !this.hasFieldBaseNameValue || parseInt(mapData.get('id'), 10) <= 0) {
+      this.setHiddenFieldsValue(this.baseName, mapData)
+      return
+    }
+
+    const jwt = await this.ensureJWT()
+    const json = await this.fetchEntityDetails(jwt, this.fieldBaseNameValue, mapData.get('id'))
+    json.label = mapData.get('label')
+    this.copyObjectToMap(json, mapData)
+    this.setHiddenFieldsValue(this.baseName, mapData)
+  }
+
+  async syncCurrentSelection () {
+    if (!this.tomSelect) {
+      return
+    }
+
+    const value = this.tomSelect.getValue()
+    const scalarValue = Array.isArray(value) ? value[0] : value
+
+    if (!scalarValue) {
+      this.setHiddenFieldsValue(this.baseName, new Map([['id', 0], ['label', '']]))
+      return
+    }
+
+    const selectedData = this.tomSelect.options[scalarValue]
+    const mapData = new Map()
+    mapData.set('id', scalarValue)
+    mapData.set('label', selectedData?.text || selectedData?.label || '')
+    this.copyObjectToMap(selectedData || {}, mapData)
+
+    await this.enrichMapDataWithDetails(mapData)
+  }
 }

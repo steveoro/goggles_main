@@ -22,4 +22,4 @@
               %br/
               #{swimmer.last_category_type_by_badge&.code} (#{swimmer.latest_category_type&.code})
   %br/
-  = paginate(swimmers, remote: true)
+  = paginate(swimmers)

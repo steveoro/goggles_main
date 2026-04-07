@@ -52,7 +52,7 @@ export default class extends Controller {
    */
   updateDescription () {
     if (this.hasDescriptionTarget && this.hasFirstTarget && this.hasLastTarget) {
-      this.descriptionTarget.value.value = `${this.firstTarget.value} ${this.lastTarget.value}`
+      this.descriptionTarget.value = `${this.firstTarget.value} ${this.lastTarget.value}`
     }
   }
 
@@ -65,7 +65,7 @@ export default class extends Controller {
       this.nameTarget.value = splitEMail
       const splitNames = splitEMail.split(/[_.-]/)
       this.firstTarget.value = this.titleize(splitNames[0])
-      this.lastTarget.value = this.titleize(splitNames[1])
+      this.lastTarget.value = this.titleize(splitNames[1] || '')
     }
   }
   // ---------------------------------------------------------------------------
@@ -76,6 +76,9 @@ export default class extends Controller {
    * @return word, with first letter converted to upper case
    */
   titleize (word) {
+    if (!word || word.length < 1) {
+      return ''
+    }
     return word[0].toUpperCase() + word.substring(1)
   }
 }

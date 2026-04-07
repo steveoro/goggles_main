@@ -11,8 +11,8 @@
           %td.text-right{ colspan: 1 }
             %b= link_to(meeting_event.event_type.label,
                         meeting_show_path(id: meeting.id, anchor: "mevent-#{meeting_event.id}"),
-                        { 'data-turbolinks' => 'false' })
-            = link_to('#top-of-page', { 'data-turbolinks' => 'false' }) do
+                        { data: { turbo: false } })
+            = link_to('#top-of-page', { data: { turbo: false } }) do
               %i.fa.fa-arrow-up
 
           %td{ colspan: 2 }

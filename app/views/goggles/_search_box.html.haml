@@ -1,5 +1,5 @@
-= form_tag(:search_smart, remote: true, method: :get, class: 'form-group row-fluid',
-           data: { 'turbo-frame' => '_top' },
+= form_tag(:search_smart, method: :get, class: 'form-group row-fluid',
+           data: { turbo_frame: 'search-results' },
            onsubmit: "document.querySelector('#loading-indicator').classList.remove('d-none');") do
   .row-fluid.my-2.col-md-8.col-lg-6.offset-md-2.offset-lg-3
     .input-group.flex-fill.mt-3

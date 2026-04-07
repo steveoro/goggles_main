@@ -6,6 +6,7 @@ require 'version'
 #
 # Common parent controller
 class ApplicationController < ActionController::Base # rubocop:disable Metrics/ClassLength
+  stale_when_importmap_changes
   protect_from_forgery with: :exception
   before_action :app_settings_row, :set_locale, :detect_device_variant, :check_maintenance_mode,
                 :update_stats, :prepare_last_seasons

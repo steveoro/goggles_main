@@ -1,5 +1,4 @@
 import { Controller } from '@hotwired/stimulus'
-import $ from 'jquery'
 
 /**
  * = StimulusJS controller for Pop-overs, Modals & Tooltips =
@@ -34,39 +33,37 @@ export default class extends Controller {
    * (Called whenever the controller instance connects to the DOM)
    */
   connect () {
-    // DEBUG
-    // console.log('Connecting popover controller...')
+    this.setupAutoHideAlerts()
+    this.setupSwitchableCollapseLabel()
+  }
 
-    // *** Popovers setup: ***
-    $('[data-toggle="popover"]').popover()
-
-    // *** Tooltips setup: ***
-    $('[data-toggle="tooltip"]').tooltip()
-    // Auto-hide all tooltips after they've being shown:
-    $('[data-toggle="tooltip"]').on('shown.bs.tooltip', function () {
-      $('[data-toggle="tooltip"]').delay(2000).queue(function (next) {
-        $(this).tooltip('hide')
-        next()
-      })
-    })
-
-    // *** Alerts setup: ***
-    $('.flash-alert.alert').alert().fadeTo(500, 1).delay(2500).slideUp(250, function () {
-      $('.flash-alert.alert').alert('close')
-    })
-
-    // *** Modals setup: ***
-    // (none so far)
-
-    // *** Collapsible sections with switchable "More..."/"Less..." label setup: ***
-    $('.switchable-label-collapse').on('shown.bs.collapse', function () {
-      $('#show-more-or-less').removeClass('fa-plus')
-      $('#show-more-or-less').addClass('fa-minus')
-    })
-    $('.switchable-label-collapse').on('hidden.bs.collapse', function () {
-      $('#show-more-or-less').removeClass('fa-minus')
-      $('#show-more-or-less').addClass('fa-plus')
+  setupAutoHideAlerts () {
+    document.querySelectorAll('.flash-alert.alert').forEach((alertNode) => {
+      window.setTimeout(() => {
+        alertNode.classList.add('fade')
+        alertNode.style.opacity = '0'
+        window.setTimeout(() => {
+          alertNode.remove()
+        }, 300)
+      }, 2500)
     })
   }
-  // ---------------------------------------------------------------------------
+
+  setupSwitchableCollapseLabel () {
+    const iconNode = document.querySelector('#show-more-or-less')
+    if (!iconNode) {
+      return
+    }
+
+    document.querySelectorAll('.switchable-label-collapse').forEach((collapseNode) => {
+      collapseNode.addEventListener('shown.bs.collapse', () => {
+        iconNode.classList.remove('fa-plus')
+        iconNode.classList.add('fa-minus')
+      })
+      collapseNode.addEventListener('hidden.bs.collapse', () => {
+        iconNode.classList.remove('fa-minus')
+        iconNode.classList.add('fa-plus')
+      })
+    })
+  }
 }

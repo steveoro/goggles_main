@@ -2,7 +2,6 @@ version: 2.1
 orbs:
   ruby: circleci/ruby@2.6.0
   browser-tools: circleci/browser-tools@2.4.1
-  node: circleci/node@7.2.1
 
 ARTIFACTS_PATH: &ARTIFACTS_PATH ~/test-artifacts
 
@@ -53,12 +52,7 @@ web-assets: &web-assets
   name: Assets precompile
   command: |
     echo "- RAILS_ENV...: $RAILS_ENV"
-    echo "- NODE_ENV....: $NODE_ENV"
-    echo "- Node `node -v`"
-    # Build JS and CSS with jsbundling-rails and cssbundling-rails
-    yarn install
-    yarn build
-    yarn build:css
+    bin/rails dartsass:build
     bin/rails assets:precompile
 
 common-db-setup: &common-db-setup
@@ -254,19 +248,8 @@ jobs:
     - run:
         <<: *common-db-setup
 
-    - node/install:
-        install-yarn: true
-        node-version: '20.12.1'
-    - restore_cache:
-        keys:
-        - yarn-cache-v1-{{ checksum "yarn.lock" }}
     - run:
         <<: *web-assets
-    - save_cache:
-        key: yarn-cache-v1-{{ checksum "yarn.lock" }}
-        paths:
-        - app/assets/builds
-        - node_modules/.cache
 
     - run:
         name: RSpec - Requests
@@ -354,19 +337,8 @@ jobs:
     - browser-tools/install_chromedriver
     - run:
         <<: *common-db-setup
-    - node/install:
-        install-yarn: true
-        node-version: '20.12.1'
-    - restore_cache:
-        keys:
-        - yarn-cache-v1-{{ checksum "yarn.lock" }}
     - run:
         <<: *web-assets
-    - save_cache:
-        key: yarn-cache-v1-{{ checksum "yarn.lock" }}
-        paths:
-        - app/assets/builds
-        - node_modules/.cache
     - run:
         name: Cucumber - desktop
         command: |
@@ -394,19 +366,8 @@ jobs:
     - browser-tools/install_chromedriver
     - run:
         <<: *common-db-setup
-    - node/install:
-        install-yarn: true
-        node-version: '20.12.1'
-    - restore_cache:
-        keys:
-        - yarn-cache-v1-{{ checksum "yarn.lock" }}
     - run:
         <<: *web-assets
-    - save_cache:
-        key: yarn-cache-v1-{{ checksum "yarn.lock" }}
-        paths:
-        - app/assets/builds
-        - node_modules/.cache
     - run:
         name: Cucumber - mobile/narrow
         command: |
@@ -435,19 +396,8 @@ jobs:
     - browser-tools/install_chromedriver
     - run:
         <<: *common-db-setup
-    - node/install:
-        install-yarn: true
-        node-version: '20.12.1'
-    - restore_cache:
-        keys:
-        - yarn-cache-v1-{{ checksum "yarn.lock" }}
     - run:
         <<: *web-assets
-    - save_cache:
-        key: yarn-cache-v1-{{ checksum "yarn.lock" }}
-        paths:
-        - app/assets/builds
-        - node_modules/.cache
     - run:
         name: Cucumber - mobile/tablet
         command: |
@@ -477,27 +427,15 @@ jobs:
           RAILS_ENV: staging
           NODE_ENV: production
           BABEL_ENV: production
-    - node/install:
-        install-yarn: true
-        node-version: '20.12.1'
     - setup_remote_docker:
         version: default
         docker_layer_caching: true
-    - restore_cache:
-        keys:
-        - yarn-cache-v1-{{ checksum "yarn.lock" }}
     - run:
         <<: *web-assets
         environment:
           RAILS_ENV: staging
           NODE_ENV: production
           BABEL_ENV: production
-    - save_cache:
-        key: yarn-cache-v1-{{ checksum "yarn.lock" }}
-        paths:
-        - public/packs
-        - tmp/cache/webpacker
-        - node_modules/.cache
     - run:
         name: Docker LATEST staging
         command: |
@@ -533,27 +471,15 @@ jobs:
           RAILS_ENV: production
           NODE_ENV: production
           BABEL_ENV: production
-    - node/install:
-        install-yarn: true
-        node-version: '20.12.1'
     - setup_remote_docker:
         version: default
         docker_layer_caching: true
-    - restore_cache:
-        keys:
-        - yarn-cache-v1-{{ checksum "yarn.lock" }}
     - run:
         <<: *web-assets
         environment:
           RAILS_ENV: production
           NODE_ENV: production
           BABEL_ENV: production
-    - save_cache:
-        key: yarn-cache-v1-{{ checksum "yarn.lock" }}
-        paths:
-        - public/packs
-        - tmp/cache/webpacker
-        - node_modules/.cache
     - run:
         name: Docker TAGGED prod
         command: |

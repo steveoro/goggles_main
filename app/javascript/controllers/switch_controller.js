@@ -1,5 +1,4 @@
 import { Controller } from '@hotwired/stimulus'
-import $ from 'jquery'
 
 /**
  * = Switch::XorComponent StimulusJS controller =
@@ -54,20 +53,20 @@ export default class extends Controller {
    */
   toggleTargets (_event) {
     if (this.hasArea1Target) {
-      $(this.area1Target).toggleClass('d-none')
+      this.area1Target.classList.toggle('d-none')
     }
     if (this.hasLabel1Target) {
-      $(this.label1Target).toggleClass('text-muted')
+      this.label1Target.classList.toggle('text-muted')
     }
     if (this.hasArea2Target) {
-      $(this.area2Target).toggleClass('d-none')
+      this.area2Target.classList.toggle('d-none')
     }
     if (this.hasLabel2Target) {
-      $(this.label2Target).toggleClass('text-muted')
+      this.label2Target.classList.toggle('text-muted')
     }
     // Update the hidden field value:
     if (this.hasSelectorTarget) {
-      $(this.selectorTarget).val(
+      this.selectorTarget.value =
         /*
           Area 2 hidden ? => choice is area 1
 
@@ -76,8 +75,7 @@ export default class extends Controller {
           - Switch::XorComponent::TYPE_TARGET1 => 1
           - Switch::XorComponent::TYPE_TARGET2 => 2
         */
-        $(this.area2Target).hasClass('d-none') ? 1 : 2
-      )
+        this.area2Target.classList.contains('d-none') ? 1 : 2
     }
   }
 }

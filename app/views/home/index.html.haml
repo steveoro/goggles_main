@@ -11,7 +11,7 @@
         = render(partial: 'goggles/search_box')
 
     .row-fluid
-      .container#search-results
+      = turbo_frame_tag('search-results', class: 'container')
 
     .row-fluid
       %p &nbsp;

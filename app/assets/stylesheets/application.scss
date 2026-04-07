@@ -1,7 +1,5 @@
-// NOTE: [Steve, 20241201] Entrypoint for cssbundling-rails.
-//       This file is compiled by sass into app/assets/builds/application.css
-//       (See package.json build:css script)
-@import 'bootstrap/scss/bootstrap';
+// Entrypoint for dartsass-rails.
+// Compiles to app/assets/builds/application.css.
 
 // Fonts & Styles
 @import 'custom_fonts';

@@ -83,6 +83,13 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   # ============================================================================
+  # Solid Queue configuration: (replaces delayed_job)
+  # ============================================================================
+  # Use SolidQueue as the Active Job backend
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
+
+  # ============================================================================
   # Prosopite gem specific configuration: (Bullet alternative)
   # (see https://github.com/charkost/prosopite)
   # ============================================================================

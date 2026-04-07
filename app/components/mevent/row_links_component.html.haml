@@ -3,7 +3,7 @@
     %th.mevent-links{ colspan: 4 }
       - @meeting_events&.each do |mevent_link|
         = link_to(mevent_link.event_type.label, "#mevent-#{mevent_link.id}",
-                  data: { turbolinks: false })
+                  data: { turbo: false })
       &nbsp;
-      = link_to('#top-of-page', data: { turbolinks: false }) do
+      = link_to('#top-of-page', data: { turbo: false }) do
         %i.fa.fa-arrow-up

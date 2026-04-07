@@ -1,5 +1,4 @@
 import { Controller } from '@hotwired/stimulus'
-import $ from 'jquery'
 
 /**
  * = StimulusJS simple remote partial update controller =
@@ -65,7 +64,8 @@ export default class extends Controller {
       return
     }
 
-    const reqURL = this.data.get('url'); const payload = this.buildPayload()
+    const reqURL = this.data.get('url')
+    const payload = this.buildPayload()
     // DEBUG
     // console.log('reqURL:', reqURL)
 
@@ -73,19 +73,21 @@ export default class extends Controller {
       {
         method: 'PUT',
         headers: {
-          'X-CSRF-Token': $('meta[name=csrf-token]').attr('content'),
+          'X-CSRF-Token': this.csrfToken(),
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
       })
       .then(res => { return Promise.resolve(res.text()) })
       .then(txt => {
-        // DEBUG
-        console.log(txt)
         this.textTarget.innerHTML = txt
       })
   }
-  // ---------------------------------------------------------------------------
+
+  csrfToken () {
+    const node = document.querySelector('meta[name=csrf-token]')
+    return node ? node.content : ''
+  }
 
   /**
    * Assuming the payload fields come from a form (typical input field name format: "model_name[field_name]"),
@@ -98,7 +100,10 @@ export default class extends Controller {
    * @returns the object payload composed for the PUT request.
    */
   buildPayload () {
-    const payloadNodes = $('[data-remote-partial-payload="true"]').toArray()
+    const payloadNodes = Array.from(document.querySelectorAll('[data-remote-partial-payload="true"]'))
+    if (payloadNodes.length < 1) {
+      return {}
+    }
     const modelObjName = payloadNodes[0].name.split(/\[(.+)\]/)[0] // get just the 'model' part
     const attributesObj = {}
     let attrObjName = ''

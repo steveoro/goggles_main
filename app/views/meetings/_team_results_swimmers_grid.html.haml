@@ -21,7 +21,7 @@
                     = render(RankingPosComponent.new(rank: mir.rank))
                     &nbsp;
                     - event_type = mir.meeting_event.event_type.label
-                    %a{ href: "\##{event_type}", 'data-turbolinks' => 'false' }= event_type
+                    %a{ href: "\##{event_type}", data: { turbo: false } }= event_type
 
                   .col.d-flex.justify-content-around.align-items-baseline.px-0
                     %span{ 'class' => mir.personal_best? ? 'text-success' : '' }
