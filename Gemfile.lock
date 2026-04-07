@@ -127,7 +127,6 @@ GEM
     awesome_print (1.9.2)
     base64 (0.3.0)
     bcrypt (3.1.22)
-    benchmark (0.5.0)
     better_errors (2.10.1)
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
@@ -184,6 +183,8 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
+    cssbundling-rails (1.4.3)
+      railties (>= 6.0.0)
     cucumber (10.2.0)
       base64 (~> 0.2)
       builder (~> 3.2)
@@ -218,15 +219,6 @@ GEM
       railties (>= 7.0)
     date (3.5.1)
     debug_inspector (1.2.0)
-    delayed-web (0.4.9)
-      rails (>= 3.2.13)
-    delayed_job (4.2.0)
-      activesupport (>= 3.0, < 9.0)
-      benchmark
-      logger
-    delayed_job_active_record (4.1.11)
-      activerecord (>= 3.0, < 9.0)
-      delayed_job (>= 3.0, < 5)
     devise (5.0.3)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -249,6 +241,8 @@ GEM
     drb (2.2.3)
     erb (6.0.2)
     erubi (1.13.1)
+    et-orbi (1.4.0)
+      tzinfo
     factory_bot (6.5.6)
       activesupport (>= 6.1.0)
     factory_bot_rails (6.5.1)
@@ -266,6 +260,9 @@ GEM
       railties (>= 3.2, < 9.0)
     formatador (1.2.3)
       reline
+    fugit (1.12.1)
+      et-orbi (~> 1.4)
+      raabro (~> 1.4)
     fuzzy-string-match (1.0.1)
       RubyInline (>= 3.8.6)
     globalid (1.3.0)
@@ -315,10 +312,6 @@ GEM
     guard-shell (0.7.2)
       guard (>= 2.0.0)
       guard-compat (~> 1.0)
-    guard-spring (1.1.1)
-      guard (~> 2.0)
-      guard-compat (~> 1.1)
-      spring
     haml (7.2.0)
       temple (>= 0.8.2)
       thor
@@ -342,6 +335,10 @@ GEM
       domain_name (~> 0.5)
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
+    importmap-rails (2.2.3)
+      actionpack (>= 6.0.0)
+      activesupport (>= 6.0.0)
+      railties (>= 6.0.0)
     inch (0.8.0)
       pry
       sparkr (>= 0.2.0)
@@ -353,6 +350,8 @@ GEM
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
+    jsbundling-rails (1.3.1)
+      railties (>= 6.0.0)
     json (2.19.3)
     jwt (3.1.2)
       base64
@@ -407,6 +406,16 @@ GEM
     minitest (6.0.3)
       drb (~> 2.0)
       prism (~> 1.5)
+    mission_control-jobs (1.1.0)
+      actioncable (>= 7.1)
+      actionpack (>= 7.1)
+      activejob (>= 7.1)
+      activerecord (>= 7.1)
+      importmap-rails (>= 1.2.1)
+      irb (~> 1.13)
+      railties (>= 7.1)
+      stimulus-rails
+      turbo-rails
     mize (0.6.1)
     msgpack (1.8.0)
     multi_json (1.19.1)
@@ -473,6 +482,10 @@ GEM
       prettyprint
     prettyprint (0.2.0)
     prism (1.9.0)
+    propshaft (1.3.1)
+      actionpack (>= 7.0.0)
+      activesupport (>= 7.0.0)
+      rack
     prosopite (2.1.2)
     pry (0.16.0)
       coderay (~> 1.1)
@@ -486,14 +499,13 @@ GEM
     public_suffix (7.0.5)
     puma (7.2.0)
       nio4r (~> 2.0)
+    raabro (1.4.0)
     racc (1.8.1)
     rack (3.2.6)
     rack-protection (4.2.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
       rack (>= 3.0.0, < 4)
-    rack-proxy (0.7.7)
-      rack
     rack-session (2.1.1)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
@@ -651,7 +663,6 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
-    semantic_range (3.1.1)
     shellany (0.0.1)
     simple_command (1.0.1)
     simplecov (0.22.0)
@@ -663,15 +674,23 @@ GEM
     snaky_hash (2.0.3)
       hashie (>= 0.1.0, < 6)
       version_gem (>= 1.1.8, < 3)
+    solid_cable (3.0.12)
+      actioncable (>= 7.2)
+      activejob (>= 7.2)
+      activerecord (>= 7.2)
+      railties (>= 7.2)
+    solid_cache (1.0.10)
+      activejob (>= 7.2)
+      activerecord (>= 7.2)
+      railties (>= 7.2)
+    solid_queue (1.4.0)
+      activejob (>= 7.1)
+      activerecord (>= 7.1)
+      concurrent-ruby (>= 1.3.1)
+      fugit (~> 1.11)
+      railties (>= 7.1)
+      thor (>= 1.3.1)
     sparkr (0.4.1)
-    spring (4.4.2)
-    spring-commands-rspec (1.0.4)
-      spring (>= 0.9.1)
-    spring-commands-rubocop (0.4.0)
-      spring (>= 1.0)
-    spring-watcher-listen (2.1.0)
-      listen (>= 2.7, < 4.0)
-      spring (>= 4)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
       logger
@@ -707,6 +726,9 @@ GEM
       readline
       sync
     tsort (0.2.0)
+    turbo-rails (2.0.23)
+      actionpack (>= 7.1.0)
+      railties (>= 7.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unaccent (0.4.0)
@@ -731,11 +753,6 @@ GEM
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    webpacker (5.4.4)
-      activesupport (>= 5.2)
-      rack-proxy (>= 0.6.1)
-      railties (>= 5.2)
-      semantic_range (>= 2.3.0)
     websocket (1.2.11)
     websocket-driver (0.8.0)
       base64
@@ -761,11 +778,10 @@ DEPENDENCIES
   capybara
   codecov
   coveralls
+  cssbundling-rails
   cucumber-rails
   daemons
   datagrid
-  delayed-web
-  delayed_job_active_record
   devise
   devise-i18n
   factory_bot_rails
@@ -782,18 +798,20 @@ DEPENDENCIES
   guard-rspec
   guard-rubocop
   guard-shell
-  guard-spring
   haml-rails
   haml_lint
   inch
+  jsbundling-rails
   kaminari
   letter_opener
   listen
+  mission_control-jobs
   mysql2
   n_plus_one_control
   nokogiri
   omniauth-facebook
   omniauth-rails_csrf_protection
+  propshaft
   prosopite
   pry
   pry-rails
@@ -818,15 +836,13 @@ DEPENDENCIES
   scenic-mysql_adapter
   selenium-webdriver
   simplecov
-  spring
-  spring-commands-rspec
-  spring-commands-rubocop
-  spring-watcher-listen
+  solid_cable
+  solid_cache
+  solid_queue
   stimulus-rails
   view_component
   web-console
   webmock
-  webpacker
 
 RUBY VERSION
    ruby 3.4.7p58

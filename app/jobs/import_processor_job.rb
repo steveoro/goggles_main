@@ -3,7 +3,7 @@
 # = ImportProcessorJob
 #
 #   - author......: Steve A.
-#   - last updated: 20221205
+#   - last updated: 20260407
 #
 #  Calls the either the ImportQueue solver service or the SQL batch
 #  executor depending on the parameter set within the job creation.
@@ -24,16 +24,6 @@
 #
 class ImportProcessorJob < ApplicationJob
   queue_as { arguments&.first || 'iq' }
-
-  # DJ error handler callback.
-  #
-  # === Note: this will be called only if the front-end launching the Job is DelayedJob itself,
-  # not ActiveJob.
-  #
-  # (Meaning: "Delayed::Job.enqueue(job)" instead of "job_class.perform_later")
-  def error(job, exception)
-    Delayed::Worker.logger.error("\r\n[DelayedJob] #{job.class}\r\nException: #{exception.inspect}")
-  end
 
   # Performs the Job by executing a dedicated service object on each
   # involved row; cleans up all the rows marked as "done" at first.

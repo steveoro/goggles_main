@@ -16,21 +16,25 @@ namespace :jobs do
     Options: [Rails.env=#{Rails.env}]
   DESC
   task(count: [:environment]) do
-    jobs_queues_hash = Delayed::Job.group(:queue, 'failed_at IS NULL').count
-    # Resulting example => {["edit", 0]=>1, ["edit", 1]=>12}
+    # Solid Queue job counting
+    jobs_count = SolidQueue::Job.count
+    scheduled_count = SolidQueue::ScheduledExecution.count
+    ready_count = SolidQueue::ReadyExecution.count
+    claimed_count = SolidQueue::ClaimedExecution.count
+    failed_count = SolidQueue::FailedExecution.count
 
     # Printout the job queues with the job count:
-    puts "\r\n\r\n  *** ActiveJob / DelayedJob status ***"
+    puts "\r\n\r\n  *** ActiveJob / Solid Queue status ***"
     puts "\r\n"
-    puts "+#{''.center(22, '-')}+--------+---------+"
-    puts "| #{'QUEUE'.center(20)} | STATUS | JOB TOT |"
-    puts "+#{''.center(22, '-')}+--------+---------+"
-    jobs_queues_hash.each do |queue_key, job_count_value|
-      queue_name = queue_key.first
-      failed_description = queue_key.last.to_i.positive? ? '  OK  ' : 'FAILED'
-      puts "| #{queue_name.center(20)} | #{failed_description} | #{job_count_value.to_s.rjust(7)} |"
-    end
-    puts "+#{''.center(22, '-')}+--------+---------+"
+    puts "+#{''.center(22, '-')}+---------+"
+    puts "| #{'QUEUE STATUS'.center(20)} | JOB TOT |"
+    puts "+#{''.center(22, '-')}+---------+"
+    puts "| #{'Scheduled'.center(20)} | #{scheduled_count.to_s.rjust(7)} |"
+    puts "| #{'Ready'.center(20)} | #{ready_count.to_s.rjust(7)} |"
+    puts "| #{'Claimed'.center(20)} | #{claimed_count.to_s.rjust(7)} |"
+    puts "| #{'Failed'.center(20)} | #{failed_count.to_s.rjust(7)} |"
+    puts "| #{'Total Jobs'.center(20)} | #{jobs_count.to_s.rjust(7)} |"
+    puts "+#{''.center(22, '-')}+---------+"
     puts "\r\n\r\n"
   end
   #-- -------------------------------------------------------------------------
@@ -48,10 +52,10 @@ namespace :jobs do
   DESC
   task(recurrent_spawn: [:environment]) do
     puts "\r\n\t*** Spawning ImportProcessorJob ***"
-    Delayed::Job.enqueue(ImportProcessorJob.new('iq'))
-    Delayed::Job.enqueue(ImportProcessorJob.new('sql'))
+    ImportProcessorJob.perform_later('iq')
+    ImportProcessorJob.perform_later('sql')
     puts "\r\n\t*** Spawning IssueCleanerJob ***"
-    Delayed::Job.enqueue(IssueCleanerJob.new('issue'))
+    IssueCleanerJob.perform_later('issue')
     puts 'Done.'
   end
 end

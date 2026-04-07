@@ -12,9 +12,9 @@ Rails.application.routes.draw do
 
   # Mounting and usage of the Core Engine:
   mount GogglesDb::Engine => '/'
-  # Job UI:
+  # Job UI (Mission Control for Solid Queue):
   authenticated :user, ->(user) { GogglesDb::GrantChecker.admin?(user) } do
-    mount Delayed::Web::Engine, at: '/jobs'
+    mount MissionControl::Jobs::Engine, at: '/jobs'
   end
 
   post 'api_sessions/jwt', format: :json

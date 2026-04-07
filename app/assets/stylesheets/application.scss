@@ -1,0 +1,18 @@
+// NOTE: [Steve, 20241201] Entrypoint for cssbundling-rails.
+//       This file is compiled by sass into app/assets/builds/application.css
+//       (See package.json build:css script)
+@import 'bootstrap/scss/bootstrap';
+
+// Fonts & Styles
+@import 'custom_fonts';
+@import 'custom_styles';
+@import 'datagrid_customizations';
+
+// "Low level" widgets & other customizations that require styles:
+@import 'swipe_element';
+@import 'timer_element';
+@import 'wizard_form';
+
+// View Component styles:
+@import 'rotating_switch_component';
+@import 'slider_switch_component';

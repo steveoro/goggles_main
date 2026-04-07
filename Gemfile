@@ -14,9 +14,11 @@ gem 'mysql2' # , '>= 0.4.4'
 # Use Puma as the app server
 gem 'puma' # , '>= 5.3.1'
 # Use SCSS for stylesheets
+gem 'cssbundling-rails'
 gem 'sass-rails' # , '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-gem 'webpacker'
+gem 'jsbundling-rails'
+gem 'propshaft'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
@@ -33,8 +35,6 @@ gem 'bootsnap', require: false # , '>= 1.4.2', require: false
 gem 'browser' # detect request.variant type depending on request.user_agent
 gem 'daemons'
 gem 'datagrid'
-gem 'delayed_job_active_record'
-gem 'delayed-web'
 gem 'devise'
 gem 'devise-i18n'
 # Inherited data factories from DB engine, published also on production/staging
@@ -46,6 +46,7 @@ gem 'goggles_db', git: 'https://github.com/steveoro/goggles_db', branch: 'rails-
 gem 'google_sign_in' # See: https://github.com/basecamp/google_sign_in
 gem 'haml-rails'
 gem 'kaminari'
+gem 'mission_control-jobs'
 gem 'nokogiri' # (used explicitly for view specs)
 gem 'omniauth-facebook'
 # gem 'omniauth-google-oauth2'
@@ -58,6 +59,9 @@ gem 'omniauth-rails_csrf_protection'
 gem 'rest-client'
 gem 'scenic'
 gem 'scenic-mysql_adapter'
+gem 'solid_cable'
+gem 'solid_cache'
+gem 'solid_queue'
 gem 'stimulus-rails'
 gem 'view_component'
 
@@ -74,7 +78,7 @@ group :development do
   gem 'guard-rspec'
   gem 'guard-rubocop'
   gem 'guard-shell'
-  gem 'guard-spring'
+  # gem 'guard-spring' # REMOVED: Spring no longer needed with Rails 8.1 + bootsnap
   gem 'haml_lint', require: false
   gem 'inch', require: false # grades source documentation
   gem 'listen' # , '>= 3.2'
@@ -86,10 +90,10 @@ group :development do
   gem 'rubocop-rake'
   gem 'rubocop-rspec'
   gem 'rubocop-rspec_rails'
-  gem 'spring'
-  gem 'spring-commands-rspec'
-  gem 'spring-commands-rubocop'
-  gem 'spring-watcher-listen'
+  # gem 'spring' # REMOVED: Spring no longer needed with Rails 8.1 + bootsnap
+  # gem 'spring-commands-rspec'
+  # gem 'spring-commands-rubocop'
+  # gem 'spring-watcher-listen'
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'web-console' # , '>= 3.3.0'
 end

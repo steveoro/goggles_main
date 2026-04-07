@@ -27,8 +27,11 @@ fi
 # Apply pending migrations just for Main UI
 bundle exec rails db:migrate
 
-# Start DelayedJob back-end for ActiveJob (smaller memory footprint than Resque)
-bin/delayed_job start
+# Precompile assets for production
+bundle exec rails assets:precompile
 
-# Start our server and don't use Spring in production/staging:
-DISABLE_SPRING=true bundle exec rails s -b 0.0.0.0 -p 8080
+# Start Solid Queue worker for ActiveJob (default in Rails 8.1)
+bundle exec solid_queue &
+
+# Start our server:
+bundle exec rails s -b 0.0.0.0 -p 8080

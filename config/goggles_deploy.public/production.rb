@@ -97,6 +97,10 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
+  # Use Solid Queue for background jobs and Solid Cache for caching
+  config.active_job.queue_adapter = :solid_queue
+  config.cache_store = :solid_cache_store, { path: '/app/storage/cache.sqlite3' }
+
   # Action Mailer default URL, required by Devise:
   config.action_mailer.default_url_options = {
     host: 'master-goggles.org'
