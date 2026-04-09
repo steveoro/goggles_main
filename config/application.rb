@@ -19,6 +19,7 @@ module GogglesMain
     # the framework and any gems in your application.
 
     config.active_record.schema_format :sql
+    config.assets.paths << Rails.root.join('app', 'javascript')
 
     # Add load paths for this specific Engine:
     # (Prefer eager_load_paths over autoload_paths, since eager_load_paths are

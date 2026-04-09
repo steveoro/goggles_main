@@ -31,7 +31,7 @@ RUN apk add --update --no-cache \
     ssmtp \
     tzdata
 
-# Run as a specific user: (WIP: yarn requires more privileges)
+# Run as a specific user:
 # ARG USER_ID
 # ARG GROUP_ID
 # RUN addgroup -g $GROUP_ID -S dev

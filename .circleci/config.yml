@@ -16,7 +16,6 @@ common-config: &common-config
     environment:
       RAILS_ENV: test
       NODE_ENV: test
-      BABEL_ENV: test
       BUNDLE_JOBS: 2
       BUNDLE_RETRY: 2
       BUNDLE_PATH: vendor/bundle
@@ -426,7 +425,6 @@ jobs:
         environment:
           RAILS_ENV: staging
           NODE_ENV: production
-          BABEL_ENV: production
     - setup_remote_docker:
         version: default
         docker_layer_caching: true
@@ -435,7 +433,6 @@ jobs:
         environment:
           RAILS_ENV: staging
           NODE_ENV: production
-          BABEL_ENV: production
     - run:
         name: Docker LATEST staging
         command: |
@@ -470,7 +467,6 @@ jobs:
         environment:
           RAILS_ENV: production
           NODE_ENV: production
-          BABEL_ENV: production
     - setup_remote_docker:
         version: default
         docker_layer_caching: true
@@ -479,7 +475,6 @@ jobs:
         environment:
           RAILS_ENV: production
           NODE_ENV: production
-          BABEL_ENV: production
     - run:
         name: Docker TAGGED prod
         command: |

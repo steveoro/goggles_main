@@ -51,29 +51,7 @@ Rails.application.configure do
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
 
-  # Debug mode disables concatenation and preprocessing of assets.
-  # This option may cause significant delays in view rendering with a large
-  # number of complex assets.
-  config.assets.debug = true
-
-  # Suppress logger output for asset requests.
-  config.assets.quiet = true
-
-  # Discriminate between local assets:precompile runs for production/staging:
-  config.assets.prefix = '/dev-assets'
-  # ** Note: **
-  # The path above will end up in /public after each dynamic recompilation.
-  #
-  # If precompiled assets are available, they will be served - even if they no longer
-  # match the original (uncompiled) assets, and even on the development server.
-  #
-  # Ensure that the development server always compiles assets on-the-fly by configuring the
-  # development environment to keep precompiled assets in a different location than production.
-  # (Otherwise, any assets precompiled for use in production will clobber requests for them in development.)
-  #
-  # Note also that:
-  # - The asset precompile task in your deployment tool (e.g., Capistrano) should be disabled.
-  # - Any necessary compressors or minifiers must be available on your development system.
+  # Keep the default propshaft development asset path behavior.
 
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true

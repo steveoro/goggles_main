@@ -1,5 +1,7 @@
-import { Controller } from '@hotwired/stimulus'
-import SwipeElement from '../src/swipe_element'
+import {
+    Controller
+} from '@hotwired/stimulus'
+import SwipeElement from 'src/swipe_element'
 
 /**
  * = StimulusJS Search-browse/swipe controller =
@@ -27,69 +29,75 @@ import SwipeElement from '../src/swipe_element'
  * @author Steve A.
  */
 export default class extends Controller {
-  static targets = ['swiper']
-  static values = { max: Number, current: Number, url: String }
+    static targets = ['swiper']
+    static values = {
+        max: Number,
+        current: Number,
+        url: String
+    }
 
-  /**
-   * Initialization boilerplate for the Swipe element/widget.
-   * (Re-run each time the controller is connected to the DOM)
-   */
-  connect () {
-    // Build a swiper target only if we have more than 1 page:
-    if (this.hasSwiperTarget && this.maxValue > 1) {
-      window.pageSwiper = new SwipeElement(this.swiperTarget, {
-        // Options:
-        continuous: true, // (wrap back at pagination end)
-        enableLeft: true, // (useful to force-disable swiping when not continuous if at first or last page)
-        enableRight: true,
-        index: this.hasCurrentValue ? this.currentValue : 1,
-        total: this.hasMaxValue ? this.maxValue : 1,
-        // debug: true,
+    /**
+     * Initialization boilerplate for the Swipe element/widget.
+     * (Re-run each time the controller is connected to the DOM)
+     */
+    connect() {
+        // Build a swiper target only if we have more than 1 page:
+        if (this.hasSwiperTarget && this.maxValue > 1) {
+            window.pageSwiper = new SwipeElement(this.swiperTarget, {
+                // Options:
+                continuous: true, // (wrap back at pagination end)
+                enableLeft: true, // (useful to force-disable swiping when not continuous if at first or last page)
+                enableRight: true,
+                index: this.hasCurrentValue ? this.currentValue : 1,
+                total: this.hasMaxValue ? this.maxValue : 1,
+                // debug: true,
 
-        // Callbacks:
-        onswipeleft: (index) => {
-          this.fetchSearchResultPage(index)
-        },
-        onswiperight: (index) => {
-          this.fetchSearchResultPage(index)
+                // Callbacks:
+                onswipeleft: (index) => {
+                    this.fetchSearchResultPage(index)
+                },
+                onswiperight: (index) => {
+                    this.fetchSearchResultPage(index)
+                }
+            })
         }
-      })
     }
-  }
 
-  /**
-   * Fetches a paginated result page directly from the server and replaces the innerHTML of
-   * the search results
-   *
-   * @param {Number} pageIndex the new index for the data page to be retrieved
-   */
-  fetchSearchResultPage (pageIndex) {
-    if (!(this.hasUrlValue && this.hasSwiperTarget)) {
-      return
-    }
-    // Display loading indicator:
-    document.querySelector('#loading-indicator').classList.remove('d-none')
-    this.currentValue = pageIndex
-    let url = this.urlValue
+    /**
+     * Fetches a paginated result page directly from the server and replaces the innerHTML of
+     * the search results
+     *
+     * @param {Number} pageIndex the new index for the data page to be retrieved
+     */
+    fetchSearchResultPage(pageIndex) {
+        if (!(this.hasUrlValue && this.hasSwiperTarget)) {
+            return
+        }
+        // Display loading indicator:
+        document.querySelector('#loading-indicator').classList.remove('d-none')
+        this.currentValue = pageIndex
+        let url = this.urlValue
 
-    // Set or add the next browsing page parameter:
-    url = url.includes('page=') ? url.replace(/(?<=\W)(page=\d+)/i, `page=${pageIndex}`) : `${url}&page=${pageIndex}`
+        // Set or add the next browsing page parameter:
+        url = url.includes('page=') ? url.replace(/(?<=\W)(page=\d+)/i, `page=${pageIndex}`) : `${url}&page=${pageIndex}`
 
-    // Set or add 'raw' request parameter:
-    url = url.includes('raw=') ? url.replace(/(?<=\W)(raw=\d+)/i, 'raw=1') : `${url}&raw=1`
-    // DEBUG
-    // console.log(`fetchSearchResultPage('${url}')`)
-
-    fetch(url)
-      .then(response => { return response.text() })
-      .then(html => {
+        // Set or add 'raw' request parameter:
+        url = url.includes('raw=') ? url.replace(/(?<=\W)(raw=\d+)/i, 'raw=1') : `${url}&raw=1`
         // DEBUG
-        // console.log('Response OK')
-        this.swiperTarget.innerHTML = html
-        window.pageSwiper.resetPosition()
-        // Hide loading indicator at the end:
-        document.querySelector('#loading-indicator').classList.add('d-none')
-      })
-      .catch(error => console.log('fetch error:', error))
-  }
+        // console.log(`fetchSearchResultPage('${url}')`)
+
+        fetch(url)
+            .then(response => {
+                return response.text()
+            })
+            .then(html => {
+                // DEBUG
+                // console.log('Response OK')
+                this.swiperTarget.innerHTML = html
+                window.pageSwiper.resetPosition()
+                // Hide loading indicator at the end:
+                document.querySelector('#loading-indicator').classList.add('d-none')
+            })
+            .catch(error => console.log('fetch error:', error))
+    }
 }

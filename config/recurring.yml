@@ -20,8 +20,8 @@ default: &default
   #   queue: low_priority
   #   schedule: every day at 8pm
 
-development: {}
-  # <<: *default
+development:
+  <<: *default
 
 production:
   <<: *default
