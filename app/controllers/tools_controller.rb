@@ -34,7 +34,7 @@ class ToolsController < ApplicationController
   # Uses <tt>commit</tt> value to discriminate between "compute score" or "compute time"
   #
   # == Renders:
-  # Yields the API results as the JSON <tt>@result</tt> rendered by 'app/views/tools/compute_fin_score.js.erb'
+  # Yields JSON payload with result data for Stimulus/Turbo-driven updates.
   #
   # Basic structure:
   # <code>
@@ -51,21 +51,18 @@ class ToolsController < ApplicationController
   # For more details see Goggles API documentation, <tt>/tools/compute_fin_score</tt>
   #
   def compute_fin_score
-    unless request.xhr?
-      flash[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(root_path) && return
-    end
-
     req_params = choose_which_api_req_params(fin_score_params['commit'])
     res = execute_request(req_params)
-    unless res&.code == 200
-      flash[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(root_path) && return
-    end
+    render(json: { error: I18n.t('search_view.errors.invalid_request') }, status: :unprocessable_content) && return unless res&.code == 200
 
     store_params_in_cookies
     @result = JSON.parse(res.body)
     @standard_timing_label = @result['standard_timing_label']
+    render(json: {
+             result: @result,
+             target_type: @target_type,
+             standard_timing_label: @standard_timing_label
+           })
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -80,11 +77,6 @@ class ToolsController < ApplicationController
   # GET [XHR] - Compute deltas for each timing present on the form grid.
   #
   def compute_deltas # rubocop:disable Metrics/AbcSize
-    unless request.xhr?
-      flash[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to(root_path) && return
-    end
-
     @deltas = []
     prev_timing = Timing.new
 
@@ -103,6 +95,8 @@ class ToolsController < ApplicationController
       @deltas << (curr_timing - prev_timing)
       prev_timing = curr_timing
     end
+
+    render(json: { deltas: @deltas.map(&:to_s) })
   end
   #-- -------------------------------------------------------------------------
   #++

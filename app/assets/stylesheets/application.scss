@@ -1,16 +1,38 @@
 // Entrypoint for dartsass-rails.
 // Compiles to app/assets/builds/application.css.
 
-// Fonts & Styles
+// Base styles
+@import 'api_session';
+@import 'calendars';
+@import 'chrono';
 @import 'custom_fonts';
 @import 'custom_styles';
 @import 'datagrid_customizations';
+@import 'devise_customizations';
+@import 'flashing_animation';
+@import 'full_bleed_layout';
+@import 'home';
+@import 'issues';
+@import 'laps';
+@import 'lookup';
+@import 'maintenance';
+@import 'meetings';
+@import 'relay_laps';
+@import 'search';
+@import 'select2_customizations';
+@import 'swimmers';
+@import 'swimming_pools';
+@import 'taggings';
+@import 'teams';
+@import 'tools';
+@import 'user_workshops';
 
-// "Low level" widgets & other customizations that require styles:
+// Widgets and feature components
 @import 'swipe_element';
 @import 'timer_element';
 @import 'wizard_form';
-
-// View Component styles:
 @import 'rotating_switch_component';
 @import 'slider_switch_component';
+
+// Keep responsive overrides last
+@import 'zz_media_queries';

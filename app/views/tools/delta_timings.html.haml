@@ -27,7 +27,15 @@
                                 rows: 16, autofocus: true, class: 'form-control',
                                 'aria-describedby' => 'output')
 
-    = form_tag(tools_compute_deltas_path, id: 'frm-deltas', remote: true, method: :get) do
+    = form_tag(
+      tools_compute_deltas_path,
+      id: 'frm-deltas',
+      method: :get,
+      data: {
+        controller: 'delta-timings loading',
+        action: 'submit->delta-timings#compute submit->loading#show'
+      }
+    ) do
       %table.table.table-sm
         %thead
           %tr
@@ -73,8 +81,7 @@
       .fixed-bottom.backdrop-opaque.row-fluid.text-center
         = submit_tag(t('tools.delta_timings.button_label'),
                      id: 'btn-compute-deltas',
-                     class: 'btn btn-primary', 'aria-label' => 'Compute deltas', type: 'submit',
-                     onclick: "$('#loading-indicator').removeClass('d-none'); return true")
+                     class: 'btn btn-primary', 'aria-label' => 'Compute deltas', type: 'submit')
         = button_tag('TXT/CSV',
                      id: 'btn-output-deltas', class: 'btn btn-secondary btn-sm',
                      type: 'button', 'data-toggle' => 'modal', 'data-target' => '#output-txt-modal',

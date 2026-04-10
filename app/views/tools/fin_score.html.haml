@@ -7,7 +7,15 @@
         %i.fa.fa-calculator
         = t('tools.fin_score.title')
 
-    = form_tag(tools_compute_fin_score_path, id: 'frm-fin-score', remote: true, method: :get) do
+    = form_tag(
+      tools_compute_fin_score_path,
+      id: 'frm-fin-score',
+      method: :get,
+      data: {
+        controller: 'fin-score loading',
+        action: 'submit->fin-score#compute submit->loading#show'
+      }
+    ) do
       .container.bg-warning.ml-2.pt-3.shadow-box
         .row
           .offset-md-2.offset-lg-3
@@ -43,7 +51,7 @@
                 - select_opts = options_from_collection_for_select(@gender_types, 'id', 'label', gender_type_id)
                 = select_tag(:gender_type_id, select_opts,
                              required: true, autofocus: true, class: 'form-control',
-                             onsubmit: "$('.target-score').val(''); return true")
+                             data: { action: 'change->fin-score#resetScore' })
 
       .row
         .col-auto
@@ -62,8 +70,8 @@
             .row-fluid.text-center
               = submit_tag(t('tools.fin_score.compute_score.button_label'),
                            id: 'btn-fin-score', class: 'btn btn-primary', 'aria-label' => 'Compute score',
-                           type: 'submit', onclick: "$('.target-score').val(''); return true",
-                           onsubmit: "$('#loading-indicator').removeClass('d-none'); return true")
+                           type: 'submit',
+                           data: { action: 'click->fin-score#resetScore' })
         .offset-sm-1
         .col-auto
           .container.bg-light-blue.ml-2.mt-2.mb-4.py-3.shadow-box
@@ -75,8 +83,8 @@
             .row-fluid.text-center
               = submit_tag(t('tools.fin_score.target_timing.button_label'),
                            id: 'btn-fin-timing', class: 'btn btn-primary', 'aria-label' => 'Compute time',
-                           type: 'submit', onclick: "$('.target-time').val(''); return true",
-                           onsubmit: "$('#loading-indicator').removeClass('d-none'); return true")
+                           type: 'submit',
+                           data: { action: 'click->fin-score#resetTiming' })
 
     .row-fluid.mb-4
       %small

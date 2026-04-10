@@ -26,16 +26,8 @@ class SearchController < ApplicationController
   # GET HTML [raw] --> refreshed_content
   #
   def smart
-    unless request.xhr? || params['raw'].present? || turbo_frame_request?
-      flash[:warning] = I18n.t('search_view.errors.invalid_request')
-      redirect_to root_path
-      return
-    end
-
-    if search_query.blank? # Ignore empty requests
-      redirect_to root_path
-      return
-    end
+    return handle_invalid_request unless valid_smart_request?
+    return redirect_to(root_path) if search_query.blank? # Ignore empty requests
 
     # TODO: add manually the team of the 1st swimmer match?
     # TODO: add manually the latest 5 meetings for the of the 1st swimmer match?
@@ -47,21 +39,7 @@ class SearchController < ApplicationController
     prepare_workshop_search_results
     prepare_pool_search_results
     prepare_flash_info
-
-    respond_to do |format|
-      format.html do
-        render(
-          partial: 'refreshed_content',
-          locals: {
-            swimmers: @swimmers,
-            teams: @teams,
-            meetings: @meetings,
-            user_workshops: @user_workshops,
-            swimming_pools: @swimming_pools
-          }
-        )
-      end
-    end
+    render_search_results
   end
 
   private
@@ -69,6 +47,37 @@ class SearchController < ApplicationController
   # Returns the search query, cleaned of extra spaces.
   def search_query
     params['q'].to_s.squeeze(' ').strip
+  end
+
+  # Returns +true+ when the current request is a valid search request.
+  def valid_smart_request?
+    request.xhr? || params['raw'].present? || turbo_frame_request?
+  end
+
+  # Handles invalid requests by setting a warning flash and redirecting to root.
+  def handle_invalid_request
+    flash[:warning] = I18n.t('search_view.errors.invalid_request')
+    redirect_to(root_path)
+  end
+
+  # Renders search results for either raw or frame request modes.
+  def render_search_results
+    respond_to do |format|
+      format.html do
+        render(partial: params['raw'].present? ? 'refreshed_content' : 'results_frame', locals: search_results_locals)
+      end
+    end
+  end
+
+  # Returns the complete locals hash required by the search result partials.
+  def search_results_locals
+    {
+      swimmers: @swimmers,
+      teams: @teams,
+      meetings: @meetings,
+      user_workshops: @user_workshops,
+      swimming_pools: @swimming_pools
+    }
   end
 
   # Sets the @swimmers member
