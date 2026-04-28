@@ -3,6 +3,7 @@ document.querySelector('#laps-table-body').innerHTML = "<%=
     render(
       partial: 'laps/edit_table_body',
       locals: { parent_result: @parent_result, laps: @parent_result.laps.by_distance,
+                last_delta_timing: @last_delta_timing,
                 show_category: @show_category, show_team: @show_team }
     )
   )

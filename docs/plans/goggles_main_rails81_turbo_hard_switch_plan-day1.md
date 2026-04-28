@@ -27,7 +27,7 @@ This plan executes an 8–9 day hard switch to Turbo Frames/Streams + Stimulus a
 - Keep each phase vertically complete for its target UX (controller + view + front-end behavior + smoke checks).
 - After plan approval, keep synchronized copies in:
   - `/home/steve/.windsurf/plans/goggles_main_rails81_turbo_hard_switch_plan-9475f6.md`
-  - `/home/steve/Projects/goggles_main/docs/plans/<same-name>.md`
+  - `/home/steve/Projects/goggles_main/docs/plans/goggles_main_rails81_turbo_hard_switch_plan-day1.md`
 
 ## Current Legacy Surface (migration inventory)
 

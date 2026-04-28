@@ -13,8 +13,8 @@ class FlashAlertComponent < ViewComponent::Base
   #
   # == Params:
   # - symbol: the flash symbol that will set the alert theme (:info, :notice, :alert, :warning, :error)
-  # - title: an additional text title (can be +nil+)
   # - body: the actual text body of the message
+  # - title: an additional text title (can be +nil+)
   def initialize(symbol:, body:, title: nil)
     @symbol = symbol
     @title = title

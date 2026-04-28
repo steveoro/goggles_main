@@ -12,18 +12,16 @@ end
 
 When('I click on the compute delta-t button') do
   click_link_or_button('btn-compute-deltas')
-  wait_for_ajax
-  sleep(0.5)
 end
 
 Then('I see {string} as the resulting delta-T value for row {int}') do |delta_t, index|
-  expect(find("#delta-#{index}").text).to eq(delta_t)
+  row_selector = "#delta-#{index}"
+  expect(page).to have_css(row_selector, visible: :all)
+  expect(find(row_selector, visible: :all)).to have_text(delta_t)
 end
 
 When('I click on the compute delta-t TXT output button') do
   click_link_or_button('btn-output-deltas')
-  wait_for_ajax
-  sleep(0.5)
 end
 
 Then('the output delta text dialog appears') do

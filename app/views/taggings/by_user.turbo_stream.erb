@@ -1,0 +1,17 @@
+<%= turbo_stream.replace("user-star-#{@meeting.id}") do %>
+  <span class="user-star" id="user-star-<%= @meeting.id %>" data-row-id="<%= @meeting.id %>">
+    <%= render(
+      Grid::RowStarButtonComponent.new(
+        asset_row: @meeting,
+        current_user: current_user,
+        saved_ok: @saved_ok
+      )
+    ) %>
+  </span>
+<% end %>
+
+<% if flash.now[:error].present? %>
+  <%= turbo_stream.replace('flash-messages-container') do %>
+    <%= render(partial: 'goggles/flash_messages') %>
+  <% end %>
+<% end %>

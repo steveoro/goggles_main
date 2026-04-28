@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
+
 # = ToolsController
 #
 # Miscellaneous calculators and more
 #
 class ToolsController < ApplicationController
   before_action :authenticate_user!
+  before_action :ensure_json_compute_request, only: %i[compute_fin_score]
 
   # Data entry for FIN score or target time computation.
   #
@@ -33,7 +36,6 @@ class ToolsController < ApplicationController
   #
   # Uses <tt>commit</tt> value to discriminate between "compute score" or "compute time"
   #
-  # == Renders:
   # Yields JSON payload with result data for Stimulus/Turbo-driven updates.
   #
   # Basic structure:
@@ -51,6 +53,8 @@ class ToolsController < ApplicationController
   # For more details see Goggles API documentation, <tt>/tools/compute_fin_score</tt>
   #
   def compute_fin_score
+    render(json: { error: I18n.t('search_view.errors.invalid_request') }, status: :unprocessable_content) && return unless valid_fin_score_request?
+
     req_params = choose_which_api_req_params(fin_score_params['commit'])
     res = execute_request(req_params)
     render(json: { error: I18n.t('search_view.errors.invalid_request') }, status: :unprocessable_content) && return unless res&.code == 200
@@ -96,7 +100,10 @@ class ToolsController < ApplicationController
       prev_timing = curr_timing
     end
 
-    render(json: { deltas: @deltas.map(&:to_s) })
+    respond_to do |format|
+      format.json { render(json: { deltas: @deltas.map(&:to_s) }) }
+      format.html { render(:delta_timings) }
+    end
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -118,6 +125,22 @@ class ToolsController < ApplicationController
   # Strong parameter checking for GET /compute_deltas
   def delta_t_params
     params.permit(m: {}, s: {}, h: {})
+  end
+
+  # Restricts compute endpoints to JSON requests while preserving legacy flash+redirect behavior
+  # for direct browser navigation to these routes.
+  def ensure_json_compute_request
+    return if request.format.json?
+
+    flash[:warning] = I18n.t('search_view.errors.invalid_request')
+    redirect_to(root_path)
+  end
+
+  def valid_fin_score_request?
+    required_keys = %w[season_id pool_type_id event_type_id gender_type_id category_type_id]
+    return false unless required_keys.all? { |key| fin_score_params[key].present? }
+
+    fin_score_params['score'].present? || %w[minutes seconds hundredths].all? { |key| fin_score_params[key].present? }
   end
 
   # Returns the parameter Hash for making the API request for
@@ -186,3 +209,4 @@ class ToolsController < ApplicationController
     cookies[:category_type_id] = fin_score_params['category_type_id']
   end
 end
+# rubocop:enable Metrics/ClassLength

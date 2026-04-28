@@ -12,20 +12,24 @@
         - if event_type.phase_length_in_meters > 50 && relay_swimmer.relay_laps.count < max_relay_laps
           = link_to(relay_laps_path(result_id: relay_swimmer.id,
                     result_class: relay_swimmer.class.name.split('::').last, length_in_meters: 50),
-                    method: :post, remote: true, id: "lap-new50-#{relay_swimmer.id}",
+                    id: "lap-new50-#{relay_swimmer.id}",
                     class: 'btn btn-sm btn-outline-secondary m-1',
-                    onclick: "$('#modal-loading-indicator').removeClass('d-none');") do
+                    data: { turbo_method: :post, turbo_stream: true,
+                            controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
+                            action: 'click->loading#show turbo:before-fetch-response->loading#hide' }) do
             %span
               %i.fa.fa-plus
               50m
         = link_to(relay_lap_path(id: relay_swimmer.id, "result_id[#{overall_index}]": relay_result.id,
                   "result_class[#{overall_index}]": relay_result.class.name.split('::').last),
-                  method: :delete, remote: true, id: "lap-delete-row-#{overall_index}",
+                  id: "lap-delete-row-#{overall_index}",
                   class: 'btn btn-sm btn-outline-danger',
-                  onclick: "$('#modal-loading-indicator').removeClass('d-none');",
-                  data: { confirm: t('datagrid.edit_modal.delete_swimmer_fraction_confirm',
-                          lap_length: relay_swimmer.length_in_meters,
-                          swimmer_name: relay_swimmer.swimmer.complete_name) }) do
+                  data: { turbo_method: :delete, turbo_stream: true,
+                          controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
+                          action: 'click->loading#show turbo:before-fetch-response->loading#hide',
+                          confirm: t('datagrid.edit_modal.delete_swimmer_fraction_confirm',
+                                     lap_length: relay_swimmer.length_in_meters,
+                                     swimmer_name: relay_swimmer.swimmer.complete_name) }) do
           %i.fa.fa-trash-o
 
 / Sub-laps first:
@@ -36,7 +40,7 @@
 / Overall relay fraction timing as last row:
 %tr.container
   %td{ scope: 'row', class: 'border-0' }
-    = form_tag(relay_lap_path(relay_swimmer.id), id: "frm-lap-row-#{overall_index}", method: :put, remote: true) do
+    = form_tag(relay_lap_path(relay_swimmer.id), id: "frm-lap-row-#{overall_index}", method: :put) do
       = hidden_field_tag("result_id[#{overall_index}]", relay_result.id)
       = hidden_field_tag("result_class[#{overall_index}]", relay_result.class.name.split('::').last)
       .form-row.my-1.lap-row.border-bottom
@@ -70,6 +74,7 @@
         .col.mb-1
           = submit_tag(t('laps.modal.form.submit_save_btn'), id: "lap-save-row-#{overall_index}",
                        class: 'btn btn-sm btn-outline-primary my-1',
-                       onclick: "$('#modal-loading-indicator').removeClass('d-none');")
+                       data: { controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
+                               action: 'click->loading#show turbo:before-fetch-response->loading#hide' })
           %span.my-2.float-right{ id: "mrs-delta-#{overall_index}" }
             Δt: #{relay_swimmer.to_timing}

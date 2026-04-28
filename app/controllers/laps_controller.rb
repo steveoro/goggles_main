@@ -20,6 +20,11 @@ class LapsController < ApplicationController
     # (Won't render anything if the parent result is not found)
     last_lap = @parent_result.laps.by_distance.last
     @last_delta_timing = @parent_result.to_timing - last_lap.timing_from_start if last_lap
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to(request.referer || root_path) }
+    end
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -38,23 +43,11 @@ class LapsController < ApplicationController
   #   for this lap is < the length in meters of the parent result.
   #
   def create
-    step_length = modal_params[:step].to_i
     check_and_set_lap_edit_and_report_mistake_flags # (Needs @parent_result to be set)
+    return respond_with_laps_update unless create_requested_lap?
 
-    # Create additional lap if requested:
-    if step_length.positive?
-      last_lap = @parent_result.laps.by_distance.last
-      next_distance = step_length + last_lap&.length_in_meters.to_i
-      return if next_distance >= @parent_result.event_type.length_in_meters
-
-      handle_error_request unless new_zeroed_lap(next_distance).save
-    end
-
-    @alert_msg = I18n.t('laps.modal.msgs.create_successful')
-    # Store overall edits counter:
-    GogglesDb::APIDailyUse.increase_for!("CREATE-LAP-#{current_user.id}")
-    @last_delta_timing = @parent_result.to_timing - last_lap.timing_from_start if last_lap
-    render(:update)
+    mark_lap_create_success
+    respond_with_laps_update
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -104,10 +97,12 @@ class LapsController < ApplicationController
     end
 
     @alert_msg = I18n.t('laps.modal.msgs.submit_successful')
+    @alert_class = 'alert-success'
     # Store overall edits counter:
     GogglesDb::APIDailyUse.increase_for!("EDIT-LAP-#{current_user.id}")
     last_lap = @parent_result.laps.by_distance.last
     @last_delta_timing = @parent_result.to_timing - last_lap.timing_from_start if last_lap
+    respond_with_laps_update
   end
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   #-- -------------------------------------------------------------------------
@@ -134,7 +129,7 @@ class LapsController < ApplicationController
     last_lap = @parent_result.laps.by_distance.last
     @last_delta_timing = @parent_result.to_timing - last_lap.timing_from_start if last_lap
     check_and_set_lap_edit_and_report_mistake_flags # (Needs @parent_result to be set)
-    render(:update)
+    respond_with_laps_update
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -208,9 +203,8 @@ class LapsController < ApplicationController
   # Sets the <tt>@parent_result</tt> member.
   # Redirects to root_path otherwise.
   #
-  # rubocop:disable Metrics/AbcSize
   def validate_modal_request
-    valid_params = request.xhr? && request.post? &&
+    valid_params = request.post? &&
                    modal_params[:result_id].present? &&
                    modal_params[:result_class].present? &&
                    result_class_from_params.exists?(modal_params[:result_id])
@@ -223,7 +217,6 @@ class LapsController < ApplicationController
     @parent_result = result_class_from_params.includes(lap_class_from_params.table_name.to_sym, :event_type)
                                              .find_by(id: modal_params[:result_id])
   end
-  # rubocop:enable Metrics/AbcSize
 
   # Validates the request type and the required parameters for a row update or delete.
   # Sets both <tt>@parent_result</tt> & <tt>@curr_lap</tt> members.
@@ -231,7 +224,7 @@ class LapsController < ApplicationController
   #
   # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def validate_row_request
-    valid_params = request.xhr? && (request.put? || request.delete?) &&
+    valid_params = (request.put? || request.delete?) &&
                    rows_params[:id].present? &&
                    lap_class_from_row_params.exists?(rows_params[:id]) &&
                    rows_params[:result_id]&.values&.first.present? &&
@@ -307,6 +300,42 @@ class LapsController < ApplicationController
 
     @report_mistake = @lap_edit ||
                       (user_signed_in? && current_user.swimmer_id.present? && current_user.swimmer_id == @parent_result.swimmer_id)
+  end
+
+  def create_requested_lap?
+    step_length = modal_params[:step].to_i
+    last_lap = @parent_result.laps.by_distance.last
+    @last_delta_timing = @parent_result.to_timing - last_lap.timing_from_start if last_lap
+    return true unless step_length.positive?
+
+    next_distance = step_length + last_lap&.length_in_meters.to_i
+    return false if invalid_next_distance?(next_distance)
+
+    return true if new_zeroed_lap(next_distance).save
+
+    handle_error_request
+    false
+  end
+
+  def invalid_next_distance?(next_distance)
+    return false unless next_distance >= @parent_result.event_type.length_in_meters
+
+    @alert_msg = I18n.t('search_view.errors.invalid_request')
+    @alert_class = 'alert-warning'
+    true
+  end
+
+  def mark_lap_create_success
+    @alert_msg = I18n.t('laps.modal.msgs.create_successful')
+    @alert_class = 'alert-success'
+    GogglesDb::APIDailyUse.increase_for!("CREATE-LAP-#{current_user.id}")
+  end
+
+  def respond_with_laps_update
+    respond_to do |format|
+      format.turbo_stream { render(:update) }
+      format.html { redirect_to(request.referer || root_path) }
+    end
   end
 end
 # rubocop:enable Metrics/ClassLength

@@ -2,4 +2,4 @@
   = render(partial: 'laps/edit_table_row',
            locals: { parent_result:, lap:, index:, show_category:, show_team: })
 / Always append a read-only last row as overall total for the laps:
-= render(partial: 'laps/edit_table_result_row', locals: { parent_result: })
+= render(partial: 'laps/edit_table_result_row', locals: { parent_result:, last_delta_timing: })

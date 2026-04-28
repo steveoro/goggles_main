@@ -11,7 +11,8 @@ RSpec.describe 'home/index.html.haml' do
   context 'before searching anything,' do
     it 'shows the query search box' do
       expect(rendered).to match(/id=['"]search-box['"]/)
-      expect(rendered).to include('#loading-indicator')
+      expect(rendered).to match(/data-controller=['"]loading['"]/)
+      expect(rendered).to match(/turbo:submit-start-&gt;loading#show/)
       expect(rendered).to match(/id=['"]q['"]/)
       expect(rendered).to match(/id=['"]btn-search['"]/)
     end

@@ -167,7 +167,7 @@ end
 
 When('I submit the filters for the datagrid {string} waiting {int} secs tops for it to disappear') do |datagrid_dom_id, sleep_time_in_secs|
   visible = false
-  find("section#data-grid form.datagrid-form#{datagrid_dom_id} .datagrid-actions input[type=\"submit\"]", visible: true).click
+  find("section#data-grid form#{datagrid_dom_id} .datagrid-actions .datagrid-submit", visible: true).click
   sleep(0.5)
   wait_for_ajax
 
@@ -176,11 +176,11 @@ When('I submit the filters for the datagrid {string} waiting {int} secs tops for
     sleep(1)
     wait_for_ajax
     sleep_time_in_secs -= 1
-    visible = find("section#data-grid form.datagrid-form#{datagrid_dom_id}").visible?
+    visible = find("section#data-grid form#{datagrid_dom_id}").visible?
   end
 
   # Try to click it again if still visible (it should hide on post)
-  find("section#data-grid form.datagrid-form#{datagrid_dom_id} .datagrid-actions input[type=\"submit\"]", visible: true).click if visible
+  find("section#data-grid form#{datagrid_dom_id} .datagrid-actions .datagrid-submit", visible: true).click if visible
   sleep(1) && wait_for_ajax
 end
 # -----------------------------------------------------------------------------

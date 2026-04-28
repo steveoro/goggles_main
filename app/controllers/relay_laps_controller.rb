@@ -22,6 +22,11 @@ class RelayLapsController < ApplicationController
   #
   def edit_modal
     # (Won't render anything if the relay result is not found)
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to(request.referer || root_path) }
+    end
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -55,7 +60,7 @@ class RelayLapsController < ApplicationController
     if @parent_result.is_a?(GogglesDb::MeetingRelayResult) && GogglesDb::Badge.exists?(modal_params[:badge_id])
       target_length = modal_params[:length_in_meters].to_i
       valid_request = target_length.positive? && @parent_result.meeting_relay_swimmers.map(&:length_in_meters).exclude?(target_length)
-      render(:update) && return unless valid_request
+      return respond_with_relay_laps_update unless valid_request
 
       relay_order = target_length / event_type.phase_length_in_meters
 
@@ -67,7 +72,7 @@ class RelayLapsController < ApplicationController
       max_sublaps = (event_type.phase_length_in_meters / 50) - 1
       target_length = ((1..max_sublaps).map { |sublap_idx| @parent_result.length_in_meters - (sublap_idx * 50) } - allocated_lengths).first
       valid_request = target_length.positive? && @parent_result.relay_laps.map(&:length_in_meters).exclude?(target_length)
-      render(:update) && return unless valid_request
+      return respond_with_relay_laps_update unless valid_request
 
       # Use same relay_order as containing MRS for siblings RelayLap: (e.g.: 150/200 + 1 = 1)
       relay_order = (target_length / event_type.phase_length_in_meters) + 1
@@ -85,7 +90,7 @@ class RelayLapsController < ApplicationController
       @alert_msg = I18n.t('search_view.errors.submit_generic_failure')
       @alert_class = 'alert-danger'
     end
-    render(:update)
+    respond_with_relay_laps_update
   end
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   #-- -------------------------------------------------------------------------
@@ -114,7 +119,7 @@ class RelayLapsController < ApplicationController
   def update
     @alert_msg = I18n.t('search_view.errors.invalid_request')
     @alert_class = 'alert-warning'
-    render && return unless @relay_result && @curr_lap
+    return respond_with_relay_laps_update unless @relay_result && @curr_lap
 
     check_and_set_lap_edit_and_report_mistake_flags # (Needs @relay_result to be set)
 
@@ -134,6 +139,8 @@ class RelayLapsController < ApplicationController
       @alert_msg = I18n.t('search_view.errors.submit_generic_failure')
       @alert_class = 'alert-danger'
     end
+
+    respond_with_relay_laps_update
   end
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   #-- -------------------------------------------------------------------------
@@ -158,7 +165,7 @@ class RelayLapsController < ApplicationController
     end
 
     check_and_set_lap_edit_and_report_mistake_flags # (Needs @relay_result to be set)
-    render(:update)
+    respond_with_relay_laps_update
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -227,13 +234,13 @@ class RelayLapsController < ApplicationController
   def handle_invalid_request
     # @alert_msg is used inside the edit modal to show messages since flash is not displayable
     flash.now[:warning] = I18n.t('search_view.errors.invalid_request')
-    redirect_to(root_path) unless request.xhr?
+    redirect_to(root_path) && return
   end
 
   # Redirects to root setting a generic flash error message
   def handle_error_request
     flash.now[:error] = I18n.t('search_view.errors.submit_generic_failure')
-    redirect_to(root_path) unless request.xhr?
+    redirect_to(root_path) && return
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -244,7 +251,7 @@ class RelayLapsController < ApplicationController
   #
   # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def validate_modal_request
-    valid_params = request.xhr? && request.post? &&
+    valid_params = request.post? &&
                    modal_params[:result_id].present? &&
                    modal_params[:result_class].present? &&
                    result_class_from_params.exists?(modal_params[:result_id])
@@ -259,7 +266,7 @@ class RelayLapsController < ApplicationController
   # Redirects to root_path otherwise.
   #
   def validate_row_request
-    valid_params = request.xhr? && (request.put? || request.delete?) &&
+    valid_params = (request.put? || request.delete?) &&
                    rows_params[:id].present? &&
                    lap_class_from_row_params.exists?(rows_params[:id]) &&
                    rows_params[:result_id]&.values&.first.present? &&
@@ -345,6 +352,13 @@ class RelayLapsController < ApplicationController
 
     @lap_edit = @managed_team_ids.nil? || @managed_team_ids.include?(@relay_result.team_id)
     @report_mistake = @lap_edit || (user_signed_in? && @user_teams.map(&:id).include?(@relay_result.team_id))
+  end
+
+  def respond_with_relay_laps_update
+    respond_to do |format|
+      format.turbo_stream { render(:update) }
+      format.html { redirect_to(request.referer || root_path) }
+    end
   end
 
   # Generic "previous lap" retrieval.

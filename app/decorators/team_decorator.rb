@@ -17,7 +17,7 @@ class TeamDecorator < Draper::Decorator
   # NOTE: +TeamShowLinkComponent+ adds a tooltip to the link.
   #
   def link_to_full_name
-    h.link_to(text_label, h.team_show_path(id: object.id))
+    h.link_to(text_label, h.team_show_path(id: object.id), data: { turbo_frame: '_top' })
   end
 
   # Returns the link to /meetings/team_results/:id using the complete name as link label.

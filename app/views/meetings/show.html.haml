@@ -12,12 +12,13 @@
             %tr.text-center
               %th{ colspan: 4 }
                 - collapse_target = "loading-mev-#{meeting_event.id}"
-                = link_to(meeting_show_event_section_path(meeting_event.id), anchor: collapse_target, method: :get, remote: true,
+                = link_to(meeting_show_event_section_path(meeting_event.id), anchor: collapse_target,
                           id: "btn-load-mev-#{meeting_event.id}", type: 'button',
                           class: 'btn btn-link', role: 'button', title: t('meetings.tooltip.link.click_to_expand'),
-                          data: { tooltip: true, toggle: 'collapse', target: "##{collapse_target}" },
-                          'aria-expanded' => false, 'aria-controls' => collapse_target,
-                          onclick: "document.querySelector('#loading-indicator').classList.remove('d-none');") do
+                          data: { tooltip: true, toggle: 'collapse', target: "##{collapse_target}",
+                                  turbo_stream: true, controller: 'loading',
+                                  action: 'click->loading#show turbo:before-fetch-response->loading#hide' },
+                          'aria-expanded' => false, 'aria-controls' => collapse_target) do
                   = meeting_event.event_type.long_label
 
             %tr.collapse.text-center{ id: collapse_target }

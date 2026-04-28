@@ -7,15 +7,9 @@
         %i.fa.fa-calculator
         = t('tools.fin_score.title')
 
-    = form_tag(
-      tools_compute_fin_score_path,
-      id: 'frm-fin-score',
-      method: :get,
-      data: {
-        controller: 'fin-score loading',
-        action: 'submit->fin-score#compute submit->loading#show'
-      }
-    ) do
+    = form_tag(tools_compute_fin_score_path, id: 'frm-fin-score', method: :get,
+                                             data: { controller: 'fin-score loading',
+                                                     action: 'submit->fin-score#compute submit->loading#show' }) do
       .container.bg-warning.ml-2.pt-3.shadow-box
         .row
           .offset-md-2.offset-lg-3

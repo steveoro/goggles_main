@@ -1,0 +1,15 @@
+<%= turbo_stream.replace("mevent-#{@meeting_event.id}") do %>
+  <%= render(
+    partial: 'show_event_section',
+    locals: {
+      meeting_event: @meeting_event,
+      meeting_events: @meeting_events,
+      event_index: @event_index,
+      prgs_for_event: @prgs_for_event,
+      managed_team_ids: @managed_team_ids,
+      user_teams: @user_teams,
+      current_swimmer_id: @current_swimmer_id,
+      current_user_is_admin: @current_user_is_admin
+    }
+  ) %>
+<% end %>

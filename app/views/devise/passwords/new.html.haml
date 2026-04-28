@@ -7,7 +7,7 @@
         %h2= t('.forgot_your_password')
         = form_for(resource, as: resource_name,
                   url: password_path(resource_name),
-                  html: { method: :post }) do |f|
+                  html: { method: :post, data: { turbo: false } }) do |f|
           = render('devise/shared/error_messages', resource: resource)
           .bg-light-blue.p-1.pt-3.shadow-box
             .form-group.col-auto

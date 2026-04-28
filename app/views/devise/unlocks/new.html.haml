@@ -6,7 +6,7 @@
       #unlock-account-box
         %h2= t('devise.customizations.unlocks.title')
         = form_for(resource, as: resource_name,
-                    url: unlock_path(resource_name), html: { method: :post }) do |f|
+                    url: unlock_path(resource_name), html: { method: :post, data: { turbo: false } }) do |f|
           = render('devise/shared/error_messages', resource: resource)
           .bg-light-blue.p-1.pt-3.shadow-box
             .form-group.col-auto

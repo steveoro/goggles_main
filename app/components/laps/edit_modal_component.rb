@@ -26,10 +26,11 @@ module Laps
     # - <tt>:show_team</tt> => when +true+ (default), passes the render option to the parent MIR component for
     #                               displaying the link to the team results page associated with this MIR row.
     #
-    def initialize(parent_result:, show_category: false, show_team: true)
+    def initialize(parent_result:, show_category: false, show_team: true, last_delta_timing: nil)
       @parent_result = parent_result
       @show_category = show_category
       @show_team = show_team
+      @last_delta_timing = last_delta_timing
     end
 
     # Skips rendering unless the required parameters are set

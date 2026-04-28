@@ -1,5 +1,6 @@
 .modal.fade{ id: 'lap-edit-modal', 'aria-hidden' => 'true', role: 'dialog', tabindex: '-1',
-             'aria-labelledby' => 'modal title' }
+             'aria-labelledby' => 'modal title',
+             data: { controller: 'modal', modal_auto_show_value: true } }
   .modal-dialog.modal-lg{ role: 'document' }
     .modal-content
       .modal-header
@@ -30,7 +31,10 @@
                       = link_to(laps_path(result_id: @parent_result.id,
                                           result_class: @parent_result.class.name.split('::').last, step: 25,
                                           show_category: @show_category, show_team: @show_team),
-                                method: :post, remote: true, id: "lap-new25-#{@parent_result.id}",
+                                id: "lap-new25-#{@parent_result.id}",
+                                data: { turbo_method: :post, turbo_stream: true,
+                                        controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
+                                        action: 'click->loading#show turbo:before-fetch-response->loading#hide' },
                                 class: 'btn btn-sm btn-outline-secondary m-1') do
                         %span
                           %i.fa.fa-plus
@@ -38,14 +42,17 @@
                       = link_to(laps_path(result_id: @parent_result.id,
                                           result_class: @parent_result.class.name.split('::').last, step: 50,
                                           show_category: @show_category, show_team: @show_team),
-                                method: :post, remote: true, id: "lap-new50-#{@parent_result.id}",
+                                id: "lap-new50-#{@parent_result.id}",
+                                data: { turbo_method: :post, turbo_stream: true,
+                                        controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
+                                        action: 'click->loading#show turbo:before-fetch-response->loading#hide' },
                                 class: 'btn btn-sm btn-outline-secondary my-1') do
                         %span
                           %i.fa.fa-plus
                           50m
             %tbody#laps-table-body
               = render(partial: 'laps/edit_table_body',
-                       locals: { parent_result: @parent_result, laps:,
+                       locals: { parent_result: @parent_result, laps:, last_delta_timing: @last_delta_timing,
                                  show_category: @show_category, show_team: @show_team })
 
       .modal-footer

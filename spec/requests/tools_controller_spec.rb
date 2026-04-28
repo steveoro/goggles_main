@@ -119,7 +119,7 @@ RSpec.describe ToolsController do
                   score: 900 # (whatever: not checked)
                 }.to_json
               )
-            get(tools_compute_fin_score_path, xhr: true, params: api_score_request_params)
+            get(tools_compute_fin_score_path, params: api_score_request_params, as: :json)
           end
 
           it 'is successful' do
@@ -142,7 +142,7 @@ RSpec.describe ToolsController do
                   score: 900 # (whatever: not checked)
                 }.to_json
               )
-            get(tools_compute_fin_score_path, xhr: true, params: api_timing_request_params)
+            get(tools_compute_fin_score_path, params: api_timing_request_params, as: :json)
           end
 
           it 'is successful' do
@@ -155,10 +155,16 @@ RSpec.describe ToolsController do
             stub_request(:get, %r{/api/v3/tools/compute_score}i)
               .with(query: hash_excluding(score: anything, minutes: anything, seconds: anything, hundredths: anything))
               .to_return(status: 401, body: '')
-            get(tools_compute_fin_score_path, xhr: true)
+            get(tools_compute_fin_score_path, as: :json)
           end
 
-          it_behaves_like('invalid row id GET request')
+          it 'returns unprocessable_content' do
+            expect(response).to have_http_status(:unprocessable_content)
+          end
+
+          it 'returns JSON error payload' do
+            expect(response.parsed_body['error']).to eq(I18n.t('search_view.errors.invalid_request'))
+          end
         end
       end
     end
@@ -205,7 +211,13 @@ RSpec.describe ToolsController do
       context 'making a plain HTML request,' do
         before { get(tools_compute_deltas_path) }
 
-        it_behaves_like('invalid row id GET request')
+        it 'is successful' do
+          expect(response).to be_successful
+        end
+
+        it 'renders delta timings page' do
+          expect(response.body).to include('id="deltas-title"')
+        end
       end
 
       context 'making an XHR request' do
@@ -232,7 +244,7 @@ RSpec.describe ToolsController do
 
         context 'with valid parameters,' do
           before do
-            get(tools_compute_deltas_path, xhr: true, params: request_params)
+            get(tools_compute_deltas_path, params: request_params, as: :json)
           end
 
           it 'is successful' do
@@ -242,7 +254,7 @@ RSpec.describe ToolsController do
 
         context 'without valid parameters for any kind of request,' do
           before do
-            get(tools_compute_deltas_path, xhr: true)
+            get(tools_compute_deltas_path, as: :json)
           end
 
           it 'is successful anyway (but won\'t compute anything)' do

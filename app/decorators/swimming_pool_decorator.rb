@@ -18,7 +18,7 @@ class SwimmingPoolDecorator < Draper::Decorator
   def link_to_full_name
     return '' unless object
 
-    h.link_to(text_label, h.swimming_pool_show_path(id: object&.id))
+    h.link_to(text_label, h.swimming_pool_show_path(id: object&.id), data: { turbo_frame: '_top' })
   end
 
   # Returns either the styled button link to the Google Maps pool location together with

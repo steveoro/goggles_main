@@ -1,0 +1,22 @@
+<%= turbo_stream.replace('laps-table-body') do %>
+  <%= render(
+    partial: 'laps/edit_table_body',
+    locals: {
+      parent_result: @parent_result,
+      laps: @parent_result.laps.by_distance,
+      last_delta_timing: @last_delta_timing,
+      show_category: @show_category,
+      show_team: @show_team
+    }
+  ) %>
+<% end %>
+
+<%= turbo_stream.replace('lap-modal-alert') do %>
+  <div class="alert <%= @alert_class %> mx-auto m-0 px-2 py-0" id="lap-modal-alert" role="alert">
+    <small id="lap-modal-alert-text"><%= @alert_msg %></small>
+  </div>
+<% end %>
+
+<%= turbo_stream.replace("laps-show#{@parent_result.id}") do %>
+  <%= render(Laps::TableComponent.new(laps: @parent_result.laps, collapsed: false)) %>
+<% end %>

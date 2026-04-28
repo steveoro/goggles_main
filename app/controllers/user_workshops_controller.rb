@@ -40,7 +40,10 @@ class UserWorkshopsController < ApplicationController
     end
 
     @swimmer = GogglesDb::Swimmer.find_by(id: user_workshop_params[:id])
-    @grid = UserWorkshopsGrid.new(grid_filter_params) { |scope| scope.for_swimmer(@swimmer).page(index_params[:page]).per(20) }
+    @grid = UserWorkshopsGrid.new(grid_filter_params) do |scope|
+      scope.where(user_results: { swimmer_id: @swimmer.id })
+           .page(index_params[:page]).per(20)
+    end
   end
 
   # GET /user_workshops/for_team/:id
@@ -56,7 +59,10 @@ class UserWorkshopsController < ApplicationController
     end
 
     @team = GogglesDb::Team.find_by(id: user_workshop_params[:id])
-    @grid = UserWorkshopsGrid.new(grid_filter_params) { |scope| scope.for_team(@team).page(index_params[:page]).per(20) }
+    @grid = UserWorkshopsGrid.new(grid_filter_params) do |scope|
+      scope.where(user_workshops: { team_id: @team.id })
+           .page(index_params[:page]).per(20)
+    end
   end
   #-- -------------------------------------------------------------------------
   #++

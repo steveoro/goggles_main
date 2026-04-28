@@ -12,14 +12,8 @@ class TaggingsController < ApplicationController
   #
   def by_user
     logger.info("\r\n---> Taggings#by_user(User: #{current_user.id}, Meeting: #{tag_params[:meeting_id]})")
-    already_starred = @meeting.tags_by_user_list.include?("u#{current_user.id}")
-    action = already_starred ? :remove : :add
-
-    @meeting.tags_by_user_list.send(action, "u#{current_user.id}")
-    @saved_ok = @meeting.save
-    logger.info("---> Tag #{already_starred ? 'OFF' : 'ON'}") && return if @saved_ok
-
-    flash.now[:error] = I18n.t('tags.error_during_save')
+    @saved_ok = toggle_tagging_for!(@meeting.tags_by_user_list, "u#{current_user.id}")
+    respond_to_turbo_or_html
   end
 
   # XHR POST /by_team(:team_id, :meeting_id)
@@ -28,14 +22,8 @@ class TaggingsController < ApplicationController
   #
   def by_team
     logger.info("\r\n---> Taggings#by_team(Team: #{tag_params[:team_id]}, Meeting: #{tag_params[:meeting_id]})")
-    already_starred = @meeting.tags_by_team_list.include?("t#{tag_params[:team_id]}")
-    action = already_starred ? :remove : :add
-
-    @meeting.tags_by_team_list.send(action, "t#{tag_params[:team_id]}")
-    @saved_ok = @meeting.save
-    logger.info("---> Tag #{already_starred ? 'OFF' : 'ON'}") && return if @saved_ok
-
-    flash.now[:error] = I18n.t('tags.error_during_save')
+    @saved_ok = toggle_tagging_for!(@meeting.tags_by_team_list, "t#{tag_params[:team_id]}")
+    respond_to_turbo_or_html
   end
 
   private
@@ -49,7 +37,7 @@ class TaggingsController < ApplicationController
   # Sets the internal <tt>@meeting</tt> member when valid.
   # Redirects to root_path otherwise.
   def validate_ajax_request_and_meeting_id
-    unless request.xhr? && request.post? && tag_params[:meeting_id].present? &&
+    unless request.post? && tag_params[:meeting_id].present? &&
            GogglesDb::Meeting.exists?(tag_params[:meeting_id])
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(root_path) && return
@@ -72,5 +60,24 @@ class TaggingsController < ApplicationController
     end
 
     @team = GogglesDb::Team.find_by(id: tag_params[:team_id])
+  end
+
+  # Toggles the specified +tag_code+ in +tag_list+ and persists the parent meeting.
+  # Returns +true+ when save is successful.
+  def toggle_tagging_for!(tag_list, tag_code)
+    already_starred = tag_list.include?(tag_code)
+    tag_list.send(already_starred ? :remove : :add, tag_code)
+    saved_ok = @meeting.save
+    logger.info("---> Tag #{already_starred ? 'OFF' : 'ON'}") if saved_ok
+    flash.now[:error] = I18n.t('tags.error_during_save') unless saved_ok
+    saved_ok
+  end
+
+  # Shared response strategy for tag updates.
+  def respond_to_turbo_or_html
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to(request.referer || root_path) }
+    end
   end
 end

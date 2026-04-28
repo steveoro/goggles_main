@@ -25,7 +25,7 @@
             .col-auto.text-center.align-self-center
               = form_tag(relay_laps_path(@relay_result.id),
                          id: "frm-add-mrs-row", method: :post,
-                         remote: true, class: 'form-inline') do
+                         class: 'form-inline', data: { turbo_stream: true }) do
                 = hidden_field_tag('result_id', @relay_result.id)
                 = hidden_field_tag('result_class', @relay_result.class.name.split('::').last)
                 .form-group
@@ -38,7 +38,8 @@
                     = submit_tag(t('datagrid.edit_modal.add_relay_result_btn'),
                                  id: 'btn-add-mrs-row', disabled: unused_relay_fractions.blank?,
                                  class: 'btn btn-sm btn-outline-primary mb-1',
-                                 onclick: "$('#modal-loading-indicator').removeClass('d-none');")
+                                 data: { controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
+                                         action: 'click->loading#show turbo:before-fetch-response->loading#hide' })
 
       %tbody#laps-table-body
         = render(partial: 'relay_laps/edit_relay_table_body', locals: { relay_result: @relay_result,

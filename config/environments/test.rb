@@ -44,6 +44,9 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :test
   # Allow usage of "have_enqueued_job.on_queue(...)" during tests:
   config.active_job.queue_adapter = :test
+  config.solid_queue.connects_to = { database: { writing: :queue } }
+  config.mission_control.jobs.adapters = [:solid_queue]
+  config.mission_control.jobs.http_basic_auth_enabled = false
   # Action Mailer default URL, required by Devise:
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 

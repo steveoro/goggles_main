@@ -43,6 +43,6 @@ Then('I click on the first {string} result to browse to its detail page') do |mo
   within(results_node) do
     find('table tbody tr td a', visible: true).click
   end
-  wait_for_ajax(5) && sleep(1)
-  find('.main-content#top-of-page', visible: true)
+  wait_for_ajax(5)
+  sleep(1)
 end

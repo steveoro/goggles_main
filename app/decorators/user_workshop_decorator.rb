@@ -11,7 +11,7 @@ class UserWorkshopDecorator < Draper::Decorator
   # Returns the link to #show using the description as link label.
   #
   def link_to_full_name
-    h.link_to(decorated.display_label, h.user_workshop_show_path(id: object.id))
+    h.link_to(decorated.display_label, h.user_workshop_show_path(id: object.id), data: { turbo_frame: '_top' })
   end
 
   private

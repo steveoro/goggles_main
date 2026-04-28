@@ -1,0 +1,10 @@
+<%= turbo_stream.replace('lap-edit-modal-container') do %>
+  <%= render(
+    Laps::EditModalComponent.new(
+      parent_result: @parent_result,
+      show_category: @show_category,
+      show_team: @show_team,
+      last_delta_timing: @last_delta_timing
+    )
+  ) %>
+<% end %>

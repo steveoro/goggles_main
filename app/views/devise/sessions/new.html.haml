@@ -5,7 +5,7 @@
     .row-fluid.m-4
       #login-box
         %h2= t('.sign_in')
-        = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+        = form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: false }) do |f|
           .bg-light-blue.p-1.pt-3.shadow-box
             .form-group.field.col-md-7.col-sm-12
               = f.label(:email, t('activerecord.attributes.goggles_db/user.email'))

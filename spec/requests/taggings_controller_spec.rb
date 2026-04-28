@@ -24,12 +24,18 @@ RSpec.describe TaggingsController do
       context 'making a plain HTML request,' do
         before { post(taggings_by_user_path(meeting_id: fixture_meeting_id)) }
 
-        it_behaves_like('invalid row id GET request')
+        it 'redirects to root_path (fallback) without warning' do
+          expect(response).to redirect_to(root_path)
+          expect(flash[:warning]).to be_nil
+        end
       end
 
-      context 'making an XHR request with valid parameters,' do
+      context 'making a Turbo Stream request with valid parameters,' do
         before do
-          post(taggings_by_user_path(meeting_id: fixture_meeting_id), xhr: true)
+          post(
+            taggings_by_user_path(meeting_id: fixture_meeting_id),
+            headers: { 'ACCEPT' => Mime[:turbo_stream].to_s }
+          )
         end
 
         it 'is successful' do
@@ -37,8 +43,13 @@ RSpec.describe TaggingsController do
         end
       end
 
-      context 'making an XHR request with missing or invalid parameters,' do
-        before { post(taggings_by_user_path(meeting_id: 0), xhr: true) }
+      context 'making a Turbo Stream request with missing or invalid parameters,' do
+        before do
+          post(
+            taggings_by_user_path(meeting_id: 0),
+            headers: { 'ACCEPT' => Mime[:turbo_stream].to_s }
+          )
+        end
 
         it_behaves_like('invalid row id GET request')
       end
@@ -64,12 +75,19 @@ RSpec.describe TaggingsController do
       context 'making a plain HTML request,' do
         before { post(taggings_by_team_path, params: { meeting_id: fixture_meeting_id, team_id: fixture_team_id }) }
 
-        it_behaves_like('invalid row id GET request')
+        it 'redirects to root_path (fallback) without warning' do
+          expect(response).to redirect_to(root_path)
+          expect(flash[:warning]).to be_nil
+        end
       end
 
-      context 'making an XHR request with valid parameters,' do
+      context 'making a Turbo Stream request with valid parameters,' do
         before do
-          post(taggings_by_team_path, xhr: true, params: { meeting_id: fixture_meeting_id, team_id: fixture_team_id })
+          post(
+            taggings_by_team_path,
+            params: { meeting_id: fixture_meeting_id, team_id: fixture_team_id },
+            headers: { 'ACCEPT' => Mime[:turbo_stream].to_s }
+          )
         end
 
         it 'is successful' do
@@ -77,9 +95,15 @@ RSpec.describe TaggingsController do
         end
       end
 
-      context 'making an XHR request with missing or invalid parameters,' do
+      context 'making a Turbo Stream request with missing or invalid parameters,' do
         # (no team_id parameter)
-        before { post(taggings_by_team_path, xhr: true, params: { meeting_id: fixture_meeting_id }) }
+        before do
+          post(
+            taggings_by_team_path,
+            params: { meeting_id: fixture_meeting_id },
+            headers: { 'ACCEPT' => Mime[:turbo_stream].to_s }
+          )
+        end
 
         it_behaves_like('invalid row id GET request')
       end

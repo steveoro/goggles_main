@@ -20,7 +20,7 @@ RSpec.describe 'user_workshops/for_swimmer.html.haml' do
       controller.request.path_parameters.merge!(fixture_params)
       assign(:grid_filter_params, {})
       grid = UserWorkshopsGrid.new({}) do |scope|
-        scope.for_swimmer(fixture_row).page(1).per(20)
+        scope.where(user_results: { swimmer_id: fixture_row.id }).page(1).per(20)
       end
       assign(:grid, grid)
       render

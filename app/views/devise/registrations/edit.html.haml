@@ -10,7 +10,7 @@
       #user-edit-box
         %h2= t('.title', resource: resource.model_name.human)
         = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put,
-                   data: { controller: 'user-name unsaved-changes', action: page_listeners,
+                   data: { turbo: false, controller: 'user-name unsaved-changes', action: page_listeners,
                    'unsaved-changes-changed' => 'false',
                    'unsaved-changes-message' => t('unsaved_changes.warning_message') } }) do |f|
           = render('devise/shared/error_messages', resource: resource)

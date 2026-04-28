@@ -1,4 +1,4 @@
 #flash-messages
   - FlashAlertComponent::SUPPORTED_SYMS.each do |symbol|
     - if flash[symbol]
-      = render(FlashAlertComponent.new(symbol: symbol, body: flash[symbol]))
+      = render FlashAlertComponent.new(symbol: symbol, body: flash[symbol])

@@ -118,7 +118,7 @@ Capybara.register_driver(:headless_chrome) do |app|
                                 prompt_for_download: false,
                                 default_directory: ENV['downloads_folder'] || DownloadHelpers::PATH)
   chrome_options.add_preference(:browser, set_download_behavior: { behavior: 'allow' })
-  # [202112] In case the dowwnload behaviour is not set properly we can force it using a bridge for the driver:
+  # [202112] In case the download behavior is not set properly we can force it using a bridge for the driver:
   # bridge = driver.browser.send(:bridge)
   # path = "/session/#{bridge.session_id}/chromium/send_command"
   # bridge.http.call(:post, path, cmd: 'Page.setDownloadBehavior',

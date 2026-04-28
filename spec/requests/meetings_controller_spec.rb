@@ -86,24 +86,35 @@ RSpec.describe MeetingsController do
     # (Older meeting events are more likely to have results already defined)
     let(:meeting_event_id) { GogglesDb::MeetingEvent.first(300).pluck(:id).sample }
 
-    context 'making a plain HTML request,' do
+    context 'making a plain HTML request with valid parameters,' do
       before { get(meeting_show_event_section_path(id: meeting_event_id)) }
 
-      it_behaves_like('invalid row id GET request')
+      it 'redirects to meetings/show/:id for the related meeting' do
+        meeting_id = GogglesDb::MeetingEvent.find(meeting_event_id).meeting.id
+        expect(response).to redirect_to(meeting_show_path(meeting_id))
+      end
     end
 
-    context 'making an XHR request with valid parameters,' do
+    context 'making a Turbo Stream request with valid parameters,' do
       before do
-        get(meeting_show_event_section_path(id: meeting_event_id), xhr: true)
+        get(meeting_show_event_section_path(id: meeting_event_id),
+            headers: { 'Accept' => 'text/vnd.turbo-stream.html' })
       end
 
       it 'is successful' do
         expect(response).to be_successful
       end
+
+      it 'returns a Turbo Stream response' do
+        expect(response.media_type).to eq('text/vnd.turbo-stream.html')
+      end
     end
 
-    context 'making an XHR request with missing or invalid parameters,' do
-      before { get(meeting_show_event_section_path(id: 0), xhr: true) }
+    context 'making a Turbo Stream request with missing or invalid parameters,' do
+      before do
+        get(meeting_show_event_section_path(id: 0),
+            headers: { 'Accept' => 'text/vnd.turbo-stream.html' })
+      end
 
       it_behaves_like('invalid row id GET request')
     end

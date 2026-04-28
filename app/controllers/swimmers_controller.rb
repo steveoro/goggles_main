@@ -52,7 +52,7 @@ class SwimmersController < ApplicationController
     prepare_chart_recap_data
   end
 
-  # GET [XHR] - Renders the whole subsection of history stats for a single
+  # GET [Turbo Stream] - Renders the whole subsection of history stats for a single
   #             MeetingEvent row, by AJAX call.
   #
   # == Required params:
@@ -62,7 +62,7 @@ class SwimmersController < ApplicationController
   #
   # rubocop:disable Metrics/AbcSize
   def event_type_stats
-    if !request.xhr? || @swimmer.nil? || !GogglesDb::EventType.exists?(history_params[:event_type_id]) || history_params[:event_total].to_i.zero?
+    if @swimmer.nil? || !GogglesDb::EventType.exists?(history_params[:event_type_id]) || history_params[:event_total].to_i.zero?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(root_path) && return
     end
@@ -74,6 +74,11 @@ class SwimmersController < ApplicationController
 
     @max_updated_at = event_list.order(:updated_at).last&.updated_at.to_i
     @hash = prepare_full_summary_stats_for(@event_type, event_list)
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to(swimmer_history_recap_path(@swimmer)) }
+    end
   end
   # rubocop:enable Metrics/AbcSize
   #-- -------------------------------------------------------------------------

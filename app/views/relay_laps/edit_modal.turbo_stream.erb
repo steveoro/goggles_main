@@ -1,0 +1,3 @@
+<%= turbo_stream.replace('lap-edit-modal-container') do %>
+  <%= render(RelayLaps::EditModalComponent.new(relay_result: @parent_result)) %>
+<% end %>

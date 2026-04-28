@@ -64,14 +64,17 @@ RSpec.describe SwimmersController do
         )
       end
 
-      it_behaves_like('invalid row id GET request')
+      it 'redirects to swimmer history recap without warning' do
+        expect(response).to redirect_to(swimmer_history_recap_path(fixture_row_id))
+        expect(flash[:warning]).to be_nil
+      end
     end
 
-    context 'making an XHR request with valid parameters,' do
+    context 'making a Turbo Stream request with valid parameters,' do
       before do
         get(
           swimmer_event_type_stats_path(id: fixture_row_id, event_type_id:, event_total: (1 + (rand * 10)).to_i),
-          xhr: true
+          headers: { 'ACCEPT' => Mime[:turbo_stream].to_s }
         )
       end
 
@@ -80,11 +83,11 @@ RSpec.describe SwimmersController do
       end
     end
 
-    context 'making an XHR request with missing or invalid parameters,' do
+    context 'making a Turbo Stream request with missing or invalid parameters,' do
       before do
         get(
           swimmer_event_type_stats_path(id: fixture_row_id, event_type_id:, event_total: 0),
-          xhr: true
+          headers: { 'ACCEPT' => Mime[:turbo_stream].to_s }
         )
       end
 

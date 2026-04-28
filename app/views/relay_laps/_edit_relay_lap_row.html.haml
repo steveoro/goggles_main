@@ -3,7 +3,7 @@
   %td.border-0.py-0{ scope: 'row' }
     -# 'overall_index' is relative to all sub-laps (RelayLaps):
     - overall_index = (swimmer_index * (event_type.phase_length_in_meters / 50)) + sub_index + 1
-    = form_tag(relay_lap_path(relay_lap.id), id: "frm-sublap-row-#{overall_index}", method: :put, remote: true) do
+    = form_tag(relay_lap_path(relay_lap.id), id: "frm-sublap-row-#{overall_index}", method: :put) do
       -# Editing relay laps requires the parent MRS for the update to succeed:
       = hidden_field_tag("result_id[#{overall_index}]", relay_swimmer.id)
       = hidden_field_tag("result_class[#{overall_index}]", 'MeetingRelaySwimmer')
@@ -38,15 +38,18 @@
         .col.mb-1
           = submit_tag(t('laps.modal.form.submit_save_btn'), id: "sublap-save-row-#{overall_index}",
                        class: 'btn btn-sm btn-outline-primary my-1',
-                       onclick: "$('#modal-loading-indicator').removeClass('d-none');")
+                       data: { controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
+                               action: 'click->loading#show turbo:before-fetch-response->loading#hide' })
           - if relay_lap.id.to_i.positive?
             = link_to(relay_lap_path(id: relay_lap.id, "result_id[#{overall_index}]": relay_swimmer.id,
                       "result_class[#{overall_index}]": relay_swimmer.class.name.split('::').last),
-                      method: :delete, remote: true, id: "lap-delete-row-#{overall_index}",
+                      id: "lap-delete-row-#{overall_index}",
                       class: 'btn btn-sm btn-outline-danger',
-                      onclick: "$('#modal-loading-indicator').removeClass('d-none');",
-                      data: { confirm: t('laps.modal.msgs.submit_delete_confirm',
-                              lap_length: relay_lap.length_in_meters) }) do
+                      data: { turbo_method: :delete, turbo_stream: true,
+                              controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
+                              action: 'click->loading#show turbo:before-fetch-response->loading#hide',
+                              confirm: t('laps.modal.msgs.submit_delete_confirm',
+                                         lap_length: relay_lap.length_in_meters) }) do
               %i.fa.fa-trash-o
           %span.my-2.float-right{ id: "sublap-delta-#{overall_index}" }
             Δt: #{relay_lap.to_timing}

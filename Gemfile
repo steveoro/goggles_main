@@ -15,9 +15,9 @@ gem 'puma'
 # Use JavaScript with ESM import maps
 gem 'importmap-rails'
 # Hotwire's SPA-like page accelerator
-gem 'turbo-rails'
 gem 'dartsass-rails'
 gem 'propshaft'
+gem 'turbo-rails'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'

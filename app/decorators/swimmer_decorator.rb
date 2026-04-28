@@ -19,7 +19,7 @@ class SwimmerDecorator < Draper::Decorator
   def link_to_full_name
     # [Steve, 20210208] Adding a tooltip here doesn't give a good UX for the moment because
     # it needs a custom script to toggle the tooltip. (See: SwimmerShowLinkComponent)
-    h.link_to(text_label, h.swimmer_show_path(id: object.id))
+    h.link_to(text_label, h.swimmer_show_path(id: object.id), data: { turbo_frame: '_top' })
   end
 
   # Returns the link to /meetings/swimmer_results/:id using the complete name as link label.

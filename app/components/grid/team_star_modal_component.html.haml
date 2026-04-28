@@ -1,7 +1,7 @@
 .modal.fade#team-star-modal{ 'aria-hidden' => 'true', role: 'dialog', tabindex: '-1',
                              'aria-labelledby' => 'modal title' }
   .modal-dialog.modal-md{ role: 'document' }
-    = form_tag(taggings_by_team_path, id: 'frm-team-star', method: :post, remote: true) do
+    = form_tag(taggings_by_team_path, id: 'frm-team-star', method: :post, data: { turbo_stream: true }) do
       = hidden_field_tag('meeting_id', 0)
       .modal-content
         .modal-header

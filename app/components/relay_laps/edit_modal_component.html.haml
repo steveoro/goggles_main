@@ -1,5 +1,6 @@
 .modal.fade{ id: 'lap-edit-modal', 'aria-hidden' => 'true', role: 'dialog', tabindex: '-1',
-             'aria-labelledby' => 'modal title' }
+             'aria-labelledby' => 'modal title',
+             data: { controller: 'modal', modal_auto_show_value: true } }
   .modal-dialog.modal-lg{ role: 'document' }
     .modal-content#lap-edit-modal-contents
       = render(RelayLaps::EditModalContentsComponent.new(relay_result: @relay_result))

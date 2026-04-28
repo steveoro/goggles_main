@@ -107,6 +107,7 @@ When('I click on random event type link on the history recap') do
   tbody = find('section#swimmer-history-recap table tbody', visible: true)
   expect(tbody).to be_present
   event_details_links = find_all('tr.event-types td.history-link a', visible: true)
+                        .select { |node| node[:href].to_s.include?('/history/') }
   expect(event_details_links.count).to be_positive
   rnd_link = event_details_links.sample
   expect(rnd_link).to be_visible

@@ -11,8 +11,7 @@ module Users
     def create
       # == Note ==
       # Any resource authenticated by this endpoint is using usual Devise authentications
-      # not the omniauth strategy, so we use this override to clean-up any previously
-      # set OAuth field.
+      # not the omniauth strategy, so we use this override to clean-up any previously set OAuth field.
       self.resource = warden.authenticate!(auth_options)
       resource.update_columns(uid: nil, provider: nil)
       # Clear last seasons IDs cookie on a new sign-in:

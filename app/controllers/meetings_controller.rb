@@ -73,14 +73,14 @@ class MeetingsController < ApplicationController
     check_default_team_or_swimmer_in_meeting
   end
 
-  # GET [XHR] - Renders just a single MeetingEvent section via AJAX call
+  # GET [Turbo Stream] - Renders just a single MeetingEvent section via async call
   #
   # == Required params:
   # - id: the MeetingEvent related to the meeting results section to be rendered
   #
   # rubocop:disable Metrics/AbcSize
   def show_event_section
-    unless request.xhr? && GogglesDb::MeetingEvent.exists?(meeting_params[:id])
+    unless GogglesDb::MeetingEvent.exists?(meeting_params[:id])
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(root_path) && return
     end
@@ -94,6 +94,11 @@ class MeetingsController < ApplicationController
                                                .order('category_types.age_begin, gender_types.id DESC')
     update_user_teams_for_seasons_ids([@meeting_event.season.id])
     update_managed_teams_for_seasons_ids([@meeting_event.season.id])
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to(meeting_show_path(@meeting_event.meeting.id)) }
+    end
   end
   # rubocop:enable Metrics/AbcSize
   #-- -------------------------------------------------------------------------

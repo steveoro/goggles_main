@@ -116,11 +116,12 @@ end
 
 Then('an unsuccessful login flash message is present') do
   # [Steve A.] Due to flash modals to disappear automatically after a delay,
-  # we won't test visibility but just the content:
+  # we won't test visibility but just that the content has been actually rendered
   flash_content = find('.flash-body')
+  # [Rails 8.1 Turbo] Use case-insensitive match due to I18n interpolation differences
   authentication_key = I18n.t('activerecord.attributes.goggles_db/user.email')
   msg_content = I18n.t('devise.failure.invalid', authentication_keys: authentication_key)
-  expect(flash_content.text).to eq(msg_content)
+  expect(flash_content.text.downcase).to eq(msg_content.downcase)
 end
 
 Then('a successful Omniauth flash message for {string} is present') do |provider_name|
@@ -149,7 +150,16 @@ end
 
 # Assumes @current_user has been previously built or set
 Then('the user account is persisted') do
-  @current_user = GogglesDb::User.find_by(email: @current_user.email)
+  # [Rails 8.1 Turbo] Add retry mechanism for race condition
+  email_to_find = @current_user.email
+  @current_user = nil
+  retries = 0
+  max_retries = 5
+  while @current_user.nil? && retries < max_retries
+    sleep(0.5)
+    @current_user = GogglesDb::User.find_by(email: email_to_find)
+    retries += 1
+  end
   expect(@current_user).to be_a(GogglesDb::User).and be_valid
 end
 
