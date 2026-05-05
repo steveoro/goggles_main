@@ -110,7 +110,6 @@ module WaitForAjax
       !page.has_css?('#spinner', visible: true)
     end
   end
-
 end
 #-- ---------------------------------------------------------------------------
 #++

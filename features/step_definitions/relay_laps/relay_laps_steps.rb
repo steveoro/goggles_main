@@ -267,7 +267,7 @@ end
 # Sets:
 # - @edited_timing
 #
-When('I fill the last sub-lap row with some random timing values') do
+When('I fill the last sub-lap row with some random timing values') do # rubocop:disable Metrics/BlockLength
   expect(@chosen_mrr).to be_a(GogglesDb::MeetingRelayResult).and be_valid
   expect(@chosen_mrs).to be_a(GogglesDb::MeetingRelaySwimmer).and be_valid
   expect(@chosen_sublap).to be_a(GogglesDb::RelayLap).and be_valid

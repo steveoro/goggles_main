@@ -53,7 +53,7 @@ end
 Then('I filter the workshops list by an earlier date than the first row present on the grid') do
   step('I make sure the filtering form for the datagrid is visible')
   expect(@associated_urs.count).to be_positive
-  workshops = @associated_urs.map(&:user_workshop).compact
+  workshops = @associated_urs.filter_map(&:user_workshop)
   expect(workshops.first).to be_a(GogglesDb::UserWorkshop)
   workshop_date = workshops.min_by(&:header_date).header_date
   expect(workshop_date).to be_present

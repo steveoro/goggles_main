@@ -19,10 +19,10 @@ Given('I select {string} as the event container type') do |rec_type_label|
 end
 
 When('I see that my associated swimmer is already set as subject') do
-  expect(find('#swimmer_id', visible: :all).value.to_i).to be_positive
-  expect(find('#swimmer_complete_name', visible: :all).value).to eq(@current_user.swimmer.complete_name)
-  expect(find('#swimmer_year_of_birth').value).to eq(@current_user.swimmer.year_of_birth.to_s)
-  expect(find('#gender_type_id').value).to eq(@current_user.swimmer.gender_type_id.to_s)
+  expect(find_by_id('swimmer_id', visible: :all).value.to_i).to be_positive
+  expect(find_by_id('swimmer_complete_name', visible: :all).value).to eq(@current_user.swimmer.complete_name)
+  expect(find_by_id('swimmer_year_of_birth').value).to eq(@current_user.swimmer.year_of_birth.to_s)
+  expect(find_by_id('gender_type_id').value).to eq(@current_user.swimmer.gender_type_id.to_s)
 end
 # -----------------------------------------------------------------------------
 

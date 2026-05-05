@@ -18,13 +18,13 @@ Given('I select a random individual result from my chosen team') do
     event_len > 25 && last_lap.present? && (last_lap.length_in_meters + 25 < event_len)
   end
   with_existing_laps = @chosen_meeting.meeting_individual_results
-                                 .includes(:meeting_event, :laps)
-                                 .where(team_id: @managed_team.id)
-                                 .select { |mir| mir.laps.by_distance.present? }
+                                      .includes(:meeting_event, :laps)
+                                      .where(team_id: @managed_team.id)
+                                      .select { |mir| mir.laps.by_distance.present? }
   @chosen_mir = candidate_mirs.sample || with_existing_laps.sample || @chosen_meeting.meeting_individual_results
-                                                                          .includes(:meeting_event)
-                                                                          .where(team_id: @managed_team.id)
-                                                                          .sample
+                                                                                     .includes(:meeting_event)
+                                                                                     .where(team_id: @managed_team.id)
+                                                                                     .sample
   expect(@chosen_mir).to be_a(GogglesDb::MeetingIndividualResult).and be_valid
   if @chosen_mir.laps.blank?
     FactoryBot.create(
