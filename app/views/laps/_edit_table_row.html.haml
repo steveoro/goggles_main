@@ -40,8 +40,7 @@
           = submit_tag(t('laps.modal.form.submit_save_btn'),
                        id: "lap-save-row-#{index}",
                        class: 'btn btn-sm btn-outline-primary my-1',
-                       data: { controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
-                               action: 'click->loading#show turbo:before-fetch-response->loading#hide' })
+                       data: { controller: 'loading', action: 'click->loading#show' })
           - if lap.id.to_i.positive?
             = link_to(lap_path(id: lap.id, "result_id[#{index}]": parent_result.id,
                                "result_class[#{index}]": parent_result.class.name,
@@ -49,8 +48,7 @@
                                "show_team[#{index}]": show_team),
                       id: "lap-delete-row-#{index}", class: 'btn btn-sm btn-outline-danger',
                       data: { turbo_method: :delete, turbo_stream: true,
-                              controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
-                              action: 'click->loading#show turbo:before-fetch-response->loading#hide',
+                              controller: 'loading', action: 'click->loading#show',
                               turbo_confirm: t('laps.modal.msgs.submit_delete_confirm',
                                                lap_length: lap.length_in_meters) }) do
               %i.fa.fa-trash-o

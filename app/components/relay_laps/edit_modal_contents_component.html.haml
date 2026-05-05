@@ -6,9 +6,6 @@
     &nbsp;
     %b= result_label
 
-  .fixed-top.text-center.pd-4.mt-4.d-none#modal-loading-indicator
-    .spinner-border.text-primary{ role: 'status', 'aria-hidden' => 'true' }
-
   .alert.mx-auto.m-0.px-2.py-0.d-none#lap-modal-alert{ role: 'alert' }
     %small#lap-modal-alert-text
 
@@ -39,8 +36,7 @@
                     = submit_tag(t('datagrid.edit_modal.add_relay_result_btn'),
                                  id: 'btn-add-mrs-row', disabled: unused_relay_fractions.blank?,
                                  class: 'btn btn-sm btn-outline-primary mb-1',
-                                 data: { controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
-                                         action: 'click->loading#show turbo:before-fetch-response->loading#hide' })
+                                 data: { controller: 'loading', action: 'click->loading#show' })
 
       %tbody#laps-table-body
         = render(partial: 'relay_laps/edit_relay_table_body', locals: { relay_result: @relay_result,

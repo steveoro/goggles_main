@@ -1,4 +1,6 @@
-import { Controller } from '@hotwired/stimulus'
+import {
+    Controller
+} from '@hotwired/stimulus'
 
 export default class extends Controller {
     compute(event) {
@@ -10,7 +12,11 @@ export default class extends Controller {
         }
 
         const requestURL = `${this.element.action}?${new URLSearchParams(formData).toString()}`
-        fetch(requestURL, { headers: { Accept: 'application/json' } })
+        fetch(requestURL, {
+                headers: {
+                    Accept: 'application/json'
+                }
+            })
             .then(response => {
                 if (!response.ok) {
                     return response.json().then(payload => {
@@ -32,10 +38,8 @@ export default class extends Controller {
                 }
 
                 this.updateStandardTimingLabel(payload.standard_timing_label)
-                this.hideLoadingIndicator()
             })
             .catch(error => {
-                this.hideLoadingIndicator()
                 console.log('fetch error:', error)
             })
     }
@@ -83,12 +87,5 @@ export default class extends Controller {
                 node.classList.remove('bg-warning')
             }, 350)
         })
-    }
-
-    hideLoadingIndicator() {
-        const indicatorNode = document.querySelector('#loading-indicator')
-        if (indicatorNode) {
-            indicatorNode.classList.add('d-none')
-        }
     }
 }

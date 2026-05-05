@@ -74,8 +74,6 @@ export default class extends Controller {
         if (!(this.hasUrlValue && this.hasSwiperTarget)) {
             return
         }
-        // Display loading indicator:
-        document.querySelector('#loading-indicator').classList.remove('d-none')
         this.currentValue = pageIndex
         let url = this.urlValue
 
@@ -96,8 +94,6 @@ export default class extends Controller {
                 // console.log('Response OK')
                 this.swiperTarget.innerHTML = html
                 window.pageSwiper.resetPosition()
-                // Hide loading indicator at the end:
-                document.querySelector('#loading-indicator').classList.add('d-none')
             })
             .catch(error => console.log('fetch error:', error))
     }

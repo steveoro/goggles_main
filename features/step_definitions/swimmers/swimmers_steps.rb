@@ -56,6 +56,9 @@ end
 
 And('I see the overall pie graph for the event types') do
   find('canvas#recap-chart', visible: true)
+  node = find_by_id('swimmer-recap-chart', visible: true)
+  expect(node['data-chart-ready']).to eq('true'),
+                                      "expected chart ready=true, got status=#{node['data-chart-status'].inspect} error=#{node['data-chart-error'].inspect}"
 end
 
 And('I see the list of attended event types') do
@@ -141,6 +144,9 @@ end
 
 And('I see the history event line graph for the event types') do
   find('section#swimmer-history-detail canvas#detail-chart', visible: true)
+  node = find_by_id('swimmer-detail-chart', visible: true)
+  expect(node['data-chart-ready']).to eq('true'),
+                                      "expected chart ready=true, got status=#{node['data-chart-status'].inspect} error=#{node['data-chart-error'].inspect}"
 end
 
 And('I see the history datagrid for the event results') do

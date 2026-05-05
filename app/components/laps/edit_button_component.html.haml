@@ -5,6 +5,6 @@
           class: 'btn btn-sm text-success px-1 lap-edit-btn', role: 'button',
           data: { tooltip: true, turbo_method: :post, turbo_stream: true,
                   controller: 'loading',
-                  action: 'click->loading#show turbo:before-fetch-response->loading#hide' },
+                  action: 'click->loading#show' },
           title: t('laps.edit_button.tooltip')) do
   %i.fa.fa-pencil-square-o

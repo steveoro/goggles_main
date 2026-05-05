@@ -15,8 +15,7 @@
                     id: "lap-new50-#{relay_swimmer.id}",
                     class: 'btn btn-sm btn-outline-secondary m-1',
                     data: { turbo_method: :post, turbo_stream: true,
-                            controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
-                            action: 'click->loading#show turbo:before-fetch-response->loading#hide' }) do
+                            controller: 'loading', action: 'click->loading#show' }) do
             %span
               %i.fa.fa-plus
               50m
@@ -25,8 +24,7 @@
                   id: "lap-delete-row-#{overall_index}",
                   class: 'btn btn-sm btn-outline-danger',
                   data: { turbo_method: :delete, turbo_stream: true,
-                          controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
-                          action: 'click->loading#show turbo:before-fetch-response->loading#hide',
+                          controller: 'loading', action: 'click->loading#show',
                           turbo_confirm: t('datagrid.edit_modal.delete_swimmer_fraction_confirm',
                                            lap_length: relay_swimmer.length_in_meters,
                                            swimmer_name: relay_swimmer.swimmer.complete_name) }) do
@@ -74,7 +72,6 @@
         .col.mb-1
           = submit_tag(t('laps.modal.form.submit_save_btn'), id: "lap-save-row-#{overall_index}",
                        class: 'btn btn-sm btn-outline-primary my-1',
-                       data: { controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
-                               action: 'click->loading#show turbo:before-fetch-response->loading#hide' })
+                       data: { controller: 'loading', action: 'click->loading#show' })
           %span.my-2.float-right{ id: "mrs-delta-#{overall_index}" }
             Δt: #{relay_swimmer.to_timing}

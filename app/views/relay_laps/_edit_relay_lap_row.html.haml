@@ -38,16 +38,14 @@
         .col.mb-1
           = submit_tag(t('laps.modal.form.submit_save_btn'), id: "sublap-save-row-#{overall_index}",
                        class: 'btn btn-sm btn-outline-primary my-1',
-                       data: { controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
-                               action: 'click->loading#show turbo:before-fetch-response->loading#hide' })
+                       data: { controller: 'loading', action: 'click->loading#show' })
           - if relay_lap.id.to_i.positive?
             = link_to(relay_lap_path(id: relay_lap.id, "result_id[#{overall_index}]": relay_swimmer.id,
                       "result_class[#{overall_index}]": relay_swimmer.class.name.split('::').last),
                       id: "lap-delete-row-#{overall_index}",
                       class: 'btn btn-sm btn-outline-danger',
                       data: { turbo_method: :delete, turbo_stream: true,
-                              controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
-                              action: 'click->loading#show turbo:before-fetch-response->loading#hide',
+                              controller: 'loading', action: 'click->loading#show',
                               turbo_confirm: t('laps.modal.msgs.submit_delete_confirm',
                                                lap_length: relay_lap.length_in_meters) }) do
               %i.fa.fa-trash-o

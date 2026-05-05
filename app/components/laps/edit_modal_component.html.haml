@@ -10,9 +10,6 @@
           &nbsp;-&nbsp;
           %b= result_label
 
-        .fixed-top.text-center.pd-4.mt-4.d-none#modal-loading-indicator
-          .spinner-border.text-primary{ role: 'status', 'aria-hidden' => 'true' }
-
         .alert.alert-success.mx-auto.m-0.px-2.py-0.d-none#lap-modal-alert{ role: 'alert' }
           %small#lap-modal-alert-text
 
@@ -34,8 +31,7 @@
                                           show_category: @show_category, show_team: @show_team),
                                 id: "lap-new25-#{@parent_result.id}",
                                 data: { turbo_method: :post, turbo_stream: true,
-                                        controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
-                                        action: 'click->loading#show turbo:before-fetch-response->loading#hide' },
+                                        controller: 'loading', action: 'click->loading#show' },
                                 class: 'btn btn-sm btn-outline-secondary m-1') do
                         %span
                           %i.fa.fa-plus
@@ -45,8 +41,7 @@
                                           show_category: @show_category, show_team: @show_team),
                                 id: "lap-new50-#{@parent_result.id}",
                                 data: { turbo_method: :post, turbo_stream: true,
-                                        controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
-                                        action: 'click->loading#show turbo:before-fetch-response->loading#hide' },
+                                        controller: 'loading', action: 'click->loading#show' },
                                 class: 'btn btn-sm btn-outline-secondary my-1') do
                         %span
                           %i.fa.fa-plus

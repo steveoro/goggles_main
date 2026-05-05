@@ -17,7 +17,7 @@
                           class: 'btn btn-link', role: 'button', title: t('meetings.tooltip.link.click_to_expand'),
                           data: { tooltip: true, toggle: 'collapse', target: "##{collapse_target}",
                                   turbo_stream: true, controller: 'loading',
-                                  action: 'click->loading#show turbo:before-fetch-response->loading#hide' },
+                                  action: 'click->loading#show' },
                           'aria-expanded' => false, 'aria-controls' => collapse_target) do
                   = meeting_event.event_type.long_label
 

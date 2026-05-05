@@ -1,26 +1,36 @@
-import { Controller } from '@hotwired/stimulus'
+import {
+    Controller
+} from '@hotwired/stimulus'
 
 export default class extends Controller {
-    static values = {
-        indicatorId: { type: String, default: 'loading-indicator' },
-        hiddenClass: { type: String, default: 'd-none' }
-    }
-
+    /**
+     * Shows the loading indicator if it's globally available.
+     */
     show() {
-        const indicatorNode = this.indicatorNode
+        if (window.__loadingIndicator && window.__loadingIndicator.show) {
+            window.__loadingIndicator.show()
+            return
+        }
+        const indicatorNode = document.querySelector('#loading-indicator')
         if (indicatorNode) {
-            indicatorNode.classList.remove(this.hiddenClassValue)
+            indicatorNode.classList.remove('d-none')
         }
     }
 
+    /**
+     * Hides the loading indicator if it's globally available and the request tracker is idle.
+     */
     hide() {
-        const indicatorNode = this.indicatorNode
-        if (indicatorNode) {
-            indicatorNode.classList.add(this.hiddenClassValue)
+        if (window.__requestTracker && window.__requestTracker.isIdle && !window.__requestTracker.isIdle()) {
+            return
         }
-    }
-
-    get indicatorNode() {
-        return document.querySelector(`#${this.indicatorIdValue}`)
+        if (window.__loadingIndicator && window.__loadingIndicator.hide) {
+            window.__loadingIndicator.hide()
+            return
+        }
+        const indicatorNode = document.querySelector('#loading-indicator')
+        if (indicatorNode) {
+            indicatorNode.classList.add('d-none')
+        }
     }
 }

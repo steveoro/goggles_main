@@ -18,10 +18,13 @@ Day 2 remains the historical baseline of what was already stabilized, while this
 - [x] Turbo navigation contract (`method: :get` link spoofing, UJS-only link/form attributes)
 - [x] Jobs stack closure (DelayedJob leftovers, Solid Queue parity, Mission Control wiring)
 - [x] UJS/js.erb hard cut (`@rails/ujs` boot removed, dead js.erb responders removed)
-- [ ] Laps/relay modal lifecycle stabilization (Cucumber)
-- [ ] Issues auth redirection stabilization (Cucumber)
-- [ ] User workshops date-filter stabilization (Cucumber)
-- [ ] Full regression gate closure (focused + full suite checkpoints)
+- [~] Laps/relay modal lifecycle stabilization (Cucumber)
+  after a successful save, should reload the part with the laps
+- [ ] Hovering (or keeping the mouse on) several simple links triggers an apparent continuous loop of preloading => see top menu for example
+
+- [ ] Move existing cron jobs to Solid Queue (backup, import queues and other maintenance tasks)
+- [ ] Update target container
+
 - [ ] Chrono redesign follow-up plan (separate post-stabilization phase)
 
 ## Notes

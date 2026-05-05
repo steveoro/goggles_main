@@ -31,10 +31,8 @@ export default class extends Controller {
                         node.innerText = delta
                     }
                 })
-                this.hideLoadingIndicator()
             })
             .catch(error => {
-                this.hideLoadingIndicator()
                 console.error('DeltaTimings: fetch error:', error)
             })
     }
@@ -43,13 +41,6 @@ export default class extends Controller {
         document.querySelectorAll("b[id^='delta-']").forEach(node => {
             node.innerText = ''
         })
-    }
-
-    hideLoadingIndicator() {
-        const indicatorNode = document.querySelector('#loading-indicator')
-        if (indicatorNode) {
-            indicatorNode.classList.add('d-none')
-        }
     }
 
     showOutputModal(event) {

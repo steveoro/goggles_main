@@ -40,12 +40,12 @@
                   %label.switch-sm.pr-3{ id: "btn-load-stats-#{hash[:id]}" }
                     %input{ type: 'checkbox' }
                     = link_to('', swimmer_event_type_stats_path(id: @swimmer.id, event_type_id: hash[:id], event_total: @event_total),
-                              id: "toggle-#{target_id}",
-                              class: 'rotating-toggle collapsed', role: 'button', title: t('meetings.tooltip.link.click_to_expand'),
-                              data: { tooltip: true, toggle: 'collapse', target: "##{target_id}",
-                                      turbo_stream: true, controller: 'loading',
-                                      action: 'click->loading#show turbo:before-fetch-response->loading#hide' },
-                              'aria-expanded' => false, 'aria-controls' => "switch for #{target_id}")
+                            id: "toggle-#{target_id}",
+                            class: 'rotating-toggle collapsed', role: 'button', title: t('meetings.tooltip.link.click_to_expand'),
+                            data: { tooltip: true, toggle: 'collapse', target: "##{target_id}",
+                                    turbo_stream: true, controller: 'loading',
+                                    action: 'click->loading#show' },
+                            'aria-expanded' => false, 'aria-controls' => "switch for #{target_id}")
                 %td.count-25.text-right.mx-auto
                   = hash[:count25]
                 %td.count-50.text-right.mx-auto
