@@ -23,11 +23,6 @@ export default class extends Controller {
             return
         }
 
-        if (window.$) {
-            window.$(this.element).modal('show')
-            return
-        }
-
         // Fallback for non-Bootstrap environments
         this.applyShownState()
     }
@@ -39,10 +34,6 @@ export default class extends Controller {
         if (instance && typeof instance.hide === 'function') {
             instance.hide()
             return
-        }
-
-        if (window.$) {
-            window.$(this.element).modal('hide')
         }
 
         // Enforce hidden state for partial/incompatible runtime APIs

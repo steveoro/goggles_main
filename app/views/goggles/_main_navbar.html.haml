@@ -46,7 +46,8 @@
       .dropdown-divider
       - if user_signed_in?
         %li.nav-item= link_to(t('home.log_out'), destroy_user_session_path,
-                              method: :delete, id: 'link-logout', class: 'nav-link')
+                              id: 'link-logout', class: 'nav-link',
+                              data: { turbo_method: :delete })
       - else
         %li.nav-item= link_to(t('home.log_in'), new_user_session_path,
                               id: 'link-login', class: 'nav-link text-primary')

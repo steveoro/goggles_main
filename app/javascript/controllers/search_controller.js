@@ -1,6 +1,7 @@
 import {
     Controller
 } from '@hotwired/stimulus'
+
 import SwipeElement from 'src/swipe_element'
 
 /**

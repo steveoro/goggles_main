@@ -52,16 +52,15 @@ end
 # Sets @search_filter & @filter_name
 Then('I filter the workshops list by an earlier date than the first row present on the grid') do
   step('I make sure the filtering form for the datagrid is visible')
-  # Retrieving the workshop date from the row instead of the view makes this more stable
-  # (assuming that the selected UR is actually belonging to the oldest workshop there)
   expect(@associated_urs.count).to be_positive
-  expect(@associated_urs.first.user_workshop).to be_a(GogglesDb::UserWorkshop)
-  workshop_date = @associated_urs.first.user_workshop.header_date
+  workshops = @associated_urs.map(&:user_workshop).compact
+  expect(workshops.first).to be_a(GogglesDb::UserWorkshop)
+  workshop_date = workshops.min_by(&:header_date).header_date
   expect(workshop_date).to be_present
   # Filter by an earlier date (makes the first row always visible, assuming the order isn't changed):
   @search_filter = (workshop_date - 3.months).to_s
   @filter_name = 'workshop_date'
-  formatted_filter = Date.parse(@search_filter).strftime('%d/%m/%Y')
+  formatted_filter = Date.parse(@search_filter).strftime('%Y-%m-%d')
   find("input[name='user_workshops_grid[workshop_date]']", visible: true).set(formatted_filter)
   step('I submit the filters for the datagrid \'#new_user_workshops_grid\' waiting 10 secs tops for it to disappear')
 end
@@ -94,14 +93,17 @@ Then('I see the applied filter in the top row label and at least the first works
     # The browser may normalize localized date inputs; just ensure a filter label is shown.
     expect(label.text.strip).to be_present
     # Check actual filter value reflected on to the grid:
-    workshop_date = find('section#data-grid table tbody tr td.workshop_date', visible: true).text
+    first_row_cells = all('section#data-grid table tbody tr:first-child td', minimum: 1)
+    workshop_date = first_row_cells.first.text
     expect(Date.parse(workshop_date)).to be >= Date.parse(@search_filter)
   when 'workshop_name'
     # Check filter value presence in label:
-    # (Value may be "compressed" in spaces: let's check just the beginning and the end)
-    expect(label.text.strip).to include(@search_filter.split.first) && include(@search_filter.split.last)
+    # (Value may be "compressed" in spaces: let's check just the beginning and the end.)
+    expect(label.text.strip).to include(@search_filter.split.first)
+    expect(label.text.strip).to include(@search_filter.split.last)
     # Check actual filter value reflected on to the grid:
-    workshop_name = find('section#data-grid table tbody tr td.workshop_name', visible: true).text
+    first_row_cells = all('section#data-grid table tbody tr:first-child td', minimum: 2)
+    workshop_name = first_row_cells[1].text
     expect(workshop_name).to include(@search_filter)
   end
 end

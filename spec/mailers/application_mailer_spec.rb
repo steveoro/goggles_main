@@ -5,6 +5,12 @@ require 'rails_helper'
 RSpec.describe ApplicationMailer do
   include ActiveJob::TestHelper
 
+  def mail_payload(mail)
+    return mail.parts.map { |part| part.body.decoded.to_s }.join("\n") if mail.multipart?
+
+    mail.body.decoded.to_s
+  end
+
   let(:user) { GogglesDb::User.first(50).sample }
   let(:email_subject) { FFaker::Lorem.sentence }
   # EMail bodies are enconded: any text longer than 73 chanraters will be split in multiple lines
@@ -24,7 +30,7 @@ RSpec.describe ApplicationMailer do
       end
 
       it 'renders the specified body content' do
-        expect(mail.body.encoded).to include(ERB::Util.html_escape(email_content.html_safe))
+        expect(mail_payload(mail)).to include(ERB::Util.html_escape(email_content.html_safe))
       end
     end
     #-- -----------------------------------------------------------------------
@@ -43,7 +49,7 @@ RSpec.describe ApplicationMailer do
       it_behaves_like('ApplicationMailer.generic_message email common fields')
 
       it 'shows a greetings for the user name' do
-        expect(mail.body.encoded).to include(
+        expect(mail_payload(mail)).to include(
           I18n.t('devise.mailer.email_changed.greeting', recipient: user.name.titleize)
         )
       end
@@ -61,7 +67,7 @@ RSpec.describe ApplicationMailer do
       it_behaves_like('ApplicationMailer.generic_message email common fields')
 
       it 'does not show the greetings section' do
-        expect(mail.body.encoded).not_to include(
+        expect(mail_payload(mail)).not_to include(
           I18n.t('devise.mailer.email_changed.greeting', recipient: user.name.titleize)
         )
       end
@@ -87,7 +93,7 @@ RSpec.describe ApplicationMailer do
       end
 
       it 'renders the specified body content' do
-        expect(mail.body.encoded).to include(ERB::Util.html_escape(email_content.html_safe))
+        expect(mail_payload(mail)).to include(ERB::Util.html_escape(email_content.html_safe))
       end
     end
 
@@ -105,7 +111,7 @@ RSpec.describe ApplicationMailer do
       it_behaves_like('ApplicationMailer.system_message email common fields')
 
       it 'shows the details of the specified user instance' do
-        expect(mail.body.encoded).to include('*** Involved User: ***')
+        expect(mail_payload(mail)).to include('*** Involved User: ***')
           .and include("id: #{user.id}")
           .and include("name: #{user.name}")
           .and include("first_name: #{user.first_name}")
@@ -129,7 +135,7 @@ RSpec.describe ApplicationMailer do
       it_behaves_like('ApplicationMailer.system_message email common fields')
 
       it 'does not show the user detail section' do
-        expect(mail.body.encoded).not_to include('*** Involved User: ***')
+        expect(mail_payload(mail)).not_to include('*** Involved User: ***')
       end
     end
   end

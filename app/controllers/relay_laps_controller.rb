@@ -233,13 +233,13 @@ class RelayLapsController < ApplicationController
   # Redirects to root setting a generic flash warning message
   def handle_invalid_request
     # @alert_msg is used inside the edit modal to show messages since flash is not displayable
-    flash.now[:warning] = I18n.t('search_view.errors.invalid_request')
+    flash[:warning] = I18n.t('search_view.errors.invalid_request')
     redirect_to(root_path) && return
   end
 
   # Redirects to root setting a generic flash error message
   def handle_error_request
-    flash.now[:error] = I18n.t('search_view.errors.submit_generic_failure')
+    flash[:error] = I18n.t('search_view.errors.submit_generic_failure')
     redirect_to(root_path) && return
   end
   #-- -------------------------------------------------------------------------
@@ -255,10 +255,10 @@ class RelayLapsController < ApplicationController
                    modal_params[:result_id].present? &&
                    modal_params[:result_class].present? &&
                    result_class_from_params.exists?(modal_params[:result_id])
-    handle_invalid_request && return unless valid_params
+    return handle_invalid_request unless valid_params
 
     set_parent_and_relay_result_members(result_class_from_params, modal_params[:result_id])
-    handle_invalid_request && return unless @parent_result
+    handle_invalid_request unless @parent_result
   end
 
   # Validates the request type and the required parameters for a row update or delete.
@@ -272,11 +272,11 @@ class RelayLapsController < ApplicationController
                    rows_params[:result_id]&.values&.first.present? &&
                    rows_params[:result_class]&.values&.first.present? &&
                    result_class_from_row_params.exists?(rows_params[:result_id].values.first)
-    handle_invalid_request && return unless valid_params
+    return handle_invalid_request unless valid_params
 
     set_parent_and_relay_result_members(result_class_from_row_params, rows_params[:result_id].values.first)
     @curr_lap = lap_class_from_row_params.find_by(id: rows_params[:id])
-    handle_invalid_request && return unless @parent_result && @curr_lap
+    handle_invalid_request unless @parent_result && @curr_lap
   end
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   #-- -------------------------------------------------------------------------

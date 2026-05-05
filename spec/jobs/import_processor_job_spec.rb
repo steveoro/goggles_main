@@ -63,7 +63,7 @@ RSpec.describe ImportProcessorJob do
     end
 
     it "enqueues the job on the 'sql' queue" do
-      expect { Delayed::Job.enqueue(described_class.new('sql'), queue: 'sql') }.to have_enqueued_job.on_queue('sql')
+      expect { described_class.perform_later('sql') }.to have_enqueued_job.on_queue('sql')
     end
 
     # (Can't test much else given the perform method is totally async from this by using a different connection pool)
@@ -95,7 +95,7 @@ RSpec.describe ImportProcessorJob do
       expect(row_with_invalid_data).to be_a(GogglesDb::ImportQueue).and be_valid
     end
 
-    # Allow errors to bubble up in the job hierachy so that DelayedJob can handle them properly:
+    # Allow errors to bubble up in the job hierarchy so that retries are managed by Active Job:
     it 'raises a Runtime error but nevertheless flags the row as deletable' do
       # NOTE: here we can test this because the throwing of the error makes the flow
       # jump back immediately to RSpec before the actual changes either take place or gets

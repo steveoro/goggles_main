@@ -77,11 +77,6 @@ export default class extends Controller {
             return
         }
 
-        if (window.$) {
-            window.$(modalElement).modal('show')
-            return
-        }
-
         modalElement.style.display = 'block'
         modalElement.setAttribute('aria-hidden', 'false')
     }

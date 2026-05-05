@@ -28,7 +28,7 @@
                   &nbsp;
                 = button_to(chrono_delete_path(id: queue.id), id: "frm-delete-row-#{queue.id}", method: :delete,
                             class: 'btn btn-sm btn-outline-danger',
-                            data: { confirm: t('chrono.index.confirm_delete', queue_label: queue.text_label) }) do
+                            data: { turbo_confirm: t('chrono.index.confirm_delete', queue_label: queue.text_label) }) do
                   %i.fa.fa-trash-o
 
           - if queue.sibling_rows.present?

@@ -349,7 +349,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     # (this is required by many features):
     @last_seasons_ids = GogglesDb::LastSeasonId.all.map(&:id)
     @last_seasons = GogglesDb::Season.unscoped.where(id: @last_seasons_ids)
-    # [!!!] References to@last_season_ids in specs & features - CHECK & UPDATE ALSO:
+    # [!!!] References to @last_season_ids in specs & features - CHECK & UPDATE ALSO:
     # - features/step_definitions/calendars/calendars_steps.rb:16
     # - features/step_definitions/calendars/given_any_calendars_steps.rb:10:42:65
     # - features/step_definitions/devise/given_any_user_steps.rb:105:191:242

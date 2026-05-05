@@ -12,7 +12,8 @@
   .alert.mx-auto.m-0.px-2.py-0.d-none#lap-modal-alert{ role: 'alert' }
     %small#lap-modal-alert-text
 
-  %button.close{ 'aria-label' => t('datagrid.edit_modal.close_btn'), 'data-dismiss' => 'modal' }
+  %button.close{ 'aria-label' => t('datagrid.edit_modal.close_btn'),
+                 'data-dismiss' => 'modal', data: { action: 'click->modal#hide' } }
     %span{ 'aria-hidden' => 'true' } &times;
 .modal-body{ id: 'lap-edit-modal-body' }
   .container
@@ -23,7 +24,7 @@
             .col.text-center.align-self-center
               %h6.py-2.bg-light-green= team.editable_name
             .col-auto.text-center.align-self-center
-              = form_tag(relay_laps_path(@relay_result.id),
+              = form_tag(relay_laps_path,
                          id: "frm-add-mrs-row", method: :post,
                          class: 'form-inline', data: { turbo_stream: true }) do
                 = hidden_field_tag('result_id', @relay_result.id)
@@ -47,5 +48,6 @@
 
 .modal-footer
   %button#modal-close.btn.btn-sm.btn-outline-secondary{ 'aria-label' => t('datagrid.edit_modal.close_btn'),
-                                            'data-dismiss' => 'modal', type: 'button' }
+                                            'data-dismiss' => 'modal',
+                                            data: { action: 'click->modal#hide' }, type: 'button' }
     = I18n.t('datagrid.edit_modal.close_btn')

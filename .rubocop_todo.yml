@@ -92,7 +92,6 @@ Rails/FilePath:
   Exclude:
     - 'config/application.rb'
     - 'config/environments/development.rb'
-    - 'config/initializers/delayed_job.rb'
     - 'features/support/autocreate_artifacts.rb'
     - 'features/support/download_helpers.rb'
     - 'lib/tasks/cucumber.rake'

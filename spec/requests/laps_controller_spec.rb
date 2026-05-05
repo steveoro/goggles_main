@@ -23,6 +23,15 @@ RSpec.describe LapsController do
   let(:fixture_lap) { parent_result_with_laps.laps.sample }
   let(:row_index) { (1..8).to_a.sample }
   let(:random_step) { [25, 33, 50].sample }
+  let(:turbo_stream_headers) { { 'Accept' => 'text/vnd.turbo-stream.html' } }
+  let(:xhr_lap_update_params) do
+    {
+      result_id: { row_index => parent_result_with_laps.id },
+      result_class: { row_index => parent_result_with_laps.class.name.split('::').last },
+      length_in_meters: fixture_lap.length_in_meters,
+      minutes_from_start: 0
+    }
+  end
 
   before do
     expect(parent_result).to be_an(GogglesDb::AbstractResult).and be_valid
@@ -41,7 +50,8 @@ RSpec.describe LapsController do
             result_id: parent_result.id,
             result_class: parent_result.class.name.split('::').last
           ),
-          xhr: true
+          xhr: true,
+          headers: turbo_stream_headers
         )
         expect(response).to have_http_status(:unauthorized)
         # (No redirect since it's an XHR request without sign-in first)
@@ -58,7 +68,8 @@ RSpec.describe LapsController do
         before do
           post(
             laps_edit_modal_path(result_id: 0, result_class: parent_result.class.name.split('::').last),
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -75,7 +86,8 @@ RSpec.describe LapsController do
         before do
           post(
             laps_edit_modal_path(result_id: parent_result.id, result_class: ''),
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -92,7 +104,8 @@ RSpec.describe LapsController do
         before do
           post(
             laps_edit_modal_path(result_id: parent_result.id, result_class: parent_result.class.name.split('::').last),
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -133,8 +146,8 @@ RSpec.describe LapsController do
           expect(response).to redirect_to(root_path)
         end
 
-        it 'sets an invalid request flash warning message' do
-          expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+        it 'does not set an invalid request flash warning message' do
+          expect(flash[:warning]).to be_nil
         end
       end
     end
@@ -151,7 +164,8 @@ RSpec.describe LapsController do
             result_class: parent_result.class.name.split('::').last,
             step: random_step
           ),
-          xhr: true
+          xhr: true,
+          headers: turbo_stream_headers
         )
         expect(response).to have_http_status(:unauthorized)
         # (No redirect since it's an XHR request without sign-in first)
@@ -168,7 +182,8 @@ RSpec.describe LapsController do
         before do
           post(
             laps_path(result_id: 0, result_class: parent_result.class.name.split('::').last, step: random_step),
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -185,7 +200,8 @@ RSpec.describe LapsController do
         before do
           post(
             laps_path(result_id: parent_result.id, result_class: '', step: random_step),
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -206,7 +222,8 @@ RSpec.describe LapsController do
               result_class: parent_result.class.name.split('::').last,
               step: random_step
             ),
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -249,8 +266,8 @@ RSpec.describe LapsController do
           expect(response).to redirect_to(root_path)
         end
 
-        it 'sets an invalid request flash warning message' do
-          expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+        it 'does not set an invalid request flash warning message' do
+          expect(flash[:warning]).to be_nil
         end
       end
     end
@@ -263,15 +280,11 @@ RSpec.describe LapsController do
       it 'returns unauthorized status' do
         put(
           lap_path(id: fixture_lap.id),
-          params: {
-            result_id: { row_index => parent_result_with_laps.id },
-            result_class: { row_index => parent_result_with_laps.class.name.split('::').last },
-            length_in_meters: fixture_lap.length_in_meters, minutes_from_start: 0
-          },
-          xhr: true
+          params: xhr_lap_update_params,
+          xhr: true,
+          headers: turbo_stream_headers
         )
         expect(response).to have_http_status(:unauthorized)
-        # (No redirect since it's an XHR request without sign-in first)
       end
     end
 
@@ -291,7 +304,8 @@ RSpec.describe LapsController do
               length_in_meters: fixture_lap.length_in_meters,
               minutes_from_start: 0
             },
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -314,7 +328,8 @@ RSpec.describe LapsController do
               length_in_meters: fixture_lap.length_in_meters,
               minutes_from_start: 0
             },
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -337,7 +352,8 @@ RSpec.describe LapsController do
               length_in_meters: fixture_lap.length_in_meters,
               minutes_from_start: 0
             },
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -384,8 +400,8 @@ RSpec.describe LapsController do
           expect(response).to redirect_to(root_path)
         end
 
-        it 'sets an invalid request flash warning message' do
-          expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+        it 'does not set an invalid request flash warning message' do
+          expect(flash[:warning]).to be_nil
         end
       end
     end
@@ -402,7 +418,8 @@ RSpec.describe LapsController do
             result_id: { row_index => parent_result_with_laps.id },
             result_class: { row_index => parent_result_with_laps.class.name.split('::').last }
           },
-          xhr: true
+          xhr: true,
+          headers: turbo_stream_headers
         )
         expect(response).to have_http_status(:unauthorized)
         # (No redirect since it's an XHR request without sign-in first)
@@ -423,7 +440,8 @@ RSpec.describe LapsController do
               result_id: { row_index => 0 },
               result_class: { row_index => parent_result_with_laps.class.name.split('::').last }
             },
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -444,7 +462,8 @@ RSpec.describe LapsController do
               result_id: { row_index => parent_result_with_laps.id },
               result_class: { row_index => '' }
             },
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -465,7 +484,8 @@ RSpec.describe LapsController do
               result_id: { row_index => parent_result_with_laps.id },
               result_class: { row_index => parent_result_with_laps.class.name.split('::').last }
             },
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -508,8 +528,8 @@ RSpec.describe LapsController do
           expect(response).to redirect_to(root_path)
         end
 
-        it 'sets an invalid request flash warning message' do
-          expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+        it 'does not set an invalid request flash warning message' do
+          expect(flash[:warning]).to be_nil
         end
       end
     end

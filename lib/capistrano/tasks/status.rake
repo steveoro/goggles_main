@@ -108,7 +108,7 @@ namespace :status do
     end
   end
 
-  desc 'Checks the remote DelayedJob/ActiveJob status'
+  desc 'Checks the remote Solid Queue/ActiveJob status'
   task :jobs do
     puts("\r\n")
     on roles(:app) do
@@ -119,7 +119,7 @@ namespace :status do
       puts ["[ #{fetch(:app_service)} ]---".rjust(80, '-')] +
            capture(
              :docker,
-             "exec #{fetch(:app_service)} sh -c 'bin/delayed_job status'"
+             "exec #{fetch(:app_service)} sh -lc 'pgrep -af \"bin/jobs|solid_queue\" || echo \"solid_queue: not running\"'"
            ).split("\n") +
            [''.rjust(80, '-')] +
            capture(

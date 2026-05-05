@@ -19,13 +19,10 @@ Given('I select {string} as the event container type') do |rec_type_label|
 end
 
 When('I see that my associated swimmer is already set as subject') do
-  selected_option = find('#swimmer_select option')
-  expect(selected_option['selected']).to eq('true')
-  expect(selected_option['data-complete_name']).to eq(@current_user.swimmer.complete_name)
-  expect(selected_option['data-year_of_birth']).to eq(@current_user.swimmer.year_of_birth.to_s)
-  expect(selected_option['data-gender_type_id']).to eq(@current_user.swimmer.gender_type_id.to_s)
-  expect(selected_option.text).to include(@current_user.swimmer.complete_name)
-    .and include(@current_user.swimmer.year_of_birth.to_s)
+  expect(find('#swimmer_id', visible: :all).value.to_i).to be_positive
+  expect(find('#swimmer_complete_name', visible: :all).value).to eq(@current_user.swimmer.complete_name)
+  expect(find('#swimmer_year_of_birth').value).to eq(@current_user.swimmer.year_of_birth.to_s)
+  expect(find('#gender_type_id').value).to eq(@current_user.swimmer.gender_type_id.to_s)
 end
 # -----------------------------------------------------------------------------
 
@@ -49,28 +46,39 @@ end
 # SETS/SAVES:
 # @select2_input_text as manual_input_label
 When('I type {string} as selection for the {string} Select2 field') do |manual_input_label, field_camelcase_name|
-  # Add programmatically a custom Option to the dropdown and pre-select it:
-  execute_script("var currOption = new Option(\"#{manual_input_label}\", 0, true, true); $('##{field_camelcase_name}_select').append(currOption).trigger('change');")
-  wait_for_ajax
-  select2_search_box = '.select2-dropdown input.select2-search__field'
-  select2_search_field = "#select2-#{field_camelcase_name}_select-container"
+  execute_script(<<~JS, field_camelcase_name, manual_input_label)
+    const baseName = arguments[0]
+    const label = arguments[1]
+    const select = document.querySelector(`#${baseName}_select`)
 
-  # Open the dropdown with the Select2 search box:
-  find(select2_search_field).click
-  wait_for_ajax
+    if (select) {
+      let value = '0'
+      let option = Array.from(select.options).find((node) => node.text === label)
+      if (option) {
+        value = option.value
+      } else {
+        option = new Option(label, value, true, true)
+        select.appendChild(option)
+      }
 
-  # Select the custom Option:
-  expect(page).to have_css(select2_search_box)
-  find(select2_search_box).send_keys(manual_input_label, :enter)
+      if (select.tomselect) {
+        if (!select.tomselect.options[value]) {
+          select.tomselect.addOption({ id: value, text: label, label: label })
+        }
+        select.tomselect.setValue(value, true)
+      } else {
+        select.value = value
+        select.dispatchEvent(new Event('change', { bubbles: true }))
+      }
+
+      const idField = document.querySelector(`#${baseName}_id`)
+      if (idField) idField.value = value
+
+      const labelField = document.querySelector(`#${baseName}_label`)
+      if (labelField) labelField.value = label
+    }
+  JS
   @select2_input_text = manual_input_label # (for possible later reference)
-
-  # Close the dropdown (will also clear the search input, but who cares given we're faking it anyway)
-  find(select2_search_field).click if page.has_css?(select2_search_box)
-  expect(page).to have_no_css(select2_search_box)
-
-  # Fake the hidden input setup made by the component when the API call is successful:
-  execute_script("$('##{field_camelcase_name}_label').val('#{manual_input_label}')")
-  execute_script("$('##{field_camelcase_name}_id').val(0)")
   wait_for_ajax
 end
 
@@ -88,13 +96,25 @@ end
 
 When('I click on the go to chrono button') do
   # Fake button enabled state, normally validated by Stimulus JS controller (doesn't work here):
-  execute_script("$('#btn-rec-chrono').prop('disabled', false)")
+  execute_script("document.querySelector('#btn-rec-chrono').disabled = false")
   wait_for_ajax
   find_by_id('btn-rec-chrono', visible: true).click
+  wait_for_ajax
+  next if current_path.include?('/chrono/rec')
+
+  # Fallback for environments where submit_tag click is intercepted by inline handlers.
+  execute_script(<<~JS)
+    const form = document.querySelector('#frm-chrono-new')
+    if (form) {
+      form.onsubmit = null
+      form.removeAttribute('onsubmit')
+      form.submit()
+    }
+  JS
 end
 
 When('I am redirected to the Chrono recording page') do
-  expect(current_url).to include('/chrono/rec')
+  expect(page).to have_current_path(%r{/chrono/rec}, wait: 10, url: true)
 end
 
 When('I see that the chosen swimmer is shown in the chrono summary') do

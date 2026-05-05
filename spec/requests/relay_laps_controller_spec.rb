@@ -20,6 +20,15 @@ RSpec.describe RelayLapsController do
   let(:random_length) { (50...mrr_with_mrs.event_type.length_in_meters).step(50).to_a.sample }
   let(:fixture_relay_lap) { mrs_with_relay_laps.relay_laps.sample }
   let(:row_index) { (1..8).to_a.sample }
+  let(:turbo_stream_headers) { { 'Accept' => 'text/vnd.turbo-stream.html' } }
+  let(:xhr_relay_lap_update_params) do
+    {
+      result_id: { row_index => mrs_with_relay_laps.id },
+      result_class: { row_index => mrs_with_relay_laps.class.name.split('::').last },
+      length_in_meters: fixture_relay_lap.length_in_meters,
+      minutes_from_start: 0
+    }
+  end
 
   before do
     expect(mrr_with_mrs).to be_an(GogglesDb::MeetingRelayResult).and be_valid
@@ -38,7 +47,8 @@ RSpec.describe RelayLapsController do
             result_id: mrr_with_mrs.id,
             result_class: mrr_with_mrs.class.name.split('::').last
           ),
-          xhr: true
+          xhr: true,
+          headers: turbo_stream_headers
         )
         expect(response).to have_http_status(:unauthorized)
         # (No redirect since it's an XHR request without sign-in first)
@@ -55,12 +65,13 @@ RSpec.describe RelayLapsController do
         before do
           post(
             relay_laps_edit_modal_path(result_id: 0, result_class: mrr_with_mrs.class.name.split('::').last),
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
-        it 'is successful anyway (renders the dialog with the warning message)' do
-          expect(response).to have_http_status(:success)
+        it 'is a redirect to the root path' do
+          expect(response).to redirect_to(root_path)
         end
 
         it 'sets an invalid request flash warning message' do
@@ -72,12 +83,13 @@ RSpec.describe RelayLapsController do
         before do
           post(
             relay_laps_edit_modal_path(result_id: mrr_with_mrs.id, result_class: ''),
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
-        it 'is successful anyway (renders the dialog with the warning message)' do
-          expect(response).to have_http_status(:success)
+        it 'is a redirect to the root path' do
+          expect(response).to redirect_to(root_path)
         end
 
         it 'sets an invalid request flash warning message' do
@@ -89,7 +101,8 @@ RSpec.describe RelayLapsController do
         before do
           post(
             relay_laps_edit_modal_path(result_id: mrr_with_mrs.id, result_class: mrr_with_mrs.class.name.split('::').last),
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -130,8 +143,8 @@ RSpec.describe RelayLapsController do
           expect(response).to redirect_to(root_path)
         end
 
-        it 'sets an invalid request flash warning message' do
-          expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+        it 'does not set an invalid request flash warning message' do
+          expect(flash[:warning]).to be_nil
         end
       end
     end
@@ -148,7 +161,8 @@ RSpec.describe RelayLapsController do
             result_class: mrr_with_mrs.class.name.split('::').last,
             length_in_meters: random_length
           ),
-          xhr: true
+          xhr: true,
+          headers: turbo_stream_headers
         )
         expect(response).to have_http_status(:unauthorized)
         # (No redirect since it's an XHR request without sign-in first)
@@ -169,12 +183,13 @@ RSpec.describe RelayLapsController do
               result_class: mrr_with_mrs.class.name.split('::').last,
               length_in_meters: random_length
             ),
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
-        it 'is successful anyway (renders the dialog with the warning message)' do
-          expect(response).to have_http_status(:success)
+        it 'is a redirect to the root path' do
+          expect(response).to redirect_to(root_path)
         end
 
         it 'sets an invalid request flash warning message' do
@@ -190,12 +205,13 @@ RSpec.describe RelayLapsController do
               result_class: '',
               length_in_meters: random_length
             ),
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
-        it 'is successful anyway (renders the dialog with the warning message)' do
-          expect(response).to have_http_status(:success)
+        it 'is a redirect to the root path' do
+          expect(response).to redirect_to(root_path)
         end
 
         it 'sets an invalid request flash warning message' do
@@ -211,7 +227,8 @@ RSpec.describe RelayLapsController do
               result_class: mrr_with_mrs.class.name.split('::').last,
               length_in_meters: random_length
             ),
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -254,8 +271,8 @@ RSpec.describe RelayLapsController do
           expect(response).to redirect_to(root_path)
         end
 
-        it 'sets an invalid request flash warning message' do
-          expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+        it 'does not set an invalid request flash warning message' do
+          expect(flash[:warning]).to be_nil
         end
       end
     end
@@ -268,15 +285,11 @@ RSpec.describe RelayLapsController do
       it 'returns unauthorized status' do
         put(
           relay_lap_path(id: fixture_relay_lap.id),
-          params: {
-            result_id: { row_index => mrs_with_relay_laps.id },
-            result_class: { row_index => mrs_with_relay_laps.class.name.split('::').last },
-            length_in_meters: fixture_relay_lap.length_in_meters, minutes_from_start: 0
-          },
-          xhr: true
+          params: xhr_relay_lap_update_params,
+          xhr: true,
+          headers: turbo_stream_headers
         )
         expect(response).to have_http_status(:unauthorized)
-        # (No redirect since it's an XHR request without sign-in first)
       end
     end
 
@@ -296,12 +309,13 @@ RSpec.describe RelayLapsController do
               length_in_meters: fixture_relay_lap.length_in_meters,
               minutes_from_start: 0
             },
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
-        it 'is successful anyway (renders the dialog with the warning message)' do
-          expect(response).to have_http_status(:success)
+        it 'is a redirect to the root path' do
+          expect(response).to redirect_to(root_path)
         end
 
         it 'sets an invalid request flash warning message' do
@@ -319,12 +333,13 @@ RSpec.describe RelayLapsController do
               length_in_meters: fixture_relay_lap.length_in_meters,
               minutes_from_start: 0
             },
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
-        it 'is successful anyway (renders the dialog with the warning message)' do
-          expect(response).to have_http_status(:success)
+        it 'is a redirect to the root path' do
+          expect(response).to redirect_to(root_path)
         end
 
         it 'sets an invalid request flash warning message' do
@@ -342,7 +357,8 @@ RSpec.describe RelayLapsController do
               length_in_meters: fixture_relay_lap.length_in_meters,
               minutes_from_start: 0
             },
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -389,8 +405,8 @@ RSpec.describe RelayLapsController do
           expect(response).to redirect_to(root_path)
         end
 
-        it 'sets an invalid request flash warning message' do
-          expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+        it 'does not set an invalid request flash warning message' do
+          expect(flash[:warning]).to be_nil
         end
       end
     end
@@ -407,7 +423,8 @@ RSpec.describe RelayLapsController do
             result_id: { row_index => mrs_with_relay_laps.id },
             result_class: { row_index => mrs_with_relay_laps.class.name.split('::').last }
           },
-          xhr: true
+          xhr: true,
+          headers: turbo_stream_headers
         )
         expect(response).to have_http_status(:unauthorized)
         # (No redirect since it's an XHR request without sign-in first)
@@ -428,12 +445,13 @@ RSpec.describe RelayLapsController do
               result_id: { row_index => 0 },
               result_class: { row_index => mrs_with_relay_laps.class.name.split('::').last }
             },
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
-        it 'is successful anyway (renders the dialog with the warning message)' do
-          expect(response).to have_http_status(:success)
+        it 'is a redirect to the root path' do
+          expect(response).to redirect_to(root_path)
         end
 
         it 'sets an invalid request flash warning message' do
@@ -449,12 +467,13 @@ RSpec.describe RelayLapsController do
               result_id: { row_index => mrs_with_relay_laps.id },
               result_class: { row_index => '' }
             },
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
-        it 'is successful anyway (renders the dialog with the warning message)' do
-          expect(response).to have_http_status(:success)
+        it 'is a redirect to the root path' do
+          expect(response).to redirect_to(root_path)
         end
 
         it 'sets an invalid request flash warning message' do
@@ -470,7 +489,8 @@ RSpec.describe RelayLapsController do
               result_id: { row_index => mrs_with_relay_laps.id },
               result_class: { row_index => mrs_with_relay_laps.class.name.split('::').last }
             },
-            xhr: true
+            xhr: true,
+            headers: turbo_stream_headers
           )
         end
 
@@ -513,8 +533,8 @@ RSpec.describe RelayLapsController do
           expect(response).to redirect_to(root_path)
         end
 
-        it 'sets an invalid request flash warning message' do
-          expect(flash[:warning]).to eq(I18n.t('search_view.errors.invalid_request'))
+        it 'does not set an invalid request flash warning message' do
+          expect(flash[:warning]).to be_nil
         end
       end
     end

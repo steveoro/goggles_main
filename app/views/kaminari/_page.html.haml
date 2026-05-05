@@ -11,5 +11,4 @@
   - prev_value = page.prev? ? 'prev' : nil
   - rel_value = page.next? ? 'next' : prev_value
   .page-link
-    = link_to_unless(page.current?, page, url, { remote: remote, rel: rel_value,
-                     onclick: "$('#loading-indicator').removeClass('d-none');" })
+    = link_to_unless(page.current?, page, url, { rel: rel_value })

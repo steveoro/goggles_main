@@ -74,7 +74,7 @@ class IssuesGrid < BaseGrid
   column(:destroy, header: '', html: true, order: false, mandatory: true) do |asset|
     button_to(issues_destroy_path(id: asset.id), id: "frm-delete-row-#{asset.id}", method: :delete,
                                                  class: 'btn btn-sm btn-outline-danger my-1',
-                                                 data: { confirm: t('issues.grid.confirm_delete', label: asset.decorate.label) }) do
+                                                 data: { turbo_confirm: t('issues.grid.confirm_delete', label: asset.decorate.label) }) do
       tag.i(class: 'fa fa-trash-o')
     end
   end

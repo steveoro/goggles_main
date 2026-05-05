@@ -16,7 +16,8 @@
         .alert.alert-success.mx-auto.m-0.px-2.py-0.d-none#lap-modal-alert{ role: 'alert' }
           %small#lap-modal-alert-text
 
-        %button.close{ 'aria-label' => t('datagrid.edit_modal.close_btn'), 'data-dismiss' => 'modal' }
+        %button.close{ 'aria-label' => t('datagrid.edit_modal.close_btn'),
+                       'data-dismiss' => 'modal', data: { action: 'click->modal#hide' } }
           %span{ 'aria-hidden' => 'true' } &times;
       .modal-body{ id: 'lap-edit-modal-body' }
         .container
@@ -57,5 +58,6 @@
 
       .modal-footer
         %button.btn.btn-sm.btn-outline-secondary#modal-close{ 'aria-label' => t('datagrid.edit_modal.close_btn'),
-                                                              'data-dismiss' => 'modal', type: 'button' }
+                                                              'data-dismiss' => 'modal',
+                                                              data: { action: 'click->modal#hide' }, type: 'button' }
           = I18n.t('datagrid.edit_modal.close_btn')

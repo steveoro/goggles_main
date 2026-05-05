@@ -104,7 +104,7 @@ Then('I scroll toward the end of the page to see the bottom of the page') do
 end
 
 # Clicks using a script.
-# Prevents inconsistent behaviour for Capybara node#click on modal dialogs.
+# Prevents inconsistent behavior for Capybara node#click on modal dialogs.
 # (#click is run asynchronously and may trigger before the JS that has to be
 # loaded by the page is actually ready - see also note inside the implementation below.)
 #
@@ -113,9 +113,11 @@ end
 # - target should be able to receive the 'onclick' event (links, buttons, ...)
 #
 When('I trigger the click event on the {string} DOM ID') do |dom_id|
-  # Make sure the target link is visible first:
-  find(dom_id)
+  target = find(dom_id, visible: :all)
+  target.click
+rescue StandardError
   execute_script("document.querySelector('#{dom_id}').click()")
+ensure
   wait_for_ajax
   sleep(1)
 end

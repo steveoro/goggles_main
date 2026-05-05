@@ -1,7 +1,7 @@
 %h4.text-center
   %small
     %i.text-muted
-      = link_to(@parent_link, id: 'back-to-parent', method: :get, role: 'button') do
+      = link_to(@parent_link, id: 'back-to-parent', role: 'button') do
         = @parent_title
       &nbsp;
       %i.fa.fa-angle-right{ 'aria-hidden': 'true' }
@@ -9,7 +9,7 @@
       %span.text-dark#curr-title
         %i.fa{ class: "fa-#{@css_icon}", 'aria-hidden': 'true' }
         - if @title_link.present?
-          = link_to(@title_link, id: 'title-link', method: :get, role: 'button') do
+          = link_to(@title_link, id: 'title-link', role: 'button') do
             = @title
         - else
           = @title

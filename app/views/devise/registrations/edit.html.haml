@@ -94,7 +94,7 @@
               %i= t('users.help_labels.erase_explanation_about_results')
             = button_to(t('.cancel_my_account'),
                         registration_path(resource_name), id: 'delete-account-btn',
-                        class: 'btn btn-danger', data: { confirm: t('.are_you_sure'),
+                        class: 'btn btn-danger', data: { turbo_confirm: t('.are_you_sure'),
                         action: 'unsaved-changes#allowFormSubmission' }, method: :delete)
 
   .spacer-right

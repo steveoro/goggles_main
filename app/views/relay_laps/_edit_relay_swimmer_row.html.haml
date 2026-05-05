@@ -27,9 +27,9 @@
                   data: { turbo_method: :delete, turbo_stream: true,
                           controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
                           action: 'click->loading#show turbo:before-fetch-response->loading#hide',
-                          confirm: t('datagrid.edit_modal.delete_swimmer_fraction_confirm',
-                                     lap_length: relay_swimmer.length_in_meters,
-                                     swimmer_name: relay_swimmer.swimmer.complete_name) }) do
+                          turbo_confirm: t('datagrid.edit_modal.delete_swimmer_fraction_confirm',
+                                           lap_length: relay_swimmer.length_in_meters,
+                                           swimmer_name: relay_swimmer.swimmer.complete_name) }) do
           %i.fa.fa-trash-o
 
 / Sub-laps first:

@@ -313,13 +313,11 @@ Given('I have a confirmed team manager account managing some existing MRRs with 
   # (NOTE: cfr. app/controllers/application_controller.rb:342)
 
   @last_seasons_ids = [
-    GogglesDb::Season.includes(
-      meetings: [{ meeting_relay_results: { meeting_event: :event_type } }]
-    ).joins(
-      meetings: [{ meeting_relay_results: { meeting_event: :event_type } }]
-    ).where(
-      'event_types.code': %w[S4X100SL S4X100MI S4X200SL M4X100SL M4X100MI M4X200SL]
-    ).last_season_by_type(GogglesDb::SeasonType.mas_fin).id
+    GogglesDb::Season.includes(meetings: { meeting_relay_results: { meeting_event: :event_type } })
+                     .joins(meetings: { meeting_relay_results: { meeting_event: :event_type } })
+                     .where(event_type: { code: %w[S4X100SL S4X100MI S4X200SL M4X100SL M4X100MI M4X200SL] })
+                     .last_season_by_type(GogglesDb::SeasonType.mas_fin)
+                     .id
   ]
   last_season_id = @last_seasons_ids.first
 
@@ -327,14 +325,14 @@ Given('I have a confirmed team manager account managing some existing MRRs with 
   # creating also anything that's been missing:
   meeting_with_results = GogglesDb::Meeting.includes(meeting_relay_results: { meeting_event: :event_type })
                                            .joins(meeting_relay_results: { meeting_event: :event_type })
-                                           .where(season_id: last_season_id, 'event_types.code': %w[S4X100SL S4X100MI S4X200SL M4X100SL M4X100MI M4X200SL])
+                                           .where(season_id: last_season_id, event_type: { code: %w[S4X100SL S4X100MI S4X200SL M4X100SL M4X100MI M4X200SL] })
                                            .by_date(:desc).first(25)
                                            .sample
   long_mrrs = GogglesDb::MeetingRelayResult.includes(:meeting, { meeting_event: :event_type })
                                            .joins(:meeting, { meeting_event: :event_type })
                                            .where(
-                                             'meetings.id': meeting_with_results.id,
-                                             'event_types.code': %w[S4X100SL S4X100MI S4X200SL M4X100SL M4X100MI M4X200SL]
+                                             meeting: { id: meeting_with_results.id },
+                                             event_type: { code: %w[S4X100SL S4X100MI S4X200SL M4X100SL M4X100MI M4X200SL] }
                                            )
   @managed_team = long_mrrs.sample.team
   expect(@managed_team).to be_a(GogglesDb::Team).and be_valid

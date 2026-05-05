@@ -48,8 +48,8 @@
                       data: { turbo_method: :delete, turbo_stream: true,
                               controller: 'loading', loading_indicator_id_value: 'modal-loading-indicator',
                               action: 'click->loading#show turbo:before-fetch-response->loading#hide',
-                              confirm: t('laps.modal.msgs.submit_delete_confirm',
-                                         lap_length: relay_lap.length_in_meters) }) do
+                              turbo_confirm: t('laps.modal.msgs.submit_delete_confirm',
+                                               lap_length: relay_lap.length_in_meters) }) do
               %i.fa.fa-trash-o
           %span.my-2.float-right{ id: "sublap-delta-#{overall_index}" }
             Δt: #{relay_lap.to_timing}

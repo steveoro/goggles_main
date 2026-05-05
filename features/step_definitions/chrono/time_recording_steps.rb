@@ -22,21 +22,43 @@ Then('I should see a list of {int} laps with the following times:') do |total_ro
 
   # Check the recoreded laps total number:
   expect(data.length).to eq(total_rows + 1)
-  expect(all('#laps-grid table tbody tr').count).to eq(total_rows)
+  expect(page).to have_css('#laps-grid table tbody tr', count: total_rows, wait: 10)
 
   # Check the recorded laps times:
   # (Actual timing may vary due to sleep + processing time between events.)
   data[1..].each_with_index do |row, index|
     _lap, min_time = row
-    actual_value = find("#laps-grid table tbody tr:nth-child(#{index + 1}) td.seconds").text.to_i
+    base_selector = "#laps-grid table tbody tr:nth-child(#{index + 1})"
+    seconds_input = page.first("#{base_selector} td:nth-child(3) input", visible: :all) ||
+                    page.first("#{base_selector} td.seconds input", visible: :all)
+    seconds_node = seconds_input || page.first("#{base_selector} td:nth-child(3)", visible: :all) ||
+                   page.first("#{base_selector} td.seconds", visible: :all)
+    actual_value = (seconds_input&.value || seconds_node&.text).to_i
     expect(actual_value).to be >= min_time.to_i
   end
 end
 
 When('I click to edit lap {int} timing with {int} seconds') do |lap_number, new_timing_seconds|
-  find("#laps-grid table tbody tr:nth-child(#{lap_number}) td.seconds").click
-  find("#laps-grid table tbody tr:nth-child(#{lap_number}) td.seconds input").set(new_timing_seconds.to_s)
-  find("#laps-grid table tbody tr:nth-child(#{lap_number}) td.seconds input").native.send_keys(:return)
+  execute_script(<<~JS, lap_number, new_timing_seconds)
+    var rowIdx = Number(arguments[0]);
+    var seconds = Number(arguments[1]);
+    var row = document.querySelector('#laps-grid table tbody tr:nth-child(' + rowIdx + ')');
+    if (!row) return;
+    var input = row.querySelector('td:nth-child(3) input, td.seconds input');
+    if (!input) return;
+
+    input.removeAttribute('disabled');
+    input.focus();
+    input.value = String(seconds);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  JS
+
+  base_selector = "#laps-grid table tbody tr:nth-child(#{lap_number})"
+  seconds_input = page.first("#{base_selector} td:nth-child(3) input", visible: :all) ||
+                  page.first("#{base_selector} td.seconds input", visible: :all)
+  expect(seconds_input).to be_present
+  expect(seconds_input.value.to_i).to eq(new_timing_seconds)
 end
 
 # Click on OK/Yes

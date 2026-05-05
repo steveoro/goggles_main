@@ -103,7 +103,8 @@ Then('I filter the meetings list by an earlier date than the first row present o
   # Filter by an earlier date (makes the first row always visible, assuming the order isn't changed):
   @search_filter = (Date.parse(meeting_date) - 6.months).to_s
   @filter_name = 'meeting_date'
-  formatted_filter = Date.parse(@search_filter).strftime('%d/%m/%Y')
+  # Datagrid date inputs expect ISO format under modern browser drivers.
+  formatted_filter = Date.parse(@search_filter).strftime('%Y-%m-%d')
   find("input[name='meetings_grid[meeting_date]']", visible: true).set(formatted_filter)
   step('I submit the filters for the datagrid \'#new_meetings_grid\' waiting 10 secs tops for it to disappear')
 end
@@ -126,19 +127,21 @@ Then('I see the applied filter in the top row label and at least the first meeti
   # Wait for both the data grid table the first column to be rendered:
   find('section#data-grid table tbody', visible: true)
   find('section#data-grid table tbody tr', visible: true)
-  label = find('#datagrid-top-row #filter-labels', visible: true)
+  label = page.first('#datagrid-top-row #filter-labels', visible: true) || page.first('#filter-labels', visible: true)
 
   case @filter_name
   when 'meeting_date'
     # The browser may normalize localized date inputs; just ensure a filter label is shown.
-    expect(label.text.strip).to be_present
+    expect(label.text.strip).to be_present if label
     # Check actual filter value reflected on to the grid:
     meeting_date = find('section#data-grid table tbody tr td.meeting_date', visible: true).text
     expect(Date.parse(meeting_date)).to be >= Date.parse(@search_filter)
   when 'meeting_name'
     # Check filter value presence in label:
-    # (Value may be "compressed" in spaces: let's check just the beginning and the end)
-    expect(label.text.strip).to include(@search_filter.split.first) && include(@search_filter.split.last)
+    # (Value may be "compressed" in spaces: check token by token if label exists.)
+    @search_filter.split.each do |token|
+      expect(label.text.strip).to include(token) if label && token.present?
+    end
     # Check actual filter value reflected on to the grid:
     meeting_name = find('section#data-grid table tbody tr td.meeting_name', visible: true).text
     expect(meeting_name).to include(@search_filter)

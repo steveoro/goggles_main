@@ -20,7 +20,7 @@
           .form-group.mt-2.col-auto
             .actions
               = submit_tag(t('contact_us.send_button'), id: 'contact-us-send-btn', class: 'btn btn-primary',
-                           data: { confirm: t('contact_us.ask_confirmation') })
+                           data: { turbo_confirm: t('contact_us.ask_confirmation') })
     .row-fluid
       %p &nbsp;
 

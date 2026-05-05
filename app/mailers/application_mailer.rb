@@ -9,6 +9,7 @@ require 'version'
 class ApplicationMailer < ActionMailer::Base
   # [Steve A., 20180115] Avoid using hostname from ENV (ENV['HOSTNAME']) because it uses the local IP
   HOSTNAME = Rails.application.config.action_mailer.default_url_options[:host]
+  self.deliver_later_queue_name = :mailers
 
   # Internal Mailer address for the "From" field :
   default from: "'Goggles Mailer' <no-reply@#{HOSTNAME}>"

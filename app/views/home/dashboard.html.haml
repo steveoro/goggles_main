@@ -21,14 +21,14 @@
             = current_user.description
         .container.text-center.my-4#go-to-edit-swimmer-association
           = link_to(edit_user_registration_path(anchor: 'swimmer-binding-help'),
-                    id: 'associate-swimmer', method: :get, role: 'button') do
+                    id: 'associate-swimmer', role: 'button') do
             = t('home.my.associate_to_a_swimmer', user_name: current_user.name.titleize)
 
     %section.container#dashboard-btns
       .row.d-flex.justify-content-center
         .col.d-flex
           = link_to(calendars_current_path,
-                    id: 'btn-plan-meeting', method: :get,
+                    id: 'btn-plan-meeting',
                     class: 'btn btn-block btn-info py-2 my-2 align-vertical-center',
                     role: 'button') do
             %i.fixed-size-48x48.fa.fa-3x.fa-calendar
@@ -37,7 +37,7 @@
         - if @current_user_is_manager || @current_user_is_admin
           .col.d-flex
             = link_to('#',
-                      id: 'btn-team-reservations', method: :get,
+                      id: 'btn-team-reservations',
                       class: 'btn btn-block btn-info py-2 my-2 align-vertical-center disabled',
                       role: 'button') do
               %i.fixed-size-48x48.fa.fa-3x.fa-calendar-check-o
@@ -46,7 +46,7 @@
       .row.d-flex.justify-content-around
         .col.d-flex
           = link_to(meetings_path,
-                    id: 'btn-my-past-meetings', method: :get,
+                    id: 'btn-my-past-meetings',
                     class: 'btn btn-block btn-warning py-2 my-2 align-vertical-center',
                     role: 'button') do
             %i.fixed-size-48x48.fa.fa-3x.fa-trophy
@@ -54,7 +54,7 @@
             = t('home.dashboard.past_btn')
         .col.d-flex
           = link_to(calendars_starred_path,
-                    id: 'btn-my-future-meetings', method: :get,
+                    id: 'btn-my-future-meetings',
                     class: 'btn btn-block btn-primary py-2 my-2 align-self-vertical',
                     role: 'button') do
             %i.fixed-size-48x48.fa.fa-3x.fa-calendar
@@ -62,7 +62,7 @@
             = t('home.dashboard.future_btn')
         .col.d-flex
           = link_to(user_workshops_path,
-                    id: 'btn-my-workshops', method: :get,
+                    id: 'btn-my-workshops',
                     class: 'btn btn-block btn-info py-2 my-2 align-vertical-center',
                     role: 'button') do
             %i.fixed-size-48x48.fa.fa-3x.fa-group
@@ -72,7 +72,7 @@
         .col.d-flex
           - if @swimmer
             = link_to(swimmer_show_path(@swimmer.id),
-                      id: 'btn-my-radiography', method: :get,
+                      id: 'btn-my-radiography',
                       class: 'btn btn-block btn-primary py-2 my-2 align-vertical-center',
                       role: 'button') do
               = image_tag('radiography_40x40.png', class: 'fixed-size-48x48')
@@ -86,7 +86,7 @@
         .col.d-flex
           - if @swimmer
             = link_to(swimmer_history_recap_path(@swimmer.id),
-                      id: 'btn-my-stats', method: :get,
+                      id: 'btn-my-stats',
                       class: 'btn btn-block btn-primary py-2 my-2 align-vertical-center', role: 'button') do
               %i.fixed-size-48x48.fa.fa-3x.fa-line-chart
               %br/

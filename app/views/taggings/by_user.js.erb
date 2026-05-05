@@ -1,9 +1,0 @@
-<% if flash[:error] %>
- alert('<%= escape_javascript(flash[:error]) %>' );
-<% end %>
-$("#user-star-<%= @meeting.id %>")
-    .html('<%= escape_javascript(
-            render(
-                Grid::RowStarButtonComponent.new(asset_row: @meeting, current_user: current_user, saved_ok: @saved_ok)
-            )
-          ) %>');

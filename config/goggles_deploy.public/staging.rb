@@ -84,6 +84,9 @@ Rails.application.configure do
 
   # Use Solid Queue for background jobs and Solid Cache for caching
   config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
+  config.mission_control.jobs.adapters = [:solid_queue]
+  config.mission_control.jobs.http_basic_auth_enabled = false
   config.cache_store = :solid_cache_store, { path: '/app/storage/cache.sqlite3' }
 
   # Action Mailer default URL, required by Devise:

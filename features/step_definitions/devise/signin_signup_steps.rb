@@ -83,7 +83,7 @@ Given('the user row is signed-in') do
   # (more reliable than DB tracking columns in tests)
   expect(page).to have_css('#link-logout', visible: :all) # Sign-out link present
   # OR check for user name in toolbar
-  expect(page).to have_content(@current_user.name)
+  expect(page).to have_text(@current_user.name)
 
   # == Alternative #1: use Warden Session directly ==
   # warden = Warden.test_mode

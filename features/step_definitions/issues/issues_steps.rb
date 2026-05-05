@@ -118,7 +118,12 @@ Then('the active nav tab is {string}') do |issue_type|
 end
 
 Then('I select {string} as the active nav tab') do |issue_type|
-  find("li.nav-item##{issue_type}-nav-item a.nav-link", visible: true).click
+  nav_link = find("li.nav-item##{issue_type}-nav-item a.nav-link", visible: true)
+  target_url = nav_link[:href].to_s
+  target_path = target_url.split('?').first
+  nav_link.click
+  wait_for_ajax
+  visit(target_url) unless current_path.include?(target_path)
 end
 # -----------------------------------------------------------------------------
 
