@@ -1,5 +1,7 @@
 # Goggles Main Rails 8.1 - TODOs
 
+- [ ] Locale doesn't get set correctly: after clicking on a link, resets to default 'en'
+
 - [~] Laps/relay modal lifecycle stabilization (Cucumber)
   after a successful save, should reload the part with the laps
 

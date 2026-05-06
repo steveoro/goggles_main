@@ -17,6 +17,7 @@ RSpec.describe Footer::MainComponent, type: :component do
     node = rendered_footer.at_css('a#href-locale-switch')
     expect(node).to be_present
     expect(node['href']).to include(home_index_path.to_s)
+    expect(node['data-turbo-prefetch']).to eq('false')
   end
 
   it 'includes the "contact us" link' do

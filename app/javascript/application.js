@@ -104,11 +104,16 @@ document.addEventListener("turbo:before-fetch-request", (event) => {
 })
 
 document.addEventListener("turbo:before-fetch-response", (event) => {
+    const requestUrl = event && event.detail && event.detail.url ? event.detail.url.toString() : null
     const responseUrl =
         event && event.detail && event.detail.fetchResponse && event.detail.fetchResponse.response ?
         event.detail.fetchResponse.response.url :
         null
-    if (responseUrl && prefetchRequestUrls.delete(responseUrl)) {
+    if (requestUrl && prefetchRequestUrls.delete(requestUrl)) {
+        return
+    }
+
+    if (!requestUrl && responseUrl && prefetchRequestUrls.delete(responseUrl)) {
         return
     }
 
