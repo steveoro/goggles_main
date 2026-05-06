@@ -54,5 +54,5 @@
         %li.nav-item= link_to(t('home.sign_up'), new_user_registration_path,
                               id: 'link-signup', class: 'nav-link text-success')
 
-.fixed-top.text-center.mt-2.d-none#loading-indicator
+.fixed-top.text-center.mt-2.d-none#loading-indicator{ style: 'pointer-events: none;' }
   .spinner-border.text-primary{ role: 'status', 'aria-hidden' => 'true' }
