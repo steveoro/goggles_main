@@ -1,5 +1,22 @@
-%label.switch-sm.pr-3
-  %input{ type: 'checkbox' }
-  %span.rotating-toggle.collapsed{ id: "toggle-#{@target_id}", 'data-toggle' => 'collapse',
-    href: "##{@target_id}", role: 'button', class: @option_classes,
-    'aria-expanded' => 'false', 'aria-controls' => "switch for #{@target_id}" }/
+%span.switch-sm.pr-3
+  - if remote?
+    = link_to('', @remote_url,
+      id: trigger_id,
+      class: trigger_classes,
+      role: 'button',
+      title: @title,
+      data: trigger_data,
+      'aria-expanded' => @expanded,
+      'aria-controls' => @target_id,
+      'aria-label' => trigger_aria_label)
+  - else
+    = button_tag('',
+      id: trigger_id,
+      type: 'button',
+      class: trigger_classes,
+      role: 'button',
+      title: @title,
+      data: trigger_data,
+      'aria-expanded' => @expanded,
+      'aria-controls' => @target_id,
+      'aria-label' => trigger_aria_label)

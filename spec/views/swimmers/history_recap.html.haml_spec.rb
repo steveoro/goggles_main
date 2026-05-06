@@ -122,10 +122,13 @@ RSpec.describe 'swimmers/history_recap.html.haml' do
       end
 
       it 'includes the link to expand the collapsed stats section' do
-        table_rows.css('td.history-link label.switch-sm').each_with_index do |node, idx|
+        table_rows.css('td.history-link span.switch-sm').each_with_index do |node, idx|
           expect(node).to be_present
           target_id = "stats-row-#{event_type_list[idx][:id]}"
-          expect(node.at_css('a').attributes['id'].value).to eq("toggle-#{target_id}")
+          trigger = node.at_css('a.rotating-toggle')
+          expect(trigger.attributes['id'].value).to eq("toggle-#{target_id}")
+          expect(trigger.attributes['data-turbo-stream'].value).to eq('true')
+          expect(trigger.attributes['data-controller'].value).to include('rotating-switch')
         end
       end
 
