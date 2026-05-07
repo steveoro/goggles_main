@@ -1,0 +1,13 @@
+%div{ class: "#{@wrapper_class} autocomplete-lookup", data: data_attributes }
+  .form-group
+    .field
+      = hidden_field_tag("#{@base_name}_id", hidden_id_value)
+      = hidden_field_tag("#{@base_name}_label", hidden_label_value)
+      = label_tag(@base_name, @label)
+      %b.text-danger{ id: "#{@base_name}-presence" } *
+      %span.d-none{ id: "#{@base_name}-new" } 🆕
+      %select.form-control.autocomplete-lookup__select{ id: "#{@base_name}_select", autofocus: true,
+                                                         required: @required, disabled: @disabled,
+                                                         data: { 'autocomplete-lookup-target' => 'field' } }
+        - if @values.present?
+          = @values

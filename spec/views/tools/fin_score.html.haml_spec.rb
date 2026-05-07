@@ -28,10 +28,12 @@ RSpec.describe 'tools/fin_score.html.haml' do
 
   it 'renders the EventType select component' do
     expect(subject.css('#frm-fin-score #event_type_select')).to be_present
+    expect(subject.css('#frm-fin-score .autocomplete-lookup select#event_type_select')).to be_present
   end
 
   it 'renders the PoolType select component' do
     expect(subject.css('#frm-fin-score #pool_type_select')).to be_present
+    expect(subject.css('#frm-fin-score .autocomplete-lookup select#pool_type_select')).to be_present
   end
 
   it 'renders the hidden season_id form parameter' do
@@ -46,6 +48,12 @@ RSpec.describe 'tools/fin_score.html.haml' do
 
   it 'renders the CategoryType select component' do
     expect(subject.css('#frm-fin-score #category_type_select')).to be_present
+    expect(subject.css('#frm-fin-score .autocomplete-lookup select#category_type_select')).to be_present
+  end
+
+  it 'uses the autocomplete lookup controller for static lookup fields' do
+    expect(subject.css('#frm-fin-score .autocomplete-lookup[data-controller="autocomplete-lookup"]').count)
+      .to eq(3)
   end
 
   it 'renders the GenderType select component' do

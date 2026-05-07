@@ -1,3 +1,33 @@
 // Place all the styles related to the lookup controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+.autocomplete-lookup {
+    min-width: 12rem;
+
+    .ts-wrapper {
+        width: 100%;
+        min-width: 12rem;
+    }
+
+    .ts-control {
+        min-height: calc(1.5em + 0.75rem + 2px);
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .ts-control,
+    .ts-dropdown {
+        box-sizing: border-box;
+    }
+
+    .ts-dropdown {
+        min-width: 100%;
+    }
+
+    .item {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

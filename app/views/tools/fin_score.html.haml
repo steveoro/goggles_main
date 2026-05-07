@@ -13,10 +13,10 @@
       .container.bg-warning.ml-2.pt-3.shadow-box
         .row
           .offset-md-2.offset-lg-3
-          = render(ComboBox::DbLookupComponent.new(nil, t('meetings.event'), 'event_type',
-                                                   required: true, values: event_type_options(@event_types)))
-          = render(ComboBox::DbLookupComponent.new(nil, t('meetings.dashboard.pool_type'), 'pool_type',
-                                                   required: true, values: pool_type_options(@pool_types)))
+          = render(ComboBox::AutocompleteComponent.new(label: t('meetings.event'), base_name: 'event_type',
+                                                       required: true, values: event_type_options(@event_types)))
+          = render(ComboBox::AutocompleteComponent.new(label: t('meetings.dashboard.pool_type'), base_name: 'pool_type',
+                                                       required: true, values: pool_type_options(@pool_types)))
 
       .container.mt-2
         .row
@@ -34,8 +34,8 @@
                 %b#standard-timing-label
 
         .row
-          = render(ComboBox::DbLookupComponent.new(nil, t('meetings.category'), 'category_type',
-                                                   required: true, values: category_type_options(@category_types)))
+          = render(ComboBox::AutocompleteComponent.new(label: t('meetings.category'), base_name: 'category_type',
+                                                       required: true, values: category_type_options(@category_types)))
           .col-auto
             .form-group
               .field

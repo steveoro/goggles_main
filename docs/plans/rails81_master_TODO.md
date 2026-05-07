@@ -1,12 +1,10 @@
 # Goggles Main Rails 8.1 - TODOs
 
-- [ ] Locale doesn't get set correctly: after clicking on a link, resets to default 'en'
-
 - [~] Laps/relay modal lifecycle stabilization (Cucumber)
   after a successful save, should reload the part with the laps
 
-- [ ] redesign drop-down autocomplete components to use Turbo Streams instead of jQuery (compare with the one using TomSelect used in AdminHub)
-  - [ ] redesign component
+- [~] redesign drop-down autocomplete components to use Turbo Streams instead of jQuery (compare with the one using TomSelect used in AdminHub)
+  - [~] redesign component
   - [ ] replace usage in whole app
 
 - [ ] when navigating back and forth from the team's and swimmer's result pages, going back to the meeting#show page doesn't keep the already retrieved details (complex restructuring)
