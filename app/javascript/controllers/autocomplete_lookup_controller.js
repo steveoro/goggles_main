@@ -20,9 +20,6 @@ import TomSelect from 'tom-select'
  * 2. makes async calls to retrieve lookup data from API endpoints
  * 3. auto-renews JWT on API request 'unauthorized' response
  *
- * Base widget: @see https://select2.org/
- *
- *
  * == Targets ==
  * @param {String} 'data-lookup-target': 'field'
  *                 the target for this controller instance: a lookup field combo-box;
@@ -66,10 +63,6 @@ import TomSelect from 'tom-select'
  *                 - DOM ID = "<BASE_NAME>_<any other data-field>" => stores any additional data field stored into the selected option
  *                 (The additional data fields will be defined & accessed dynamically.)
  *
- * == Assumptions:
- * @assert the widget can use '.select2' CSS to customize width
- * @assert 'data-lookup-target' must be a parent node the actual '.select2' widget
- *
  * == About the 2nd API call feature:
  * By enabling the second API call, the current row ID is used as key for retrieving all row details, including most associated entities,
  * in a single multi-level nested JSON object with all its associated details.
@@ -104,6 +97,7 @@ export default class extends Controller {
         this.jwtPromise = null
         this.tomSelect = null
         this.setupTomSelect()
+        this.syncInitialSelection()
     }
 
     disconnect() {
@@ -134,12 +128,12 @@ export default class extends Controller {
         // DEBUG
         // console.log('Fetching JWT...')
         return fetch('/api_sessions/jwt.json', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-Token': this.csrfToken(),
-                    'Content-Type': 'application/json;charset=UTF-8'
-                }
-            }).then((resp) => resp.json())
+            method: 'POST',
+            headers: {
+                'X-CSRF-Token': this.csrfToken(),
+                'Content-Type': 'application/json;charset=UTF-8'
+            }
+        }).then((resp) => resp.json())
             .then((json) => json.jwt)
             .catch((error) => {
                 console.error('fetchJWT error:', error)
@@ -178,12 +172,12 @@ export default class extends Controller {
         }
 
         return fetch(`${this.apiUrl2Value}/${entityName}/${entityId}`, {
-                method: 'GET',
-                headers: {
-                    Authorization: `Bearer ${jwt}`,
-                    'Content-Type': 'application/json;charset=UTF-8'
-                }
-            }).then((resp) => resp.json())
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${jwt}`,
+                'Content-Type': 'application/json;charset=UTF-8'
+            }
+        }).then((resp) => resp.json())
             .catch((error) => {
                 console.error('fetchEntityDetails error:', error)
                 return {}
@@ -191,6 +185,9 @@ export default class extends Controller {
     }
 
     setupTomSelect() {
+        // DEBUG
+        // console.log('setupTomSelect', this.fieldTarget)
+
         const staticOptions = this.optionsFromSelectElement()
         this.tomSelect = new TomSelect(this.fieldTarget, {
             options: staticOptions,
@@ -214,7 +211,7 @@ export default class extends Controller {
                 this.loadRemoteOptions(query, callback)
             },
             onInitialize: () => {
-                this.syncCurrentSelection()
+                this.syncInitialSelection()
             },
             onChange: () => {
                 this.syncCurrentSelection()
@@ -389,7 +386,7 @@ export default class extends Controller {
         }
 
         Object.entries(object).forEach(([key, value]) => {
-            if (key !== 'text' && key !== 'selected' && key !== 'select2Id' && key !== '$order') {
+            if (key && !key.startsWith('$') && key !== 'text' && key !== 'selected' && key !== 'select2Id' && key !== '$order') {
                 destMap.set(key, value)
             }
         })
@@ -514,6 +511,10 @@ export default class extends Controller {
         const baseSelector = `${baseName}_`
 
         mapData.forEach((value, key) => {
+            if (!key || key.startsWith('$')) {
+                return
+            }
+
             this.setFieldValue(`${baseSelector}${key}`, value)
 
             const boundSelectBaseName = key.split('_id')[0]
@@ -554,6 +555,8 @@ export default class extends Controller {
 
         const value = this.tomSelect.getValue()
         const scalarValue = Array.isArray(value) ? value[0] : value
+        // DEBUG
+        console.log(`syncCurrentSelection: value = ${value}, scalarValue = ${scalarValue}`)
 
         if (!scalarValue) {
             this.setHiddenFieldsValue(this.baseName, new Map([
@@ -566,9 +569,131 @@ export default class extends Controller {
         const selectedData = this.tomSelect.options[scalarValue]
         const mapData = new Map()
         mapData.set('id', scalarValue)
-        mapData.set('label', selectedData?.text || selectedData?.label || '')
+        mapData.set('label', (selectedData?.text) || (selectedData?.label) || '')
         this.copyObjectToMap(selectedData || {}, mapData)
 
         await this.enrichMapDataWithDetails(mapData)
+    }
+
+    hiddenFieldValue(fieldSuffix) {
+        const node = document.querySelector(`#${this.baseName}_${fieldSuffix}`)
+        return node ? node.value : ''
+    }
+
+    debugEnabled() {
+        return window.localStorage && window.localStorage.getItem('autocompleteLookupDebug') === '1'
+    }
+
+    debugLog(message, payload = null) {
+        if (!this.debugEnabled()) {
+            return
+        }
+        if (payload == null) {
+            console.debug(`[autocomplete-lookup:${this.baseName}] ${message}`)
+            return
+        }
+        console.debug(`[autocomplete-lookup:${this.baseName}] ${message}`, payload)
+    }
+
+    hasValidPresetId(value) {
+        return value != null && `${value}` !== '' && `${value}` !== '0'
+    }
+
+    currentOrDefaultOptionNode() {
+        if (!this.fieldTarget) {
+            return null
+        }
+
+        const selectedByState = this.fieldTarget.selectedOptions ? this.fieldTarget.selectedOptions[0] : null
+        if (selectedByState) {
+            return selectedByState
+        }
+
+        return Array.from(this.fieldTarget.options || []).find((option) => option.selected || option.defaultSelected || option.hasAttribute('selected')) || null
+    }
+
+    resolvePresetSelection() {
+        if (!this.tomSelect) {
+            return null
+        }
+
+        const currentValue = this.tomSelect.getValue()
+        const scalarCurrentValue = Array.isArray(currentValue) ? currentValue[0] : currentValue
+        const selectedOptionNode = this.currentOrDefaultOptionNode()
+        const hiddenId = this.hiddenFieldValue('id')
+        const hiddenLabel = this.hiddenFieldValue('label')
+
+        this.debugLog('resolvePresetSelection input', {
+            scalarCurrentValue,
+            selectedOptionValue: selectedOptionNode ? selectedOptionNode.value : null,
+            selectedOptionText: selectedOptionNode ? selectedOptionNode.text : null,
+            hiddenId,
+            hiddenLabel
+        })
+
+        if (this.hasValidPresetId(scalarCurrentValue)) {
+            const selectedData = this.tomSelect.options[scalarCurrentValue] || {}
+            const labelFromSelect = selectedOptionNode ? selectedOptionNode.text : ''
+            return {
+                id: scalarCurrentValue,
+                label: selectedData.text || selectedData.label || labelFromSelect || hiddenLabel || ''
+            }
+        }
+
+        if (selectedOptionNode && this.hasValidPresetId(selectedOptionNode.value)) {
+            return {
+                id: selectedOptionNode.value,
+                label: selectedOptionNode.text || hiddenLabel || ''
+            }
+        }
+
+        if (this.hasValidPresetId(hiddenId)) {
+            return {
+                id: hiddenId,
+                label: hiddenLabel || this.findLabelForSelectValue(this.fieldTarget, hiddenId)
+            }
+        }
+
+        return null
+    }
+
+    async applyPresetSelection(preset) {
+        const presetId = `${preset.id}`
+        const presetLabel = preset.label || this.findLabelForSelectValue(this.fieldTarget, presetId)
+
+        this.debugLog('applyPresetSelection', {
+            presetId,
+            presetLabel
+        })
+
+        if (!this.tomSelect.options[presetId] && presetLabel) {
+            this.tomSelect.addOption({
+                id: presetId,
+                text: presetLabel,
+                label: presetLabel
+            })
+        }
+        this.tomSelect.setValue(presetId, true)
+
+        this.setFieldValue(`${this.baseName}_id`, presetId)
+        this.setFieldValue(`${this.baseName}_label`, presetLabel || '')
+        this.presenceLedUpdate(this.baseName, (presetLabel || '').length > 0)
+
+        const selectedData = this.tomSelect.options[presetId] || {}
+        const mapData = new Map()
+        mapData.set('id', presetId)
+        mapData.set('label', presetLabel || selectedData.text || selectedData.label || '')
+        this.copyObjectToMap(selectedData || {}, mapData)
+        await this.enrichMapDataWithDetails(mapData)
+    }
+
+    async syncInitialSelection() {
+        const preset = this.resolvePresetSelection()
+        this.debugLog('syncInitialSelection resolved preset', preset)
+        if (preset && this.hasValidPresetId(preset.id)) {
+            await this.applyPresetSelection(preset)
+            return
+        }
+        await this.syncCurrentSelection()
     }
 }

@@ -44,7 +44,28 @@ const isPrefetchFetchCall = (args) => {
     return false
 }
 
+const urlStringForResource = (resource) => {
+    if (!resource) {
+        return null
+    }
+
+    if (typeof resource === "string") {
+        return resource
+    }
+
+    if (resource.url) {
+        return resource.url.toString()
+    }
+
+    if (resource.href) {
+        return resource.href.toString()
+    }
+
+    return null
+}
+
 const prefetchRequestUrls = new Set()
+const prefetchResponseUrls = new WeakMap()
 
 const loadingIndicator = {
     indicatorId: "loading-indicator",
@@ -92,7 +113,7 @@ window.__requestTracker = tracker
 window.__loadingIndicator = loadingIndicator
 
 document.addEventListener("turbo:before-fetch-request", (event) => {
-    const requestUrl = event && event.detail && event.detail.url ? event.detail.url.toString() : null
+    const requestUrl = event && event.detail ? urlStringForResource(event.detail.url) : null
     if (isPrefetchTurboEvent(event)) {
         if (requestUrl) {
             prefetchRequestUrls.add(requestUrl)
@@ -104,11 +125,17 @@ document.addEventListener("turbo:before-fetch-request", (event) => {
 })
 
 document.addEventListener("turbo:before-fetch-response", (event) => {
-    const requestUrl = event && event.detail && event.detail.url ? event.detail.url.toString() : null
-    const responseUrl =
-        event && event.detail && event.detail.fetchResponse && event.detail.fetchResponse.response ?
-        event.detail.fetchResponse.response.url :
-        null
+    const request = event && event.detail && event.detail.fetchResponse && event.detail.fetchResponse.request
+    const response = event && event.detail && event.detail.fetchResponse && event.detail.fetchResponse.response
+    const requestUrl = request && request.url ? request.url.toString() : null
+    const responseUrl = response && response.url ? response.url : null
+    const prefetchResponseUrl = response ? prefetchResponseUrls.get(response) : null
+    if (prefetchResponseUrl) {
+        prefetchResponseUrls.delete(response)
+        prefetchRequestUrls.delete(prefetchResponseUrl)
+        return
+    }
+
     if (requestUrl && prefetchRequestUrls.delete(requestUrl)) {
         return
     }
@@ -121,7 +148,7 @@ document.addEventListener("turbo:before-fetch-response", (event) => {
 })
 
 document.addEventListener("turbo:fetch-request-error", (event) => {
-    const requestUrl = event && event.detail && event.detail.url ? event.detail.url.toString() : null
+    const requestUrl = event && event.detail ? urlStringForResource(event.detail.url) : null
     if (requestUrl && prefetchRequestUrls.delete(requestUrl)) {
         return
     }
@@ -139,7 +166,13 @@ if (typeof window.fetch === "function" && !window.__requestTrackerPatchedFetch) 
     const originalFetch = window.fetch.bind(window)
     window.fetch = (...args) => {
         if (isPrefetchFetchCall(args)) {
-            return originalFetch(...args)
+            const requestUrl = urlStringForResource(args[0])
+            return originalFetch(...args).then((response) => {
+                if (response && requestUrl) {
+                    prefetchResponseUrls.set(response, requestUrl)
+                }
+                return response
+            })
         }
 
         tracker.increment()
