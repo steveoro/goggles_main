@@ -1,6 +1,7 @@
-= render(ComboBox::DbLookupComponent.new(@api_endpoint, t('swimming_pools.city'), 'city',
+= render(ComboBox::AutocompleteComponent.new(api_url: 'cities', label: t('swimming_pools.city'), base_name: 'city',
          required: @required, free_text: @free_text, bound_query_param: 'country_code',
-         values: value_options))
+         wrapper_class: @wrapper_class, values: value_options,
+         selected_id: @default_row&.id, selected_label: @default_row&.name))
 .col-auto
   .form-group
     .field

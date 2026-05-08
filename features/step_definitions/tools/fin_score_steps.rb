@@ -5,7 +5,7 @@ When('I am at the FIN score & time calculator page') do
 end
 
 When('I select {string}, {string}, {string} and {string} as FIN score parameters') do |event_type, pool_type, category_type, gender_type|
-  # Select the Select2 widget value & then set also its corresponding hidden field (non-interactable by Selenium)
+  # Select the autocomplete widget value & then set also its corresponding hidden field (non-interactable by Selenium)
   find_by_id('event_type_select').select(event_type)
   execute_script("$('#event_type_id').val('#{find_by_id('event_type_select').value}')")
   find_by_id('pool_type_select').select(pool_type)

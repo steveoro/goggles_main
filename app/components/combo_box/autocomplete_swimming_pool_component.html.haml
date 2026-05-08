@@ -1,0 +1,10 @@
+= render(ComboBox::AutocompleteComponent.new(api_url: 'swimming_pools', label: @label, base_name: @base_name,
+         free_text: @free_text, required: @required, disabled: @disabled, query_column: @query_column,
+         use_2_api: @use_2_api, wrapper_class: @wrapper_class,
+         values: preselected_option,
+         selected_id: @default_row&.id,
+         selected_label: @default_row ? "#{@default_row&.name} (#{@default_row&.nick_name})" : nil))
+= hidden_field_tag("#{@base_name}_name", @default_row&.name)
+= hidden_field_tag("#{@base_name}_nick_name", @default_row&.nick_name)
+= hidden_field_tag("#{@base_name}_city_id", @default_row&.city_id)
+= hidden_field_tag("#{@base_name}_pool_type_id", @default_row&.pool_type_id)

@@ -1,5 +1,3 @@
-# language:en
-
 Feature: Reporting an issue of type "1a"
   As a logged-in user
   I want to be able to report an issue of type "1a"
@@ -17,9 +15,8 @@ Feature: Reporting an issue of type "1a"
     And I see the expandable section for issues 'type1a'
     When I click to expand the issues section 'type1a'
     Then I see the issue form 'frm-type1a'
-
-    When I type '18° Trofeo De Akker' as selection for the 'meeting' Select2 field
-    And I type 'Bologna' as selection for the 'city' Select2 field
+    When I type '18° Trofeo De Akker' as selection for the 'meeting' autocomplete field
+    And I type 'Bologna' as selection for the 'city' autocomplete field
     And I type 'Bologna' as free input for the 'city_area' field
     And I see that 'IT' is already set as 'city_country_code' field
     And I see that the current date is already set as the date of the event

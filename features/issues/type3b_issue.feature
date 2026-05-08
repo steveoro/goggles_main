@@ -1,5 +1,3 @@
-# language:en
-
 Feature: Reporting an issue of type "3b"
   As a logged-in user
   I want to be able to report an issue of type "3b"
@@ -17,8 +15,7 @@ Feature: Reporting an issue of type "3b"
     And I see the expandable section for issues 'type3b'
     When I click to expand the issues section 'type3b'
     Then I see the issue form 'frm-type3b'
-
-    When I type 'LIGABUE MARCO' as selection for the 'swimmer' Select2 field
+    When I type 'LIGABUE MARCO' as selection for the 'swimmer' autocomplete field
     And I scroll toward the end of the page to see the bottom of the page
     And I click on '#issues-type3b-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'

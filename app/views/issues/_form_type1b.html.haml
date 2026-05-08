@@ -9,8 +9,8 @@
 
     .container
       .row
-        = render(ComboBox::DbLookupComponent.new(nil, t('meetings.event'), 'event_type', required: true,
-                                                 values: event_type_options(parent_meeting.event_types)))
+        = render(ComboBox::AutocompleteComponent.new(label: t('meetings.event'), base_name: 'event_type', required: true,
+                                                     values: event_type_options(parent_meeting.event_types)))
     .container
       -# [20240201] Currently, the "TeamManager grant limit" for reporting missing results has been lifted
       -# (was: "disabled: !can_manage")
@@ -23,13 +23,14 @@
       -#     %small
       -#       %i= t('issues.type1b.form.notice.cant_manage')
       .row
-        = render(ComboBox::DbLookupComponent.new('teams', t('teams.team'), 'team', required: false,
-                                                 free_text: true, default_row: teams&.first, values: teams))
+        = render(ComboBox::AutocompleteComponent.new(api_url: 'teams', label: t('teams.team'), base_name: 'team',
+                                                     required: false, free_text: true, values: teams,
+                                                     selected_id: teams&.first&.id, selected_label: teams&.first&.name))
 
       .row
-        = render(ComboBox::DbSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer', required: false,
-                                                  free_text: true, default_row: current_user.swimmer,
-                                                  values: swimmers))
+        = render(ComboBox::AutocompleteSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer', required: false,
+                                                            free_text: true, default_row: current_user.swimmer,
+                                                            values: swimmers))
       = hidden_field_tag(:parent_meeting_id, parent_meeting.id)
       = hidden_field_tag(:parent_meeting_class, parent_meeting.class.name.split('::').last)
 

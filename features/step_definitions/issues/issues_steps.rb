@@ -128,7 +128,7 @@ end
 # -----------------------------------------------------------------------------
 
 # USES (if present):
-# - @select2_input_text => manual input for the select2 search dropdown, only if set
+# - @autocomplete_input_text => manual input for the autocomplete search dropdown, only if set
 #   (see features/step_definitions/chrono/new_recording_setup_steps.rb:51)
 # ASSUMES/SETS:
 # - @latest_issue = GogglesDb::Issue.last
@@ -137,8 +137,8 @@ When('I see my newly created issue') do
   wait_for_ajax
   expect(GogglesDb::Issue.count).to be_positive
   @latest_issue = GogglesDb::Issue.last
-  # In case we come from a select2 drop-down input box, the label should be in the request text too:
-  expect(@latest_issue.req.to_s).to include(@select2_input_text) if @select2_input_text.present?
+  # In case we come from an autocomplete drop-down input box, the label should be in the request text too:
+  expect(@latest_issue.req.to_s).to include(@autocomplete_input_text) if @autocomplete_input_text.present?
 
   # If there's a link to a last page, go to the last page:
   if page.has_css?('li.page-item span.last a.page-link')

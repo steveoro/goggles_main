@@ -23,16 +23,18 @@
 
           .container.mt-2.group-inputs
             .row
-              = render(ComboBox::DbLookupComponent.new(nil, t('meetings.season'), 'season',
-                                                      required: true, values: season_options(@seasons)))
+              = render(ComboBox::AutocompleteComponent.new(label: t('meetings.season'), base_name: 'season',
+                                                           required: true, values: season_options(@seasons)))
           .container.bg-light-green.pt-3.shadow-box#meeting{ data: { 'switch-target' => 'area1' } }
             .row
-              = render(ComboBox::DbLookupComponent.new('meetings', t('chrono.selector.meeting'), 'meeting',
-                                                      free_text: true, use_2_api: true, values: meeting_options))
+              = render(ComboBox::AutocompleteComponent.new(api_url: 'meetings', label: t('chrono.selector.meeting'),
+                                                           base_name: 'meeting', free_text: true, use_2_api: true,
+                                                           values: meeting_options))
           .container.bg-light-blue.pt-3.shadow-box.d-none#workshop{ data: { 'switch-target' => 'area2' } }
             .row
-              = render(ComboBox::DbLookupComponent.new('user_workshops', t('chrono.selector.workshop'), 'user_workshop',
-                                                      free_text: true, use_2_api: true, values: workshop_options))
+              = render(ComboBox::AutocompleteComponent.new(api_url: 'user_workshops', label: t('chrono.selector.workshop'),
+                                                           base_name: 'user_workshop', free_text: true, use_2_api: true,
+                                                           values: workshop_options))
           .container.my-4
             .row
               .offset-3.col-6
@@ -41,12 +43,12 @@
         .step-forms#step-2
           .container.my-2
             .row
-              = render(ComboBox::DbSwimmingPoolComponent.new(t('meetings.dashboard.swimming_pool'),
-                                                            'swimming_pool', free_text: true, use_2_api: true,
-                                                            default_row: @last_chosen_swimming_pool))
-              = render(ComboBox::DbLookupComponent.new(nil, t('meetings.dashboard.pool_type'), 'pool_type',
-                                                      required: true, values: pool_type_options(@pool_types)))
-              = render(ComboBox::DbCityComponent.new(required: true, free_text: true, default_row: @last_chosen_city))
+              = render(ComboBox::AutocompleteSwimmingPoolComponent.new(t('meetings.dashboard.swimming_pool'),
+                                                                      'swimming_pool', free_text: true, use_2_api: true,
+                                                                      default_row: @last_chosen_swimming_pool))
+              = render(ComboBox::AutocompleteComponent.new(label: t('meetings.dashboard.pool_type'), base_name: 'pool_type',
+                                                           required: true, values: pool_type_options(@pool_types)))
+              = render(ComboBox::AutocompleteCityComponent.new(required: true, free_text: true, default_row: @last_chosen_city))
           .container.my-4
             .row
               .col-6
@@ -64,8 +66,8 @@
                     = date_field_tag(:event_date, cookies[:event_date] || Time.zone.today, required: true,
                                      autofocus: true, class: 'form-control')
 
-              = render(ComboBox::DbLookupComponent.new(nil, t('meetings.event'), 'event_type',
-                                                      required: true, values: event_type_options(@event_types)))
+              = render(ComboBox::AutocompleteComponent.new(label: t('meetings.event'), base_name: 'event_type',
+                                                           required: true, values: event_type_options(@event_types)))
               .col-auto
                 .form-group
                   .field
@@ -85,13 +87,15 @@
           .container.mt-2
             .row
               -# TODO: use t('teams.team') for Meetings & t('chrono.selector.home_team') for Workshops
-              = render(ComboBox::DbLookupComponent.new('teams', t('teams.team'), 'team', required: true,
-                                                      free_text: true,
-                                                      values: team_options(@last_chosen_team, @last_chosen_swimmer)))
-              = render(ComboBox::DbSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer',
-                                                        free_text: true, default_row: @last_chosen_swimmer))
-              = render(ComboBox::DbLookupComponent.new(nil, t('meetings.category'), 'category_type',
-                                                      required: true, values: category_type_options(@category_types)))
+              = render(ComboBox::AutocompleteComponent.new(api_url: 'teams', label: t('teams.team'), base_name: 'team', required: true,
+                                                           free_text: true,
+                                                           values: team_options(@last_chosen_team, @last_chosen_swimmer),
+                                                           selected_id: @last_chosen_team&.id,
+                                                           selected_label: @last_chosen_team&.name))
+              = render(ComboBox::AutocompleteSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer',
+                                                                  free_text: true, default_row: @last_chosen_swimmer))
+              = render(ComboBox::AutocompleteComponent.new(label: t('meetings.category'), base_name: 'category_type',
+                                                           required: true, values: category_type_options(@category_types)))
           .container.my-4
             .row
               .col-6

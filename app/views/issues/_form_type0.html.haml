@@ -6,8 +6,8 @@
     .form-row
       .container.my-2
         .row-fluid
-          = render(ComboBox::DbLookupComponent.new('teams', t('teams.team'), 'team', required: true,
-                                                  free_text: false))
+          = render(ComboBox::AutocompleteComponent.new(api_url: 'teams', label: t('teams.team'), base_name: 'team',
+                                                       required: true, free_text: false))
         %p.text-center.form-text.text-muted
           %small
             %i

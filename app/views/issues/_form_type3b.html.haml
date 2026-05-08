@@ -8,8 +8,8 @@
             = t('contact_us.tooltip')
     .form-row
       .form-group.col
-        = render(ComboBox::DbSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer',
-                                                  free_text: false, default_row: current_user&.swimmer))
+        = render(ComboBox::AutocompleteSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer',
+                                                            free_text: false, default_row: current_user&.swimmer))
   .form-group.mt-2.col-auto
     .actions
       = submit_tag(t('issues.generic_send_btn'), id: 'issues-type3b-post-btn', class: 'btn btn-primary',

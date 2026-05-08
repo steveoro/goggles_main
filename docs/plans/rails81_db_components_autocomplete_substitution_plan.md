@@ -147,37 +147,40 @@ The migration includes component classes/templates, view call sites, Stimulus wi
 
 ### Phase 5 - Legacy Removal and Cleanup
 
-- Remove legacy files:
-  - `app/components/combo_box/db_*_component.rb`
-  - `app/components/combo_box/db_*_component.html.haml`
-  - legacy db component specs once replacement coverage is green
-- Remove stale comments/docstrings mentioning Select2 where no longer true.
-- Run formatting/linting only for touched files.
+- Delete legacy component files:
+  - `ComboBox::DbLookupComponent`, `DbCityComponent`, `DbSwimmerComponent`, `DbSwimmingPoolComponent`
+  - Their HAML templates
+- Delete legacy component specs:
+  - `spec/components/combo_box/db_*_component_spec.rb`
+- Delete legacy shared examples for `DbLookupComponent` from `spec/support/shared_component_examples.rb` (or keep for reference if preferred)
+- Verify no remaining references to legacy components in:
+  - `app/views/**/*.haml`
+  - `spec/**/*_spec.rb`
+  - `features/**/*.feature`
+- Run full test suite validation:
+  - `bundle exec rspec spec/components/combo_box`
+  - `bundle exec rspec spec/views/issues/new.html.haml_spec.rb spec/views/tools/fin_score.html.haml_spec.rb`
+  - `bundle exec cucumber features/chrono/new_rec_setup.feature features/chrono/time_recording.feature`
 
-## Validation Gates
+### Done Criteria
 
-Run in this order during migration:
+- All view call sites use `AutocompleteComponent` or specialized `Autocomplete*Component` variants
+- Legacy `Db*` component files and specs are deleted
+- Legacy `lookup_controller.js` is deleted (or documented if kept for non-ComboBox templates)
+- All relevant RSpec component and view specs pass
+- All relevant Cucumber features pass
+- No references to `data-controller="lookup"` remain in templates
 
-1. `bundle exec rspec spec/components/combo_box/autocomplete_component_spec.rb`
-2. `bundle exec rspec spec/components/combo_box`
-3. `bundle exec rspec spec/views/issues/new.html.haml_spec.rb spec/views/tools/fin_score.html.haml_spec.rb`
-4. `bundle exec cucumber features/chrono/new_rec_setup.feature`
-5. `bundle exec cucumber features/chrono/time_recording.feature`
-6. `bundle exec cucumber features/tools/fin_score.feature`
-7. Final checkpoint:
-   - `bundle exec rspec`
-   - `bundle exec cucumber`
+---
 
-## Risk Register and Mitigations
+### Completion Status (2026-05-08)
 
-- Risk: hidden field regressions break form POST payloads.
-  - Mitigation: explicit assertions for every hidden field in component specs + Chrono Cucumber coverage.
-- Risk: default-row preselection lost on initial render.
-  - Mitigation: dedicated spec contexts for API + preset values and controller `syncInitialSelection` assertions.
-- Risk: city/swimming_pool chained updates fail due to nested map handling.
-  - Mitigation: focused JS-enabled feature checks on Chrono step 2 and issue forms.
-- Risk: stale Select2-specific Cucumber wording and helpers mislead maintenance.
-  - Mitigation: rename steps to Autocomplete/TomSelect terminology in same migration.
+**Completed Phases:**
+- Phase 1: Build Autocomplete Replacements 
+- Phase 2: Replace All View Call Sites 
+- Phase 3: Stimulus Controller Consolidation 
+- Phase 4: Specs and Cucumber Migration 
+- Phase 5: Legacy Removal and Cleanup 
 
 ## Done Criteria
 
@@ -189,5 +192,4 @@ Run in this order during migration:
 
 ## Post-Migration Follow-Up (Optional)
 
-- If `lookup_controller.js` remains for unrelated consumers, create a short follow-up plan to remove it once those consumers migrate.
 - Extend Autocomplete shared examples to enforce behavior for future ComboBox additions.

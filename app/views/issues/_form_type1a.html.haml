@@ -2,11 +2,11 @@
   .bg-light-yellow.p-1.pt-3.shadow-box
     .form-row
       .form-group.col
-        = render(ComboBox::DbLookupComponent.new('meetings', t('chrono.selector.meeting'), 'meeting',
-                                                  free_text: true, use_2_api: true))
+        = render(ComboBox::AutocompleteComponent.new(api_url: 'meetings', label: t('chrono.selector.meeting'),
+                                                     base_name: 'meeting', free_text: true, use_2_api: true))
     .form-row
       .form-group.col
-        = render(ComboBox::DbCityComponent.new(required: true, free_text: true))
+        = render(ComboBox::AutocompleteCityComponent.new(required: true, free_text: true))
     .form-row
       .form-group.col-sm-6.col-md-5.col-lg-3.mx-3
         = label_tag(:event_date, t('issues.type1a.form.meeting_date'))

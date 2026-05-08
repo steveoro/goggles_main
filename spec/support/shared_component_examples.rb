@@ -237,6 +237,119 @@ end
 #++
 
 # REQUIRES/ASSUMES:
+# - subject............: result from #render_inline (renders a Nokogiri::HTML.fragment)
+# - wrapper_class......: CSS class name for the wrapper DIV of the component
+# - free_text_option...: 'true' to enable the free-text input
+# - base_name..........: API/widget base name
+# - label_text.........: display label for the widget
+# - required_option....: 'true' to enable the 'required' HTML attribute for the select input tag
+# - disabled_option....: 'true' to enable the 'disabled' HTML attribute for the select input tag
+shared_examples_for 'ComboBox::AutocompleteComponent common rendered result' do
+  describe 'the wrapper DIV' do
+    it 'has the customizable wrapper class' do
+      expect(subject.css(".#{wrapper_class}")).to be_present
+    end
+
+    it 'includes the reference to the StimulusJS AutocompleteLookupController' do
+      expect(subject.css(".#{wrapper_class}").attr('data-controller')).to be_present
+      expect(subject.css(".#{wrapper_class}").attr('data-controller').value).to eq('autocomplete-lookup')
+    end
+
+    it "sets the 'free-text' controller option accordingly (when set)" do
+      if free_text_option
+        expect(subject.css(".#{wrapper_class}").attr('data-autocomplete-lookup-free-text-value'))
+          .to be_present
+        expect(subject.css(".#{wrapper_class}").attr('data-autocomplete-lookup-free-text-value').value)
+          .to eq(free_text_option)
+      end
+    end
+
+    it "sets the 'base name' controller option" do
+      expect(subject.css(".#{wrapper_class}").attr('data-autocomplete-lookup-field-base-name-value'))
+        .to be_present
+      expect(subject.css(".#{wrapper_class}").attr('data-autocomplete-lookup-field-base-name-value').value)
+        .to eq(base_name)
+    end
+  end
+
+  it 'renders the hidden ID input field' do
+    expect(subject.css(".#{wrapper_class} input##{base_name}_id")).to be_present
+    expect(subject.css(".#{wrapper_class} input##{base_name}_id").attr('type').value)
+      .to eq('hidden')
+  end
+
+  it 'renders the hidden label input field (the text value of the currently chosen option)' do
+    expect(subject.css(".#{wrapper_class} input##{base_name}_label")).to be_present
+    expect(subject.css(".#{wrapper_class} input##{base_name}_label").attr('type').value)
+      .to eq('hidden')
+  end
+
+  it 'renders the display label text' do
+    expect(subject.css(".#{wrapper_class} label[for=\"#{base_name}\"]")).to be_present
+    expect(subject.css(".#{wrapper_class} label[for=\"#{base_name}\"]").text).to eq(label_text)
+  end
+
+  it "renders the 'input presence' flag (which is red by default)" do
+    expect(subject.css(".#{wrapper_class} b##{base_name}-presence")).to be_present
+    expect(subject.css(".#{wrapper_class} b##{base_name}-presence").text).to eq('*')
+    expect(subject.css(".#{wrapper_class} b##{base_name}-presence").attr('class').value).to eq('text-danger')
+  end
+
+  it "renders the 'new input' flag (which is hidden by default)" do
+    expect(subject.css(".#{wrapper_class} ##{base_name}-new")).to be_present
+    expect(subject.css(".#{wrapper_class} ##{base_name}-new").text).to be_present
+    expect(subject.css(".#{wrapper_class} ##{base_name}-new").attr('class').value).to include('d-none')
+  end
+
+  it 'renders the Select input tag with the proper parameters for the AutocompleteLookupController' do
+    expect(subject.css(".#{wrapper_class} select.autocomplete-lookup__select##{base_name}_select")).to be_present
+    expect(subject.css(".#{wrapper_class} select.autocomplete-lookup__select##{base_name}_select").attr('data-autocomplete-lookup-target').value)
+      .to eq('field')
+  end
+
+  it "sets the 'required' HTML field flag accordingly (when set)" do
+    if required_option
+      expect(subject.css("##{base_name}_select").attr('required')).to be_present
+      expect(subject.css("##{base_name}_select").attr('required').value).to eq(required_option)
+    end
+  end
+
+  it "sets the 'disabled' HTML field flag accordingly (when set)" do
+    if disabled_option
+      expect(subject.css("##{base_name}_select").attr('disabled')).to be_present
+      expect(subject.css("##{base_name}_select").attr('disabled').value).to eq(disabled_option)
+    end
+  end
+end
+
+# REQUIRES/ASSUMES:
+# - subject............: result from #render_inline (renders a Nokogiri::HTML.fragment)
+# - api_url............: base API URL option ('use_2_api: true' assumed also as set)
+# - wrapper_class......: CSS class name for the wrapper DIV of the component
+# - free_text_option...: 'true' to enable the free-text input
+# - base_name..........: API/widget base name
+# - label_text.........: display label for the widget
+# - required_option....: 'true' to enable the required HTML attribute for the select input tag
+# - disabled_option....: 'true' to enable the 'disabled' HTML attribute for the select input tag
+shared_examples_for 'ComboBox::AutocompleteComponent with double-API call enabled' do
+  it_behaves_like('ComboBox::AutocompleteComponent common rendered result')
+
+  it 'includes the associated API URL value' do
+    expect(subject.css(".#{wrapper_class}").attr('data-autocomplete-lookup-api-url-value')).to be_present
+    # The actual API URL used will feature the full protocol/port URI, so we test for inclusion only:
+    expect(subject.css(".#{wrapper_class}").attr('data-autocomplete-lookup-api-url-value').value).to include(api_url)
+  end
+
+  it 'includes the associated API-2 URL value' do
+    expect(subject.css(".#{wrapper_class}").attr('data-autocomplete-lookup-api-url2-value')).to be_present
+    expect(subject.css(".#{wrapper_class}").attr('data-autocomplete-lookup-api-url2-value').value)
+      .to end_with('/api/v3') # The API URL2 must be "rooted"
+  end
+end
+#-- ---------------------------------------------------------------------------
+#++
+
+# REQUIRES/ASSUMES:
 # - rendered_modal....: the rendered RL edit modal wrapping its edit form contents
 shared_examples_for 'RelayLaps::EditModalContentsComponent rendered with some existing laps & sublaps' do
   it 'includes the modal title with the event & gender labels' do

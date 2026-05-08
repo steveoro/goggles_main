@@ -1,5 +1,3 @@
-# language:en
-
 Feature: Reporting an issue of type "1b"
   As a logged-in user
   I want to be able to report an issue of type "1b"
@@ -23,16 +21,14 @@ Feature: Reporting an issue of type "1b"
     # [20240201] Currently, the "TeamManager grant limit" for reporting missing results has been lifted
     # Thus, this scenario is a duplicate that the last one below and the last one has been
     # left commented out.
-
-    # And I see that the 'swimmer' Select2 field is disabled
+    # And I see that the 'swimmer' autocomplete field is disabled
     # And the issue 'type1b' form 'notice.no_associated_swimmer' text is visible
     # And the issue 'type1b' form 'notice.cant_manage' text is visible
     And the issue 'type1b' form 'notice.cant_manage' text is not visible
     And the issue 'type1b' form 'notice.no_associated_swimmer' text is not visible
-    And I see that the 'swimmer' Select2 field is enabled
-
-    When I type '100 DORSO' as selection for the 'event_type' Select2 field
-    And I type 'LIGABUE MARCO' as selection for the 'swimmer' Select2 field
+    And I see that the 'swimmer' autocomplete field is enabled
+    When I type '100 DORSO' as selection for the 'event_type' autocomplete field
+    And I type 'LIGABUE MARCO' as selection for the 'swimmer' autocomplete field
     And I fill the result timing with random values
     And I scroll toward the end of the page to see the bottom of the page
     And I click on '#issues-type1b-post-btn' accepting the confirmation request
@@ -48,7 +44,6 @@ Feature: Reporting an issue of type "1b"
     Then the 'meeting' search results are displayed, all matching 'Riccione|ITALIANI|NAZIONALI'
     When I click on the first 'meeting' result to browse to its detail page
     Then I am at the show page for the details of the meeting
-
     When I choose a random event from the clickable list of the meeting
     And I scroll toward the end of the page to see the bottom of the page
     And I click on the chosen meeting event section, waiting for it to load
@@ -58,23 +53,20 @@ Feature: Reporting an issue of type "1b"
     When I click a random 'type1b' button on the page
     Then I am at the new issue 'type1b' page
     And I see the issue form 'frm-type1b'
-
     # [20240201] Currently, the "TeamManager grant limit" for reporting missing results has been lifted
-    # And I see that the 'swimmer' Select2 field is disabled
+    # And I see that the 'swimmer' autocomplete field is disabled
     # And the issue 'type1b' form 'notice.cant_manage' text is visible
     And the issue 'type1b' form 'notice.cant_manage' text is not visible
     And the issue 'type1b' form 'notice.no_associated_swimmer' text is not visible
-    And I see that the 'swimmer' Select2 field is enabled
+    And I see that the 'swimmer' autocomplete field is enabled
     But I see that my associated swimmer is already set as subject
-
-    When I type '100 RANA' as selection for the 'event_type' Select2 field
+    When I type '100 RANA' as selection for the 'event_type' autocomplete field
     And I fill the result timing with random values
     And I scroll toward the end of the page to see the bottom of the page
     And I click on '#issues-type1b-post-btn' accepting the confirmation request
     Then I get redirected to '/issues/my_reports'
     And a flash 'issues.sent_ok' message is present
     And I see my newly created issue
-
   # Currently a duplicate of the first scenario:
   # Scenario: signed-in team manager issues a new type "1b" request in free-form
   #   Given I have a confirmed team manager account managing some existing MIRs
@@ -95,7 +87,6 @@ Feature: Reporting an issue of type "1b"
   #   And I see the issue form 'frm-type1b'
   #   But the issue 'type1b' form 'notice.cant_manage' text is not visible
   #   And I see that the 'swimmer' Select2 field is enabled
-
   #   When I type '100 DORSO' as selection for the 'event_type' Select2 field
   #   And I type 'LIGABUE MARCO' as selection for the 'swimmer' Select2 field
   #   And I fill the result timing with random values

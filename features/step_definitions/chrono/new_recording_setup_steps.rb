@@ -30,22 +30,22 @@ When('I type {string} as selection for the {string} pre-filled select field') do
   find("##{field_camelcase_name}_select", visible: true).select(manual_input_label)
 end
 
-When('I see that the {string} Select2 field is disabled') do |field_camelcase_name|
+When('I see that the {string} autocomplete field is disabled') do |field_camelcase_name|
   expect(find("select##{field_camelcase_name}_select", visible: true)).to be_disabled
 end
 
-When('I see that the {string} Select2 field is enabled') do |field_camelcase_name|
+When('I see that the {string} autocomplete field is enabled') do |field_camelcase_name|
   expect(find("select##{field_camelcase_name}_select", visible: true)).not_to be_disabled
 end
 
-# [Steve A.] This goes beyond simply reproducing user actions because most DbLookup components are based
-# on the JS Select2 widget and are using a dedicated Stimulus JS controller that does multiple API fetches
+# [Steve A.] This goes beyond simply reproducing user actions because most Autocomplete components are based
+# on the JS TomSelect widget and are using a dedicated Stimulus JS controller that does multiple API fetches
 # and presets all linked fields for the final form POST.
 # The scripts are needed to preset the needed values even if the API lookups silently fail.
 #
 # SETS/SAVES:
-# @select2_input_text as manual_input_label
-When('I type {string} as selection for the {string} Select2 field') do |manual_input_label, field_camelcase_name|
+# @autocomplete_input_text as manual_input_label
+When('I type {string} as selection for the {string} autocomplete field') do |manual_input_label, field_camelcase_name|
   execute_script(<<~JS, field_camelcase_name, manual_input_label)
     const baseName = arguments[0]
     const label = arguments[1]
@@ -78,7 +78,7 @@ When('I type {string} as selection for the {string} Select2 field') do |manual_i
       if (labelField) labelField.value = label
     }
   JS
-  @select2_input_text = manual_input_label # (for possible later reference)
+  @autocomplete_input_text = manual_input_label # (for possible later reference)
   wait_for_ajax
 end
 
