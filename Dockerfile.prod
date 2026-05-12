@@ -1,83 +1,74 @@
 # syntax=docker/dockerfile:1.4
-# --- Common stuff:
-FROM ruby:3.4.7-alpine3.22 AS common_builder
-ENV BUNDLER_VERSION=2.4.15 \
-    INSTALL_PATH=/app
 
-RUN mkdir -p $INSTALL_PATH
+ARG RUBY_IMAGE=ruby:3.4.7-alpine3.22
+ARG BUNDLER_VERSION=2.4.15
+ARG INSTALL_PATH=/app
+
+FROM ${RUBY_IMAGE} AS builder
+ARG BUNDLER_VERSION
+ARG INSTALL_PATH
+ENV RAILS_ENV=production \
+    BUNDLE_WITHOUT=development:test \
+    BUNDLE_PATH=/usr/local/bundle \
+    BUNDLE_JOBS=4 \
+    BUNDLE_RETRY=3
+
+RUN mkdir -p "${INSTALL_PATH}"
 RUN apk add --update --no-cache \
-    binutils-gold \
     build-base \
-    curl \
-    file \
-    g++ \
-    gcc \
     git \
-    less \
-    libstdc++ \
     libffi-dev \
-    libc-dev \
-    linux-headers \
     libxml2-dev \
     libxslt-dev \
-    libgcrypt-dev \
-    make \
-    mariadb-client \
+    linux-headers \
     mariadb-dev \
-    netcat-openbsd \
-    openssl \
     pkgconfig \
-    shadow \
-    shared-mime-info \
-    ssmtp \
-    yaml-dev \
-    tzdata
+    tzdata \
+    yaml-dev
 
-# Run as a specific user:
-# ARG USER_ID
-# ARG GROUP_ID
-# RUN addgroup -g $GROUP_ID -S dev
-# RUN adduser -D -g '' -u $USER_ID -G dev dev
-# RUN chown -R dev:dev $INSTALL_PATH
-# USER $USER_ID
+RUN gem install bundler -v "${BUNDLER_VERSION}"
 
-# Rename the default container user which will result as sending out all e-mails:
-RUN usermod -c 'Goggles Mailer' root
-
-# App image:
-RUN gem install bundler -v $BUNDLER_VERSION
-
-# --- Image-specific stuff:
-FROM common_builder
-ENV RAILS_ENV=production \
-    DATABASE_NAME=goggles \
-    DATABASE_HOST=goggles-db \
-    DATABASE_PORT=3306 \
-    DATABASE_USER=root
-
-# Current export defaults:
-# BUNDLE_APP_CONFIG='/usr/local/bundle'
-# BUNDLE_PATH='/usr/local/bundle'
-# GEM_HOME='/usr/local/bundle'
-
-WORKDIR $INSTALL_PATH
-COPY . ./
+WORKDIR ${INSTALL_PATH}
+COPY Gemfile ./
 RUN bundle config set --local build.nokogiri --use-system-libraries && \
-    bundle config set --local retry 3 && \
-    bundle config set --local timeout 30
+    bundle config set --local timeout 30 && \
+    bundle install
 
+COPY . ./
 COPY ./config/database.docker.yml ./config/database.yml
-
-# As in goggles_api:
-# RUN bundle install --jobs 4 --retry 3 || \
-#     bundle install --jobs 4 --retry 5 --full-index
-# Original:
-RUN bundle check || bundle install
 
 RUN --mount=type=secret,id=rails_master_key \
     export RAILS_MASTER_KEY="$(cat /run/secrets/rails_master_key)" && \
     bundle exec rails dartsass:build && \
     bundle exec rails assets:precompile
+
+FROM ${RUBY_IMAGE} AS app
+ARG INSTALL_PATH
+ENV RAILS_ENV=production \
+    BUNDLE_WITHOUT=development:test \
+    BUNDLE_PATH=/usr/local/bundle \
+    DATABASE_NAME=goggles \
+    DATABASE_HOST=goggles-db \
+    DATABASE_PORT=3306 \
+    DATABASE_USER=root
+
+RUN apk add --update --no-cache \
+    iproute2 \
+    libffi \
+    libstdc++ \
+    libxml2 \
+    libxslt \
+    mariadb-client \
+    netcat-openbsd \
+    openssl \
+    shadow \
+    ssmtp \
+    tzdata && \
+    usermod -c 'Goggles Mailer' root
+
+WORKDIR ${INSTALL_PATH}
+COPY --from=builder /usr/local/bundle /usr/local/bundle
+COPY --from=builder ${INSTALL_PATH} ${INSTALL_PATH}
 
 # Keep the version argument at the end to avoid early cache miss during builds:
 ARG TAG

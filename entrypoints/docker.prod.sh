@@ -27,9 +27,6 @@ fi
 # Apply pending migrations just for Main UI
 bundle exec rails db:migrate
 
-# Precompile assets for production
-bundle exec rails assets:precompile
-
 # Start Solid Queue worker for ActiveJob (default in Rails 8.1)
 bundle exec solid_queue &
 
