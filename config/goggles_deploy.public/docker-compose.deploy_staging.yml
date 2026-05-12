@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   goggles-db.staging:
-    image: mariadb:latest
+    image: mariadb:11.8.6
     # Set max_allowed_packet to 512M (this should prevent the "MySQL server has gone away"
     # issue due to timeout when running huge queries)
     command: --max_allowed_packet=67108864

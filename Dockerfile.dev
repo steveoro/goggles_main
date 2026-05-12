@@ -29,6 +29,7 @@ RUN apk add --update --no-cache \
     shadow \
     shared-mime-info \
     ssmtp \
+    yaml-dev \
     tzdata
 
 # Run as a specific user:

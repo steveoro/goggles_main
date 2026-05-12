@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 # --- Common stuff:
 FROM ruby:3.4.7-alpine3.22 AS common_builder
 ENV BUNDLER_VERSION=2.4.15 \
@@ -29,6 +30,7 @@ RUN apk add --update --no-cache \
     shadow \
     shared-mime-info \
     ssmtp \
+    yaml-dev \
     tzdata
 
 # Run as a specific user:
@@ -72,7 +74,10 @@ COPY ./config/database.docker.yml ./config/database.yml
 # Original:
 RUN bundle check || bundle install
 
-RUN bundle exec rails dartsass:build && bundle exec rails assets:precompile
+RUN --mount=type=secret,id=rails_master_key \
+    export RAILS_MASTER_KEY="$(cat /run/secrets/rails_master_key)" && \
+    bundle exec rails dartsass:build && \
+    bundle exec rails assets:precompile
 
 # Keep the version argument at the end to avoid early cache miss during builds:
 ARG TAG

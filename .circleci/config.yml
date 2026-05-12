@@ -450,7 +450,12 @@ jobs:
           echo "Docker Tag: $DOCKER_TAG"
           echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
           docker pull $DOCKERHUB_USERNAME/goggles-main:latest
-          docker build -t $DOCKERHUB_USERNAME/goggles-main:$DOCKER_TAG --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.staging .
+          export DOCKER_BUILDKIT=1
+          docker build \
+            --secret id=rails_master_key,env=RAILS_MASTER_KEY \
+            -t $DOCKERHUB_USERNAME/goggles-main:$DOCKER_TAG \
+            --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest \
+            -f Dockerfile.staging .
           docker push $DOCKERHUB_USERNAME/goggles-main:$DOCKER_TAG
 
   docker-versioned:
@@ -492,7 +497,12 @@ jobs:
           echo "Git Tag: << pipeline.git.tag >>, Docker Tag: $DOCKER_TAG"
           echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
           docker pull $DOCKERHUB_USERNAME/goggles-main:latest
-          docker build -t $DOCKERHUB_USERNAME/goggles-main:$DOCKER_TAG --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.prod .
+          export DOCKER_BUILDKIT=1
+          docker build \
+            --secret id=rails_master_key,env=RAILS_MASTER_KEY \
+            -t $DOCKERHUB_USERNAME/goggles-main:$DOCKER_TAG \
+            --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest \
+            -f Dockerfile.prod .
           docker push $DOCKERHUB_USERNAME/goggles-main:$DOCKER_TAG
 
   deploy-staging:
