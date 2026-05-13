@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: a5ae1750cf9b7b110862324af74903aec45f54c8
+  revision: 75f2dafdaa3fd493e3775d38e7631a9419eab5ef
   branch: rails-8.1
   specs:
-    goggles_db (0.9.01)
+    goggles_db (0.9.02)
       acts-as-taggable-on
       acts_as_votable
       cities
@@ -136,7 +136,7 @@ GEM
     bindex (0.8.1)
     binding_of_caller (2.0.0)
       debug_inspector (>= 1.2.0)
-    bootsnap (1.24.3)
+    bootsnap (1.24.4)
       msgpack (~> 1.2)
     brakeman (8.0.4)
       racc
@@ -652,7 +652,7 @@ GEM
     scenic-mysql_adapter (1.1.0)
       scenic (>= 1.4.0)
     securerandom (0.4.1)
-    selenium-webdriver (4.43.0)
+    selenium-webdriver (4.44.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)

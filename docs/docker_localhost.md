@@ -32,5 +32,5 @@ docker push $DOCKERHUB_USERNAME/goggles-main:$DOCKER_TAG
 ## Staging example:
 
 ```bash
-docker build --network=host --progress=plain --secret id=rails_master_key,src="<full_path_to>/master.key" -t $DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.staging 
+docker build --network=host --progress=plain --secret id=rails_master_key,src="<full_path_to>/master.key" -t $DOCKERHUB_USERNAME/goggles-main:latest -f Dockerfile.staging .
 ```

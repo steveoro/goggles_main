@@ -5,8 +5,9 @@ services:
     # issue due to timeout when running huge queries)
     command: --max_allowed_packet=67108864
     container_name: goggles-db.staging
+    # Same base environment as production:
     env_file:
-      - .staging.env
+      - .env
     ports:
       - '33070:3306'
     restart: always

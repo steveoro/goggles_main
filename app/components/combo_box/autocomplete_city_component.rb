@@ -1,7 +1,18 @@
 # frozen_string_literal: true
 
 module ComboBox
+  # ViewComponent for rendering a city autocomplete input field.
   class AutocompleteCityComponent < ViewComponent::Base
+    # Initialize the component with the given options.
+    #
+    # @param options [Hash] Additional options for the component.
+    #
+    # == Options:
+    # - :free_text [Boolean] Whether to allow free text input.
+    # - :required [Boolean] Whether the field is required.
+    # - :wrapper_class [String] The class for the wrapper.
+    # - :default_row [GogglesDb::City] The default row to preselect.
+    #
     def initialize(options = {})
       @free_text = options[:free_text] || false
       @required = options[:required] || false
