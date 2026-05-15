@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  ruby: circleci/ruby@2.6.0
+  ruby: circleci/ruby@2.7.0
   browser-tools: circleci/browser-tools@2.4.2
 
 ARTIFACTS_PATH: &ARTIFACTS_PATH ~/test-artifacts
@@ -492,7 +492,7 @@ jobs:
           if [ -n "$SANITIZED_BRANCH" ] && [ "$SANITIZED_BRANCH" != "master" ]; then
             DOCKER_TAG="${SEMANTIC_VERSION}.${SANITIZED_BRANCH}"
           else
-            DOCKER_TAG="prod-<< pipeline.git.tag >>"
+            DOCKER_TAG="<< pipeline.git.tag >>"
           fi
           echo "Git Tag: << pipeline.git.tag >>, Docker Tag: $DOCKER_TAG"
           echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
@@ -505,13 +505,14 @@ jobs:
             -f Dockerfile.prod .
           docker push $DOCKERHUB_USERNAME/goggles-main:$DOCKER_TAG
 
-  deploy-staging:
-    <<: *deploy-config
-    steps:
-    - run:
-        name: Staging DEPLOY
-        command: |
-          ssh -o StrictHostKeyChecking=no deploy@$SSH_SERVER "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_staging.sh"
+  # [Steve, 20260515] no more staging deployment
+  # deploy-staging:
+  #   <<: *deploy-config
+  #   steps:
+  #   - run:
+  #       name: Staging DEPLOY
+  #       command: |
+  #         ssh -o StrictHostKeyChecking=no deploy@$SSH_SERVER "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_staging.sh"
 
   deploy-production:
     <<: *deploy-config
@@ -681,6 +682,6 @@ workflows:
         # - cucumber-desktop
         # - cucumber-narrow
         # - cucumber-tablet
-    - deploy-staging:
-        requires:
-        - docker-latest
+    # - deploy-staging: [Steve, 20260515] no more staging deployment
+    #     requires:
+    #     - docker-latest

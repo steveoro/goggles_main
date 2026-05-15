@@ -1,4 +1,9 @@
-development:
+default_sqlt3: &default_sqlt3
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
+default: &default
   adapter: mysql2
   encoding: utf8mb4
   username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
@@ -6,27 +11,35 @@ development:
   host: <%= ENV.fetch("DATABASE_HOST") { 'localhost' } %>
   port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  database: goggles_development
+
+development:
+  primary:
+    <<: *default
+    database: goggles_development
+  queue:
+    <<: *default_sqlt3
+    database: storage/development_queue.sqlite3
+    migrations_paths: db/queue_migrate
+    schema_dump: false
 
 test:
-  adapter: mysql2
-  encoding: utf8mb4
-  username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
-  password: <%= ENV.fetch("MYSQL_ROOT_PASSWORD") { '' } %>
-  host: <%= ENV.fetch("DATABASE_HOST") { 'localhost' } %>
-  port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  database: goggles_test
+  primary:
+    <<: *default
+    database: goggles_test
+  queue:
+    <<: *default_sqlt3
+    database: storage/test_queue.sqlite3
+    migrations_paths: db/queue_migrate
+    schema_dump: false
 
 production:
-  adapter: mysql2
-  encoding: utf8mb4
-  username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
-  password: <%= ENV.fetch("MYSQL_ROOT_PASSWORD") { '' } %>
-  host: <%= ENV.fetch("DATABASE_HOST") { 'localhost' } %>
-  port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  database: goggles
+  primary:
+    <<: *default
+    database: <%= ENV.fetch("DATABASE_NAME") { 'goggles' } %>
+  queue:
+    <<: *default_sqlt3
+    database: storage/production_queue.sqlite3
+    migrations_paths: db/queue_migrate
 
 # [Steve A.]
 # Staging will use the production environment together with the database
@@ -44,11 +57,10 @@ production:
 #   $> RAILS_ENV=staging rails db:rebuild from=test to=staging
 #
 staging:
-  adapter: mysql2
-  encoding: utf8mb4
-  username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
-  password: <%= ENV.fetch("MYSQL_ROOT_PASSWORD") { '' } %>
-  host: <%= ENV.fetch("DATABASE_HOST") { 'localhost' } %>
-  port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  database: goggles
+  primary:
+    <<: *default
+    database: <%= ENV.fetch("DATABASE_NAME") { 'goggles' } %>
+  queue:
+    <<: *default_sqlt3
+    database: storage/staging_queue.sqlite3
+    migrations_paths: db/queue_migrate

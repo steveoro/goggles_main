@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   goggles-db:
     image: mariadb:11.8.6
@@ -14,9 +12,16 @@ services:
     restart: always
     volumes:
       - "~/Projects/goggles_deploy/db.prod:/var/lib/mysql"
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -uroot -p\"$${MYSQL_ROOT_PASSWORD}\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
 
   api:
-    image: "steveoro/goggles-api:prod-${TAG}"
+    # Since vers. 0.9+, we dropped the "prod-" prefix from the tag:
+    image: "steveoro/goggles-api:${TAG}"
     depends_on:
       - goggles-db
     container_name: goggles-api
@@ -26,13 +31,13 @@ services:
       - '8081:8081'
     restart: always
     volumes:
-      - "~/Projects/goggles_deploy/db.prod:/var/lib/mysql"
+      - "~/Projects/goggles_deploy/storage.prod:/app/storage"
       - "~/Projects/goggles_deploy/backups:/app/db/dump"
       - "~/Projects/goggles_deploy/log.prod/api:/app/log"
       - "~/Projects/goggles_deploy/master-api.key:/app/config/master.key"
 
   main:
-    image: "steveoro/goggles-main:prod-${TAG}"
+    image: "steveoro/goggles-main:${TAG}"
     depends_on:
       - goggles-db
       - api
@@ -43,16 +48,10 @@ services:
       - '8080:8080'
     restart: always
     volumes:
-      - "~/Projects/goggles_deploy/production.rb:/app/config/environments/production.rb"
       - "~/Projects/goggles_deploy/storage.prod:/app/storage"
-      - "~/Projects/goggles_deploy/db.prod:/var/lib/mysql"
       - "~/Projects/goggles_deploy/backups:/app/db/dump"
       - "~/Projects/goggles_deploy/log.prod:/app/log"
       - "~/Projects/goggles_deploy/master-main.key:/app/config/master.key"
-
-networks:
-  default:
-    name: prod
 
 volumes:
   gem_cache:

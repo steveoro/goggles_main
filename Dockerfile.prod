@@ -59,6 +59,7 @@ RUN apk add --update --no-cache \
     libxml2 \
     libxslt \
     mariadb-client \
+    mariadb-connector-c \
     netcat-openbsd \
     openssl \
     shadow \
