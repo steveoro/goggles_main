@@ -55,6 +55,7 @@ ENV RAILS_ENV=production \
     DATABASE_USER=root
 
 RUN apk add --update --no-cache \
+    build-base \
     iproute2 \
     libffi \
     libstdc++ \
