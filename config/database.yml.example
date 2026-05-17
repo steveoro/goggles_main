@@ -41,6 +41,7 @@ production:
     <<: *default_sqlt3
     database: storage/production_queue.sqlite3
     migrations_paths: db/queue_migrate
+    schema_dump: false
 
 # [Steve A.]
 # Staging will use the production environment together with the database
@@ -66,3 +67,4 @@ staging:
     <<: *default_sqlt3
     database: storage/staging_queue.sqlite3
     migrations_paths: db/queue_migrate
+    schema_dump: false

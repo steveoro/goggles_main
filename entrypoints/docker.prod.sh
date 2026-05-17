@@ -25,8 +25,7 @@ if [ -f tmp/pids/server.pid ]; then
 fi
 
 # Apply pending migrations just for Main UI
-bundle exec rails db:migrate
-bundle exec rails db:migrate:queue
+bundle exec rails db:prepare
 
 # Start Solid Queue worker for ActiveJob (default in Rails 8.1)
 bundle exec bin/jobs &
