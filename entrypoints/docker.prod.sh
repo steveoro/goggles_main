@@ -26,9 +26,10 @@ fi
 
 # Apply pending migrations just for Main UI
 bundle exec rails db:migrate
+bundle exec rails db:queue:migrate
 
 # Start Solid Queue worker for ActiveJob (default in Rails 8.1)
-bundle exec solid_queue &
+bundle exec bin/jobs &
 
 # Start our server:
-bundle exec rails s -b 0.0.0.0 -p 8080
+exec bundle exec rails s -b 0.0.0.0 -p 8080

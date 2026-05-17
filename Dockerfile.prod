@@ -23,22 +23,24 @@ RUN apk add --update --no-cache \
     linux-headers \
     mariadb-dev \
     pkgconfig \
+    sqlite-dev \
     tzdata \
     yaml-dev
 
 RUN gem install bundler -v "${BUNDLER_VERSION}"
 
 WORKDIR ${INSTALL_PATH}
-COPY Gemfile ./
+COPY Gemfile Gemfile.lock ./
 RUN bundle config set --local build.nokogiri --use-system-libraries && \
+    bundle config set --local force_ruby_platform true && \
     bundle config set --local timeout 30 && \
     bundle install
 
 COPY . ./
 COPY ./config/database.docker.yml ./config/database.yml
 
-RUN --mount=type=secret,id=rails_master_key \
-    export RAILS_MASTER_KEY="$(cat /run/secrets/rails_master_key)" && \
+RUN --mount=type=secret,id=rails_master_key,required=false \
+    if [ -f /run/secrets/rails_master_key ]; then export RAILS_MASTER_KEY="$(cat /run/secrets/rails_master_key)"; fi && \
     bundle exec rails dartsass:build && \
     bundle exec rails assets:precompile
 
@@ -63,6 +65,7 @@ RUN apk add --update --no-cache \
     netcat-openbsd \
     openssl \
     shadow \
+    sqlite-libs \
     ssmtp \
     tzdata && \
     usermod -c 'Goggles Mailer' root

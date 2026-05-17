@@ -11,7 +11,7 @@ echo ""
 echo "Stopping services and clearing old job queues..."
 docker-compose -f docker-compose.deploy_staging.yml down
 # Clear any existing SQLite queue/cache files for clean start
-rm -f ~/Projects/goggles_deploy/storage.staging/queue.sqlite3
+rm -f ~/Projects/goggles_deploy/storage.staging/staging_queue.sqlite3
 rm -f ~/Projects/goggles_deploy/storage.staging/cache.sqlite3
 echo "Starting services with new Rails 8.1 stack..."
 docker-compose -f docker-compose.deploy_staging.yml up -d

@@ -21,7 +21,7 @@ services:
 
   api:
     # Since vers. 0.9+, we dropped the "prod-" prefix from the tag:
-    image: "steveoro/goggles-api:${TAG}"
+    image: "${DOCKERHUB_USERNAME:-steveoro}/goggles-api:${TAG:-latest}"
     depends_on:
       - goggles-db
     container_name: goggles-api
@@ -40,7 +40,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.prod
-    image: "steveoro/goggles-main:${TAG}"
+    image: "${DOCKERHUB_USERNAME:-steveoro}/goggles-main:${TAG:-latest}"
     depends_on:
       - goggles-db
       - api

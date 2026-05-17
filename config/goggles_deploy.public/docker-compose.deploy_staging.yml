@@ -16,7 +16,7 @@ services:
       - "~/Projects/goggles_deploy/db.staging:/var/lib/mysql"
 
   api.staging:
-    image: "steveoro/goggles-api:latest"
+    image: "${DOCKERHUB_USERNAME:-steveoro}/goggles-api:latest"
     depends_on:
       - goggles-db.staging
     container_name: goggles-api.staging
@@ -33,7 +33,7 @@ services:
       - "~/Projects/goggles_deploy/master-api.key:/app/config/master.key"
 
   main.staging:
-    image: "steveoro/goggles-main:latest"
+    image: "${DOCKERHUB_USERNAME:-steveoro}/goggles-main:latest"
     depends_on:
       - goggles-db.staging
       - api.staging

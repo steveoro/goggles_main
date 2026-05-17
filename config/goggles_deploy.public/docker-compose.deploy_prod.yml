@@ -21,7 +21,7 @@ services:
 
   api:
     # Since vers. 0.9+, we dropped the "prod-" prefix from the tag:
-    image: "steveoro/goggles-api:${TAG}"
+    image: "${DOCKERHUB_USERNAME:-steveoro}/goggles-api:${TAG:-latest}"
     depends_on:
       - goggles-db
     container_name: goggles-api
@@ -37,7 +37,7 @@ services:
       - "~/Projects/goggles_deploy/master-api.key:/app/config/master.key"
 
   main:
-    image: "steveoro/goggles-main:${TAG}"
+    image: "${DOCKERHUB_USERNAME:-steveoro}/goggles-main:${TAG:-latest}"
     depends_on:
       - goggles-db
       - api

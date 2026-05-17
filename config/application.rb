@@ -20,6 +20,7 @@ module GogglesMain
 
     config.active_record.schema_format :sql
     config.assets.paths << Rails.root.join('app', 'javascript')
+    config.mission_control.jobs.base_controller_class = 'JobsDashboardBaseController'
 
     # Add load paths for this specific Engine:
     # (Prefer eager_load_paths over autoload_paths, since eager_load_paths are
