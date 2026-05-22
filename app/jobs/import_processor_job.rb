@@ -68,12 +68,19 @@ class ImportProcessorJob < ApplicationJob
 
     # Run the batch SQL file and then consume it:
     logger.info("\r\nExecuting '#{orig_filename}' on #{db_name}...")
-    cmd = "mysql --host=#{db_host} --user=#{db_user} --password=\"#{db_pwd}\" --database=#{db_name} --execute=\"\\. #{sql_file_name}\""
-    _stdout_str, stderr_str, _status = Open3.capture3(cmd)
+    cmd = [
+      'mariadb',
+      "--host=#{db_host}",
+      "--user=#{db_user}",
+      "--password=#{db_pwd}",
+      "--database=#{db_name}",
+      "--execute=\\. #{sql_file_name}"
+    ]
+    _stdout_str, stderr_str, status = Open3.capture3(*cmd)
 
     logger.info("Cleaning temp file '#{sql_file_name}'...")
     FileUtils.rm(sql_file_name)
-    logger.info('SQL OK.') && return if stderr_str.blank?
+    logger.info('SQL OK.') && return if status.success?
 
     logger.error("Execution FAILED:\r\n#{stderr_str}")
     raise stderr_str
@@ -88,12 +95,14 @@ class ImportProcessorJob < ApplicationJob
   # - password
   # - host
   def from_database_config
-    rails_config = Rails.configuration
+    environment_config = Rails.configuration.database_configuration.fetch(Rails.env.to_s)
+    primary_config = environment_config.fetch('primary', environment_config)
+
     [
-      rails_config.database_configuration[Rails.env]['database'],
-      rails_config.database_configuration[Rails.env]['username'],
-      rails_config.database_configuration[Rails.env]['password'],
-      rails_config.database_configuration[Rails.env]['host']
+      primary_config['database'],
+      primary_config['username'],
+      primary_config['password'],
+      primary_config['host']
     ]
   end
 

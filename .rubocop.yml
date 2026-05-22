@@ -55,6 +55,7 @@ Metrics/BlockLength:
   CountAsOne: [ 'array', 'heredoc' ]
   Exclude:
   - 'db/schema.rb'
+  - 'db/queue_schema.rb'
   - 'lib/capistrano/tasks/db.rake'
   - 'lib/capistrano/tasks/status.rake'
   - 'lib/tasks/stats.rake'

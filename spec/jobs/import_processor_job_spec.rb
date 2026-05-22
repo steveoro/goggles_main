@@ -93,6 +93,8 @@ RSpec.describe ImportProcessorJob do
 
     before do
       expect(row_with_invalid_data).to be_a(GogglesDb::ImportQueue).and be_valid
+      failure_status = instance_double(Process::Status, success?: false)
+      allow(Open3).to receive(:capture3).and_return(['', 'SQL error', failure_status])
     end
 
     # Allow errors to bubble up in the job hierarchy so that retries are managed by Active Job:
@@ -114,6 +116,31 @@ RSpec.describe ImportProcessorJob do
     before(:all) { GogglesDb::ImportQueue.delete_all }
 
     it_behaves_like('ImportProcessorJob properly enqueued') # test default enqueuing for no-ops
+  end
+
+  describe '#from_database_config' do
+    subject(:database_config) { described_class.new.send(:from_database_config) }
+
+    before do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
+      allow(Rails.configuration).to receive(:database_configuration).and_return(
+        'production' => {
+          'primary' => {
+            'database' => 'goggles',
+            'username' => 'root',
+            'password' => 'secret',
+            'host' => 'goggles-db'
+          },
+          'queue' => {
+            'database' => 'storage/production_queue.sqlite3'
+          }
+        }
+      )
+    end
+
+    it 'uses the primary database config when the environment has multiple databases' do
+      expect(database_config).to eq(%w[goggles root secret goggles-db])
+    end
   end
 end
 # rubocop:enable RSpec/BeforeAfterAll
