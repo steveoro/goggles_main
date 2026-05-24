@@ -46,7 +46,7 @@ class SearchController < ApplicationController
 
   # Returns the search query, cleaned of extra spaces.
   def search_query
-    params.expect('q').to_s.squeeze(' ').strip
+    params['q'].to_s.squeeze(' ').strip
   end
 
   # Returns +true+ when the current request is a valid search request.
