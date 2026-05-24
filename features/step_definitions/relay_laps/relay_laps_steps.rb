@@ -396,11 +396,11 @@ When('I expand the chosen MRR details') do
   mrr_row = find("tbody.result-table-row#mrr#{@chosen_mrr.id}", visible: true)
 
   # No details to expand? Skip the test:
-  if mrr_row.has_css?('label.switch-sm span')
+  if mrr_row.has_css?('span.switch-sm span')
     3.times do
       break if find("small#detail-mrs#{@chosen_mrs.id}").visible?
 
-      toggle_id = mrr_row.find('label.switch-sm span', visible: true)[:id] unless find("small#detail-mrs#{@chosen_mrs.id}").visible?
+      toggle_id = mrr_row.find('span.switch-sm span', visible: true)[:id] unless find("small#detail-mrs#{@chosen_mrs.id}").visible?
       step("I trigger the click event on the '##{toggle_id}' DOM ID")
       # Wait for the expand animation to finish
       10.times do

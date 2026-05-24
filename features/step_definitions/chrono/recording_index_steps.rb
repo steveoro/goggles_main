@@ -7,7 +7,7 @@ Then('I can see the chrono index page including the latest request row with deta
   expect(master_container).to be_visible
 
   # Show detail laps (collapsed by default:
-  master_container.find('label.switch-sm').click
+  master_container.find('span.switch-sm').click
   sleep(1) && wait_for_ajax
 
   # The IQ decorator outputs directly HTML tags with escaped text in it, so here the check is somewhat reversed:
