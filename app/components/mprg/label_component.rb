@@ -28,10 +28,12 @@ module Mprg
     protected
 
     # Prepares the text label
+    # rubocop:disable Rails/OutputSafety
     def meeting_program_label
       "#{@meeting_program&.event_type&.label} \
        #{@meeting_program&.category_type&.short_name} \
-       #{@meeting_program&.gender_type&.label}"
+       #{@meeting_program&.gender_type&.label}".html_safe
     end
+    # rubocop:enable Rails/OutputSafety
   end
 end

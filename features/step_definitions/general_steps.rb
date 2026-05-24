@@ -206,9 +206,8 @@ end
 
 Then('I wait until the slow-rendered page portion {string} is visible') do |css_selector|
   15.times do
-    wait_for_ajax
     target_node = begin
-      find(css_selector)
+      find(css_selector, visible: true, wait: 0.2)
     rescue StandardError
       nil
     end
@@ -217,11 +216,15 @@ Then('I wait until the slow-rendered page portion {string} is visible') do |css_
       putc '!'
       break
     else
-      sleep(0.5)
+      begin
+        wait_for_ajax(1)
+      rescue Timeout::Error
+        nil
+      end
+      sleep(0.3)
       putc '-'
     end
   end
-  expect(page).to have_css(css_selector)
-  expect(find(css_selector)).to be_visible
+  expect(page).to have_css(css_selector, visible: true)
 end
 # -----------------------------------------------------------------------------

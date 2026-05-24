@@ -28,6 +28,9 @@ AllCops:
   - 'vendor/**/*'
   - 'node_modules/**/*'
 
+Capybara/RSpec/VisibilityMatcher:
+  Enabled: false
+
 FactoryBot/SyntaxMethods:
   Enabled: false
 

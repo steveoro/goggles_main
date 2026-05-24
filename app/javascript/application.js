@@ -118,10 +118,7 @@ document.addEventListener("turbo:before-fetch-request", (event) => {
         if (requestUrl) {
             prefetchRequestUrls.add(requestUrl)
         }
-        return
     }
-
-    tracker.increment()
 })
 
 document.addEventListener("turbo:before-fetch-response", (event) => {
@@ -143,8 +140,6 @@ document.addEventListener("turbo:before-fetch-response", (event) => {
     if (!requestUrl && responseUrl && prefetchRequestUrls.delete(responseUrl)) {
         return
     }
-
-    tracker.decrement()
 })
 
 document.addEventListener("turbo:fetch-request-error", (event) => {
@@ -152,8 +147,6 @@ document.addEventListener("turbo:fetch-request-error", (event) => {
     if (requestUrl && prefetchRequestUrls.delete(requestUrl)) {
         return
     }
-
-    tracker.decrement()
 })
 
 document.addEventListener("turbo:load", () => {

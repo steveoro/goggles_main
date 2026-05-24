@@ -12,7 +12,6 @@ export DOCKER_TAG="0.9.00.rails-8.1"
 export RAILS_MASTER_KEY="$(cat config/master.key)"
 ```
 
-
 Run the following, 1 statement at a time:
 
 ```bash
