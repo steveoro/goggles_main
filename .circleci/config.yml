@@ -59,7 +59,7 @@ common-db-setup: &common-db-setup
   command: |
     sudo apt update
     sudo apt-get install mariadb-client
-    mkdir -p tmp ~/test-results "$ARTIFACTS_PATH"
+    mkdir -p tmp storage ~/test-results "$ARTIFACTS_PATH"
     echo $RAILS_MASTER_KEY > config/master.key
     cp ./tmp/test.sql.bz2 db/dump/test.sql.bz2
     mv config/database_ci.yml config/database.yml
