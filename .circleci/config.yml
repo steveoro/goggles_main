@@ -95,7 +95,6 @@ jobs:
     - ruby/rubocop-check:
         app-dir: ~/goggles_main
         label: Rubocop
-        format: pacman
 
   brakeman:
     <<: *common-config

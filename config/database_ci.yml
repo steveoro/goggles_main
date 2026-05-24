@@ -1,43 +1,34 @@
-development:
+default_sqlt3: &default_sqlt3
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
+default: &default
   adapter: mysql2
   encoding: utf8mb4
-  database: <%= ENV.fetch("DATABASE_NAME") { 'goggles_test' } %>
   username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
   password:
   socket: /var/run/mysqld/mysqld.sock
   host: <%= ENV.fetch("DATABASE_HOST") { '127.0.0.1' } %>
   port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  primary:
+    <<: *default
+    database: goggles_development
+  queue:
+    <<: *default_sqlt3
+    database: storage/development_queue.sqlite3
+    migrations_paths: db/queue_migrate
+    schema_dump: false
 
 test:
-  adapter: mysql2
-  encoding: utf8mb4
-  database: <%= ENV.fetch("DATABASE_NAME") { 'goggles_test' } %>
-  username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
-  password:
-  socket: /var/run/mysqld/mysqld.sock
-  host: <%= ENV.fetch("DATABASE_HOST") { '127.0.0.1' } %>
-  port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-
-production:
-  adapter: mysql2
-  encoding: utf8mb4
-  database: <%= ENV.fetch("DATABASE_NAME") { 'goggles' } %>
-  username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
-  password:
-  socket: /var/run/mysqld/mysqld.sock
-  host: <%= ENV.fetch("DATABASE_HOST") { '127.0.0.1' } %>
-  port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-
-staging:
-  adapter: mysql2
-  encoding: utf8mb4
-  database: <%= ENV.fetch("DATABASE_NAME") { 'goggles' } %>
-  username: <%= ENV.fetch("DATABASE_USER") { 'root' } %>
-  password:
-  socket: /var/run/mysqld/mysqld.sock
-  host: <%= ENV.fetch("DATABASE_HOST") { '127.0.0.1' } %>
-  port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  primary:
+    <<: *default
+    database: goggles_test
+  queue:
+    <<: *default_sqlt3
+    database: storage/test_queue.sqlite3
+    migrations_paths: db/queue_migrate
+    schema_dump: false
