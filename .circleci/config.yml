@@ -422,7 +422,7 @@ jobs:
     - run:
         <<: *common-db-setup
         environment:
-          RAILS_ENV: staging
+          RAILS_ENV: production
           NODE_ENV: production
     - setup_remote_docker:
         version: default
@@ -430,10 +430,10 @@ jobs:
     - run:
         <<: *web-assets
         environment:
-          RAILS_ENV: staging
+          RAILS_ENV: production
           NODE_ENV: production
     - run:
-        name: Docker LATEST staging
+        name: Docker LATEST production
         command: |
           BRANCH_NAME="${CIRCLE_BRANCH:-}"
           if [ -z "$BRANCH_NAME" ] && [ -n "${CIRCLE_SHA1:-}" ]; then
@@ -454,7 +454,7 @@ jobs:
             --secret id=rails_master_key,env=RAILS_MASTER_KEY \
             -t $DOCKERHUB_USERNAME/goggles-main:$DOCKER_TAG \
             --cache-from=$DOCKERHUB_USERNAME/goggles-main:latest \
-            -f Dockerfile.staging .
+            -f Dockerfile.production .
           docker push $DOCKERHUB_USERNAME/goggles-main:$DOCKER_TAG
 
   docker-versioned:

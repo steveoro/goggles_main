@@ -32,3 +32,13 @@ test:
     database: storage/test_queue.sqlite3
     migrations_paths: db/queue_migrate
     schema_dump: false
+
+production:
+  primary:
+    <<: *default
+    database: <%= ENV.fetch("DATABASE_NAME") { 'goggles' } %>
+  queue:
+    <<: *default_sqlt3
+    database: storage/production_queue.sqlite3
+    migrations_paths: db/queue_migrate
+    schema_dump: false
