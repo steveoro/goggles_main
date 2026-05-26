@@ -43,6 +43,7 @@ When('I delete the latest pending chrono request') do
   delete_btn = find("#frm-delete-row-#{iq.id}")
   expect(delete_btn).to be_visible
   accept_confirm { delete_btn.click }
+  sleep(1) && wait_for_ajax
 end
 
 # Uses: @deleted_row_id

@@ -225,6 +225,6 @@ Then('I wait until the slow-rendered page portion {string} is visible') do |css_
       putc '-'
     end
   end
-  expect(page).to have_css(css_selector, visible: true)
+  find(css_selector, visible: true)
 end
 # -----------------------------------------------------------------------------
