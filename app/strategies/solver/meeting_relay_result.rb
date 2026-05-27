@@ -32,7 +32,7 @@ module Solver
       solve_bindings
       return nil unless required_bindings.values.all?(&:present?)
 
-      GogglesDb::MeetingRelayResult.where(required_bindings).first
+      GogglesDb::MeetingRelayResult.where(required_bindings).order(:id).first
     end
     #-- -----------------------------------------------------------------------
     #++
