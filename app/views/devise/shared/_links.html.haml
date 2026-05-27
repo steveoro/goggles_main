@@ -6,7 +6,8 @@
     = link_to(t('.sign_up'), new_registration_path(resource_name))
     %br/
   - if devise_mapping.omniauthable?
-    = google_sign_in_button(class: 'btn btn-primary my-1', proceed_to: users_google_oauth_continue_url) do
+    = google_sign_in_button(class: 'btn btn-primary my-1', proceed_to: users_google_oauth_continue_url,
+                            data: { turbo: false }) do
       %span#google-login-btn
         = t('.sign_in_with_provider', provider: 'Google')
         %span.px-1
