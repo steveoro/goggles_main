@@ -19,6 +19,8 @@ class SwimmerDecorator < Draper::Decorator
   def link_to_full_name
     # [Steve, 20210208] Adding a tooltip here doesn't give a good UX for the moment because
     # it needs a custom script to toggle the tooltip. (See: SwimmerShowLinkComponent)
+    #
+    # Make generated links open in the top-most frame to avoid nested navigation:
     h.link_to(text_label, h.swimmer_show_path(id: object.id), data: { turbo_frame: '_top' })
   end
 
@@ -26,7 +28,9 @@ class SwimmerDecorator < Draper::Decorator
   # NOTE: +SwimmerShowLinkComponent+ adds a tooltip to the link.
   #
   def link_to_results(meeting_id)
-    h.link_to(complete_name, h.meeting_swimmer_results_path(id: meeting_id, swimmer_id: object.id))
+    # Make generated links open in the top-most frame to avoid nested navigation:
+    h.link_to(complete_name, h.meeting_swimmer_results_path(id: meeting_id, swimmer_id: object.id),
+              data: { turbo_frame: '_top' })
   end
 
   # Returns a comma-separated string text mapping all the distinct team
@@ -40,9 +44,11 @@ class SwimmerDecorator < Draper::Decorator
   #
   def link_to_teams(max_length = 20)
     # [Steve, 20210208] Adding a tooltip here doesn't give a good UX for the moment (see note in #link_to_full_name)
+
     links = associated_teams.map do |team|
       short_name = h.truncate(team.editable_name, length: max_length, separator: ' ')
-      h.tag.li(h.link_to(short_name, h.team_show_path(id: team.id)))
+      # Make generated links open in the top-most frame to avoid nested navigation:
+      h.tag.li(h.link_to(short_name, h.team_show_path(id: team.id), data: { turbo_frame: '_top' }))
     end
     h.tag.ul(
       links.join("\r\n").html_safe, class: 'p-0 ml-3'

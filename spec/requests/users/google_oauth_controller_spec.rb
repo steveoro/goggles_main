@@ -16,6 +16,7 @@ RSpec.describe Users::GoogleOauthController do
       expect(serialized_user).to be_a(GogglesDb::User).and be_valid
       serialized_user
     end
+
     it 'redirects to default (for event: authentication)' do
       expect(response).to redirect_to(root_path)
     end

@@ -66,17 +66,12 @@ class ImportProcessorJob < ApplicationJob
     # Setup MySQL params from Rails config:
     db_name, db_user, db_pwd, db_host = from_database_config
 
-    # Run the batch SQL file and then consume it:
+    # Run the batch SQL file with transaction wrapping for safe retry on failure:
+    # Use shell redirection to handle large files efficiently without loading into memory
     logger.info("\r\nExecuting '#{orig_filename}' on #{db_name}...")
-    cmd = [
-      'mariadb',
-      "--host=#{db_host}",
-      "--user=#{db_user}",
-      "--password=#{db_pwd}",
-      "--database=#{db_name}",
-      "--execute=\\. #{sql_file_name}"
-    ]
-    _stdout_str, stderr_str, status = Open3.capture3(*cmd)
+    cmd = "(echo 'START TRANSACTION;'; cat '#{sql_file_name}'; echo 'COMMIT;') | " \
+          "mariadb --host=#{db_host} --user=#{db_user} --password=#{db_pwd} --database=#{db_name}"
+    _stdout_str, stderr_str, status = Open3.capture3(cmd)
 
     logger.info("Cleaning temp file '#{sql_file_name}'...")
     FileUtils.rm(sql_file_name)
