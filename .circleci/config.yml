@@ -3,7 +3,7 @@ orbs:
   ruby: circleci/ruby@2.7.1
   browser-tools: circleci/browser-tools@2.4.2
 
-ARTIFACTS_PATH: &ARTIFACTS_PATH ~/test-artifacts
+ARTIFACTS_PATH: &ARTIFACTS_PATH /home/circleci/test-artifacts
 
 common-config: &common-config
   resource_class: large

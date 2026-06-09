@@ -16,7 +16,6 @@ end
 # Uses:
 # - @chosen_mir (can be an AbstractResult)
 When('I click the button to manage its laps') do
-  sleep(1)
   wait_for_ajax
   expect(@chosen_mir).to be_a(GogglesDb::AbstractResult).and be_valid
 
@@ -27,12 +26,13 @@ When('I click the button to manage its laps') do
   trigger_selector = "a#lap-req-edit-modal-#{@chosen_mir.id}"
   step("I trigger the click event on the '#{trigger_selector}' DOM ID")
 
-  10.times do
+  5.times do
     break if page.has_css?('#lap-edit-modal', visible: true)
 
+    putc('r')
     step("I trigger the click event on the '#{trigger_selector}' DOM ID")
     wait_for_ajax
-    sleep(0.5)
+    sleep(0.2)
   end
   unless page.has_css?('#lap-edit-modal', visible: true)
     page.execute_script(<<~JS)
@@ -95,32 +95,34 @@ When('I choose to add a 25m lap') do
   end
   if @lap_add_expected
     5.times do
+      putc('r')
       step("I trigger the click event on the '#{add_btn_selector}' DOM ID")
       wait_for_ajax
-      sleep(0.5)
+      sleep(0.2)
       break if find_all(css_selector).count > before_add
 
       find(add_btn_selector, visible: true).click
       wait_for_ajax
-      sleep(0.5)
+      sleep(0.2)
       break if find_all(css_selector).count > before_add
     rescue Capybara::ElementNotFound
       wait_for_ajax
-      sleep(0.5)
+      sleep(0.2)
     end
   end
 
-  # XJS partial re-rending is pretty slow:
-  20.times do
+  # Turbo Stream partial re-rendering:
+  5.times do
+    putc('w')
     wait_for_ajax
-    sleep(1)
+    sleep(0.2)
+    putc('.')
     break if find_all(css_selector).count > before_add
   end
 
   if @lap_add_expected && find_all(css_selector).count == before_add
     step("I trigger the click event on the '#{add_btn_selector}' DOM ID")
     wait_for_ajax
-    sleep(1)
   end
 end
 
@@ -135,11 +137,12 @@ When('I see another empty lap row is added \(only if the last distance is less t
   end
 
   dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
-  10.times do
+  5.times do
     break if dialog.has_css?(css_selector, visible: true)
 
+    putc('r')
     wait_for_ajax
-    sleep(1)
+    sleep(0.3)
     dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
   end
 
@@ -252,11 +255,11 @@ When('I click to delete my chosen lap and confirm the deletion') do
   step("I wait until the slow-rendered page portion '#{css_selector}' is visible")
   expect(page).to have_css(css_selector)
 
-  25.times do
-    putc 'S' # Signal "*S*low" retry
+  5.times do
+    putc('r')
     find('tbody#laps-table-body tr td')
     wait_for_ajax
-    sleep(1)
+    sleep(0.3)
     break if find_all(css_selector).count < before_deletion
   end
   expect(find_all(css_selector).count).to be < before_deletion

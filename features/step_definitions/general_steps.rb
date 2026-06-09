@@ -118,8 +118,9 @@ When('I trigger the click event on the {string} DOM ID') do |dom_id|
 rescue StandardError
   execute_script("document.querySelector('#{dom_id}').click()")
 ensure
+  putc('w')
+  sleep(0.2)
   wait_for_ajax
-  sleep(1)
 end
 
 # Click on OK/Yes
@@ -205,7 +206,7 @@ end
 # -----------------------------------------------------------------------------
 
 Then('I wait until the slow-rendered page portion {string} is visible') do |css_selector|
-  15.times do
+  5.times do
     target_node = begin
       find(css_selector, visible: true, wait: 0.2)
     rescue StandardError
@@ -216,12 +217,13 @@ Then('I wait until the slow-rendered page portion {string} is visible') do |css_
       putc '!'
       break
     else
+      putc('r')
       begin
         wait_for_ajax(1)
       rescue Timeout::Error
         nil
       end
-      sleep(0.3)
+      sleep(0.2)
       putc '-'
     end
   end
