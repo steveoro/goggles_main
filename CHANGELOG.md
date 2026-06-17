@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.9.08** [Steve A.] updated ruby version to 3.4.7 + Rails 8.1; re-sync w/ base engine; bundle updates and bugfixes
 - **0.8.22** [Steve A.] re-sync'ed w/ base engine; bundle updates
 - **0.8.12** [Steve A.] updated container base image to ruby:3.1.4-alpine3.19; added NODE_OPTIONS=--openssl-legacy-provider for Node 20 + webpack 4 compatibility
 - **0.8.11** [Steve A.] re-sync'ed w/ base engine; bundle updates; updated version to 0.8.11

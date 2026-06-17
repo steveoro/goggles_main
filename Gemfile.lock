@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 1ed714a98a1c79b24a4f81d4533e762769beec60
+  revision: 1b58975065e8d48a070bb7a5578ca6e893084cda
   specs:
-    goggles_db (0.9.07)
+    goggles_db (0.9.08)
       acts-as-taggable-on
       acts_as_votable
       cities
@@ -139,7 +139,7 @@ GEM
       debug_inspector (>= 1.2.0)
     bootsnap (1.24.6)
       msgpack (~> 1.2)
-    brakeman (8.0.4)
+    brakeman (8.0.5)
       racc
     browser (6.2.0)
     builder (3.3.0)
@@ -169,7 +169,7 @@ GEM
       simplecov
     coderay (1.1.3)
     colorize (1.1.0)
-    concurrent-ruby (1.3.6)
+    concurrent-ruby (1.3.7)
     connection_pool (3.0.2)
     countries (8.1.0)
       unaccent (~> 0.3)
@@ -251,7 +251,7 @@ GEM
     factory_bot_rails (6.5.1)
       factory_bot (~> 6.5)
       railties (>= 6.1.0)
-    faraday (2.14.2)
+    faraday (2.14.3)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -272,7 +272,7 @@ GEM
       activesupport (>= 6.1)
     google-id-token (1.4.2)
       jwt (>= 1)
-    google-protobuf (4.35.0-x86_64-linux-gnu)
+    google-protobuf (4.35.1-x86_64-linux-gnu)
       bigdecimal
       rake (~> 13.3)
     google_sign_in (1.3.1)
@@ -339,7 +339,7 @@ GEM
     http-accept (1.7.0)
     http-cookie (1.1.6)
       domain_name (~> 0.5)
-    i18n (1.14.8)
+    i18n (1.15.0)
       concurrent-ruby (~> 1.0)
     importmap-rails (2.2.3)
       actionpack (>= 6.0.0)
@@ -421,7 +421,7 @@ GEM
       stimulus-rails
       turbo-rails
     mize (0.6.1)
-    msgpack (1.8.1)
+    msgpack (1.8.3)
     multi_json (1.21.1)
     multi_test (1.1.0)
     multi_xml (0.9.1)
@@ -453,14 +453,14 @@ GEM
     notiffany (0.1.3)
       nenv (~> 0.1)
       shellany (~> 0.0)
-    oauth2 (2.0.22)
+    oauth2 (2.0.23)
       auth-sanitizer (~> 0.2, >= 0.2.1)
       faraday (>= 0.17.3, < 4.0)
       jwt (>= 1.0, < 4.0)
       logger (~> 1.2)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 4)
-      snaky_hash (~> 2.0, >= 2.0.5)
+      snaky_hash (~> 2.0, >= 2.0.6)
       version_gem (~> 1.1, >= 1.1.11)
     omniauth (2.1.4)
       hashie (>= 3.4.6)
@@ -604,7 +604,7 @@ GEM
     rspec_pacman_formatter (0.1.7)
       colorize
       rspec
-    rubocop (1.87.0)
+    rubocop (1.88.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -647,8 +647,8 @@ GEM
       rubocop-rspec (~> 3.5)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
-    rubyzip (3.3.1)
-    sass-embedded (1.100.0-x86_64-linux-gnu)
+    rubyzip (3.4.0)
+    sass-embedded (1.101.0-x86_64-linux-gnu)
       google-protobuf (~> 4.31)
     scenic (1.9.0)
       activerecord (>= 4.0.0)
@@ -656,7 +656,7 @@ GEM
     scenic-mysql_adapter (1.1.0)
       scenic (>= 1.4.0)
     securerandom (0.4.1)
-    selenium-webdriver (4.44.0)
+    selenium-webdriver (4.45.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -731,7 +731,7 @@ GEM
     uniform_notifier (1.18.0)
     uri (1.1.1)
     useragent (0.16.11)
-    version_gem (1.1.11)
+    version_gem (1.1.12)
     view_component (4.12.0)
       actionview (>= 7.1.0)
       activesupport (>= 7.1.0)
