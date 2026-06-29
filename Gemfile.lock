@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 645d7d7bbe873f1b4a31477d6417eade616b64c0
+  revision: 87eb186873aa1f6864c09c370492bf95837739d6
   specs:
-    goggles_db (0.9.10)
+    goggles_db (0.9.14)
       acts-as-taggable-on
       acts_as_votable
       cities
@@ -447,7 +447,7 @@ GEM
       net-ssh (>= 5.0.0, < 8.0.0)
     net-smtp (0.5.1)
       net-protocol
-    net-ssh (7.3.2)
+    net-ssh (7.3.3)
     netrc (0.11.0)
     nio4r (2.7.5)
     nokogiri (1.19.4-x86_64-linux-gnu)
@@ -652,7 +652,7 @@ GEM
       rubocop-rspec (~> 3.5)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
-    rubyzip (3.4.0)
+    rubyzip (3.4.1)
     sass-embedded (1.101.0-x86_64-linux-gnu)
       google-protobuf (~> 4.31)
     scenic (1.9.0)
