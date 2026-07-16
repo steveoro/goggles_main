@@ -111,10 +111,28 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :sendmail # use :smtp for remote servers, :sendmail for localhost
-  # Defaults for sendmail:
+
+  # [Steve A.] Old configuration for Postfix on localhost:
+  # config.action_mailer.delivery_method = :sendmail # use :smtp for remote servers, :sendmail for localhost
+  # Defaults for sendmail (not used anymore in production):
   # config.action_mailer.sendmail_settings = {
   #   location: '/usr/sbin/sendmail',
   #   arguments: '-i'
+  # }
+
+  # [Steve A.] SMTP 3rd-party service (e.g., Sendinblue, Mailgun, etc.):
+  # See <goggles_deploy>/production.rb for actual values.
+  #
+  # config.action_mailer.delivery_method = :smtp
+  # config.action_mailer.smtp_settings = {
+  #   address: <smtp_server>,
+  #   port: 587,
+  #   # domain: 'localhost', # HELO domain
+  #   user_name: <user_email>,
+  #   password: <user_password>,
+  #   authentication: :login, # either :plain, :login or :cram_md5
+  #   # tls: false, # default: false
+  #   enable_starttls_auto: true # default: true
   # }
 
   # Inserts middleware to perform automatic connection switching.

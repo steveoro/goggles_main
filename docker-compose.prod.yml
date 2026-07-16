@@ -7,9 +7,17 @@ services:
     container_name: goggles-db
     env_file:
       - .env
+    # Localhost only: use SSH tunnel for remote admin access (never publish on 0.0.0.0).
     ports:
-      - '33060:3306'
+      - '127.0.0.1:33060:3306'
     restart: always
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
     volumes:
       - "~/Projects/goggles_deploy/db.prod:/var/lib/mysql"
     healthcheck:
@@ -27,14 +35,28 @@ services:
     container_name: goggles-api
     env_file:
       - .env
+    # Reachable only via reverse proxy on the host (or SSH tunnel).
     ports:
-      - '8081:8081'
+      - '127.0.0.1:8081:8081'
     restart: always
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 1g
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
     volumes:
       - "~/Projects/goggles_deploy/storage.prod:/app/storage"
       - "~/Projects/goggles_deploy/backups:/app/db/dump"
       - "~/Projects/goggles_deploy/log.prod/api:/app/log"
-      - "~/Projects/goggles_deploy/master-api.key:/app/config/master.key"
+      - type: bind
+        source: "~/Projects/goggles_deploy/master-api.key"
+        target: /app/config/master.key
+        read_only: true
 
   main:
     build:
@@ -47,14 +69,33 @@ services:
     container_name: goggles-main
     env_file:
       - .env
+    # Reachable only via reverse proxy on the host (or SSH tunnel).
     ports:
-      - '8080:8080'
+      - '127.0.0.1:8080:8080'
     restart: always
+    # Entrypoint still needs root for sSMTP rewriting; drop kernel capabilities instead.
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 1536m
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
     volumes:
       - "~/Projects/goggles_deploy/storage.prod:/app/storage"
       - "~/Projects/goggles_deploy/backups:/app/db/dump"
       - "~/Projects/goggles_deploy/log.prod:/app/log"
-      - "~/Projects/goggles_deploy/master-main.key:/app/config/master.key"
+      - type: bind
+        source: "~/Projects/goggles_deploy/master-main.key"
+        target: /app/config/master.key
+        read_only: true
+      - type: bind
+        source: "~/Projects/goggles_deploy/production.rb"
+        target: /app/config/environments/production.rb
+        read_only: true
 
 volumes:
   gem_cache:

@@ -95,20 +95,35 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
-  # Use Solid Queue for background jobs
+  # Do not dump schema after migrations.
+  config.active_record.dump_schema_after_migration = false
+
+  # Use Solid Queue for background jobs and Solid Cache for caching
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :queue } }
   config.mission_control.jobs.adapters = [:solid_queue]
   config.mission_control.jobs.http_basic_auth_enabled = false
-
-  # Do not dump schema after migrations.
-  config.active_record.dump_schema_after_migration = false
+  config.cache_store = :solid_cache_store, { path: '/app/storage/cache.sqlite3' }
 
   # Action Mailer default URL, required by Devise:
   config.action_mailer.default_url_options = {
     host: 'localhost',
     port: 3000
   }
+
+  # For deployment, use:
+  # config.action_mailer.default_url_options = {
+  #   host: 'master-goggles.org'
+  # }
+  # config.action_mailer.perform_deliveries = true
+  # config.action_mailer.raise_delivery_errors = true
+  # config.action_mailer.delivery_method = :sendmail # use :smtp for remote servers, :sendmail for localhost
+  #
+  # Defaults for sendmail (not used in production):
+  # config.action_mailer.sendmail_settings = {
+  #   location: '/usr/sbin/sendmail',
+  #   arguments: '-i'
+  # }
 
   # Inserts middleware to perform automatic connection switching.
   # The `database_selector` hash is used to pass options to the DatabaseSelector
