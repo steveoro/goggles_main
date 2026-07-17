@@ -14,7 +14,7 @@ $> cp -R <PATH_TO_RAILS_ROOT>/config/goggles_deploy.public <DESTINATION_PATH>/go
 The resulting `goggles_deploy` folder holds secrets, volumes, and deploy scripts only.
 
 **Compose source of truth:** `goggles_main/docker-compose.prod.yml` in the application repo.
-`deploy_prod.sh` pulls the release image and extracts that file into `goggles_deploy/` each deploy, so you do not hand-sync a separate `docker-compose.deploy_prod.yml`.
+`deploy_prod.sh` pulls the release image and extracts that file into `goggles_deploy/` each deploy, so you do not hand-sync a separate `docker-compose.prod.yml`.
 
 **Environment config source of truth:** `config/environments/production.rb` (and `staging.rb`) ship inside the Docker image. Do not copy or bind-mount environment files into the deploy directory.
 
