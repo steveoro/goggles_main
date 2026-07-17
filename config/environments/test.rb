@@ -47,6 +47,9 @@ Rails.application.configure do
   config.solid_queue.connects_to = { database: { writing: :queue } }
   config.mission_control.jobs.adapters = [:solid_queue]
   config.mission_control.jobs.http_basic_auth_enabled = false
+  # Support databases use committed Ruby schemas. Avoid Scenic's MySQL schema
+  # dumper being applied to their SQLite connections after db:migrate.
+  config.active_record.dump_schema_after_migration = false
   # Action Mailer default URL, required by Devise:
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 

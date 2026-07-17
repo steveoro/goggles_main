@@ -83,6 +83,14 @@ RSpec.describe SolidStack do
     end
   end
 
+  describe 'config/environments/test.rb' do
+    let(:test_rb) { repo_root.join('config/environments/test.rb').read }
+
+    it 'disables schema dumps that are incompatible with SQLite support databases' do
+      expect(test_rb).to include('config.active_record.dump_schema_after_migration = false')
+    end
+  end
+
   describe 'docker-compose.prod.yml' do
     let(:compose) { repo_root.join('docker-compose.prod.yml').read }
 
