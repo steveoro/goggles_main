@@ -1,0 +1,2 @@
+# Keep this directory for database.yml `migrations_paths: db/cache_migrate`.
+# Solid Cache ships schema via db/cache_schema.rb (from solid_cache:install), not migrations.

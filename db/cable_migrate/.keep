@@ -1,0 +1,2 @@
+# Keep this directory for database.yml `migrations_paths: db/cable_migrate`.
+# Solid Cable ships schema via db/cable_schema.rb (from solid_cable:install), not migrations.

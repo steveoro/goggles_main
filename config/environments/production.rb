@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Rails.application.configure do
+Rails.application.configure do # rubocop:disable Metrics/BlockLength
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -15,7 +15,6 @@ Rails.application.configure do
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
-  config.cache_store = :memory_store
 
   # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
   # or in config/master.key. This key is used to decrypt credentials (and other encrypted files).
@@ -61,14 +60,6 @@ Rails.application.configure do
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
 
-  # Use a different cache store in production.
-  # config.cache_store = :mem_cache_store
-
-  # Use a real queuing backend for Active Job (and separate queues per environment).
-  config.active_job.queue_adapter = :solid_queue
-  config.solid_queue.connects_to = { database: { writing: :queue } }
-  # config.active_job.queue_name_prefix = "goggles_main_production"
-
   config.action_mailer.perform_caching = false
 
   # Ignore bad email addresses and do not raise email delivery errors.
@@ -98,32 +89,36 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  # Use Solid Queue for background jobs and Solid Cache for caching
+  # Solid Queue, Solid Cache (see config/cache.yml), Mission Control jobs UI
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :queue } }
   config.mission_control.jobs.adapters = [:solid_queue]
   config.mission_control.jobs.http_basic_auth_enabled = false
-  config.cache_store = :solid_cache_store, { path: '/app/storage/cache.sqlite3' }
+  config.cache_store = :solid_cache_store
 
-  # Action Mailer default URL, required by Devise:
+  # Action Mailer — SMTP secrets live in credentials (bin/rails credentials:edit)
   config.action_mailer.default_url_options = {
-    host: 'localhost',
-    port: 3000
+    host: 'master-goggles.org'
   }
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :smtp
 
-  # For deployment, use:
-  # config.action_mailer.default_url_options = {
-  #   host: 'master-goggles.org'
-  # }
-  # config.action_mailer.perform_deliveries = true
-  # config.action_mailer.raise_delivery_errors = true
-  # config.action_mailer.delivery_method = :sendmail # use :smtp for remote servers, :sendmail for localhost
-  #
-  # Defaults for sendmail (not used in production):
-  # config.action_mailer.sendmail_settings = {
-  #   location: '/usr/sbin/sendmail',
-  #   arguments: '-i'
-  # }
+  smtp_credentials = Rails.application.credentials.smtp
+  if smtp_credentials.blank? || smtp_credentials[:address].blank? || smtp_credentials[:user_name].blank?
+    raise KeyError,
+          'Missing smtp credentials. Run bin/rails credentials:edit and add smtp: ' \
+          'address, port, user_name, password (and optional authentication, enable_starttls_auto).'
+  end
+
+  config.action_mailer.smtp_settings = {
+    address: smtp_credentials.fetch(:address),
+    port: smtp_credentials.fetch(:port, 587),
+    user_name: smtp_credentials.fetch(:user_name),
+    password: smtp_credentials.fetch(:password),
+    authentication: (smtp_credentials[:authentication] || :login).to_sym,
+    enable_starttls_auto: smtp_credentials.fetch(:enable_starttls_auto, true)
+  }
 
   # Inserts middleware to perform automatic connection switching.
   # The `database_selector` hash is used to pass options to the DatabaseSelector

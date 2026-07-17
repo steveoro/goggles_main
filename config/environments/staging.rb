@@ -79,11 +79,12 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
-  # Use Solid Queue for background jobs
+  # Use Solid Queue for background jobs and Solid Cache for caching
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :queue } }
   config.mission_control.jobs.adapters = [:solid_queue]
   config.mission_control.jobs.http_basic_auth_enabled = false
+  config.cache_store = :solid_cache_store
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false

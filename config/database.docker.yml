@@ -2,6 +2,7 @@ default_sqlt3: &default_sqlt3
   adapter: sqlite3
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
+  schema_format: :ruby
 
 default: &default
   adapter: mysql2
@@ -16,31 +17,44 @@ development:
   primary:
     <<: *default
     database: goggles_development
+  cache:
+    <<: *default_sqlt3
+    database: storage/development_cache.sqlite3
+    migrations_paths: db/cache_migrate
   queue:
     <<: *default_sqlt3
     database: storage/development_queue.sqlite3
     migrations_paths: db/queue_migrate
-    schema_dump: false
 
 test:
   primary:
     <<: *default
     database: goggles_test
+  cache:
+    <<: *default_sqlt3
+    database: storage/test_cache.sqlite3
+    migrations_paths: db/cache_migrate
   queue:
     <<: *default_sqlt3
     database: storage/test_queue.sqlite3
     migrations_paths: db/queue_migrate
-    schema_dump: false
 
 production:
   primary:
     <<: *default
     database: <%= ENV.fetch("DATABASE_NAME") { 'goggles' } %>
+  cache:
+    <<: *default_sqlt3
+    database: storage/production_cache.sqlite3
+    migrations_paths: db/cache_migrate
   queue:
     <<: *default_sqlt3
     database: storage/production_queue.sqlite3
     migrations_paths: db/queue_migrate
-    schema_dump: false
+  cable:
+    <<: *default_sqlt3
+    database: storage/production_cable.sqlite3
+    migrations_paths: db/cable_migrate
 
 # [Steve A.]
 # Staging will use the production environment together with the database
@@ -61,8 +75,15 @@ staging:
   primary:
     <<: *default
     database: <%= ENV.fetch("DATABASE_NAME") { 'goggles' } %>
+  cache:
+    <<: *default_sqlt3
+    database: storage/staging_cache.sqlite3
+    migrations_paths: db/cache_migrate
   queue:
     <<: *default_sqlt3
     database: storage/staging_queue.sqlite3
     migrations_paths: db/queue_migrate
-    schema_dump: false
+  cable:
+    <<: *default_sqlt3
+    database: storage/staging_cable.sqlite3
+    migrations_paths: db/cable_migrate

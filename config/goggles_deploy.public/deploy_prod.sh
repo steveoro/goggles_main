@@ -47,7 +47,7 @@ fi
 cd "$DEPLOY_DIR"
 pwd
 echo Using tag "$TAG"
-echo "WARNING: This will reset the job queue (hard switch to Solid Queue)"
+echo "Deploy preserves Solid Queue/Cache/Cable SQLite files under storage.prod (db:prepare migrates them)."
 echo Logging into DockerHub...
 printf '%s\n' "$DOCKERHUB_PASSWORD" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
 # Since vers. 0.9+, we dropped the "prod-" prefix from the tag:
@@ -62,12 +62,9 @@ docker rm -f "$tmp_cid" >/dev/null
 rm -f "$DEPLOY_DIR/docker-compose.deploy_prod.yml"
 
 echo ""
-echo "Stopping services and clearing old job queues..."
+echo "Stopping services..."
 compose -f "$COMPOSE_FILE" down
 mkdir -p "$DEPLOY_DIR/storage.prod"
-# Clear any existing SQLite queue/cache files for clean start
-rm -f "$DEPLOY_DIR/storage.prod/production_queue.sqlite3"
-rm -f "$DEPLOY_DIR/storage.prod/cache.sqlite3"
 echo "Updating .env file with new tagged release (no Docker Hub credentials)..."
 grep -v -E '^(MYSQL_ROOT_PASSWORD|TAG|DOCKERHUB_USERNAME|DOCKERHUB_PASSWORD|MARIADB_AUTO_UPGRADE|MARIADB_INITDB_SKIP_TZINFO)=' "$ENV_FILE" > "$ENV_FILE.tmp" || true
 mv "$ENV_FILE.tmp" "$ENV_FILE"
@@ -83,4 +80,4 @@ compose -f "$COMPOSE_FILE" exec -T goggles-db sh -c 'until mariadb-admin ping -h
 echo "Starting services with new Rails 8.1 stack..."
 # Never pass --build on the server: images were pulled above.
 compose -f "$COMPOSE_FILE" up -d --no-build api main
-echo "Finished. Job queue has been reset for Solid Queue migration."
+echo "Finished. Solid support databases under storage.prod were preserved; entrypoint runs db:prepare."
