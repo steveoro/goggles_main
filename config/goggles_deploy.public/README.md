@@ -30,9 +30,11 @@ SMTP and other secrets belong in encrypted credentials (`bin/rails credentials:e
 You'll still need to have the following sensitive files in order to have a fully functional `goggles_deploy` run directory:
 
 - goggles_deploy/.env
-- goggles_deploy/crontab_check.sh
 - goggles_deploy/master-api.key
 - goggles_deploy/master-main.key
+
+- goggles_deploy/crontab_check.sh (=> to be copied under ~)
+- goggles_deploy/deploy_prod.sh (=> to be copied under ~)
 
 Before the first deploy of an image that uses credential-backed SMTP, add an `smtp` section to the app credentials (`address`, `port`, `user_name`, `password`, and optional `authentication` / `enable_starttls_auto`).
 
