@@ -1,4 +1,4 @@
-%tbody.table.table-sm{ id: dom_id }
+%tbody.table.table-sm{ id: dom_id, class: @collapsed ? 'collapse' : '' }
   - @laps.each do |lap|
-    = render(Laps::TableRowComponent.new(lap:, collapsed: @collapsed))
-  = render(Laps::TableRowComponent.new(lap: closing_result_lap, collapsed: @collapsed))
+    = render(Laps::TableRowComponent.new(lap:))
+  = render(Laps::TableRowComponent.new(lap: closing_result_lap))

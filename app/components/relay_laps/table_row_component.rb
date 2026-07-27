@@ -10,13 +10,9 @@ module RelayLaps
   #
   # = RelayLaps::TableRowComponent
   #
-  # Collapsible table row (tr) for relay lap data display.
+  # Table row (tr) for relay lap data display.
   #
-  # - collapse DOM ID: "laps<MRR_id>"
-  #   (typically, to be triggered by an external MRR row component)
-  #
-  # === Known hack:
-  # Multiple collapse rows will result having the same DOM ID.
+  # Visibility is controlled by the parent RelayLaps::TableComponent tbody collapse wrapper.
   #
   class TableRowComponent < ViewComponent::Base
     # Creates a new ViewComponent
@@ -34,14 +30,6 @@ module RelayLaps
     end
 
     protected
-
-    # Returns the DOM ID for this component.
-    # Note: it'd be a required reference to the parent result so that each table row gets
-    # expanded at once by the same parent result (in this case, the MRR).
-    # (This is a known hack)
-    def dom_id
-      "laps#{@relay_swimmer.meeting_relay_result_id}"
-    end
 
     # Memoized correlated Swimmers/Laps
     def related_laps

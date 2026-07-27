@@ -13,11 +13,8 @@ module RelayLaps
   # Collapsible table body (+tbody+) for relay lap data display
   # (both MRSs & RelayLaps).
   #
-  # - collapse DOM ID: "laps<MRR_id>"
+  # - collapse DOM ID: "laps-show<MRR_id>"
   #   (typically, to be triggered by an external component)
-  #
-  # === Known hack:
-  # Multiple collapse rows will result having the same DOM ID.
   #
   class TableComponent < ViewComponent::Base
     # Creates a new ViewComponent

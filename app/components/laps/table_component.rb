@@ -14,11 +14,8 @@ module Laps
   #
   # Collapsible table body (+tbody+) for laps data display.
   #
-  # - collapse DOM ID: "laps<MIR_id>"
+  # - collapse DOM ID: "laps-show<MIR_id>"
   #   (typically, to be triggered by an external component)
-  #
-  # === Known hack:
-  # Multiple collapse rows will result having the same DOM ID.
   #
   class TableComponent < ViewComponent::Base
     # Creates a new ViewComponent

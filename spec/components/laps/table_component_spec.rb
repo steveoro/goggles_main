@@ -21,12 +21,21 @@ RSpec.describe Laps::TableComponent, type: :component do
       expect(parent_result.laps.count).to be_positive
     end
 
-    it 'renders a table body' do
-      expect(subject.css('tbody')).to be_present
+    it 'renders a table body with collapse class by default' do
+      tbody = subject.css('tbody').first
+      expect(tbody).to be_present
+      expect(tbody.classes).to include('collapse')
     end
 
     it 'renders as many table rows as the laps specified + 1 additional row (for the end result)' do
       expect(subject.css('tr').count).to eq(parent_result.laps.count + 1)
+    end
+
+    it 'does not add collapse class or duplicate IDs to individual rows' do
+      subject.css('tr').each do |row|
+        expect(row.classes).not_to include('collapse')
+        expect(row['id']).to be_nil
+      end
     end
 
     describe 'when rendering the lap rows,' do
@@ -50,6 +59,29 @@ RSpec.describe Laps::TableComponent, type: :component do
         expect(last_dom_row.css('td').last.text).to include(last_delta_timing.to_s.split('h ').last)
         expect(last_dom_row.css('td').last.text).to include(parent_result.to_timing.to_s)
       end
+    end
+  end
+
+  context 'when collapsed is false' do
+    subject { render_inline(described_class.new(laps: parent_result.laps, collapsed: false)) }
+
+    let(:parent_result) do
+      lap = [
+        GogglesDb::Lap.last(500).sample,
+        GogglesDb::UserLap.last(500).sample
+      ].sample
+      lap.parent_result
+    end
+
+    before do
+      expect(parent_result).to be_an(GogglesDb::AbstractResult).and be_valid
+      expect(parent_result.laps.count).to be_positive
+    end
+
+    it 'does not add collapse class to the tbody' do
+      tbody = subject.css('tbody').first
+      expect(tbody).to be_present
+      expect(tbody.classes).not_to include('collapse')
     end
   end
 

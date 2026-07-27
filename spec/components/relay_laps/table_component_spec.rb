@@ -13,12 +13,21 @@ RSpec.describe RelayLaps::TableComponent, type: :component do
       expect(parent_result.meeting_relay_swimmers.count).to be_positive
     end
 
-    it 'renders a table body' do
-      expect(subject.css('tbody')).to be_present
+    it 'renders a table body with collapse class' do
+      tbody = subject.css('tbody').first
+      expect(tbody).to be_present
+      expect(tbody.classes).to include('collapse')
     end
 
     it 'renders as many table rows as the laps specified' do
       expect(subject.css('tr').count).to eq(parent_result.meeting_relay_swimmers.count)
+    end
+
+    it 'does not add collapse class or duplicate IDs to individual rows' do
+      subject.css('tr').each do |row|
+        expect(row.classes).not_to include('collapse')
+        expect(row['id']).to be_nil
+      end
     end
   end
 
