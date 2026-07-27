@@ -14,8 +14,6 @@ module Users
       # not the omniauth strategy, so we use this override to clean-up any previously set OAuth field.
       self.resource = warden.authenticate!(auth_options)
       resource.update_columns(uid: nil, provider: nil)
-      # Clear last seasons IDs cookie on a new sign-in:
-      cookies[:last_seasons_ids] = nil
       super
     end
 

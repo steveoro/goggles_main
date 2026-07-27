@@ -337,28 +337,25 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
       )
   end
 
-  # Always returns the list of last season IDs, either recomputed or collected from cookies.
-  # The stored cookie shall expire at browser session (each time the user closes the browser).
+  # Always returns the list of last season IDs, either recomputed or served from Rails.cache.
+  # The cache expires in 1 day; the value changes at most once a year (around September).
   #
   def last_season_ids
-    # Last Seasons member variables won't change frequently, so we store them:
-    return JSON.parse(cookies[:last_seasons_ids]) if cookies[:last_seasons_ids].present?
+    Rails.cache.fetch('last_seasons_ids', expires_in: 1.day) do
+      start = Time.zone.now # compute elapsed time
+      # Retrieve any available latest season(s) by type, but include also those *having* at least some results
+      # (this is required by many features):
+      @last_seasons_ids = GogglesDb::LastSeasonId.all.map(&:id)
+      @last_seasons = GogglesDb::Season.unscoped.where(id: @last_seasons_ids)
+      # [!!!] References to @last_season_ids in specs & features - CHECK & UPDATE ALSO:
+      # - features/step_definitions/calendars/calendars_steps.rb:16
+      # - features/step_definitions/calendars/given_any_calendars_steps.rb:10:42:65
+      # - features/step_definitions/devise/given_any_user_steps.rb:105:191:242
+      # - spec/support/shared_team_managers_context.rb:4
 
-    start = Time.zone.now # compute elapsed time
-    # Retrieve any available latest season(s) by type, but include also those *having* at least some results
-    # (this is required by many features):
-    @last_seasons_ids = GogglesDb::LastSeasonId.all.map(&:id)
-    @last_seasons = GogglesDb::Season.unscoped.where(id: @last_seasons_ids)
-    # [!!!] References to @last_season_ids in specs & features - CHECK & UPDATE ALSO:
-    # - features/step_definitions/calendars/calendars_steps.rb:16
-    # - features/step_definitions/calendars/given_any_calendars_steps.rb:10:42:65
-    # - features/step_definitions/devise/given_any_user_steps.rb:105:191:242
-    # - spec/support/shared_team_managers_context.rb:4
-
-    Rails.logger.info("\r\n\r\n----> @last_seasons_ids recomputed. Elapsed time: #{Time.zone.now - start}")
-    # Prevent recompute on each page load:
-    cookies[:last_seasons_ids] = @last_seasons_ids.to_json
-    @last_seasons_ids
+      Rails.logger.info("\r\n\r\n----> @last_seasons_ids recomputed. Elapsed time: #{Time.zone.now - start}")
+      @last_seasons_ids
+    end
   end
   #-- -------------------------------------------------------------------------
   #++
