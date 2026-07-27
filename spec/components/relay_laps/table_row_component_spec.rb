@@ -15,21 +15,25 @@ RSpec.describe RelayLaps::TableRowComponent, type: :component do
       expect(fixture_mrs).to be_a(GogglesDb::MeetingRelaySwimmer).and be_valid
     end
 
-    it 'renders a collapsed table row with 2 cells' do
-      expect(subject.css('tr.collapse')).to be_present
-      expect(subject.css('tr.collapse').css('td').count).to eq(2)
+    it 'renders a table row with 2 cells' do
+      expect(subject.css('tr')).to be_present
+      expect(subject.css('tr').css('td').count).to eq(2)
+    end
+
+    it 'does not have collapse class on the row' do
+      expect(subject.css('tr.collapse')).not_to be_present
     end
 
     it 'includes the lap swimmer name' do
-      expect(subject.css('tr.collapse td').text).to include(fixture_mrs.swimmer.complete_name)
+      expect(subject.css('tr td').text).to include(fixture_mrs.swimmer.complete_name)
     end
 
     it 'includes the lap swimmer year of birth' do
-      expect(subject.css('tr.collapse td').text).to include(fixture_mrs.swimmer.year_of_birth.to_s)
+      expect(subject.css('tr td').text).to include(fixture_mrs.swimmer.year_of_birth.to_s)
     end
 
     it 'includes the lap timing' do
-      expect(subject.css('tr.collapse td.text-left').text).to include(fixture_mrs.to_timing&.to_s)
+      expect(subject.css('tr td.text-left').text).to include(fixture_mrs.to_timing&.to_s)
     end
   end
 

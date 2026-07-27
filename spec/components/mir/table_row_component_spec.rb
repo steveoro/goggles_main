@@ -57,8 +57,8 @@ RSpec.describe MIR::TableRowComponent, type: :component do
         expect(subject.at_css('.rotating-toggle')).to be_present
       end
 
-      it 'renders all the available laps as individual collapsible rows plus the ending result' do
-        expect(subject.css('tr.collapse').count).to eq(parent_result.laps.count + 1)
+      it 'renders all the available laps as rows inside a single collapsible tbody plus the ending result' do
+        expect(subject.css('tbody.collapse tr').count).to eq(parent_result.laps.count + 1)
       end
     end
 

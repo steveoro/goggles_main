@@ -25,28 +25,22 @@ RSpec.describe Laps::TableRowComponent, type: :component do
   context 'with a valid parameter,' do
     subject { render_inline(described_class.new(lap: fixture_lap)) }
 
-    it 'renders a collapsed table row with 2 cells' do
-      expect(subject.css('tr.collapse')).to be_present
-      expect(subject.css('tr.collapse').css('td').count).to eq(2)
+    it 'renders a table row with 2 cells' do
+      expect(subject.css('tr')).to be_present
+      expect(subject.css('tr').css('td').count).to eq(2)
+    end
+
+    it 'does not have collapse class on the row' do
+      expect(subject.css('tr.collapse')).not_to be_present
     end
 
     it 'includes the length in meters' do
-      expect(subject.at_css('tr.collapse td .length-in-meters').text).to include(fixture_lap.length_in_meters&.to_s)
+      expect(subject.at_css('tr td .length-in-meters').text).to include(fixture_lap.length_in_meters&.to_s)
     end
 
     it 'includes both the lap delta timing and the timing from start' do
-      expect(subject.at_css('tr.collapse td .delta-timing').text).to include("#{fixture_lap.to_timing} Δ")
-      expect(subject.at_css('tr.collapse td .delta-timing').text).to include("#{fixture_lap.timing_from_start} ⏱")
-    end
-  end
-
-  context 'with the same valid parameter and also with collapsed: false,' do
-    subject { render_inline(described_class.new(lap: fixture_lap, collapsed: false)) }
-
-    it 'renders the same table row with 2 cells but NOT collapsed' do
-      expect(subject.css('tr')).to be_present
-      expect(subject.css('tr').css('td').count).to eq(2)
-      expect(subject.css('tr.collapse')).not_to be_present
+      expect(subject.at_css('tr td .delta-timing').text).to include("#{fixture_lap.to_timing} Δ")
+      expect(subject.at_css('tr td .delta-timing').text).to include("#{fixture_lap.timing_from_start} ⏱")
     end
   end
 

@@ -42,8 +42,8 @@ RSpec.describe MRR::TableRowComponent, type: :component do
         expect(subject.at_css('.rotating-toggle')).to be_present
       end
 
-      it 'renders all the available laps as individual collapsible rows' do
-        expect(subject.css('tr.collapse').count).to eq(parent_result.meeting_relay_swimmers.count)
+      it 'renders all the available laps as rows inside a single collapsible tbody' do
+        expect(subject.css('tbody.collapse tr').count).to eq(parent_result.meeting_relay_swimmers.count)
       end
     end
 
