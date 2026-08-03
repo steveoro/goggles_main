@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   stale_when_importmap_changes
   protect_from_forgery with: :exception
   before_action :app_settings_row, :set_locale, :detect_device_variant, :check_maintenance_mode,
-                :update_stats, :prepare_last_seasons
+                :update_stats, :check_anonymous_request_limit, :prepare_last_seasons
   before_action :configure_devise_permitted_parameters, if: :devise_controller?
 
   # Prosopite will work only when enabled in config/environments/<ENV>.rb
@@ -263,7 +263,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   # This 'api_daily_uses' table should be cleaned up from older entries at least once
   # a week to prevent the DB from bloating excessively in size.
   #
-  # Not being interested at all in tracking the behaviour of each user, we just count the
+  # Not being interested at all in tracking the behavior of each user, we just count the
   # overall individual requests in order to scale the server host accordingly when the
   # need arises. There is currently no implemented way for knowing the *individual page views*
   # except for the basic request load.
@@ -276,6 +276,28 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     # This custom stats key allows to compute quickly the average request load per user, as well
     # as the total users per day:
     GogglesDb::APIDailyUse.increase_for!("REQ-#{request.ip}")
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  # Throttles anonymous requests when the daily count for the request IP
+  # exceeds the configured +max_anonymous_req+ bias.
+  #
+  # Skips:
+  # - logged-in users (current_user present)
+  # - Devise controllers (so throttled users can still sign in)
+  # - MaintenanceController (avoids interfering with maintenance redirects)
+  # - HomeController#too_many_requests (avoids infinite redirect loop)
+  #
+  def check_anonymous_request_limit # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+    return if current_user.present? || devise_controller? ||
+              controller_name == 'maintenance' ||
+              (controller_name == 'home' && action_name == 'too_many_requests')
+
+    daily_count = GogglesDb::APIDailyUse.for_route("REQ-#{request.ip}").for_date.first&.count || 0
+    return unless daily_count > GogglesDb::AppParameter.max_anonymous_req
+
+    redirect_to home_too_many_requests_path
   end
   #-- -------------------------------------------------------------------------
   #++

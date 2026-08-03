@@ -54,6 +54,12 @@ class HomeController < ApplicationController
     @swimmer = current_user.swimmer # (can be nil)
   end
 
+  def too_many_requests
+    # (no-op)
+    # The throttle check in ApplicationController skips this action to avoid redirect loops.
+    redirect_to root_path and return if current_user.present?
+  end
+
   private
 
   # Prepares and enqueues the "contact us" email message

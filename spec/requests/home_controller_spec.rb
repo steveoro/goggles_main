@@ -239,4 +239,27 @@ RSpec.describe HomeController do
   end
   #-- -------------------------------------------------------------------------
   #++
+
+  describe 'GET /too_many_requests' do
+    context 'with an unlogged user' do
+      it 'returns http success' do
+        get(home_too_many_requests_path)
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context 'with a logged-in user' do
+      before do
+        user = FactoryBot.create(:user)
+        sign_in(user)
+      end
+
+      it 'redirects to the root_path' do
+        get(home_too_many_requests_path)
+        expect(response).to redirect_to(root_path)
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 end

@@ -40,6 +40,11 @@ it:
       plan_meeting_btn: "Calendario: pianifica Meeting"
       team_reservation_btn: prenotazioni Squadra
 
+  too_many_requests:
+    title: "Troppe richieste"
+    message: "Hai effettuato troppe richieste senza aver effettuato l'accesso. Accedi per continuare a navigare."
+    aria_message: "Troppe richieste anonime. Accesso richiesto."
+
   about:
     go_back: "< Torna alla pagina principale"
     title: "Cos'è Goggles?"

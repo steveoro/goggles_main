@@ -1,0 +1,12 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    .row-fluid#too-many-requests
+      %p.mx-2{ role: 'alert', 'aria-label': t('home.too_many_requests.aria_message') }
+        = t('home.too_many_requests.message')
+
+    .row-fluid
+      %p.mx-2= link_to(t('about.go_back'), root_path)
+
+  .spacer-right

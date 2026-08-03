@@ -40,6 +40,11 @@ en:
       plan_meeting_btn: "Calendar: plan Meeting"
       team_reservation_btn: Team reservations
 
+  too_many_requests:
+    title: "Too many requests"
+    message: "You've made too many requests without signing in. Please log in to continue browsing."
+    aria_message: "Too many anonymous requests. Sign in required."
+
   about:
     go_back: "< Go back to the homepage"
     title: "What's Goggles?"

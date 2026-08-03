@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   get 'home/reactivate'
   post 'home/reactivate'
   get 'home/dashboard'
+  get 'home/too_many_requests'
 
   get 'chrono', to: 'chrono#index'
   get 'chrono/index'
