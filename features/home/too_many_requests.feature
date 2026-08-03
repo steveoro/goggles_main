@@ -1,5 +1,6 @@
 # language:en
 
+@throttle
 Feature: Too many anonymous requests
   As an anonymous user
   When I make too many requests without signing in
