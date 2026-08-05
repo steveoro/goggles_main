@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 93e3c6cc9da1a0f5c0e7b485fb0cb3b5712257ef
+  revision: 0947a9825036ed5e047c2bf2701f3a5953e8e078
   specs:
-    goggles_db (0.9.27)
+    goggles_db (0.9.28)
       acts-as-taggable-on
       acts_as_votable
       cities
@@ -243,7 +243,7 @@ GEM
       request_store (>= 1.0)
       ruby2_keywords
     drb (2.2.3)
-    erb (6.0.6)
+    erb (6.0.7)
     erubi (1.13.1)
     et-orbi (1.4.1)
       tzinfo
@@ -608,7 +608,7 @@ GEM
     rspec_pacman_formatter (0.1.7)
       colorize
       rspec
-    rubocop (1.88.2)
+    rubocop (1.89.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
