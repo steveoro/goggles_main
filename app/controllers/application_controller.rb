@@ -276,6 +276,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     # This custom stats key allows to compute quickly the average request load per user, as well
     # as the total users per day:
     GogglesDb::APIDailyUse.increase_for!("REQ-#{request.ip}")
+    GogglesDb::APIDailyUseAgent.increase_for!(request.user_agent)
   end
   #-- -------------------------------------------------------------------------
   #++

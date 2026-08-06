@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/steveoro/goggles_db
-  revision: 0947a9825036ed5e047c2bf2701f3a5953e8e078
+  revision: 047c7e046e6fc4cdf5053ecb3efd47284c41e007
   specs:
     goggles_db (0.9.28)
       acts-as-taggable-on
@@ -405,7 +405,7 @@ GEM
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2026.0701)
-    mini_magick (5.3.2)
+    mini_magick (5.3.3)
       logger
     mini_mime (1.1.5)
     minitest (6.0.6)
@@ -580,7 +580,7 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.4.4)
-    rouge (5.0.0)
+    rouge (5.1.0)
       strscan (~> 3.1)
     rspec (3.13.2)
       rspec-core (~> 3.13.0)

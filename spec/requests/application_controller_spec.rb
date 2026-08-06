@@ -42,6 +42,25 @@ RSpec.describe ApplicationController do
         get(root_path, env: { 'REMOTE_ADDR' => test_ip })
         expect(response).to have_http_status(:success)
       end
+
+      it 'tracks the user agent for the request' do
+        expect do
+          get(
+            root_path,
+            env: { 'REMOTE_ADDR' => test_ip, 'HTTP_USER_AGENT' => 'Main-Test/1.0' }
+          )
+        end.to change {
+          GogglesDb::APIDailyUseAgent.where(user_agent: 'Main-Test/1.0', day: Time.zone.today).count
+        }.by(1)
+      end
+
+      it 'stores a missing user agent as unknown' do
+        expect do
+          get(root_path, env: { 'REMOTE_ADDR' => test_ip })
+        end.to change {
+          GogglesDb::APIDailyUseAgent.where(user_agent: 'unknown', day: Time.zone.today).count
+        }.by(1)
+      end
     end
 
     context 'when the daily count exceeds the bias and no user is signed in' do
