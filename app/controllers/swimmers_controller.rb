@@ -3,7 +3,7 @@
 # = SwimmersController
 #
 class SwimmersController < ApplicationController
-  before_action :authenticate_user!, only: %i[history_recap history]
+  before_action :authenticate_user!, only: %i[history_recap history goggles_cup_base_timings]
   before_action :prepare_swimmer
 
   # GET /swimmers/:id
@@ -51,6 +51,27 @@ class SwimmersController < ApplicationController
     @event_type_list.compact!
     prepare_chart_recap_data
   end
+  #-- -------------------------------------------------------------------------
+  #++
+
+  # GET /swimmers/goggles_cup_base_timings/:id
+  # Lists Goggles Cup base timings (prior 3 championship years) for a swimmer.
+  # Requires authentication and an existing Swimmer.
+  #
+  # == Params
+  # - :id => a valid Swimmer ID, required
+  def goggles_cup_base_timings
+    if @swimmer.nil?
+      flash[:warning] = I18n.t('search_view.errors.invalid_request')
+      redirect_to(root_path) && return
+    end
+
+    @base_timings = GogglesDb::GogglesCup3yBaseTimings.includes(:event_type, :pool_type, :season, :meeting,
+                                                                season: [:federation_type, { season_type: :federation_type }])
+                                                      .where(swimmer_id: @swimmer.id)
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 
   # GET [Turbo Stream] - Renders the whole subsection of history stats for a single
   #             MeetingEvent row, by AJAX call.

@@ -52,3 +52,14 @@ Given('I have a chosen a random event type for the already chosen swimmer') do
                                                     .first(100).sample
   @chosen_event_type = GogglesDb::EventType.find(event_type_id)
 end
+
+# Designed for Goggles Cup base timings
+# Sets @chosen_swimmer when the scenic view has data; otherwise skips the expectation chain
+# by picking any MIR swimmer (empty results table is still valid for the page).
+Given('I have a chosen a random swimmer with existing Goggles Cup base timings') do
+  swimmer_id = GogglesDb::GogglesCup3yBaseTimings.distinct.pluck(:swimmer_id).last(250).sample
+  swimmer_id ||= GogglesDb::MeetingIndividualResult.distinct.pluck(:swimmer_id).last(250).sample
+  expect(swimmer_id).to be_present
+  @chosen_swimmer = GogglesDb::Swimmer.find(swimmer_id)
+  expect(@chosen_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
+end

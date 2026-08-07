@@ -1,0 +1,20 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content#top-of-page
+    %section#swimmer-goggles-cup-base-timings-title
+      = render(Title::BreadCrumbLinkComponent.new(title: t('swimmers.radiography.goggles_cup_base_timings'),
+               css_icon: 'trophy', parent_title: t('swimmers.radiography.subtitle'),
+               parent_link: swimmer_show_path(@swimmer)))
+
+    %section.container#swimmer-goggles-cup-base-timings
+      .row-fluid.py-1.bg-primary.text-center.text-light
+        %b#swimmer-name= @swimmer.complete_name
+
+      .row-fluid
+        = render(partial: 'best_results_list',
+                 locals: { best_results: @base_timings,
+                           title: t('swimmers.radiography.goggles_cup_base_timings_title'),
+                           info_note: t('swimmers.radiography.goggles_cup_base_timings_note') })
+
+  .spacer-right

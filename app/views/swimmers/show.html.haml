@@ -31,6 +31,12 @@
             %th{ scope: 'row' }= t('swimmers.affiliated_with')
             %td{ id: 'team-links' }
               = swimmer.link_to_teams(100) # limit names to 100 chars
+          %tr
+            %th{ scope: 'row' }= t('swimmers.radiography.goggles_cup_base_timings')
+            %td
+              = link_to(t('swimmers.radiography.goggles_cup_base_timings'),
+                        swimmer_goggles_cup_base_timings_path(@swimmer),
+                        id: 'goggles-cup-base-timings')
 
     %section.container#swimmer-buttons
       .row-fluid.my-2

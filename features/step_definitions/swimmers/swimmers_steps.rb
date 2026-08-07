@@ -10,9 +10,12 @@ Then('I see the swimmer\'s details table') do
   expect(node).to be_present
   expect(node.find('td#full-name').text).to be_present
   expect(node.find('td#year-of-birth').text).to be_present
-  expect(node.find('td#curr-cat-code').text).to be_present
-  expect(node.find('td#last-cat-code').text).to be_present
-  expect(node.find('td#team-links').text).to be_present
+  expect(node.find('td#curr-cat-code')).to be_present
+  # Optional: empty when the swimmer has no badge-derived category
+  expect(node.find('td#last-cat-code')).to be_present
+  # Optional: empty when the swimmer has no team affiliations
+  expect(node.find('td#team-links')).to be_present
+  expect(node.find('a#goggles-cup-base-timings').text).to be_present
 end
 
 Then('I see the swimmer\'s details toolbar buttons') do
@@ -163,6 +166,34 @@ When('I click on random result link on the history detail grid') do
   rnd_node = node.find_all('tr td.meeting_name a').sample
   expect(rnd_node).to be_visible
   rnd_node.click
+end
+#-- ---------------------------------------------------------------------------
+#++
+
+# Uses @chosen_swimmer
+Then('I am at the Goggles Cup base timings page of the chosen swimmer') do
+  expect(@chosen_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
+  expect(page).to have_current_path(swimmer_goggles_cup_base_timings_path(@chosen_swimmer), ignore_query: true)
+end
+
+# Uses @chosen_swimmer
+And('I can see the chosen swimmer\'s name as subtitle of the Goggles Cup base timings page') do
+  expect(@chosen_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
+  node = find('section#swimmer-goggles-cup-base-timings #swimmer-name', visible: true)
+  expect(node.text).to eq(@chosen_swimmer.complete_name)
+end
+
+And('I see the Goggles Cup base timings info note') do
+  find_by_id('best-results-info-note', visible: true)
+end
+
+And('I see the Goggles Cup base timings results table') do
+  find('section#swimmer-goggles-cup-base-timings table', visible: true)
+end
+
+And('I see at least one Goggles Cup base timing row') do
+  rows = find_all('section#swimmer-goggles-cup-base-timings table tbody tr', visible: true)
+  expect(rows.count).to be_positive
 end
 #-- ---------------------------------------------------------------------------
 #++

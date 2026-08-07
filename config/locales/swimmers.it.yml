@@ -38,6 +38,13 @@ it:
       all_meetings: Tutti i meeting
       all_workshops: Tutti i collegiali
       best_5y_results: Migliori risultati negli ultimi 5 anni
+      goggles_cup_base_timings: Tempi base Goggles Cup
+      goggles_cup_base_timings_title: Tempi base Goggles Cup (3 anni di campionato precedenti)
+      goggles_cup_base_timings_note: >-
+        Questi sono i tempi di riferimento che potrebbero essere usati per calcolare la classifica della Goggles Cup a fine Stagione di Campionato.
+        Più riuscirai a migliorare questi risultati, più alto sarà il punteggio.
+        Un nuovo risultato in un evento non ancora presente ti assegnerà il punteggio pieno (in genere 1000 punti, a seconda del regolamento della cup).
+        Formula di calcolo predefinita: punteggio = 1000 * (Tempo base / Tempo corrente)
       event_type: Evento
       pool_type: Vasca
       best_timing: Tempo

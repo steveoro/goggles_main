@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'goggles_db/version'
+
 class CreateAPIDailyUseAgents < ActiveRecord::Migration[6.1]
   def up
     create_table :api_daily_use_agents do |t|

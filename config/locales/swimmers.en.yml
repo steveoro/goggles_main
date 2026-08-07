@@ -38,6 +38,13 @@ en:
       all_meetings: All meetings
       all_workshops: All workshops
       best_5y_results: Best results during the last 5 years
+      goggles_cup_base_timings: Goggles Cup base timings
+      goggles_cup_base_timings_title: Goggles Cup base timings (prior 3 championship years)
+      goggles_cup_base_timings_note: >-
+        These are the reference timings that might be used to compute a Goggles Cup ranking when the Championship Season ends.
+        The higher you'll get to improve these results, the higher will be the score.
+        A new result in an event not yet enlisted will grant you full score (typically 1000 points, depending on the rules of the cup).
+        Default scoring formula: score = 1000 * (Base timing / Current timing)
       event_type: Event
       pool_type: Pool
       best_timing: Timing

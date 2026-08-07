@@ -54,6 +54,37 @@ RSpec.describe SwimmersController do
   #-- -------------------------------------------------------------------------
   #++
 
+  describe 'GET /goggles_cup_base_timings/:id' do
+    context 'with an unlogged user' do
+      it 'is a redirect to the login path' do
+        get(swimmer_goggles_cup_base_timings_path(fixture_row_id))
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'with a logged-in user without an associated swimmer,' do
+      before do
+        user = FactoryBot.create(:user)
+        sign_in(user)
+      end
+
+      context 'with a valid row id' do
+        it 'is successful' do
+          get(swimmer_goggles_cup_base_timings_path(fixture_row_id))
+          expect(response).to have_http_status(:success)
+        end
+      end
+
+      context 'with an invalid row id' do
+        before { get(swimmer_goggles_cup_base_timings_path(-1)) }
+
+        it_behaves_like('invalid row id GET request')
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
+
   describe 'GET XHR /event_type_stats' do
     let(:event_type_id) { GogglesDb::EventType.all_individuals.sample.id }
 

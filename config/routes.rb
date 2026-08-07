@@ -80,6 +80,8 @@ Rails.application.routes.draw do
 
   get 'swimmers/show/:id',          to: 'swimmers#show',          as: 'swimmer_show'
   get 'swimmers/history_recap/:id', to: 'swimmers#history_recap', as: 'swimmer_history_recap'
+  get 'swimmers/goggles_cup_base_timings/:id', to: 'swimmers#goggles_cup_base_timings',
+                                               as: 'swimmer_goggles_cup_base_timings'
   get 'swimmers/:id/history/:event_type_id', to: 'swimmers#history', as: 'swimmer_history'
   get 'swimmers/:id/event_type_stats/:event_type_id', to: 'swimmers#event_type_stats', as: 'swimmer_event_type_stats'
 

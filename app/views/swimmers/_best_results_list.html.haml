@@ -1,5 +1,11 @@
+- title = local_assigns.fetch(:title, t('swimmers.radiography.best_5y_results'))
+- info_note = local_assigns[:info_note]
 %h6.text-center.bg-light-blue.mt-2
-  #{t('swimmers.radiography.best_5y_results')}
+  = title
+- if info_note.present?
+  .alert.alert-info.my-2#best-results-info-note{ role: 'alert' }
+    %i.fa.fa-info-circle.mr-1{ 'aria-hidden': 'true' }
+    %small= info_note
 .table-responsive
   %table.table.table-striped.table-hover.table-sm
     %thead

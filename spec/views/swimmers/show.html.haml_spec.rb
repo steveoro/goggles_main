@@ -44,6 +44,12 @@ RSpec.describe 'swimmers/show.html.haml' do
       expect(subject.at_css('td#team-links')).to be_present
     end
 
+    it 'shows the link to the Goggles Cup base timings page' do
+      link = subject.at_css('a#goggles-cup-base-timings')
+      expect(link).to be_present
+      expect(link.attributes['href'].value).to eq(swimmer_goggles_cup_base_timings_path(fixture_row))
+    end
+
     it 'includes the setion for the swimmer action buttons' do
       expect(subject.at_css('section#swimmer-buttons')).to be_present
       stats_btn = subject.at_css('section#swimmer-buttons a#btn-stats')
