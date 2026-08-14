@@ -184,8 +184,13 @@ class SwimmersController < ApplicationController
 
   # Computes the default base championship year using the same SQL function
   # that the parameterized best-result views rely on.
+  #
+  # The SQL helper reads the @base_year session variable, so we reset it first
+  # to avoid reusing a stale value left behind by a previous request.
   def default_base_year
-    GogglesDb::GogglesCup3yBaseTimings.connection.select_value('SELECT goggles_db_base_year()')
+    connection = GogglesDb::GogglesCup3yBaseTimings.connection
+    connection.execute('SET @base_year = NULL')
+    connection.select_value('SELECT goggles_db_base_year()')
   end
 
   # /goggles_cup_base_timings action strong parameters checking

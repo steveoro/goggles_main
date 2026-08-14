@@ -75,6 +75,7 @@ RSpec.describe SwimmersController do
         end
 
         it 'defaults to the current base championship year' do
+          GogglesDb::GogglesCup3yBaseTimings.connection.execute('SET @base_year = NULL')
           default_year = GogglesDb::GogglesCup3yBaseTimings.connection.select_value('SELECT goggles_db_base_year()')
           get(swimmer_goggles_cup_base_timings_path(fixture_row_id))
           expect(response.body).to include(I18n.t('swimmers.radiography.base_year_header', base_year: default_year))
@@ -90,6 +91,17 @@ RSpec.describe SwimmersController do
         it 'uses the requested base championship year' do
           get(swimmer_goggles_cup_base_timings_path(fixture_row_id, base_year: 2022))
           expect(response.body).to include(I18n.t('swimmers.radiography.base_year_header', base_year: 2022))
+        end
+
+        it 'does not leak the base_year to the next default fallback request' do
+          get(swimmer_goggles_cup_base_timings_path(fixture_row_id, base_year: 2022))
+          expect(response.body).to include(I18n.t('swimmers.radiography.base_year_header', base_year: 2022))
+
+          GogglesDb::GogglesCup3yBaseTimings.connection.execute('SET @base_year = NULL')
+          default_year = GogglesDb::GogglesCup3yBaseTimings.connection.select_value('SELECT goggles_db_base_year()')
+
+          get(swimmer_goggles_cup_base_timings_path(fixture_row_id, base_year: 'invalid'))
+          expect(response.body).to include(I18n.t('swimmers.radiography.base_year_header', base_year: default_year))
         end
       end
 
