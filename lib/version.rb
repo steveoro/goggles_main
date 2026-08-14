@@ -24,7 +24,7 @@ module Version
   MAJOR = '0'
 
   # Minor version.
-  MINOR = '9'
+  MINOR = '10'
 
   # Patch version.
   PATCH = '30'

@@ -40,6 +40,8 @@ en:
       best_5y_results: Best results during the last 5 years
       goggles_cup_base_timings: Goggles Cup base timings
       goggles_cup_base_timings_title: Goggles Cup base timings (prior 3 championship years)
+      base_year_header: "Base championship year: %{base_year}"
+      select_base_year: Select base year
       goggles_cup_base_timings_note: >-
         These are the reference timings that might be used to compute a Goggles Cup ranking when the Championship Season ends.
         The higher you'll get to improve these results, the higher will be the score.
