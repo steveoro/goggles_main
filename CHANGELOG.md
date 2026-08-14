@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.10.30** [Steve A.] re-sync w/ base engine v0.10.0 (base_year parameter for best-result views); added base_year selector to Goggles Cup base timings page; bundle updates
 - **0.9.29** [Steve A.] fixed migration file; added goggle cup base timings in swimmer show + test coverage; bundle update
 - **0.9.27** [Steve A.] support for new 'max_anonymous_req' setting in app group from base engine; bundle updates; throttle anonymous requests when they reach the bias in the setting
 - **0.9.25** [Steve A.] fix for laps/relay_laps components in show results; last_season_id caching by SolidCache instead of cookies; re-sync w/ base engine; bundle updates

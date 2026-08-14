@@ -10,6 +10,17 @@
     %section.container#swimmer-goggles-cup-base-timings
       .row-fluid.py-1.bg-primary.text-center.text-light
         %b#swimmer-name= @swimmer.complete_name
+        %small#base-year= "(#{t('swimmers.radiography.base_year_header', base_year: @base_year)})"
+
+      .row-fluid.my-2#swimmer-goggles-cup-base-timings-filter
+        = form_tag(swimmer_goggles_cup_base_timings_path(@swimmer), method: :get, id: 'goggles-cup-base-timings-form',
+                   class: 'form-inline') do
+          .input-group
+            = label_tag(:base_year, t('swimmers.radiography.select_base_year'), class: 'input-group-text')
+            = number_field_tag(:base_year, @base_year, min: 2000, max: Date.current.year + 1,
+                               class: 'form-control', id: 'base_year')
+            = submit_tag(t('swimmers.radiography.select_base_year'), class: 'btn btn-outline-primary',
+                         id: 'btn-select-base-year')
 
       .row-fluid
         = render(partial: 'best_results_list',

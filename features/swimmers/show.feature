@@ -42,3 +42,14 @@ Feature: Show swimmer details ('Radiography')
     And I can see the chosen swimmer's name as subtitle of the Goggles Cup base timings page
     And I see the Goggles Cup base timings info note
     And I see the Goggles Cup base timings results table
+
+  Scenario: logged-in user selecting a different base year on Goggles Cup base timings page
+    Given I am already signed-in and at the root page
+    And I have a chosen a random swimmer with existing MIRs
+    When I browse to the radiography of the chosen swimmer
+    And I click on '#goggles-cup-base-timings'
+    Then I am at the Goggles Cup base timings page of the chosen swimmer
+    When I fill the 'base_year' field with '2022'
+    And I click on the 'Seleziona anno base' button
+    Then I am at the Goggles Cup base timings page of the chosen swimmer
+    And the Goggles Cup base year is '2022'

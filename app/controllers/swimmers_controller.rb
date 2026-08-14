@@ -60,13 +60,16 @@ class SwimmersController < ApplicationController
   #
   # == Params
   # - :id => a valid Swimmer ID, required
+  # - :base_year => optional reference championship year (defaults to the current one)
   def goggles_cup_base_timings
     if @swimmer.nil?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
       redirect_to(root_path) && return
     end
 
-    @base_timings = GogglesDb::GogglesCup3yBaseTimings.includes(:event_type, :pool_type, :season, :meeting,
+    @base_year = fetch_base_year
+    @base_timings = GogglesDb::GogglesCup3yBaseTimings.with_base_year(@base_year)
+                                                      .includes(:event_type, :pool_type, :season, :meeting,
                                                                 season: [:federation_type, { season_type: :federation_type }])
                                                       .where(swimmer_id: @swimmer.id)
   end
@@ -133,9 +136,10 @@ class SwimmersController < ApplicationController
 
   protected
 
-  # /show action strong parameters checking
+  # /show action strong parameters checking (also used by prepare_swimmer before
+  # every action, so permit additional query params that may come from related pages)
   def swimmer_params
-    params.permit(:id)
+    params.permit(:id, :base_year, :commit)
   end
 
   # /history actions strong parameters checking
@@ -167,6 +171,26 @@ class SwimmersController < ApplicationController
     @swimmer = GogglesDb::Swimmer.find_by(id: swimmer_params[:id])
     @swimmer ||= GogglesDb::Swimmer.find_by(id: cookies[:swimmer_id]) if cookies[:swimmer_id].present?
     cookies[:swimmer_id] = @swimmer.id if @swimmer.present?
+  end
+
+  # Returns the base_year parameter as an integer when valid, otherwise the
+  # default base championship year computed by the engine helper function.
+  def fetch_base_year
+    year = goggles_cup_base_timings_params[:base_year].to_s.strip
+    return year.to_i if year.match?(/\A20\d{2}\z/)
+
+    default_base_year
+  end
+
+  # Computes the default base championship year using the same SQL function
+  # that the parameterized best-result views rely on.
+  def default_base_year
+    GogglesDb::GogglesCup3yBaseTimings.connection.select_value('SELECT goggles_db_base_year()')
+  end
+
+  # /goggles_cup_base_timings action strong parameters checking
+  def goggles_cup_base_timings_params
+    params.permit(:id, :base_year)
   end
   #-- -------------------------------------------------------------------------
   #++

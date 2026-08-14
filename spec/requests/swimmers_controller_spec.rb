@@ -73,6 +73,24 @@ RSpec.describe SwimmersController do
           get(swimmer_goggles_cup_base_timings_path(fixture_row_id))
           expect(response).to have_http_status(:success)
         end
+
+        it 'defaults to the current base championship year' do
+          default_year = GogglesDb::GogglesCup3yBaseTimings.connection.select_value('SELECT goggles_db_base_year()')
+          get(swimmer_goggles_cup_base_timings_path(fixture_row_id))
+          expect(response.body).to include(I18n.t('swimmers.radiography.base_year_header', base_year: default_year))
+        end
+      end
+
+      context 'with a valid base_year parameter' do
+        it 'is successful' do
+          get(swimmer_goggles_cup_base_timings_path(fixture_row_id, base_year: 2022))
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'uses the requested base championship year' do
+          get(swimmer_goggles_cup_base_timings_path(fixture_row_id, base_year: 2022))
+          expect(response.body).to include(I18n.t('swimmers.radiography.base_year_header', base_year: 2022))
+        end
       end
 
       context 'with an invalid row id' do

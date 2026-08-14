@@ -20,6 +20,7 @@ RSpec.describe 'swimmers/goggles_cup_base_timings.html.haml' do
       expect(fixture_row).to be_a(GogglesDb::Swimmer).and be_valid
 
       assign(:swimmer, fixture_row)
+      assign(:base_year, 2025)
       assign(:base_timings, base_timings)
       render
     end
@@ -56,6 +57,19 @@ RSpec.describe 'swimmers/goggles_cup_base_timings.html.haml' do
       rows = subject.css('section#swimmer-goggles-cup-base-timings table tbody tr')
       expect(rows.count).to eq(base_timings.count)
     end
+
+    it 'shows the selected base championship year' do
+      expect(subject.at_css('#base-year').text).to include('2025')
+    end
+
+    it 'renders the base year selection form' do
+      form = subject.at_css('form#goggles-cup-base-timings-form')
+      expect(form).to be_present
+      input = form.at_css('input#base_year')
+      expect(input).to be_present
+      expect(input['value']).to eq('2025')
+      expect(form.at_css('input#btn-select-base-year')).to be_present
+    end
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -65,6 +79,7 @@ RSpec.describe 'swimmers/goggles_cup_base_timings.html.haml' do
 
     before do
       assign(:swimmer, fixture_row)
+      assign(:base_year, 2025)
       assign(:base_timings, [])
       render
     end

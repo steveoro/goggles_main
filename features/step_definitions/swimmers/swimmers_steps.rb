@@ -195,5 +195,9 @@ And('I see at least one Goggles Cup base timing row') do
   rows = find_all('section#swimmer-goggles-cup-base-timings table tbody tr', visible: true)
   expect(rows.count).to be_positive
 end
+
+And('the Goggles Cup base year is {string}') do |base_year|
+  expect(page).to have_text(I18n.t('swimmers.radiography.base_year_header', base_year: base_year))
+end
 #-- ---------------------------------------------------------------------------
 #++

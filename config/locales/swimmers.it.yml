@@ -40,6 +40,8 @@ it:
       best_5y_results: Migliori risultati negli ultimi 5 anni
       goggles_cup_base_timings: Tempi base Goggles Cup
       goggles_cup_base_timings_title: Tempi base Goggles Cup (3 anni di campionato precedenti)
+      base_year_header: "Anno base del campionato: %{base_year}"
+      select_base_year: Seleziona anno base
       goggles_cup_base_timings_note: >-
         Questi sono i tempi di riferimento che potrebbero essere usati per calcolare la classifica della Goggles Cup a fine Stagione di Campionato.
         Più riuscirai a migliorare questi risultati, più alto sarà il punteggio.
