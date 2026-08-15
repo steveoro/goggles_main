@@ -23,10 +23,20 @@ class GoggleCupsController < ApplicationController
 
   # [GET] Streams the stored ranking for the selected cup.
   def ranking
-    return redirect_index_with_alert(t('goggle_cups.info.no_ranking_data')) if @goggle_cup.ranking_data.blank?
+    if @goggle_cup.ranking_data.blank?
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.update('goggle-cup-ranking',
+                                                   partial: 'goggle_cups/alert',
+                                                   locals: { message: t('goggle_cups.info.no_ranking_data') })
+        end
+        format.html { redirect_index_with_alert(t('goggle_cups.info.no_ranking_data')) }
+      end
+      return
+    end
 
-    @selected_team ||= @goggle_cup.team
-    @selected_team_id ||= @goggle_cup.team_id
+    @selected_team = @goggle_cup.team
+    @selected_team_id = @goggle_cup.team_id
     @season_year ||= @goggle_cup.season_year
     @ranking_data = GogglesDb::GoggleCupRanking::DataDeserializer.new(@goggle_cup).call
     @no_duplicated_events = no_duplicated_events_from(@goggle_cup)
