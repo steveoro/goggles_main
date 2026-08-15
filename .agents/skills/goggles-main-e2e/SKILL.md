@@ -38,6 +38,20 @@ description: End-to-end testing guide for goggles_main, covering dev server setu
   - submit button text `Seleziona anno base`
 - Default locale is `:it`; the base-year label is `Anno base del campionato: %{base_year}`.
 
+## Goggle Cup team-manager browse
+
+- Sign in as a manager for the target team (e.g. `leegaweb@gmail.com` / `Password123!` for team `Lake Ramiro Swimming Club ASD`).
+- The `Goggle Cup` command appears in the top `comandi` dropdown when `@current_user_is_manager` or `@current_user_is_admin` is true; link id is `#link-goggle-cups`.
+- Browse page URL: `/goggle_cups`
+- Form fields:
+  - `select[name="season_year"]`
+  - hidden `input[name="team_id"]` set by the `team` autocomplete combo-box (selected label visible in the `ComboBox` widget)
+  - submit button text `Cerca`
+- After searching, available cups appear in `#goggle-cup-titles`.
+- Clicking a cup title requests `/goggle_cups/:id/ranking` with `data-turbo-stream="true"` and replaces `#goggle-cup-ranking` with the rendered `_ranking` partial.
+- The ranking shows swimmer name, total score, and a current-vs-old meeting table.
+- A `Mostra tempi base` toggle expands a collapsible base timings section (Bootstrap `data-toggle="collapse"`) when base rows are present.
+
 ## Known gotcha: SQL `@base_year` session variable
 
 - `GogglesDb::GogglesCup3yBaseTimings.with_base_year(year)` executes `SET @base_year = <year>` and does **not** reset the variable.

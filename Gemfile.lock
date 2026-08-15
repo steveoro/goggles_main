@@ -1,7 +1,6 @@
 GIT
   remote: https://github.com/steveoro/goggles_db.git
   revision: 1d2ef006e40059c64366a99d0995e6c4f430f382
-  branch: devin/extract-goggle-cup-ranking
   specs:
     goggles_db (0.10.1)
       acts-as-taggable-on
