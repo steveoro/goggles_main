@@ -1,0 +1,18 @@
+en:
+  goggle_cups:
+    nav_item: "Goggle Cup"
+    title: "Goggle Cup"
+    description: "Browse pre-computed Goggle Cup rankings for managed teams."
+    selection_header: "Select championship year and team"
+    season_year: "Championship year"
+    team: "Team"
+    select_year: "Select year"
+    search: "Search"
+    available_cups: "Available cups"
+    unauthorized: "You are not authorized to view Goggle Cups."
+    unauthorized_team: "You are not authorized to manage the selected team."
+    team_not_found: "Selected team not found."
+    cup_not_found: "Selected cup not found."
+    info:
+      no_cups: "No Goggle Cups found for the selected year and team."
+      no_ranking_data: "The selected cup has no pre-computed ranking data."

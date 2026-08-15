@@ -1,0 +1,62 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    - provide(:title, t('goggle_cups.title'))
+    .row-fluid.text-center
+      %h4
+        %i.fa.fa-trophy
+        = t('goggle_cups.title')
+      %p
+        %i= t('goggle_cups.description')
+
+    %section.my-2#goggle-cup-selection
+      .card
+        .card-header.bg-light-blue
+          %strong= t('goggle_cups.selection_header')
+        .card-body
+          = form_with(url: goggle_cups_path, method: :get, local: true,
+                      data: { turbo: false }) do |f|
+            .container-fluid
+              .row.mb-3
+                .col-md-4.my-2
+                  = label_tag :season_year, t('goggle_cups.season_year'), class: 'form-label'
+                  = select_tag(:season_year,
+                               options_for_select(@available_years.presence || [[@season_year, @season_year]], @season_year),
+                               { prompt: t('goggle_cups.select_year'), class: 'form-control', required: true })
+                .col-md-6.my-2
+                  - if user_is_admin?
+                    = render(ComboBox::AutocompleteComponent.new(api_url: 'teams', label: t('goggle_cups.team'),
+                                                                 base_name: 'team', required: true, free_text: true,
+                                                                 selected_id: @selected_team_id, selected_label: @selected_team&.name))
+                  - else
+                    = render(ComboBox::AutocompleteComponent.new(label: t('goggle_cups.team'), base_name: 'team',
+                                                                 required: true,
+                                                                 values: options_from_collection_for_select(@managed_teams, 'id', 'name', @selected_team_id)))
+                .col-md-2.my-2.d-flex.align-items-end
+                  = button_tag(type: 'submit', class: 'btn btn-primary w-100') do
+                    %i.fa.fa-search.me-2
+                    = t('goggle_cups.search')
+
+    - if @selected_team && @season_year
+      - if @goggle_cups.present?
+        %section.my-2#goggle-cup-titles
+          .card
+            .card-header.bg-light-blue
+              %strong= t('goggle_cups.available_cups')
+            .card-body
+              .d-flex.flex-wrap
+                - @goggle_cups.each do |cup|
+                  = link_to(cup.description, goggle_cup_ranking_path(cup),
+                            class: 'btn btn-outline-primary m-1',
+                            data: { turbo_stream: true, controller: 'loading', action: 'click->loading#show' })
+      - else
+        .alert.alert-info.text-center= t('goggle_cups.info.no_cups')
+
+    %section.my-2#goggle-cup-ranking
+      - if @ranking_data.present?
+        = render partial: 'goggle_cups/ranking',
+                 locals: { team: @selected_team, goggle_cup: @goggle_cup, ranking_data: @ranking_data,
+                           no_duplicated_events: @no_duplicated_events }
+
+  .spacer-left

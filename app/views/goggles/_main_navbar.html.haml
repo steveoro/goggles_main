@@ -31,6 +31,7 @@
         .dropdown-menu{ 'aria-labelledby' => 'navbar-dropdown' }
           - if @current_user_is_manager || @current_user_is_admin
             = link_to("⏱ #{t('chrono.title')}", chrono_index_path, id: 'link-chrono', class: 'dropdown-item')
+            = link_to("🏆 #{t('goggle_cups.nav_item')}", goggle_cups_path, id: 'link-goggle-cups', class: 'dropdown-item')
           = link_to("🔢 #{t('home.compute_fin_score')}", tools_fin_score_path,
                     id: 'link-compute-score', class: 'dropdown-item')
           = link_to("🔢 #{t('home.compute_deltas')}", tools_delta_timings_path,

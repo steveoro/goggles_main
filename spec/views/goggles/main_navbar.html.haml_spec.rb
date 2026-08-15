@@ -126,6 +126,10 @@ RSpec.describe 'goggles/_main_navbar.html.haml' do
     it 'does not show the chrono command in the navbar' do
       expect(navbar_content.at_css('a#link-chrono')).not_to be_present
     end
+
+    it 'does not show the goggle cup command in the navbar' do
+      expect(navbar_content.at_css('a#link-goggle-cups')).not_to be_present
+    end
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -151,6 +155,14 @@ RSpec.describe 'goggles/_main_navbar.html.haml' do
       expect(
         navbar_content.at_css('a#link-chrono').text
       ).to include(ERB::Util.html_escape(I18n.t('chrono.title')))
+    end
+
+    it 'shows the goggle cup command in the navbar' do
+      expect(navbar_content.at_css('a#link-goggle-cups')).to be_present
+      expect(navbar_content.at_css('a#link-goggle-cups').attributes['href'].value).to include(goggle_cups_path)
+      expect(
+        navbar_content.at_css('a#link-goggle-cups').text
+      ).to include(ERB::Util.html_escape(I18n.t('goggle_cups.nav_item')))
     end
   end
 end
