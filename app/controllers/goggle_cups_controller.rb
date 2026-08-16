@@ -23,17 +23,7 @@ class GoggleCupsController < ApplicationController
 
   # [GET] Streams the stored ranking for the selected cup.
   def ranking
-    if @goggle_cup.ranking_data.blank?
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.update('goggle-cup-ranking',
-                                                   partial: 'goggle_cups/alert',
-                                                   locals: { message: t('goggle_cups.info.no_ranking_data') })
-        end
-        format.html { redirect_index_with_alert(t('goggle_cups.info.no_ranking_data')) }
-      end
-      return
-    end
+    return respond_with_alert(t('goggle_cups.info.no_ranking_data')) if @goggle_cup.ranking_data.blank?
 
     @selected_team = @goggle_cup.team
     @selected_team_id = @goggle_cup.team_id
@@ -54,7 +44,7 @@ class GoggleCupsController < ApplicationController
   def validate_manager_or_admin!
     return if user_is_admin? || managed_team_ids_for_user.present?
 
-    redirect_to(root_path, alert: t('goggle_cups.unauthorized'))
+    respond_with_alert(t('goggle_cups.unauthorized'), root_path)
   end
 
   def prepare_managed_teams_for_cups
@@ -73,10 +63,10 @@ class GoggleCupsController < ApplicationController
     return if @selected_team_id.blank?
 
     @selected_team = GogglesDb::Team.find_by(id: @selected_team_id)
-    return redirect_index_with_alert(t('goggle_cups.team_not_found')) if @selected_team.blank?
+    return respond_with_alert(t('goggle_cups.team_not_found')) if @selected_team.blank?
     return if user_is_admin? || @managed_team_ids.include?(@selected_team_id.to_i)
 
-    redirect_to(root_path, alert: t('goggle_cups.unauthorized_team'))
+    respond_with_alert(t('goggle_cups.unauthorized_team'), root_path)
   end
 
   def set_season_year
@@ -87,10 +77,10 @@ class GoggleCupsController < ApplicationController
 
   def set_goggle_cup
     @goggle_cup = GogglesDb::GoggleCup.find_by(id: params[:id])
-    return redirect_index_with_alert(t('goggle_cups.cup_not_found')) if @goggle_cup.blank?
+    return respond_with_alert(t('goggle_cups.cup_not_found')) if @goggle_cup.blank?
     return if user_is_admin? || @managed_team_ids.include?(@goggle_cup.team_id)
 
-    redirect_to(root_path, alert: t('goggle_cups.unauthorized_team'))
+    respond_with_alert(t('goggle_cups.unauthorized_team'), root_path)
   end
 
   def goggle_cups_for_selection
@@ -130,7 +120,16 @@ class GoggleCupsController < ApplicationController
     false
   end
 
-  def redirect_index_with_alert(alert_message)
-    redirect_to(goggle_cups_path, alert: alert_message)
+  # Renders a turbo-stream alert inside #goggle-cup-ranking for stream requests,
+  # or redirects to the given path with a flash alert for HTML requests.
+  def respond_with_alert(alert_message, redirect_path = goggle_cups_path)
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.update('goggle-cup-ranking',
+                                                 partial: 'goggle_cups/alert',
+                                                 locals: { message: alert_message })
+      end
+      format.html { redirect_to(redirect_path, alert: alert_message) }
+    end
   end
 end

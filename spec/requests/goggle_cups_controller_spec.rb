@@ -224,6 +224,14 @@ RSpec.describe GoggleCupsController do
       it 'sets an unauthorized team flash message' do
         expect(flash[:alert]).to eq(I18n.t('goggle_cups.unauthorized_team'))
       end
+
+      it 'returns a turbo stream alert for unauthorized team access' do
+        get(goggle_cup_ranking_path(cup, format: :turbo_stream))
+        expect(response).to have_http_status(:success)
+        expect(response.media_type).to eq('text/vnd.turbo-stream.html')
+        expect(response.body).to include('goggle-cup-ranking')
+        expect(response.body).to include(I18n.t('goggle_cups.unauthorized_team'))
+      end
     end
 
     it 'redirects with an alert when the cup has no ranking data' do
@@ -237,6 +245,19 @@ RSpec.describe GoggleCupsController do
       expect(flash[:alert]).to eq(I18n.t('goggle_cups.info.no_ranking_data'))
     end
 
+    it 'returns a turbo stream alert when the cup has no ranking data' do
+      cup.update!(ranking_data: nil)
+      admin_user = FactoryBot.create(:user)
+      FactoryBot.create(:admin_grant, user: admin_user)
+      sign_in(admin_user)
+
+      get(goggle_cup_ranking_path(cup, format: :turbo_stream))
+      expect(response).to have_http_status(:success)
+      expect(response.media_type).to eq('text/vnd.turbo-stream.html')
+      expect(response.body).to include('goggle-cup-ranking')
+      expect(response.body).to include(I18n.t('goggle_cups.info.no_ranking_data'))
+    end
+
     it 'redirects with an alert when the cup is missing' do
       admin_user = FactoryBot.create(:user)
       FactoryBot.create(:admin_grant, user: admin_user)
@@ -245,6 +266,18 @@ RSpec.describe GoggleCupsController do
       get(goggle_cup_ranking_path(id: 0))
       expect(response).to redirect_to(goggle_cups_path)
       expect(flash[:alert]).to eq(I18n.t('goggle_cups.cup_not_found'))
+    end
+
+    it 'returns a turbo stream alert when the cup is missing' do
+      admin_user = FactoryBot.create(:user)
+      FactoryBot.create(:admin_grant, user: admin_user)
+      sign_in(admin_user)
+
+      get(goggle_cup_ranking_path(id: 0, format: :turbo_stream))
+      expect(response).to have_http_status(:success)
+      expect(response.media_type).to eq('text/vnd.turbo-stream.html')
+      expect(response.body).to include('goggle-cup-ranking')
+      expect(response.body).to include(I18n.t('goggle_cups.cup_not_found'))
     end
   end
 end
