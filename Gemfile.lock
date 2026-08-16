@@ -1,8 +1,8 @@
 GIT
-  remote: https://github.com/steveoro/goggles_db
-  revision: 6716ee638e74085c5da2904afed7c2a1cb3dce37
+  remote: https://github.com/steveoro/goggles_db.git
+  revision: 85b5da49a0602e8844c06ab8ab98706da2e44daa
   specs:
-    goggles_db (0.10.0)
+    goggles_db (0.10.32)
       acts-as-taggable-on
       acts_as_votable
       cities
@@ -319,7 +319,7 @@ GEM
     guard-shell (0.7.2)
       guard (>= 2.0.0)
       guard-compat (~> 1.0)
-    haml (7.3.0)
+    haml (7.3.1)
       prism (>= 1.1.0)
       temple (>= 0.8.2)
       thor

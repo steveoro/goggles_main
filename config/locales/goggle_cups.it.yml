@@ -1,0 +1,18 @@
+it:
+  goggle_cups:
+    nav_item: "Goggle Cup"
+    title: "Goggle Cup"
+    description: "Consulta le classifiche Goggle Cup precalcolate per le squadre gestite."
+    selection_header: "Seleziona anno di campionato e squadra"
+    season_year: "Anno di campionato"
+    team: "Squadra"
+    select_year: "Seleziona anno"
+    search: "Cerca"
+    available_cups: "Coppe disponibili"
+    unauthorized: "Non sei autorizzato a visualizzare le Goggle Cup."
+    unauthorized_team: "Non sei autorizzato a gestire la squadra selezionata."
+    team_not_found: "Squadra selezionata non trovata."
+    cup_not_found: "Coppa selezionata non trovata."
+    info:
+      no_cups: "Nessuna Goggle Cup trovata per l'anno e la squadra selezionati."
+      no_ranking_data: "La coppa selezionata non ha classifiche precalcolate."

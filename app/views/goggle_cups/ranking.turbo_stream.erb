@@ -1,0 +1,6 @@
+<%= turbo_stream.update('goggle-cup-ranking') do %>
+  <%= render(partial: 'goggle_cups/ranking',
+             formats: [:html],
+             locals: { team: @selected_team, goggle_cup: @goggle_cup, ranking_data: @ranking_data,
+                       no_duplicated_events: @no_duplicated_events }) %>
+<% end %>

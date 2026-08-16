@@ -96,6 +96,9 @@ Rails.application.routes.draw do
   get 'user_workshops/for_swimmer/:id', to: 'user_workshops#for_swimmer', as: 'user_workshops_for_swimmer'
   get 'user_workshops/for_team/:id',    to: 'user_workshops#for_team',    as: 'user_workshops_for_team'
 
+  get 'goggle_cups',              to: 'goggle_cups#index',   as: 'goggle_cups'
+  get 'goggle_cups/:id/ranking',  to: 'goggle_cups#ranking', as: 'goggle_cup_ranking'
+
   get 'tools/fin_score'
   get 'tools/compute_fin_score', format: :json
   get 'tools/delta_timings'

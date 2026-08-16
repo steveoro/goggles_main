@@ -206,27 +206,34 @@ end
 # -----------------------------------------------------------------------------
 
 Then('I wait until the slow-rendered page portion {string} is visible') do |css_selector|
-  5.times do
+  timeout = [Capybara.default_max_wait_time, 15].max
+  deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + timeout
+  last_error = nil
+
+  loop do
+    remaining = deadline - Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    raise "Timed out waiting for '#{css_selector}' to be visible: #{last_error&.message}" if remaining <= 0
+
     target_node = begin
-      find(css_selector, visible: true, wait: 0.2)
-    rescue StandardError
+      find(css_selector, visible: true, wait: remaining)
+    rescue StandardError => e
+      last_error = e
+      putc('r')
       nil
     end
 
     if target_node&.visible?
       putc '!'
       break
-    else
-      putc('r')
-      begin
-        wait_for_ajax(1)
-      rescue Timeout::Error
-        nil
-      end
-      sleep(0.2)
-      putc '-'
     end
+
+    begin
+      wait_for_ajax([remaining, 1.0].min)
+    rescue StandardError
+      nil
+    end
+    sleep(0.2)
+    putc '-'
   end
-  find(css_selector, visible: true)
 end
 # -----------------------------------------------------------------------------
