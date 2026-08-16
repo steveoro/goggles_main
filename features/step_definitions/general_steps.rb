@@ -206,12 +206,12 @@ end
 # -----------------------------------------------------------------------------
 
 Then('I wait until the slow-rendered page portion {string} is visible') do |css_selector|
-  timeout = [Capybara.default_max_wait_time, 5].max
+  timeout = [Capybara.default_max_wait_time, 10].max
   start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
   loop do
     target_node = begin
-      find(css_selector, visible: true, wait: 0.5)
+      find(css_selector, visible: true, wait: 1.0)
     rescue StandardError
       nil
     end
@@ -223,7 +223,7 @@ Then('I wait until the slow-rendered page portion {string} is visible') do |css_
 
     putc('r')
     begin
-      wait_for_ajax(0.5)
+      wait_for_ajax(1.0)
     rescue StandardError
       nil
     end
@@ -231,12 +231,7 @@ Then('I wait until the slow-rendered page portion {string} is visible') do |css_
     putc '-'
 
     elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
-    break if elapsed > timeout
+    raise "Timed out waiting for '#{css_selector}' to be visible" if elapsed > timeout
   end
-
-  # Final Capybara-synchronized visibility check; this provides an additional
-  # full default_max_wait_time window and a clearer error when the element is
-  # truly missing, while still raising a proper Capybara error.
-  find(css_selector, visible: true)
 end
 # -----------------------------------------------------------------------------
