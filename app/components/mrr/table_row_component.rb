@@ -33,8 +33,9 @@ module MRR
 
     # Skips rendering unless the member is properly set
     def render?
-      @mrr.instance_of?(GogglesDb::MeetingRelayResult) &&
-        @mrr.id.to_i.positive?
+      return false unless @mrr.respond_to?(:id) && @mrr.id.to_i.positive?
+
+      @mrr.is_a?(GogglesDb::MeetingRelayResult) || @mrr.is_a?(GogglesDb::MeetingRelayResultRow)
     end
 
     protected
@@ -54,9 +55,21 @@ module MRR
       @team ||= @mrr.team
     end
 
+    # Returns the link to the team results page for the current meeting,
+    # using the already-loaded team instead of re-querying via the decorator.
+    def team_link
+      return unless team
+
+      helpers.link_to(team.editable_name, helpers.meeting_team_results_path(id: meeting_id, team_id: team.id))
+    end
+
     # Memoized MeetingRelaySwimmers list.
     def mrs
-      @mrs ||= @mrr.meeting_relay_swimmers
+      @mrs ||= if @mrr.respond_to?(:meeting_relay_swimmers)
+                 @mrr.meeting_relay_swimmers
+               else
+                 @mrr.relay_swimmers
+               end
     end
 
     # Relay name; gives precedence to the Relay code, if present

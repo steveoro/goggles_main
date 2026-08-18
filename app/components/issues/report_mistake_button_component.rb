@@ -28,8 +28,12 @@ module Issues
 
     # Skips rendering unless the required parameters are set
     def render?
-      @can_manage &&
-        (@result_row.is_a?(GogglesDb::AbstractResult) || @result_row.instance_of?(GogglesDb::MeetingRelayResult))
+      return false unless @can_manage
+
+      @result_row.is_a?(GogglesDb::AbstractResult) ||
+        @result_row.is_a?(GogglesDb::AbstractResultRow) ||
+        @result_row.is_a?(GogglesDb::MeetingRelayResult) ||
+        @result_row.is_a?(GogglesDb::MeetingRelayResultRow)
     end
     #-- -----------------------------------------------------------------------
     #++

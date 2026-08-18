@@ -7,23 +7,21 @@
 
     %section#meeting-show-results{ 'data-turbo-permanent' => true }
       %table.table.table-striped.table-sm
-        - @meeting_events&.by_order&.each do |meeting_event|
+        - @meeting_events&.each do |meeting_event|
           %thead.mevent-separator{ id: "mevent-#{meeting_event.id}" }
             %tr.text-center
               %th{ colspan: 4 }
-                - collapse_target = "loading-mev-#{meeting_event.id}"
-                = link_to(meeting_show_event_section_path(meeting_event.id), anchor: collapse_target,
-                          id: "btn-load-mev-#{meeting_event.id}", type: 'button',
+                - collapse_target = "meeting-event-section-#{meeting_event.id}"
+                = link_to('#', id: "btn-load-mev-#{meeting_event.id}", type: 'button',
                           class: 'btn btn-link', role: 'button', title: t('meetings.tooltip.link.click_to_expand'),
                           data: { tooltip: true, toggle: 'collapse', target: "##{collapse_target}",
-                                  turbo_stream: true, controller: 'loading',
-                                  action: 'click->loading#show' },
-                          'aria-expanded' => false, 'aria-controls' => collapse_target) do
+                                  'aria-expanded' => false, 'aria-controls' => collapse_target }) do
                   = meeting_event.event_type.long_label
 
-            %tr.collapse.text-center{ id: collapse_target }
-              %td{ colspan: 4 }
-                %i.text-secondary.fa.fa-spin.fa-2x.fa-cog
+      - @meeting_events&.each_with_index do |meeting_event, event_index|
+        .collapse{ id: "meeting-event-section-#{meeting_event.id}" }
+          %table.table.table-striped.table-sm
+            = render(partial: 'show_event_section', locals: { meeting_event: meeting_event, meeting_events: @meeting_events, event_index: event_index, prgs_for_event: @programs_by_event[meeting_event.id], render_title: false, mir_rows_by_program: @mir_rows_by_program, mrr_rows_by_program: @mrr_rows_by_program, managed_team_ids: @managed_team_ids, user_teams: @user_teams, current_swimmer_id: @current_swimmer_id, current_user_is_admin: @current_user_is_admin })
 
       .row
         &nbsp;

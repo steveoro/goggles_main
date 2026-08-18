@@ -37,19 +37,33 @@ module MIR
       @report_mistake = options[:report_mistake] || false
       @show_category = options[:show_category] || false
       @show_team = options[:show_team] || options[:show_team].nil? # (default true)
-      @season_type = @mir.season.season_type if @mir.respond_to?(:season)
-      # [Steve, 20240410] Moving laps relation (already sorted) to memory to prevent further queries:
-      @laps = @mir.laps.to_a.sort_by(&:length_in_meters) if @mir.respond_to?(:laps)
+      @season_type = if @mir.respond_to?(:season_type)
+                       @mir.season_type
+                     elsif @mir.respond_to?(:season)
+                       @mir.season&.season_type
+                     end
     end
 
     # Skips rendering unless the member is properly set
     def render?
-      @mir.class.ancestors.include?(GogglesDb::AbstractResult) && @mir.swimmer_id.to_i.present?
+      return false unless @mir.respond_to?(:swimmer_id) && @mir.swimmer_id.to_i.present?
+
+      @mir.is_a?(GogglesDb::AbstractResult) || @mir.is_a?(GogglesDb::AbstractResultRow)
     end
 
     protected
 
-    attr_reader :season_type, :laps
+    attr_reader :season_type
+
+    # Lazily loads and sorts the laps; for AbstractResultRow instances the JSON
+    # is parsed only if the view row actually carries aggregated lap data.
+    def laps
+      return @laps if defined?(@laps)
+      return @laps = [] unless @mir.respond_to?(:laps)
+      return @laps = [] if @mir.respond_to?(:laps_json) && @mir.laps_json.blank?
+
+      @laps = @mir.laps.to_a.sort_by(&:length_in_meters)
+    end
 
     # Memoized Meeting#id
     def meeting_id
@@ -88,6 +102,14 @@ module MIR
       @team = @mir.team
     end
 
+    # Returns the link to the team results page for the current meeting,
+    # using the already-loaded team instead of re-querying via the decorator.
+    def team_link
+      return unless team
+
+      helpers.link_to(team.editable_name, helpers.meeting_team_results_path(id: meeting_id, team_id: team.id))
+    end
+
     # Memoized SwimmingPool association
     def swimming_pool
       return @swimming_pool if @swimming_pool.present?
@@ -96,11 +118,12 @@ module MIR
       @swimming_pool = @mir.swimming_pool
     end
 
-    # Memoized lap presence
+    # Memoized lap presence. For AbstractResultRow instances laps_json is checked
+    # before parsing JSON, so rows without laps are skipped cheaply.
     def includes_laps?
-      return @includes_laps if @includes_laps.present?
+      return @includes_laps if defined?(@includes_laps)
 
-      @includes_laps = laps&.present?
+      @includes_laps = laps.present?
     end
 
     # Result score. Gives precedence to the standard FIN Championship scoring system, if set or used.

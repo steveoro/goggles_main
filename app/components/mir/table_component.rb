@@ -29,7 +29,7 @@ module MIR
                 # NOTE: adding left_outer_joins to the query below will slow down the rendering significantly:
                 # &.left_outer_joins(laps: [:meeting_individual_result])
                 mirs.joins(:swimmer, :team, :meeting_program)
-                    &.includes(:swimmer, :team, :meeting_program, laps: [:meeting_individual_result])
+                    &.includes(:swimmer, :team, :meeting_program, :season_type, laps: [:meeting_individual_result])
                     &.order(minutes: :asc, seconds: :asc, hundredths: :asc)
               elsif mirs.is_a?(ActiveRecord::Relation) && mirs.first.is_a?(GogglesDb::UserResult)
                 # NOTE: adding left_outer_joins to the query below will slow down the rendering significantly:
@@ -52,7 +52,12 @@ module MIR
 
     # Skips rendering unless @mirs is enumerable and orderable :by_timing & :by_rank
     def render?
-      @mirs.respond_to?(:each) && @mirs.respond_to?(:by_timing) && @mirs.respond_to?(:by_rank)
+      return false unless @mirs.respond_to?(:each) && @mirs.respond_to?(:first)
+
+      first = @mirs.first
+      first.is_a?(GogglesDb::MeetingIndividualResult) ||
+        first.is_a?(GogglesDb::UserResult) ||
+        first.is_a?(GogglesDb::MeetingIndividualResultRow)
     end
 
     protected

@@ -47,7 +47,7 @@
 
       - else # Individual results
         - domain = meeting_event.meeting_individual_results.for_team(team).joins(:swimmer, :category_type)
-        - domain.includes(:category_type, laps: :meeting_individual_result).by_swimmer.by_rank.each do |mir|
+        - domain.includes(:category_type, season: :season_type, laps: :meeting_individual_result).by_swimmer.by_rank.each do |mir|
           :ruby
             can_report = user_signed_in? && current_user.swimmer_id.present? &&
                          current_user.swimmer_id == mir.swimmer_id

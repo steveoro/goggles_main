@@ -15,10 +15,10 @@
       = render(Issues::ReportMistakeButtonComponent.new(result_row: @mrr, can_manage: @report_mistake))
     %td
       %span.team-result-link
-        #{TeamDecorator.decorate(team).link_to_results(meeting_id)},
+        #{team_link},
       %small (#{relay_name} #{@mrr.category_type.short_name})
     %td
       .text-muted.text-right
         = Kernel.format('%2.2f', result_score) if result_score.present?
 
-= render(RelayLaps::TableComponent.new(relay_swimmers: mrs)) if mrs.present?
+= render(RelayLaps::TableComponent.new(relay_swimmers: mrs, parent_result_id: @mrr.id)) if mrs.present?

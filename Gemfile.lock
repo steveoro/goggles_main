@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db.git
-  revision: 85b5da49a0602e8844c06ab8ab98706da2e44daa
+  revision: 1f3763e882dbc20d650af274196d8646396f3650
   specs:
-    goggles_db (0.10.32)
+    goggles_db (0.10.33)
       acts-as-taggable-on
       acts_as_votable
       cities
@@ -319,7 +319,7 @@ GEM
     guard-shell (0.7.2)
       guard (>= 2.0.0)
       guard-compat (~> 1.0)
-    haml (7.3.1)
+    haml (7.4.1)
       prism (>= 1.1.0)
       temple (>= 0.8.2)
       thor
@@ -706,11 +706,11 @@ GEM
       ffi (~> 1.1)
       memoist3 (~> 1.0.0)
     sysexits (1.2.0)
-    temple (0.10.6)
+    temple (0.10.7)
     term-ansicolor (1.11.3)
       tins (~> 1)
     thor (1.5.0)
-    tilt (2.8.0)
+    tilt (2.9.0)
     timeout (0.6.1)
     tins (1.56.0)
       bigdecimal

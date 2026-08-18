@@ -68,6 +68,7 @@ class MeetingsController < ApplicationController
 
     @meeting_events = @meeting.meeting_events
                               .order('meeting_sessions.session_order, meeting_events.event_order')
+    prepare_meeting_result_rows
     # Get page timestamp for cache key:
     set_max_updated_at_for_meeting
     check_default_team_or_swimmer_in_meeting
@@ -317,12 +318,12 @@ class MeetingsController < ApplicationController
 
   # Collects and returns all the MIR rows from the specified Meeting & Team tuple.
   def collect_team_mirs(meeting, team)
-    meeting.meeting_individual_results.includes(meeting_program: [{ meeting_event: :event_type }]).for_team(team)
+    meeting.meeting_individual_results.includes(:season_type, meeting_program: [{ meeting_event: :event_type }]).for_team(team)
   end
 
   # Collects and returns all the MRR rows from the specified Meeting & Team tuple.
   def collect_team_mrrs(meeting, team)
-    meeting.meeting_relay_results.includes(meeting_program: [{ meeting_event: :event_type }]).for_team(team)
+    meeting.meeting_relay_results.includes(:season_type, meeting_program: [{ meeting_event: :event_type }]).for_team(team)
   end
 
   # Maps the top scores for each gender & custom (Goggle-) cup.
@@ -372,6 +373,32 @@ class MeetingsController < ApplicationController
                                                               'teams.id': @user_teams.map(&:id),
                                                               'swimmers.id': @current_swimmer_id
                                                             )
+  end
+
+  # Preloads the flattened result-row views for the current @meeting and groups
+  # them by meeting_program_id, so the show page can render all event sections
+  # at once without querying each program separately.
+  def prepare_meeting_result_rows
+    @meeting_programs = GogglesDb::MeetingProgram.joins(:category_type, :gender_type, meeting_event: :meeting_session)
+                                                 .includes(:category_type, :gender_type, :meeting_event)
+                                                 .where(meeting_sessions: { meeting_id: @meeting.id })
+                                                 .order('meeting_sessions.session_order, meeting_events.event_order, ' \
+                                                        'category_types.age_begin, gender_types.id DESC')
+    @programs_by_event = @meeting_programs.group_by(&:meeting_event_id)
+
+    @mir_rows_by_program = GogglesDb::MeetingIndividualResultRow.for_meeting(@meeting)
+                                                                .by_meeting_order
+                                                                .includes(:swimmer, :team, :season_type, :event_type,
+                                                                          :category_type, :gender_type, :pool_type,
+                                                                          :meeting, :meeting_program)
+                                                                .to_a
+                                                                .group_by(&:meeting_program_id)
+    @mrr_rows_by_program = GogglesDb::MeetingRelayResultRow.for_meeting(@meeting)
+                                                           .by_meeting_order
+                                                           .includes(:team, :category_type, :event_type,
+                                                                     :meeting, :meeting_program)
+                                                           .to_a
+                                                           .group_by(&:meeting_program_id)
   end
 
   # Sets the internal <tt>@max_updated_at</tt> value that will be used as main cache timestamp for the current <tt>@meeting</tt>.

@@ -46,10 +46,12 @@ module MRR
       end
     end
 
-    # Skips rendering unless @mrrs is enumerable and orderable :by_timing
+    # Skips rendering unless @mrrs is enumerable and holds supported result rows
     def render?
-      @mrrs.respond_to?(:each) && @mrrs.respond_to?(:by_timing) && @mrrs.respond_to?(:by_rank) &&
-        @mrrs.respond_to?(:with_rank) && @mrrs.respond_to?(:with_no_rank)
+      return false unless @mrrs.respond_to?(:each) && @mrrs.respond_to?(:first)
+
+      first = @mrrs.first
+      first.is_a?(GogglesDb::MeetingRelayResult) || first.is_a?(GogglesDb::MeetingRelayResultRow)
     end
 
     protected

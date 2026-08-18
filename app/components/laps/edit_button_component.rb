@@ -37,7 +37,10 @@ module Laps
 
     # Skips rendering unless the required parameters are set
     def render?
-      @can_manage && @parent_result.is_a?(GogglesDb::AbstractResult)
+      return false unless @can_manage
+
+      @parent_result.is_a?(GogglesDb::AbstractResult) ||
+        @parent_result.is_a?(GogglesDb::AbstractResultRow)
     end
     #-- -----------------------------------------------------------------------
     #++

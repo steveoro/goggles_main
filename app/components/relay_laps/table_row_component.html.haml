@@ -13,9 +13,9 @@
         #{SwimmerDecorator.decorate(swimmer).link_to_results(meeting.id)}
       %small= swimmer_year_and_age_label
       %br/
-      - if @relay_swimmer.relay_laps.present?
+      - if relay_laps.present?
         %ul.pl-3.mb-1
-          - @relay_swimmer.relay_laps.by_distance.each do |sub_lap|
+          - relay_laps.each do |sub_lap|
             %li{ id: "detail-rl#{sub_lap.id}" }
               #{sub_lap.to_timing} Δ
               &nbsp;

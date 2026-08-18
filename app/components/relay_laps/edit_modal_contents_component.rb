@@ -72,7 +72,7 @@ module RelayLaps
 
     # Pre-computed & memoized list of lengths taken from the already allocated relay fractions.
     def used_relay_fraction_lengths
-      @used_relay_fraction_lengths ||= @relay_result.meeting_relay_swimmers.reload.map(&:length_in_meters)
+      @used_relay_fraction_lengths ||= @relay_result.meeting_relay_swimmers.pluck(:length_in_meters)
     end
 
     # Pre-computed & memoized list of lengths which haven't been already set to a relay swimmer result.

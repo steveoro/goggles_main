@@ -29,7 +29,10 @@ module RelayLaps
 
     # Skips rendering unless the required parameters are set
     def render?
-      @can_manage && @relay_result.is_a?(GogglesDb::MeetingRelayResult)
+      return false unless @can_manage
+
+      @relay_result.is_a?(GogglesDb::MeetingRelayResult) ||
+        @relay_result.is_a?(GogglesDb::MeetingRelayResultRow)
     end
     #-- -----------------------------------------------------------------------
     #++
