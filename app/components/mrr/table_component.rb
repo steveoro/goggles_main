@@ -29,8 +29,8 @@ module MRR
       @mrrs = if mrrs.is_a?(ActiveRecord::Relation) && mrrs.first.is_a?(GogglesDb::MeetingRelayResult)
                 # NOTE: adding left_outer_joins to the query below will slow down the rendering significantly:
                 # &.left_outer_joins(:meeting_relay_swimmers, :relay_laps)
-                mrrs.joins(:category_type, :team)
-                    &.includes(:team, :category_type, :meeting,
+                mrrs.joins(:category_type)
+                    &.includes(team: :city, category_type: {}, meeting: {},
                                meeting_relay_swimmers: %i[relay_laps])
                     &.order(minutes: :asc, seconds: :asc, hundredths: :asc)
               else

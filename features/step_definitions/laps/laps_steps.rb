@@ -9,7 +9,7 @@ Then('I can see the lap edit buttons on the page') do
   # WARNING: meeting show page could take a while to get rendered
   step("I wait until the slow-rendered page portion '.main-content#top-of-page' is visible")
   step("I wait until the slow-rendered page portion '.lap-edit-btn' is visible")
-  expect(find('.lap-edit-btn')).to be_visible
+  expect(find('.lap-edit-btn', visible: true)).to be_visible
 end
 # -----------------------------------------------------------------------------
 

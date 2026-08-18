@@ -53,7 +53,7 @@ Then('I can see the {string} \({string}) buttons on the results of the page') do
 
   10.times do
     wait_for_ajax
-    if page.has_css?("a.btn.issue-#{issue_type}-btn")
+    if page.has_css?("a.btn.issue-#{issue_type}-btn", visible: true)
       sleep(0.5)
       putc '.'
       break
@@ -61,12 +61,12 @@ Then('I can see the {string} \({string}) buttons on the results of the page') do
       putc 'W'
     end
   end
-  expect(page).to have_css("a.btn.issue-#{issue_type}-btn")
+  expect(page).to have_css("a.btn.issue-#{issue_type}-btn", visible: true)
 end
 
 Then('I click a random {string} button on the page') do |issue_type|
   step("I wait until the slow-rendered page portion 'a.btn.issue-#{issue_type}-btn' is visible")
-  chosen_btn = find_all("a.btn.issue-#{issue_type}-btn").sample
+  chosen_btn = find_all("a.btn.issue-#{issue_type}-btn", visible: true).sample
   expect(chosen_btn).to be_visible
   step("I trigger the click event on the '##{chosen_btn[:id]}' DOM ID")
   # Make sure the form is there:

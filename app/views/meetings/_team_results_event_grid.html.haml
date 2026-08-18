@@ -38,7 +38,7 @@
       - if relay # Team Relay results
         :ruby
           mrrs = meeting_event.meeting_relay_results
-                              .includes(:team, :gender_type,
+                              .includes(team: :city, gender_type: {},
                                         meeting_program: [:event_type], meeting_relay_swimmers: [:relay_laps],
                                         category_type: [:season])
                               .for_team(team).order(:meeting_program_id)
@@ -47,7 +47,7 @@
 
       - else # Individual results
         - domain = meeting_event.meeting_individual_results.for_team(team).joins(:swimmer, :category_type)
-        - domain.includes(:category_type, season: :season_type, laps: :meeting_individual_result).by_swimmer.by_rank.each do |mir|
+        - domain.includes(:category_type, :season_type, laps: :meeting_individual_result).by_swimmer.by_rank.each do |mir|
           :ruby
             can_report = user_signed_in? && current_user.swimmer_id.present? &&
                          current_user.swimmer_id == mir.swimmer_id

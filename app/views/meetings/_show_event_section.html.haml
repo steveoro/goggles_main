@@ -1,4 +1,5 @@
-- cache(cache_key_for_meeting(action: 'show_event_section', id: meeting_event.id, max_updated_at: @max_updated_at)) do
+- user_key = [user_signed_in?, current_user_is_admin, current_swimmer_id, managed_team_ids.to_a.sort, user_teams.to_a.map(&:id).sort]
+- cache([cache_key_for_meeting(action: 'show_event_section', id: meeting_event.id, max_updated_at: @max_updated_at), local_assigns.fetch(:render_title, true), user_key]) do
   = render(Mevent::RowSeparatorComponent.new) if event_index.positive? && local_assigns.fetch(:render_title, true)
   = render(Mevent::RowTitleComponent.new(event_container: meeting_event, can_manage: user_signed_in?)) if local_assigns.fetch(:render_title, true)
   = render(Mevent::RowLinksComponent.new(meeting_events:))

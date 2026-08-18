@@ -12,11 +12,16 @@
             %tr.text-center
               %th{ colspan: 4 }
                 - collapse_target = "meeting-event-section-#{meeting_event.id}"
-                = link_to('#', id: "btn-load-mev-#{meeting_event.id}", type: 'button',
-                          class: 'btn btn-link', role: 'button', title: t('meetings.tooltip.link.click_to_expand'),
-                          data: { tooltip: true, toggle: 'collapse', target: "##{collapse_target}",
-                                  'aria-expanded' => false, 'aria-controls' => collapse_target }) do
-                  = meeting_event.event_type.long_label
+                %h4
+                  = link_to('#', id: "btn-load-mev-#{meeting_event.id}", type: 'button',
+                            class: 'btn btn-link', role: 'button', title: t('meetings.tooltip.link.click_to_expand'),
+                            data: { tooltip: true, toggle: 'collapse', target: "##{collapse_target}" },
+                            'aria-expanded' => false, 'aria-controls' => collapse_target) do
+                    = meeting_event.event_type.long_label
+                - if user_signed_in?
+                  &nbsp;
+                  = render(Issues::ReportMissingButtonComponent.new(parent_meeting: meeting_event.meeting_session.meeting,
+                                                                     event_type: meeting_event.event_type))
 
       - @meeting_events&.each_with_index do |meeting_event, event_index|
         .collapse{ id: "meeting-event-section-#{meeting_event.id}" }

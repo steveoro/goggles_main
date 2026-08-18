@@ -28,8 +28,9 @@ module MIR
       @mirs = if mirs.is_a?(ActiveRecord::Relation) && mirs.first.is_a?(GogglesDb::MeetingIndividualResult)
                 # NOTE: adding left_outer_joins to the query below will slow down the rendering significantly:
                 # &.left_outer_joins(laps: [:meeting_individual_result])
-                mirs.joins(:swimmer, :team, :meeting_program)
-                    &.includes(:swimmer, :team, :meeting_program, :season_type, laps: [:meeting_individual_result])
+                mirs.joins(:swimmer, :meeting_program)
+                    &.includes(:swimmer, team: :city, meeting_program: {}, season_type: {}, meeting: {},
+                                         laps: { meeting_individual_result: {} })
                     &.order(minutes: :asc, seconds: :asc, hundredths: :asc)
               elsif mirs.is_a?(ActiveRecord::Relation) && mirs.first.is_a?(GogglesDb::UserResult)
                 # NOTE: adding left_outer_joins to the query below will slow down the rendering significantly:

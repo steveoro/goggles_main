@@ -87,12 +87,13 @@ class MeetingsController < ApplicationController
     end
 
     @meeting_event = GogglesDb::MeetingEvent.find(meeting_params[:id])
-    @meeting_events = @meeting_event.meeting.meeting_events.by_order.to_a
+    @meeting = @meeting_event.meeting
+    @meeting_events = @meeting.meeting_events.by_order.to_a
     @event_index = @meeting_events.find_index(@meeting_event)
-    @prgs_for_event = GogglesDb::MeetingProgram.where(meeting_event_id: meeting_params[:id])
-                                               .includes(:meeting, :gender_type, :category_type, :season, :meeting_individual_results)
-                                               .joins(:gender_type, :category_type, :season)
-                                               .order('category_types.age_begin, gender_types.id DESC')
+    prepare_meeting_result_rows
+    @prgs_for_event = @programs_by_event[@meeting_event.id] || []
+    # Get page timestamp for cache key:
+    set_max_updated_at_for_meeting
     update_user_teams_for_seasons_ids([@meeting_event.season.id])
     update_managed_teams_for_seasons_ids([@meeting_event.season.id])
 
@@ -388,17 +389,25 @@ class MeetingsController < ApplicationController
 
     @mir_rows_by_program = GogglesDb::MeetingIndividualResultRow.for_meeting(@meeting)
                                                                 .by_meeting_order
-                                                                .includes(:swimmer, :team, :season_type, :event_type,
-                                                                          :category_type, :gender_type, :pool_type,
-                                                                          :meeting, :meeting_program)
+                                                                .includes(:swimmer, team: :city, season_type: {}, event_type: {},
+                                                                                    category_type: {}, gender_type: {}, pool_type: {},
+                                                                                    meeting: {}, meeting_program: {})
                                                                 .to_a
                                                                 .group_by(&:meeting_program_id)
     @mrr_rows_by_program = GogglesDb::MeetingRelayResultRow.for_meeting(@meeting)
                                                            .by_meeting_order
-                                                           .includes(:team, :category_type, :event_type,
-                                                                     :meeting, :meeting_program)
+                                                           .includes(team: :city, category_type: {}, event_type: {},
+                                                                     meeting: {}, meeting_program: {})
                                                            .to_a
                                                            .group_by(&:meeting_program_id)
+
+    # Ensure every preloaded program has an entry, even when there are no rows,
+    # so the show partial never falls back to the base association and triggers
+    # N+1 queries while rendering all event sections at once.
+    @meeting_programs.each do |mprg|
+      @mir_rows_by_program[mprg.id] ||= []
+      @mrr_rows_by_program[mprg.id] ||= []
+    end
   end
 
   # Sets the internal <tt>@max_updated_at</tt> value that will be used as main cache timestamp for the current <tt>@meeting</tt>.

@@ -60,7 +60,15 @@ module MRR
     def team_link
       return unless team
 
-      helpers.link_to(team.editable_name, helpers.meeting_team_results_path(id: meeting_id, team_id: team.id))
+      helpers.link_to(team_label, helpers.meeting_team_results_path(id: meeting_id, team_id: team.id))
+    end
+
+    # Returns the team link label, preserving the decorated short_label format
+    # (team name + city) only when the city is already loaded.
+    def team_label
+      return team.editable_name unless team.city_id.present? && team.association(:city).loaded?
+
+      "#{team.editable_name}, #{team.city.name}"
     end
 
     # Memoized MeetingRelaySwimmers list.
