@@ -208,7 +208,7 @@ Given('I sign-in with my existing account') do
 end
 
 Given('I am already signed-in and at the root page') do
-  step('I have a confirmed account')
+  step('I have a confirmed account that is not mapped onto an existing swimmer')
   visit('/users/sign_in')
   step('I fill the log-in form as the confirmed user')
   step('the user row is signed-in')

@@ -21,18 +21,28 @@ module RelayLaps
     #
     # == Params
     # - relay_swimmer: the GogglesDb::MeetingRelaySwimmer relation holding the list of laps to be displayed
-
-    def initialize(relay_swimmers:)
-      @relay_swimmers = relay_swimmers&.joins(:gender_type, :event_type)
-                                      &.includes(:gender_type, :event_type)
+    # - parent_result_id: the parent MRR id, used to build the DOM ID when relay_swimmers are JsonRows
+    def initialize(relay_swimmers:, parent_result_id: nil)
+      @relay_swimmers = if relay_swimmers.respond_to?(:includes)
+                          relay_swimmers.includes(:meeting)
+                        else
+                          relay_swimmers
+                        end
+      @parent_result_id = parent_result_id
     end
 
-    # Skips rendering unless @laps is enumerable and orderable :by_order
+    # Skips rendering unless @relay_swimmers is enumerable
     def render?
-      @relay_swimmers.respond_to?(:each) && @relay_swimmers.respond_to?(:by_order)
+      @relay_swimmers.respond_to?(:each)
     end
 
     protected
+
+    # Returns the relay swimmers ordered by relay_order, whether they are an
+    # ActiveRecord relation or an array of JsonRow legs.
+    def ordered_relay_swimmers
+      @relay_swimmers.respond_to?(:by_order) ? @relay_swimmers.by_order : @relay_swimmers.sort_by(&:relay_order)
+    end
 
     # Returns the associated parent result instance (memoized)
     def parent_result_id

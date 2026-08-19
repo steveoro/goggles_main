@@ -29,7 +29,7 @@
         - if @show_team && team
           &nbsp;-&nbsp;
           %i.team-result-link
-            #{TeamDecorator.decorate(team).link_to_results(meeting_id)}
+            #{team_link}
         - elsif swimming_pool
           &nbsp;-&nbsp;
           %i.pool-link
@@ -38,4 +38,4 @@
       .text-muted.text-right
         = Kernel.format('%2.2f', result_score) if result_score.present?
 
-= render(Laps::TableComponent.new(laps:)) if includes_laps?
+= render(Laps::TableComponent.new(laps:, parent_result: @mir)) if includes_laps?

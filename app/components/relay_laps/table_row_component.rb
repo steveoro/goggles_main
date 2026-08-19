@@ -25,26 +25,43 @@ module RelayLaps
 
     # Skips rendering unless the member is properly set
     def render?
-      @relay_swimmer.instance_of?(GogglesDb::MeetingRelaySwimmer) &&
-        @relay_swimmer.id.to_i.positive?
+      return false unless @relay_swimmer.respond_to?(:id) && @relay_swimmer.id.to_i.positive?
+
+      @relay_swimmer.is_a?(GogglesDb::MeetingRelaySwimmer) ||
+        @relay_swimmer.is_a?(GogglesDb::JsonRow)
     end
 
     protected
 
     # Memoized correlated Swimmers/Laps
     def related_laps
-      @related_laps ||= @relay_swimmer.meeting_relay_result
-                                      .meeting_relay_swimmers
+      @related_laps ||= if @relay_swimmer.respond_to?(:meeting_relay_result)
+                          @relay_swimmer.meeting_relay_result.meeting_relay_swimmers
+                        else
+                          relay_laps
+                        end
     end
 
     # Memoized Meeting instance
     def meeting
-      @meeting ||= @relay_swimmer.meeting_relay_result.meeting
+      @meeting ||= if @relay_swimmer.respond_to?(:meeting)
+                     @relay_swimmer.meeting
+                   else
+                     @relay_swimmer.meeting_relay_result.meeting
+                   end
     end
 
     # Memoized Swimmer instance
     def swimmer
       @swimmer ||= @relay_swimmer.swimmer
+    end
+
+    # Returns the laps for this relay leg, ordered by distance.
+    def relay_laps
+      return @relay_laps if defined?(@relay_laps)
+
+      laps = @relay_swimmer.relay_laps
+      @relay_laps = laps.respond_to?(:by_distance) ? laps.by_distance : laps.sort_by(&:length_in_meters)
     end
 
     # Returns the timing recorded from the start of this relay lap/phase

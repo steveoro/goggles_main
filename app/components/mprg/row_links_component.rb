@@ -19,14 +19,26 @@ module Mprg
     # Creates a new ViewComponent
     #
     # == Params
-    # - meeting_program: an undecorated GogglesDb::MeetingProgram association
+    # - meeting_program: an undecorated GogglesDb::MeetingProgram association or array
     def initialize(meeting_programs:)
       @meeting_programs = meeting_programs
     end
 
-    # Skips rendering unless @meeting_programs is enumerable and filterable by where clause
+    # Skips rendering unless @meeting_programs is enumerable
     def render?
-      @meeting_programs.respond_to?(:each) && @meeting_programs.respond_to?(:where)
+      @meeting_programs.respond_to?(:each)
+    end
+
+    protected
+
+    # Returns the programs matching the given gender type, supporting both AR
+    # relations and in-memory arrays.
+    def programs_for(gender_type)
+      if @meeting_programs.respond_to?(:where)
+        @meeting_programs.where(gender_type_id: gender_type.id)
+      else
+        @meeting_programs.select { |mprg| mprg.gender_type_id == gender_type.id }
+      end
     end
   end
 end

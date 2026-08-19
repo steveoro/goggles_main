@@ -27,7 +27,7 @@ module Laps
 
     # Skips rendering unless the lap instance is properly set
     def render?
-      @lap.class.ancestors.include?(GogglesDb::AbstractLap)
+      @lap.respond_to?(:to_timing) && @lap.respond_to?(:timing_from_start)
     end
   end
 end
