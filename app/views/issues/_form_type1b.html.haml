@@ -22,10 +22,12 @@
       -#   %p.form-text.text-center.text-muted
       -#     %small
       -#       %i= t('issues.type1b.form.notice.cant_manage')
+      - teams ||= []
       .row
         = render(ComboBox::AutocompleteComponent.new(api_url: 'teams', label: t('teams.team'), base_name: 'team',
-                                                     required: false, free_text: true, values: teams,
-                                                     selected_id: teams&.first&.id, selected_label: teams&.first&.name))
+                                                     required: false, free_text: true,
+                                                     values: options_from_collection_for_select(teams, 'id', 'name', teams.first&.id),
+                                                     selected_id: teams.first&.id, selected_label: teams.first&.name))
 
       .row
         = render(ComboBox::AutocompleteSwimmerComponent.new(t('swimmers.swimmer_with_layout'), 'swimmer', required: false,

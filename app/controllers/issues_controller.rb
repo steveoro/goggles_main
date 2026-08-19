@@ -345,7 +345,7 @@ class IssuesController < ApplicationController
   #++
 
   # Returns the dual list of available managed swimmers & teams for the current user, given the season_id.
-  # The returned array of array is in the format <tt>[array_of_managed_swimmer_ids, array_of_managed_team_ids]</tt>.
+  # The returned array of array is in the format <tt>[array_of_managed_swimmers, array_of_managed_teams]</tt>.
   # This will be used for preset values in DbSwimmerComponent options.
   def managed_swimmers(season_id)
     # If the list of available swimmers is nil, the swimmer select will be disabled by default.
@@ -358,10 +358,12 @@ class IssuesController < ApplicationController
                                                             'team_affiliations.season_id': season_id)
                                                      .map { |ma| ma.team_affiliation.team_id }
                                                      .uniq
-    managed_swimmer_ids = GogglesDb::Badge.where(season_id:, team_id: managed_teams_ids)
-                                          .map(&:swimmer)
-                                          .uniq
-    [managed_swimmer_ids, managed_teams_ids]
+    managed_swimmers = GogglesDb::Badge.where(season_id:, team_id: managed_teams_ids)
+                                       .includes(:swimmer)
+                                       .filter_map(&:swimmer)
+                                       .uniq
+    managed_teams = GogglesDb::Team.where(id: managed_teams_ids).to_a
+    [managed_swimmers, managed_teams]
   end
   #-- -------------------------------------------------------------------------
   #++

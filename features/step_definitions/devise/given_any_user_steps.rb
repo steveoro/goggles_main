@@ -32,7 +32,10 @@ end
 
 # Sets @current_user
 Given('I have a confirmed account that is not mapped onto an existing swimmer') do
-  @current_user = FactoryBot.create(:user, first_name: 'no_swimmer', last_name: 'should_match_this!', current_sign_in_at: nil)
+  unique_name = "no_swimmer.should_match_this!-#{SecureRandom.hex(4)}"
+  @current_user = FactoryBot.create(:user, first_name: 'no_swimmer', last_name: 'should_match_this!',
+                                           name: unique_name, email: "#{unique_name}@fake.example.net",
+                                           current_sign_in_at: nil)
   expect(@current_user.confirmed_at).to be_present
   expect(@current_user.current_sign_in_at).to be nil
 end
