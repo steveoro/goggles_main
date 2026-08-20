@@ -7,12 +7,20 @@ RSpec.describe 'meetings/show.html.haml' do
   context 'when rendering with valid data,' do
     subject { rendered }
 
-    let(:fixture_row) { GogglesDb::Meeting.first(100).sample }
+    let(:fixture_row) { GogglesDb::Meeting.joins(:meeting_events).distinct.first(100).sample }
     let(:parsed_node) { Nokogiri::HTML.fragment(subject) }
 
     before do
       expect(fixture_row).to be_a(GogglesDb::Meeting).and be_valid
       @meeting = fixture_row
+      @meeting_events = fixture_row.meeting_events
+      @programs_by_event = {}
+      @mir_rows_by_program = {}
+      @mrr_rows_by_program = {}
+      @managed_team_ids = []
+      @user_teams = []
+      @current_swimmer_id = nil
+      @current_user_is_admin = false
       render
     end
 

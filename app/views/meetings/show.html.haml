@@ -6,12 +6,12 @@
     = render(partial: 'meeting_navs', locals: { meeting: @meeting, active_tab: 'results', can_tap_to_results: @default_team_or_swimmer_in_meeting })
 
     %section#meeting-show-results{ 'data-turbo-permanent' => true }
-      %table.table.table-striped.table-sm
-        - @meeting_events&.each do |meeting_event|
+      - @meeting_events&.each_with_index do |meeting_event, event_index|
+        - collapse_target = "meeting-event-section-#{meeting_event.id}"
+        %table.table.table-striped.table-sm
           %thead.mevent-separator{ id: "mevent-#{meeting_event.id}" }
             %tr.text-center
               %th{ colspan: 4 }
-                - collapse_target = "meeting-event-section-#{meeting_event.id}"
                 %h4
                   = link_to('#', id: "btn-load-mev-#{meeting_event.id}", type: 'button',
                             class: 'btn btn-link', role: 'button', title: t('meetings.tooltip.link.click_to_expand'),
@@ -23,8 +23,7 @@
                   = render(Issues::ReportMissingButtonComponent.new(parent_meeting: meeting_event.meeting_session.meeting,
                                                                      event_type: meeting_event.event_type))
 
-      - @meeting_events&.each_with_index do |meeting_event, event_index|
-        .collapse{ id: "meeting-event-section-#{meeting_event.id}" }
+        .collapse{ id: collapse_target }
           %table.table.table-striped.table-sm
             = render(partial: 'show_event_section', locals: { meeting_event: meeting_event, meeting_events: @meeting_events, event_index: event_index, prgs_for_event: @programs_by_event[meeting_event.id], render_title: false, mir_rows_by_program: @mir_rows_by_program, mrr_rows_by_program: @mrr_rows_by_program, managed_team_ids: @managed_team_ids, user_teams: @user_teams, current_swimmer_id: @current_swimmer_id, current_user_is_admin: @current_user_is_admin })
 
