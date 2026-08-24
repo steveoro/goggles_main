@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/Output
+# rubocop:disable-next Rails/Output
 class DataFixRemoveNullRankValues < ActiveRecord::Migration[6.0]
   def self.up
     total_fixes = GogglesDb::MeetingRelayResult.where(rank: nil).count
@@ -25,4 +25,3 @@ class DataFixRemoveNullRankValues < ActiveRecord::Migration[6.0]
   #-- --------------------------------------------------------------------------
   #++
 end
-# rubocop:enable Rails/Output

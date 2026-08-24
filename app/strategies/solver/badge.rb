@@ -67,7 +67,7 @@ module Solver
     # A direct attribute binding will be resolved to +nil+ if can't be found inside the
     # current data set after a call to #solve!.
     #
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def init_bindings
       @bindings = {
         # Required:
@@ -92,7 +92,6 @@ module Solver
         relays_due: value_from_req(key: 'badge_relays_due', nested: 'badge', sub_key: 'relays_due') || false
       }
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     private
 

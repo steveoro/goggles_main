@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/Output
+# rubocop:disable-next Rails/Output
 class DataFixNormalizeMrsNewColumns < ActiveRecord::Migration[6.0]
   def self.up
     puts("\r\n--> MRS nil fix/normalization...")
@@ -11,4 +11,3 @@ class DataFixNormalizeMrsNewColumns < ActiveRecord::Migration[6.0]
     # (no-op)
   end
 end
-# rubocop:enable Rails/Output

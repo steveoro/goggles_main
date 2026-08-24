@@ -29,7 +29,7 @@ module AutocreateArtifacts
   #
   # Note that if this is called, for instance, inside a step definition and not
   # inside the header Scenario definition, the scenario context variable is usually +nil+.
-  # rubocop:disable Lint/Debugger
+  # rubocop:disable-next Lint/Debugger
   def save_timestamped_artifacts(page, scenario = nil)
     filename, line_number = if scenario.respond_to?(:location)
                               [File.basename(scenario.location.file), scenario.location.lines.first.to_s]
@@ -50,7 +50,6 @@ module AutocreateArtifacts
       log("\r\nError: unable to store artifacts!")
     end
   end
-  # rubocop:enable Lint/Debugger
 end
 
 World(AutocreateArtifacts)

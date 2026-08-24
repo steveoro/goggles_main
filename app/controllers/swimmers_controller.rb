@@ -84,7 +84,7 @@ class SwimmersController < ApplicationController
   # - :event_type_id => a valid EventType ID
   # - :event_total => all-time overall total count of *all* events for the specified swimmer
   #
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable-next Metrics/AbcSize
   def event_type_stats
     if @swimmer.nil? || !GogglesDb::EventType.exists?(history_params[:event_type_id]) || history_params[:event_total].to_i.zero?
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
@@ -104,7 +104,6 @@ class SwimmersController < ApplicationController
       format.html { redirect_to(swimmer_history_recap_path(@swimmer)) }
     end
   end
-  # rubocop:enable Metrics/AbcSize
   #-- -------------------------------------------------------------------------
   #++
 
@@ -227,7 +226,7 @@ class SwimmersController < ApplicationController
   # - event_type: the current GogglesDb::EventType
   # - event_list: the ActiveRecord relation of MIRs filtered just by EventType & Swimmer
   #
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable-next Metrics/AbcSize
   def prepare_full_summary_stats_for(event_type, event_list)
     event_list25 = event_list.where('pool_types.id': GogglesDb::PoolType::MT_25_ID)
     event_list50 = event_list.where('pool_types.id': GogglesDb::PoolType::MT_50_ID)
@@ -257,7 +256,6 @@ class SwimmersController < ApplicationController
       avg_score50: event_list50.where('standard_points > 0').average(:standard_points).to_f
     }
   end
-  # rubocop:enable Metrics/AbcSize
 
   # Prepares the swimmer history_recap chart data members, mapping each event type label
   # to its percentage of the total accounted events.

@@ -79,7 +79,7 @@ class MeetingsController < ApplicationController
   # == Required params:
   # - id: the MeetingEvent related to the meeting results section to be rendered
   #
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable-next Metrics/AbcSize
   def show_event_section
     unless GogglesDb::MeetingEvent.exists?(meeting_params[:id])
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
@@ -102,7 +102,6 @@ class MeetingsController < ApplicationController
       format.html { redirect_to(meeting_show_path(@meeting_event.meeting.id)) }
     end
   end
-  # rubocop:enable Metrics/AbcSize
   #-- -------------------------------------------------------------------------
   #++
 
@@ -110,7 +109,7 @@ class MeetingsController < ApplicationController
   # == Params
   # - :id => Meeting ID, required
   #
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable-next Metrics/AbcSize
   def team_results
     if @meeting.nil? || @team.nil? # (min. requirements beside actual callbacks)
       flash[:warning] = I18n.t('search_view.errors.invalid_request')
@@ -150,7 +149,6 @@ class MeetingsController < ApplicationController
     set_max_updated_at_for_meeting
     check_default_team_or_swimmer_in_meeting
   end
-  # rubocop:enable Metrics/AbcSize
   #-- -------------------------------------------------------------------------
   #++
 

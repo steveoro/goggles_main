@@ -6,7 +6,7 @@
 # Handles CRUD management for MeetingRelaySwimmers (as a sibling of MRR) &
 # RelayLaps (as a sibling of MRS).
 #
-# rubocop:disable Metrics/ClassLength
+# rubocop:disable-next Metrics/ClassLength
 class RelayLapsController < ApplicationController
   before_action :authenticate_user!
   before_action :validate_modal_request, only: %i[edit_modal create]
@@ -48,7 +48,7 @@ class RelayLapsController < ApplicationController
   #   (Although the "add fraction" button should be already disabled in this case, this is an additional
   #    backend check to prevent any data corruption.)
   #
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def create
     @alert_msg = I18n.t('search_view.errors.invalid_request')
     @alert_class = 'alert-warning'
@@ -92,7 +92,6 @@ class RelayLapsController < ApplicationController
     end
     respond_with_relay_laps_update
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   #-- -------------------------------------------------------------------------
   #++
 
@@ -115,7 +114,7 @@ class RelayLapsController < ApplicationController
   #     "hundredths_from_start" => { "<ROW_INDEX>" => "10" },
   #   }
   #
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def update
     @alert_msg = I18n.t('search_view.errors.invalid_request')
     @alert_class = 'alert-warning'
@@ -142,7 +141,6 @@ class RelayLapsController < ApplicationController
 
     respond_with_relay_laps_update
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   #-- -------------------------------------------------------------------------
   #++
 
@@ -458,4 +456,3 @@ class RelayLapsController < ApplicationController
     all_ok
   end
 end
-# rubocop:enable Metrics/ClassLength

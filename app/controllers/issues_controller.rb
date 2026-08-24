@@ -2,7 +2,7 @@
 
 # = IssuesController
 #
-# rubocop:disable Metrics/ClassLength
+# rubocop:disable-next Metrics/ClassLength
 class IssuesController < ApplicationController
   before_action :authenticate_user!
 
@@ -381,4 +381,3 @@ class IssuesController < ApplicationController
   #-- -------------------------------------------------------------------------
   #++
 end
-# rubocop:enable Metrics/ClassLength

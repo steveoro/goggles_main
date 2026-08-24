@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/Output
+# rubocop:disable-next Rails/Output
 class DataFixBadgesWithNilCategory < ActiveRecord::Migration[6.0]
   def self.up
     puts("\r\n--> Fixing badges with nil category_type...")
@@ -29,4 +29,3 @@ class DataFixBadgesWithNilCategory < ActiveRecord::Migration[6.0]
     # (no-op)
   end
 end
-# rubocop:enable Rails/Output

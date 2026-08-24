@@ -54,12 +54,11 @@ class IssuesGrid < BaseGrid
   #-- -------------------------------------------------------------------------
   #++
 
-  # rubocop:disable Rails/OutputSafety
+  # rubocop:disable-next Rails/OutputSafety
   column(:code, header: I18n.t('issues.grid.params.code'), html: true, mandatory: true, order: :code) do |asset|
     asset.decorate.code_flag << '&nbsp;'.html_safe << asset.decorate.long_label <<
       "<br/><small><p class='text-secondary'>#{asset.req.gsub('","', "\",\r\n\"")}</p></small>".html_safe
   end
-  # rubocop:enable Rails/OutputSafety
 
   column(:priority, header: I18n.t('issues.grid.params.priority'), html: true, mandatory: true, order: :priority) do |asset|
     asset.decorate.priority_flag

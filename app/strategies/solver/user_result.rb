@@ -67,7 +67,7 @@ module Solver
     # A direct attribute binding will be resolved to +nil+ if can't be found inside the
     # current data set after a call to #solve!.
     #
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def init_bindings
       @bindings = {
         user_workshop_id: Solver::Factory.for('UserWorkshop', root_key?('user_workshop') ? req : req['user_result']),
@@ -92,7 +92,6 @@ module Solver
         )
       }
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     private
 

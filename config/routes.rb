@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/BlockLength
+# rubocop:disable-next Metrics/BlockLength
 Rails.application.routes.draw do
   devise_for :users, class_name: 'GogglesDb::User',
                      controllers: {
@@ -107,4 +107,3 @@ Rails.application.routes.draw do
   # Catch-all redirect in case of 404s
   get '*path', to: 'application#redirect_missing'
 end
-# rubocop:enable Metrics/BlockLength

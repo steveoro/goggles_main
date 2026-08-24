@@ -37,7 +37,7 @@ module ComboBox
 
     protected
 
-    # rubocop:disable Rails/OutputSafety
+    # rubocop:disable-next Rails/OutputSafety
     def select_options_with_preselection
       return unless @values || @default_row
 
@@ -70,7 +70,6 @@ module ComboBox
       end
       html_options.join("\r\n").html_safe
     end
-    # rubocop:enable Rails/OutputSafety
 
     def gender_type_options
       options_from_collection_for_select(

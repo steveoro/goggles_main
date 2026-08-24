@@ -19,7 +19,7 @@ module MeetingHelper
   # - 'meeting_date' => Meeting's scheduled date or header date
   # - 'meeting_description' => Meeting full description
   #
-  # rubocop:disable Rails/OutputSafety
+  # rubocop:disable-next Rails/OutputSafety
   def meeting_show_link(options = {})
     return unless options.present? && %w[meeting_id federation_code meeting_date meeting_description].all? { |key| options[key].present? }
 
@@ -28,7 +28,6 @@ module MeetingHelper
       meeting_show_path(id: options['meeting_id'])
     )
   end
-  # rubocop:enable Rails/OutputSafety
   #-- -------------------------------------------------------------------------
   #++
 

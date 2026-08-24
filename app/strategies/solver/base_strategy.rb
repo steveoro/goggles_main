@@ -258,7 +258,7 @@ module Solver
     # == Returns:
     # The updated @solve_issues Hash
     #
-    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def update_solving_issues_hash(key, solver)
       # Store both the nested hash of unsolvable bindings and nils or empty values if the solver
       # doesn't resolve to something, so that we can have a hierarchy of issues to show:
@@ -276,6 +276,5 @@ module Solver
       # ^^ Skip the {key => anything} case when key exists because that would overwrite the existing nested hash
       @solve_issues
     end
-    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   end
 end

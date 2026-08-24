@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-# rubocop:disable RSpec/BeforeAfterAll
+# rubocop:disable-next RSpec/BeforeAfterAll
 RSpec.describe ImportProcessorJob do
   shared_examples_for 'ImportProcessorJob properly enqueued' do
     it "enqueues the job on the 'iq' queue" do
@@ -143,4 +143,3 @@ RSpec.describe ImportProcessorJob do
     end
   end
 end
-# rubocop:enable RSpec/BeforeAfterAll

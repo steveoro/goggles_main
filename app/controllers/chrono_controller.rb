@@ -85,7 +85,7 @@ class ChronoController < ApplicationController
   # == Params:
   # - json_payload: JSON array of detail data that will be converted to a list of new micro-transaction requests
   #
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable-next Metrics/AbcSize
   def commit
     # DEBUG
     logger.debug("\r\n\r\n#{params.inspect}\r\n")
@@ -104,7 +104,6 @@ class ChronoController < ApplicationController
 
     redirect_to(chrono_index_path)
   end
-  # rubocop:enable Metrics/AbcSize
   #-- -------------------------------------------------------------------------
   #++
 
@@ -207,7 +206,7 @@ class ChronoController < ApplicationController
   end
 
   # Saves the current choices for /rec into cookies
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable-next Metrics/AbcSize
   def store_rec_params_in_cookies
     cookies[:season_id] = rec_params[:season_id]
     cookies[:meeting_id] = rec_params[:meeting_id]
@@ -239,7 +238,6 @@ class ChronoController < ApplicationController
     cookies[:city_area] = rec_params[:city_area]
     cookies[:city_country_code] = rec_params[:city_country_code]
   end
-  # rubocop:enable Metrics/AbcSize
 
   # Returns the last recored timing data, minus the order (which is not used in the actual result).
   def overall_result_timing(laps_list)
@@ -260,7 +258,7 @@ class ChronoController < ApplicationController
   # - json_header: JSON-ified common header parameters shared among all the detail requests
   # - laps_list: the list of Hash data from the actual detail payload
   #
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable-next Metrics/AbcSize
   def commit_import_queues(laps_list)
     adapter = IqRequest::ChronoRecParamAdapter.from_request_data(commit_params['json_header'])
     parent_id = nil
@@ -298,7 +296,6 @@ class ChronoController < ApplicationController
       parent_id = iq_row.id if index.zero?
     end
   end
-  # rubocop:enable Metrics/AbcSize
 end
 
 # Returns a new Timing delta computed from the 2 specified Hash instances.

@@ -56,7 +56,7 @@ module IqRequest
   #
   # @see any Solver class for more info.
   #
-  # rubocop:disable Metrics/ClassLength
+  # rubocop:disable-next Metrics/ClassLength
   class ChronoRecParamAdapter
     # Source parameters Hash; supports all SUPPORTED_PARAMS.keys
     attr_reader :params
@@ -584,5 +584,4 @@ module IqRequest
     #-- -----------------------------------------------------------------------
     #++
   end
-  # rubocop:enable Metrics/ClassLength
 end

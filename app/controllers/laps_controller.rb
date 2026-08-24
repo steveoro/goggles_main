@@ -2,7 +2,7 @@
 
 # = LapsController
 #
-# rubocop:disable Metrics/ClassLength
+# rubocop:disable-next Metrics/ClassLength
 class LapsController < ApplicationController
   before_action :authenticate_user!
   before_action :validate_modal_request, only: %i[edit_modal create]
@@ -71,7 +71,7 @@ class LapsController < ApplicationController
   #     "hundredths_from_start" => { "<ROW_INDEX>" => "10" },
   #   }
   #
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def update
     # Update timing from start for current lap
     @curr_lap.length_in_meters = rows_params[:length_in_meters]&.values&.first || 0
@@ -104,7 +104,6 @@ class LapsController < ApplicationController
     @last_delta_timing = @parent_result.to_timing - last_lap.timing_from_start if last_lap
     respond_with_laps_update
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   #-- -------------------------------------------------------------------------
   #++
 
@@ -222,7 +221,7 @@ class LapsController < ApplicationController
   # Sets both <tt>@parent_result</tt> & <tt>@curr_lap</tt> members.
   # Redirects to root_path otherwise.
   #
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def validate_row_request
     valid_params = (request.put? || request.delete?) &&
                    rows_params[:id].present? &&
@@ -241,7 +240,6 @@ class LapsController < ApplicationController
     @parent_result = result_class_from_row_params.includes(lap_class_from_row_params.table_name.to_sym, :event_type)
                                                  .find_by(id: rows_params[:result_id].values.first)
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   #-- -------------------------------------------------------------------------
   #++
 
@@ -338,4 +336,3 @@ class LapsController < ApplicationController
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

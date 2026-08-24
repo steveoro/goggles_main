@@ -25,7 +25,7 @@ module Users
     # in the Cloud Platform developer console (https://console.cloud.google.com/apis/credentials/),
     # and the proper credentials are stored in the credentials file ('rails credentials:edit')
     #
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def continue
       id_token = flash['google_sign_in']['id_token'] if flash['google_sign_in'].present?
       error = flash['google_sign_in']['error'] if flash['google_sign_in'].present?
@@ -60,7 +60,6 @@ module Users
       # This will throw if result_user is not activated:
       sign_in_and_redirect(result_user, event: :authentication) && return
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     #-- ------------------------------------------------------------------------
     #++
 

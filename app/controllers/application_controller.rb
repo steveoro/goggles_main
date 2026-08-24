@@ -200,7 +200,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   # 2. cookies[:locale]
   # 3. I18n.default_locale
   #
-  # rubocop:disable Metrics/PerceivedComplexity
+  # rubocop:disable-next Metrics/PerceivedComplexity
   def set_locale
     # NOTE: in order to avoid DOS-attacks by creating ludicrous amounts of Symbols,
     # create a string map of the available locales and set the I18n.locale only
@@ -224,7 +224,6 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     I18n.locale = current_locale.to_sym
     logger.debug("* Locale is now set to '#{I18n.locale}'")
   end
-  # rubocop:enable Metrics/PerceivedComplexity
   #-- -------------------------------------------------------------------------
   #++
 

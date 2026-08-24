@@ -55,7 +55,7 @@ module Solver
     # In some specific cases (currently only for Lookup entities), the solver may return directly the default
     # value specified (as +default+ param) in case the finder strategy yields nothing.
     #
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+    # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
     def self.for(target_entity_name, req, default = nil)
       case target_entity_name
       when 'Badge'
@@ -108,6 +108,5 @@ module Solver
         raise(ArgumentError, "New, unsupported or unimplemented target requested (#{target_entity_name}).")
       end
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
   end
 end
