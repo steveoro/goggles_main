@@ -46,6 +46,41 @@ Then('I should see the base timings toggle for the swimmer') do
   expect(page).to have_css("a[href='#base-timings-#{@enrolled_swimmer.id}']")
 end
 
+Given('I am viewing the Goggle Cup ranking for my managed team') do
+  visit(goggle_cups_path)
+  step("I select \"#{@goggle_cup.season_year}\" as the championship year and my managed team")
+  step('I click on the "Cerca" button')
+  step('I should see the cup title button')
+  step('I click on the cup title')
+  step('I should see the swimmer name in the computed ranking')
+end
+
+Then('I should see the ranking export buttons') do
+  %w[ranking_csv ranking_xls ranking_pdf].each do |key|
+    expect(page).to have_link(I18n.t("goggles_cup.export.#{key}"))
+  end
+end
+
+Then('I should see the base timings export buttons') do
+  %w[base_timings_csv base_timings_xls base_timings_pdf].each do |key|
+    expect(page).to have_link(I18n.t("goggles_cup.export.#{key}"))
+  end
+end
+
+When('I click on the {string} export button') do |label_key|
+  click_link(I18n.t(label_key))
+end
+
+Then('I should receive a downloaded {string} file containing {string}') do |format, expected|
+  wait_for_download
+  expect(downloaded_filename.to_s).to include(".#{format}")
+  if expected.present?
+    expect(download_content).to include(expected)
+  else
+    expect(File.size(downloaded_filename)).to be > 0 # rubocop:disable Style/NumericPredicate
+  end
+end
+
 def goggle_cup_ranking_json(swimmer, team)
   {
     description: @goggle_cup&.description || 'Test Cup',

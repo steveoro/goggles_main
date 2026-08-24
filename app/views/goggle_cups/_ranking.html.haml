@@ -1,4 +1,5 @@
--# Delegates to the shared engine ranking partial; exports are not available in read-only browse mode.
+-# Delegates to the shared engine ranking partial, supplying the export URL builder.
+- export_path = ->(format:, export_type: 'ranking') { goggle_cup_ranking_path(goggle_cup, format: format, export_type: export_type) }
 = render partial: 'goggles_db/goggle_cups/ranking',
          locals: { team: team, goggle_cup: goggle_cup, ranking_data: ranking_data,
-                   no_duplicated_events: no_duplicated_events, show_exports: false }
+                   no_duplicated_events: no_duplicated_events, export_path: export_path }

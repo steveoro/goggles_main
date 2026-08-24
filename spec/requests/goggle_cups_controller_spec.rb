@@ -95,7 +95,16 @@ RSpec.describe GoggleCupsController do
         description: 'Test Cup', season_year: 2025, max_points: 1000, team_id: team.id,
         end_date: '2026-07-31', swimmer_ids: [swimmer.id], no_duplicated_events: false,
         data: {
-          base_timings: {},
+          base_timings: {
+            swimmer.id.to_s => [
+              {
+                'event_type_code' => '50SL', 'pool_type_code' => '25',
+                'season_header_year' => 2022, 'total_hundredths' => 3100,
+                'meeting_date' => '2022-02-01', 'meeting_name' => 'Base Meeting',
+                'meeting_id' => 7, 'meeting_individual_result_id' => 777
+              }
+            ]
+          },
           scores: {
             swimmer.id.to_s => [
               {
@@ -164,6 +173,12 @@ RSpec.describe GoggleCupsController do
         get(goggle_cup_ranking_path(cup))
         expect(response.body).to include('TEST SWIMMER')
         expect(response.body).to include('1066.67')
+      end
+
+      it 'displays export buttons for the rendered ranking' do
+        get(goggle_cup_ranking_path(cup))
+        expect(response.body).to include(I18n.t('goggles_cup.export.ranking_csv'))
+        expect(response.body).to include(I18n.t('goggles_cup.export.base_timings_pdf'))
       end
 
       it 'returns a turbo stream for the ranking' do
@@ -278,6 +293,68 @@ RSpec.describe GoggleCupsController do
       expect(response.media_type).to eq('text/vnd.turbo-stream.html')
       expect(response.body).to include('goggle-cup-ranking')
       expect(response.body).to include(I18n.t('goggle_cups.cup_not_found'))
+    end
+
+    context 'with ranking data and a logged-in admin' do
+      let(:admin_user) do
+        user = FactoryBot.create(:user)
+        FactoryBot.create(:admin_grant, user: user)
+        user
+      end
+
+      before do
+        sign_in(admin_user)
+      end
+
+      it 'exports the ranking as CSV' do
+        get(goggle_cup_ranking_path(cup, format: :csv))
+        expect(response).to have_http_status(:success)
+        expect(response.media_type).to eq('text/csv')
+        expect(response.headers['Content-Disposition']).to include('goggle-cup-')
+        expect(response.body).to include('TEST SWIMMER')
+        expect(response.body).to include('1066.67')
+      end
+
+      it 'exports the ranking as XLSX' do
+        get(goggle_cup_ranking_path(cup, format: :xlsx))
+        expect(response).to have_http_status(:success)
+        expect(response.media_type).to eq(Mime[:xlsx].to_s)
+        expect(response.headers['Content-Disposition']).to include('goggle-cup-')
+        expect(response.headers['Content-Disposition']).to include('.xlsx')
+      end
+
+      it 'exports the ranking as PDF' do
+        get(goggle_cup_ranking_path(cup, format: :pdf))
+        expect(response).to have_http_status(:success)
+        expect(response.media_type).to eq('application/pdf')
+        expect(response.headers['Content-Disposition']).to include('goggle-cup-')
+        expect(response.headers['Content-Disposition']).to include('.pdf')
+      end
+
+      it 'exports the base timings as CSV sorted by swimmer name' do
+        get(goggle_cup_ranking_path(cup, format: :csv, export_type: :base_timings))
+        expect(response).to have_http_status(:success)
+        expect(response.media_type).to eq('text/csv')
+        expect(response.headers['Content-Disposition']).to include('base-timings')
+        expect(response.body).to include('TEST SWIMMER')
+        expect(response.body).to include('50SL')
+      end
+
+      it 'exports the base timings as XLSX' do
+        get(goggle_cup_ranking_path(cup, format: :xlsx, export_type: :base_timings))
+        expect(response).to have_http_status(:success)
+        expect(response.media_type).to eq(Mime[:xlsx].to_s)
+        expect(response.headers['Content-Disposition']).to include('base-timings')
+        expect(response.headers['Content-Disposition']).to include('.xlsx')
+      end
+
+      it 'exports the base timings as PDF' do
+        get(goggle_cup_ranking_path(cup, format: :pdf, export_type: :base_timings))
+        expect(response).to have_http_status(:success)
+        expect(response.media_type).to eq('application/pdf')
+        expect(response.headers['Content-Disposition']).to include('base-timings')
+        expect(response.headers['Content-Disposition']).to include('.pdf')
+      end
     end
   end
 end

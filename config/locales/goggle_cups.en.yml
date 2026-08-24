@@ -14,5 +14,6 @@ en:
     team_not_found: "Selected team not found."
     cup_not_found: "Selected cup not found."
     info:
+    info:
       no_cups: "No Goggle Cups found for the selected year and team."
       no_ranking_data: "The selected cup has no pre-computed ranking data."

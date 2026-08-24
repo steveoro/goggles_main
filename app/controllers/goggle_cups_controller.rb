@@ -36,6 +36,9 @@ class GoggleCupsController < ApplicationController
     respond_to do |format|
       format.turbo_stream
       format.html { render(:index) }
+      format.csv  { send_ranking_export(format: :csv) }
+      format.xlsx { send_ranking_export(format: :xlsx) }
+      format.pdf  { send_ranking_export(format: :pdf) }
     end
   end
 
@@ -118,6 +121,19 @@ class GoggleCupsController < ApplicationController
     value.nil? ? false : ActiveModel::Type::Boolean.new.cast(value)
   rescue StandardError
     false
+  end
+
+  def send_ranking_export(format:)
+    return redirect_to(goggle_cups_path, alert: t('goggles_cup.errors.invalid_selection_or_data')) if @ranking_data.blank?
+
+    result = GogglesDb::GoggleCupRanking::Exporter.new(
+      cup: @goggle_cup, ranking_data: @ranking_data,
+      no_duplicated_events: @no_duplicated_events
+    ).export(format_name: format, export_type: params[:export_type])
+
+    return redirect_to(goggle_cups_path, alert: t('goggles_cup.errors.invalid_selection_or_data')) if result.blank?
+
+    send_data(result[:data], filename: result[:filename], type: result[:mime_type], disposition: 'attachment')
   end
 
   # Renders a turbo-stream alert inside #goggle-cup-ranking for stream requests,

@@ -2,6 +2,8 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.10.35** [Steve A.] security bundle updates & re-sync w/ base engine; goggle cup & related base timings export feature (team managers)
+- **0.10.34** [Steve A.] meeting/show view optimization
 - **0.10.32** [Steve A.] added Goggle Cup browse page for team managers and admins; year/team selectors, cup title buttons, and Turbo Stream stored ranking with base timings; request/view/Cucumber coverage; aligned framework versioning across all goggles_* projects; re-sync w/ base engine v0.10.32
 - **0.10.31** [Steve A.] fixed base_year fallback leak on Goggles Cup base timings page (reset SQL @base_year session variable before default lookup); bundle updates
 - **0.10.30** [Steve A.] re-sync w/ base engine v0.10.0 (base_year parameter for best-result views); added base_year selector to Goggles Cup base timings page; bundle updates
