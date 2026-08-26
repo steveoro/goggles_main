@@ -29,7 +29,7 @@
           %br/
           - curr_rank = team_ranks&.fetch(rank, 0) || 0
           = curr_rank
-          = render(RankingPosComponent.new(rank:)) if rank < 4 && curr_rank.positive?
+          = render(GogglesDb::RankingPosComponent.new(rank:)) if rank < 4 && curr_rank.positive?
           = tag.small('😬') if rank == 4 && curr_rank.positive?
 
     - %w[F-std M-std gogglecup].each do |key|

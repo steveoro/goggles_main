@@ -5,7 +5,7 @@
   %tr
     %td.text-right
       - dsq_notes = @mir.disqualification_notes if @mir.respond_to?(:disqualification_notes)
-      = render(RankingPosComponent.new(rank:, dsq_notes:))
+      = render(GogglesDb::RankingPosComponent.new(rank:, dsq_notes:))
       = render(Switch::RotatingComponent.new(target_id: "laps-show#{@mir.id}")) if includes_laps?
     %td.text-right.pl-0
       - if @mir.reaction_time > 0.0

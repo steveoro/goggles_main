@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.10.40** [Steve A.] re-sync w/ base engine v0.10.40; added dedicated Goggle Cup base-timings HTML page with public swimmer/meeting links and exporter-compatible ordering; moved to the shared engine RankingPosComponent; replaced ranking-page base-timings export buttons with a Base timings link; aligned framework versioning
 - **0.10.37** [Steve A.] security bundle updates & re-sync w/ base engine; goggle cup & related base timings export feature (team managers); fix rendering of goggle cup rule on PDF layout
 - **0.10.34** [Steve A.] meeting/show view optimization
 - **0.10.32** [Steve A.] added Goggle Cup browse page for team managers and admins; year/team selectors, cup title buttons, and Turbo Stream stored ranking with base timings; request/view/Cucumber coverage; aligned framework versioning across all goggles_* projects; re-sync w/ base engine v0.10.32

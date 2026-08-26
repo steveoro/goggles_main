@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db.git
-  revision: 032431d2356d92486459cabc05b66a7348d49ee2
+  revision: ed30ee9ee4ad4f2c087596e1f126757f3b01b0e0
   specs:
-    goggles_db (0.10.37)
+    goggles_db (0.10.40)
       acts-as-taggable-on
       acts_as_votable
       caxlsx
@@ -34,6 +34,7 @@ GIT
       scenic
       simple_command
       tzinfo
+      view_component
 
 GEM
   remote: https://rubygems.org/
@@ -451,7 +452,7 @@ GEM
       net-protocol
     net-pop (0.1.2)
       net-protocol
-    net-protocol (0.2.2)
+    net-protocol (0.3.0)
       timeout
     net-scp (4.1.0)
       net-ssh (>= 2.6.5, < 8.0.0)
@@ -751,7 +752,7 @@ GEM
     uri (1.1.1)
     useragent (0.16.11)
     version_gem (1.1.15)
-    view_component (4.12.0)
+    view_component (4.15.0)
       actionview (>= 7.1.0)
       activesupport (>= 7.1.0)
       concurrent-ruby (~> 1)

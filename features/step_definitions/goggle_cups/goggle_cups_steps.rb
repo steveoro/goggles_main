@@ -61,10 +61,26 @@ Then('I should see the ranking export buttons') do
   end
 end
 
+Then('I should see the base timings link') do
+  expect(page).to have_link(I18n.t('goggles_cup.base_timings.link'))
+end
+
+When('I click on the base timings link') do
+  click_link(I18n.t('goggles_cup.base_timings.link'))
+end
+
+Then('I should see the base timings title') do
+  expect(page).to have_text(I18n.t('goggles_cup.base_timings.title'))
+end
+
 Then('I should see the base timings export buttons') do
   %w[base_timings_csv base_timings_xls base_timings_pdf].each do |key|
     expect(page).to have_link(I18n.t("goggles_cup.export.#{key}"))
   end
+end
+
+Then('I should see a link back to the ranking') do
+  expect(page).to have_link(I18n.t('goggles_cup.base_timings.back_to_ranking'))
 end
 
 When('I click on the {string} export button') do |label_key|

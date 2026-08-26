@@ -175,10 +175,12 @@ RSpec.describe GoggleCupsController do
         expect(response.body).to include('1066.67')
       end
 
-      it 'displays export buttons for the rendered ranking' do
+      it 'displays ranking export buttons and a base-timings link for the rendered ranking' do
         get(goggle_cup_ranking_path(cup))
         expect(response.body).to include(I18n.t('goggles_cup.export.ranking_csv'))
-        expect(response.body).to include(I18n.t('goggles_cup.export.base_timings_pdf'))
+        expect(response.body).to include(I18n.t('goggles_cup.export.ranking_xls'))
+        expect(response.body).to include(I18n.t('goggles_cup.export.ranking_pdf'))
+        expect(response.body).to include(I18n.t('goggles_cup.base_timings.link'))
       end
 
       it 'returns a turbo stream for the ranking' do
@@ -355,6 +357,178 @@ RSpec.describe GoggleCupsController do
         expect(response.headers['Content-Disposition']).to include('base-timings')
         expect(response.headers['Content-Disposition']).to include('.pdf')
       end
+    end
+  end
+
+  describe 'GET /goggle_cups/:id/base_timings' do
+    let(:team) { FactoryBot.create(:team) }
+    let(:swimmer) { FactoryBot.create(:swimmer, complete_name: 'TEST SWIMMER', year_of_birth: 1980) }
+    let(:cup) do
+      FactoryBot.create(:goggle_cup, team: team, description: 'Test Cup', season_year: 2025,
+                                     swimmers_ids: swimmer.id.to_s)
+    end
+    let(:ranking_json) do
+      {
+        description: 'Test Cup', season_year: 2025, max_points: 1000, team_id: team.id,
+        end_date: '2026-07-31', swimmer_ids: [swimmer.id], no_duplicated_events: false,
+        data: {
+          base_timings: {
+            swimmer.id.to_s => [
+              {
+                'event_type_code' => '50SL', 'pool_type_code' => '25',
+                'season_header_year' => 2022, 'total_hundredths' => 3100,
+                'meeting_date' => '2022-02-01', 'meeting_name' => 'Base Meeting',
+                'meeting_id' => 7, 'meeting_individual_result_id' => 777
+              }
+            ]
+          },
+          scores: {
+            swimmer.id.to_s => [
+              {
+                'event_type_code' => '50SL', 'pool_type_code' => '25',
+                'total_hundredths' => 3000, 'meeting_date' => '2025-01-15',
+                'meeting_name' => 'Test Meeting', 'meeting_id' => 42,
+                'meeting_individual_result_id' => 99, 'team_id' => team.id,
+                'team_name' => 'TEST TEAM', 'old_total_hundredths' => 3200,
+                'old_meeting_date' => '2024-01-10', 'old_meeting_name' => 'Old Meeting',
+                'old_meeting_id' => 30, 'old_meeting_individual_result_id' => 88,
+                'row_score' => 1066.67
+              }
+            ]
+          }
+        }
+      }.to_json
+    end
+
+    before do
+      expect(cup).to be_a(GogglesDb::GoggleCup).and be_valid
+      expect(swimmer).to be_a(GogglesDb::Swimmer).and be_valid
+      cup.update!(ranking_data: ranking_json)
+    end
+
+    context 'with an unlogged user,' do
+      it 'is a redirect to the login path' do
+        get(goggle_cup_base_timings_path(cup))
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'with a logged-in user (not a manager or admin)' do
+      before do
+        user = FactoryBot.create(:user)
+        sign_in(user)
+        get(goggle_cup_base_timings_path(cup))
+      end
+
+      it 'is a redirect to the root path' do
+        expect(response).to redirect_to(root_path)
+      end
+
+      it 'sets an unauthorized flash message' do
+        expect(flash[:alert]).to eq(I18n.t('goggle_cups.unauthorized'))
+      end
+    end
+
+    context 'with a signed-in admin' do
+      let(:admin_user) do
+        user = FactoryBot.create(:user)
+        FactoryBot.create(:admin_grant, user: user)
+        user
+      end
+
+      before do
+        expect(admin_user).to be_a(GogglesDb::User).and be_valid
+        sign_in(admin_user)
+      end
+
+      it 'returns http success' do
+        get(goggle_cup_base_timings_path(cup))
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'renders the base timings page' do
+        get(goggle_cup_base_timings_path(cup))
+        expect(response.body).to include(I18n.t('goggles_cup.base_timings.title'))
+        expect(response.body).to include('TEST SWIMMER')
+      end
+
+      it 'displays base-timings export buttons' do
+        get(goggle_cup_base_timings_path(cup))
+        expect(response.body).to include(I18n.t('goggles_cup.export.base_timings_csv'))
+        expect(response.body).to include(I18n.t('goggles_cup.export.base_timings_xls'))
+        expect(response.body).to include(I18n.t('goggles_cup.export.base_timings_pdf'))
+      end
+
+      it 'includes a link back to the ranking' do
+        get(goggle_cup_base_timings_path(cup))
+        expect(response.body).to include(I18n.t('goggles_cup.base_timings.back_to_ranking'))
+      end
+    end
+
+    context 'with a signed-in team manager' do
+      let(:manager) { FactoryBot.create(:user) }
+      let(:team_affiliation) { FactoryBot.create(:team_affiliation, team: team) }
+      let(:managed_affiliation) { FactoryBot.create(:managed_affiliation, manager: manager, team_affiliation: team_affiliation) }
+
+      before do
+        managed_affiliation
+        expect(manager).to be_a(GogglesDb::User).and be_valid
+        sign_in(manager)
+      end
+
+      it 'returns http success' do
+        get(goggle_cup_base_timings_path(cup))
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'renders the base timings for the managed team' do
+        get(goggle_cup_base_timings_path(cup))
+        expect(response.body).to include('TEST SWIMMER')
+      end
+    end
+
+    context 'with a signed-in manager of a different team' do
+      let(:manager) { FactoryBot.create(:user) }
+      let(:other_team) { FactoryBot.create(:team) }
+      let(:other_team_affiliation) { FactoryBot.create(:team_affiliation, team: other_team) }
+      let(:managed_affiliation) { FactoryBot.create(:managed_affiliation, manager: manager, team_affiliation: other_team_affiliation) }
+
+      before do
+        managed_affiliation
+        expect(other_team).to be_a(GogglesDb::Team).and be_valid
+        expect(cup).to be_a(GogglesDb::GoggleCup).and be_valid
+        sign_in(manager)
+        get(goggle_cup_base_timings_path(cup))
+      end
+
+      it 'is a redirect to the root path' do
+        expect(response).to redirect_to(root_path)
+      end
+
+      it 'sets an unauthorized team flash message' do
+        expect(flash[:alert]).to eq(I18n.t('goggle_cups.unauthorized_team'))
+      end
+    end
+
+    it 'redirects with an alert when the cup has no ranking data' do
+      cup.update!(ranking_data: nil)
+      admin_user = FactoryBot.create(:user)
+      FactoryBot.create(:admin_grant, user: admin_user)
+      sign_in(admin_user)
+
+      get(goggle_cup_base_timings_path(cup))
+      expect(response).to redirect_to(goggle_cups_path)
+      expect(flash[:alert]).to eq(I18n.t('goggle_cups.info.no_ranking_data'))
+    end
+
+    it 'redirects with an alert when the cup is missing' do
+      admin_user = FactoryBot.create(:user)
+      FactoryBot.create(:admin_grant, user: admin_user)
+      sign_in(admin_user)
+
+      get(goggle_cup_base_timings_path(id: 0))
+      expect(response).to redirect_to(goggle_cups_path)
+      expect(flash[:alert]).to eq(I18n.t('goggle_cups.cup_not_found'))
     end
   end
 end

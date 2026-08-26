@@ -6,6 +6,7 @@
 # Users select a championship/base year and a team, then choose from the
 # pre-computed cups stored for that team/year to see the stored ranking.
 #
+# rubocop:disable Metrics/ClassLength
 class GoggleCupsController < ApplicationController
   helper_method :user_is_admin?
   before_action :authenticate_user!
@@ -13,7 +14,7 @@ class GoggleCupsController < ApplicationController
   before_action :prepare_managed_teams_for_cups
   before_action :set_selected_team, only: %i[index ranking]
   before_action :set_season_year, only: %i[index ranking]
-  before_action :set_goggle_cup, only: %i[ranking]
+  before_action :set_goggle_cup, only: %i[ranking base_timings]
 
   # [GET] Renders the Goggle Cup browsing/selection page.
   def index
@@ -39,6 +40,23 @@ class GoggleCupsController < ApplicationController
       format.csv  { send_ranking_export(format: :csv) }
       format.xlsx { send_ranking_export(format: :xlsx) }
       format.pdf  { send_ranking_export(format: :pdf) }
+    end
+  end
+
+  # [GET] Renders the base timings for the selected cup.
+  def base_timings
+    return respond_with_alert(t('goggle_cups.info.no_ranking_data')) if @goggle_cup.ranking_data.blank?
+
+    @selected_team = @goggle_cup.team
+    @selected_team_id = @goggle_cup.team_id
+    @season_year = @goggle_cup.season_year
+    @ranking_data = GogglesDb::GoggleCupRanking::DataDeserializer.new(@goggle_cup).call
+    @no_duplicated_events = no_duplicated_events_from(@goggle_cup)
+    @available_years = available_years
+    @goggle_cups = goggle_cups_for_selection
+
+    respond_to do |format|
+      format.html { render(:base_timings) }
     end
   end
 
@@ -135,6 +153,8 @@ class GoggleCupsController < ApplicationController
 
     send_data(result[:data], filename: result[:filename], type: result[:mime_type], disposition: 'attachment')
   end
+
+  # rubocop:enable Metrics/ClassLength
 
   # Renders a turbo-stream alert inside #goggle-cup-ranking for stream requests,
   # or redirects to the given path with a flash alert for HTML requests.

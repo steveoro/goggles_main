@@ -18,7 +18,7 @@
               - events_x_curr_swimmer&.each do |mir|
                 .row.border-bottom
                   .col.border-right.d-flex.justify-content-around.align-items-baseline.px-0
-                    = render(RankingPosComponent.new(rank: mir.rank))
+                    = render(GogglesDb::RankingPosComponent.new(rank: mir.rank))
                     &nbsp;
                     - event_type = mir.meeting_event.event_type.label
                     %a{ href: "\##{event_type}", data: { turbo: false } }= event_type

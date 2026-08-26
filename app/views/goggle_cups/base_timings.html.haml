@@ -1,0 +1,16 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    - provide(:title, t('goggles_cup.base_timings.title'))
+
+    %section#goggle-cup-base-timings
+      = render(partial: 'goggles_db/goggle_cups/base_timings',
+               locals: { team: @selected_team, goggle_cup: @goggle_cup,
+                         ranking_data: @ranking_data, no_duplicated_events: @no_duplicated_events,
+                         export_path: goggle_cup_export_lambda(@goggle_cup, default_export_type: 'base_timings'),
+                         swimmer_path: method(:swimmer_show_path_for_id),
+                         meeting_path: method(:meeting_show_path_for_id),
+                         back_path: goggle_cup_ranking_path(@goggle_cup) })
+
+  .spacer-right

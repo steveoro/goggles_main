@@ -77,7 +77,7 @@ class HistoryGrid < BaseGrid
                 order: Arel.sql('rank is not null desc, rank, meeting_sessions.scheduled_date desc'),
                 order_desc: Arel.sql('rank is not null desc, rank desc, meeting_sessions.scheduled_date desc')) do |asset|
     if asset.rank.to_i.positive?
-      render(RankingPosComponent.new(rank: asset.rank.to_i))
+      render(GogglesDb::RankingPosComponent.new(rank: asset.rank.to_i))
     else
       '-'
     end

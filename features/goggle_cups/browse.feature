@@ -25,18 +25,34 @@ Feature: Browse Goggle Cups
   Scenario: viewing Goggle Cup export options
     Given I am viewing the Goggle Cup ranking for my managed team
     Then I should see the ranking export buttons
-    And I should see the base timings export buttons
+    And I should see the base timings link
 
-  Scenario Outline: exporting Goggle Cup data as <format>
+  Scenario: viewing the Goggle Cup base timings page
+    Given I am viewing the Goggle Cup ranking for my managed team
+    When I click on the base timings link
+    Then I should see the base timings title
+    And I should see the base timings export buttons
+    And I should see a link back to the ranking
+
+  Scenario Outline: exporting Goggle Cup ranking as <format>
     Given I am viewing the Goggle Cup ranking for my managed team
     When I click on the "<label_key>" export button
     Then I should receive a downloaded "<format>" file containing "<expected>"
 
     Examples:
+      | label_key                       | format | expected |
+      | goggles_cup.export.ranking_csv  | csv    | 1066.67  |
+      | goggles_cup.export.ranking_xls  | xlsx   |          |
+      | goggles_cup.export.ranking_pdf  | pdf    |          |
+
+  Scenario Outline: exporting Goggle Cup base timings as <format>
+    Given I am viewing the Goggle Cup ranking for my managed team
+    When I click on the base timings link
+    And I click on the "<label_key>" export button
+    Then I should receive a downloaded "<format>" file containing "<expected>"
+
+    Examples:
       | label_key                              | format | expected |
-      | goggles_cup.export.ranking_csv         | csv    | 1066.67  |
-      | goggles_cup.export.ranking_xls         | xlsx   |          |
-      | goggles_cup.export.ranking_pdf         | pdf    |          |
       | goggles_cup.export.base_timings_csv    | csv    | 50SL     |
       | goggles_cup.export.base_timings_xls    | xlsx   |          |
       | goggles_cup.export.base_timings_pdf    | pdf    |          |

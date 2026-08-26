@@ -24,7 +24,7 @@
               &nbsp;
               - if mir.standard_points.to_f > 800.0
                 = tag.small('⭐')
-              = render(RankingPosComponent.new(rank: mir.rank))
+              = render(GogglesDb::RankingPosComponent.new(rank: mir.rank))
 
             %td.pt-2
               - can_edit_lap = current_user_is_admin || managed_team_ids.nil? || managed_team_ids.include?(mir.team_id)
