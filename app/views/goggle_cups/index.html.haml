@@ -33,7 +33,7 @@
                     = render(ComboBox::AutocompleteComponent.new(label: t('goggle_cups.team'), base_name: 'team',
                                                                  required: true,
                                                                  values: options_from_collection_for_select(@managed_teams, 'id', 'name', @selected_team_id)))
-                .col-md-2.my-2.d-flex.align-items-end
+                .col-md-2.my-2.d-flex.pt-3.align-items-center
                   = button_tag(type: 'submit', class: 'btn btn-primary w-100') do
                     %i.fa.fa-search.me-2
                     = t('goggle_cups.search')

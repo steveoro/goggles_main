@@ -175,6 +175,13 @@ RSpec.describe GoggleCupsController do
         expect(response.body).to include('1066.67')
       end
 
+      it 'links meeting names to the swimmer results page with swimmer_id' do
+        get(goggle_cup_ranking_path(cup))
+        expect(response.body).to include(meeting_swimmer_results_path(id: 42, swimmer_id: swimmer.id))
+        expect(response.body).to include('title=')
+        expect(response.body).to include(I18n.t('goggles_cup.meeting_link_tooltip'))
+      end
+
       it 'displays ranking export buttons and a base-timings link for the rendered ranking' do
         get(goggle_cup_ranking_path(cup))
         expect(response.body).to include(I18n.t('goggles_cup.export.ranking_csv'))

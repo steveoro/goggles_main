@@ -18,8 +18,11 @@ module GoggleCupsHelper
     swimmer_show_path(id: swimmer_id)
   end
 
-  # Public path builder for a meeting show page used by shared engine partials.
-  def meeting_show_path_for_id(meeting_id)
-    meeting_show_path(id: meeting_id)
+  # Public path builder for a swimmer's results in a specific meeting, used by shared engine partials.
+  # Builds +meetings/swimmer_results/<meeting_id>?swimmer_id=<swimmer_id>+.
+  def meeting_show_path_for_id(meeting_id, swimmer_id = nil)
+    return meeting_show_path(id: meeting_id) if swimmer_id.blank?
+
+    meeting_swimmer_results_path(id: meeting_id, swimmer_id: swimmer_id)
   end
 end
