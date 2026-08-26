@@ -71,6 +71,17 @@ RSpec.describe MeetingsController do
         get(meeting_show_path(meeting_id))
         expect(response).to have_http_status(:success)
       end
+
+      it 'excludes result rows whose swimmer no longer exists' do
+        source_mir = GogglesDb::MeetingIndividualResult.joins(:meeting, :swimmer).first
+        source_mir.swimmer_id = GogglesDb::Swimmer.maximum(:id) + 1
+        source_mir.save!(validate: false)
+
+        get(meeting_show_path(source_mir.meeting.id))
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).not_to include("id=\"mir#{source_mir.id}\"")
+      end
     end
 
     context 'with an invalid row id' do
