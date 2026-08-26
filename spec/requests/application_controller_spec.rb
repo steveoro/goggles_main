@@ -35,7 +35,9 @@ RSpec.describe ApplicationController do
 
     context 'when the daily count is under the bias' do
       before do
-        GogglesDb::APIDailyUse.create!(route: stats_route, day: Time.zone.today, count: 10)
+        GogglesDb::APIDailyUse
+          .find_or_initialize_by(route: stats_route, day: Time.zone.today)
+          .update!(count: 10)
       end
 
       it 'allows normal browsing' do
@@ -65,10 +67,9 @@ RSpec.describe ApplicationController do
 
     context 'when the daily count exceeds the bias and no user is signed in' do
       before do
-        GogglesDb::APIDailyUse.create!(
-          route: stats_route, day: Time.zone.today,
-          count: GogglesDb::AppParameter::DEFAULT_MAX_ANONYMOUS_REQ + 1
-        )
+        GogglesDb::APIDailyUse
+          .find_or_initialize_by(route: stats_route, day: Time.zone.today)
+          .update!(count: GogglesDb::AppParameter::DEFAULT_MAX_ANONYMOUS_REQ + 1)
       end
 
       it 'redirects to the too_many_requests page' do
@@ -79,10 +80,9 @@ RSpec.describe ApplicationController do
 
     context 'when the daily count exceeds the bias but a user is signed in' do
       before do
-        GogglesDb::APIDailyUse.create!(
-          route: stats_route, day: Time.zone.today,
-          count: GogglesDb::AppParameter::DEFAULT_MAX_ANONYMOUS_REQ + 1
-        )
+        GogglesDb::APIDailyUse
+          .find_or_initialize_by(route: stats_route, day: Time.zone.today)
+          .update!(count: GogglesDb::AppParameter::DEFAULT_MAX_ANONYMOUS_REQ + 1)
         sign_in(FactoryBot.create(:user))
       end
 
@@ -94,10 +94,9 @@ RSpec.describe ApplicationController do
 
     context 'when browsing the too_many_requests page itself' do
       before do
-        GogglesDb::APIDailyUse.create!(
-          route: stats_route, day: Time.zone.today,
-          count: GogglesDb::AppParameter::DEFAULT_MAX_ANONYMOUS_REQ + 1
-        )
+        GogglesDb::APIDailyUse
+          .find_or_initialize_by(route: stats_route, day: Time.zone.today)
+          .update!(count: GogglesDb::AppParameter::DEFAULT_MAX_ANONYMOUS_REQ + 1)
       end
 
       it 'does not redirect (no loop)' do
@@ -108,10 +107,9 @@ RSpec.describe ApplicationController do
 
     context 'when accessing a Devise controller' do
       before do
-        GogglesDb::APIDailyUse.create!(
-          route: stats_route, day: Time.zone.today,
-          count: GogglesDb::AppParameter::DEFAULT_MAX_ANONYMOUS_REQ + 1
-        )
+        GogglesDb::APIDailyUse
+          .find_or_initialize_by(route: stats_route, day: Time.zone.today)
+          .update!(count: GogglesDb::AppParameter::DEFAULT_MAX_ANONYMOUS_REQ + 1)
       end
 
       it 'is not throttled (sign-in page accessible)' do
