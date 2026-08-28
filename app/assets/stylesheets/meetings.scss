@@ -1,3 +1,18 @@
 // Place all the styles related to the meeting controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+.mevent-title-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+
+  h4 {
+    grid-column: 2;
+  }
+}
+
+.mevent-report-missing {
+  grid-column: 3;
+  justify-self: end;
+}

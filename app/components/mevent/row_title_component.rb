@@ -45,6 +45,10 @@ module Mevent
       "mevent-#{@event_container&.id}"
     end
 
+    def report_missing_button
+      Issues::ReportMissingButtonComponent.new(parent_meeting:, event_type: @event_container.event_type)
+    end
+
     # Returns the parent Meeting of this event, if none
     def parent_meeting
       return @event_container.meeting_session.meeting if @event_container.respond_to?(:meeting_session)

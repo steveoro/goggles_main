@@ -1,13 +1,17 @@
--# TODO
-- first_mir = mir_list&.includes(:team)&.first
-- goggle_cup = false # first_mir.team.goggle_cup_at?(meeting.header_date)
+:ruby
+  first_mir = mir_list&.includes(:team)&.first
+  goggle_cup = false # first_mir.team.goggle_cup_at?(meeting.header_date)
+  team_link = Title::TeamShowLinkComponent.new(
+    team: first_mir&.team,
+    action_link_method: :link_to_results,
+    link_extra_params: meeting.id
+  )
 
 .card#swimmer-results-title
   .card-body.alert-info.py-3#swimmer-header-title
     %b= render(Title::SwimmerShowLinkComponent.new(swimmer: swimmer))
     %br/
-    = render(Title::TeamShowLinkComponent.new(team: first_mir&.team, action_link_method: :link_to_results,
-             link_extra_params: meeting.id))
+    = render(team_link)
 
 .my-3#swimmer-results-header
   %table.table.table-sm.table-hover
@@ -16,34 +20,44 @@
         %th{ colspan: 5 }
           = first_mir&.category_type&.code
       - mir_list&.includes(:laps)&.each do |mir|
+        :ruby
+          meeting_program = mir.meeting_program
+          program_anchor = [
+            'mprg', meeting_program.id, meeting_program.category_type_id, meeting_program.gender_type_id
+          ].join('-')
+          can_edit_lap = current_user_is_admin || managed_team_ids.nil? || managed_team_ids.include?(mir.team_id)
+          can_manage = user_signed_in? && current_user.swimmer_id == mir.swimmer_id
+          timing_cell_locals = { mir: mir, can_edit_lap: can_edit_lap, can_manage: can_manage }
+          meeting_entry = if meeting.startlist
+            meeting.meeting_entries.find_by(
+              swimmer_id: mir.swimmer_id,
+              meeting_program_id: mir.meeting_program_id
+            )
+          end
         %tbody
           %tr.text-right
             %td.pt-2{ colspan: 2 }
-              %b= link_to(mir.meeting_event.event_type.long_label, meeting_show_path(id: meeting.id,
-                          anchor: "mevent-#{mir.meeting_event.id}"), { data: { turbo: false } })
+              %b= link_to(mir.meeting_event.event_type.long_label,
+                          meeting_show_path(id: meeting.id, anchor: program_anchor),
+                          data: { turbo: false })
               &nbsp;
-              - if mir.standard_points.to_f > 800.0
-                = tag.small('⭐')
+              = tag.small('⭐') if mir.standard_points.to_f > 800.0
               = render(GogglesDb::RankingPosComponent.new(rank: mir.rank))
 
             %td.pt-2
-              - can_edit_lap = current_user_is_admin || managed_team_ids.nil? || managed_team_ids.include?(mir.team_id)
-              - can_manage = user_signed_in? && current_user.swimmer_id == mir.swimmer_id
-              = render(partial: 'swimmer_results_header_timing_cell', locals: { mir: mir,
-                       can_edit_lap: can_edit_lap, can_manage: can_manage })
+              = render(partial: 'swimmer_results_header_timing_cell', locals: timing_cell_locals)
 
             %td.pt-2
               .container.row.px-0
                 - if goggle_cup
                   .col.px-0
                     %span{ class: mir.goggle_cup_points.to_f > 800.0 ? 'font-weight-bold' : '' }
-                      = sprintf("%02.2f", mir.goggle_cup_points.to_f)
-                - if meeting.startlist && meeting.meeting_entries.where(['swimmer_id = ? AND meeting_program_id = ?', mir.swimmer_id, mir.meeting_program_id]).exists?
+                      = format('%02.2f', mir.goggle_cup_points.to_f)
+                - if meeting_entry
                   .col.px-0
-                    = meeting.meeting_entries.where(['swimmer_id = ? AND meeting_program_id = ?', mir.swimmer_id, mir.meeting_program_id]).first.to_timing
+                    = meeting_entry.to_timing
 
-        - if mir.laps.present?
-          = render(Laps::TableComponent.new(laps: mir.laps, collapsed: false))
+        = render(Laps::TableComponent.new(laps: mir.laps, collapsed: false)) if mir.laps.present?
 
   .row
     &nbsp;

@@ -72,6 +72,20 @@ RSpec.describe MeetingsController do
         expect(response).to have_http_status(:success)
       end
 
+      it 'keeps the event title centered and places the report button at the right row end' do
+        meeting_event = GogglesDb::MeetingEvent.joins(:meeting).first
+        sign_in(FactoryBot.create(:user))
+
+        get(meeting_show_path(meeting_event.meeting.id))
+
+        document = response.parsed_body
+        header = document.at_css("thead#mevent-#{meeting_event.id} .mevent-title-content")
+        expect(document.at_css('section#meeting-show-results[data-controller="meeting-anchor"]')).to be_present
+        expect(header.at_css('h4.mb-0')).to be_present
+        expect(header.at_css('.mevent-report-missing > a.issue-type1b-btn')).to be_present
+        expect(header.at_css('h4 a.issue-type1b-btn')).not_to be_present
+      end
+
       it 'excludes result rows whose swimmer no longer exists' do
         source_mir = GogglesDb::MeetingIndividualResult.joins(:meeting, :swimmer).first
         source_mir.swimmer_id = GogglesDb::Swimmer.maximum(:id) + 1
@@ -344,6 +358,15 @@ RSpec.describe MeetingsController do
 
       it 'returns http success' do
         expect(response).to have_http_status(:success)
+      end
+
+      it 'links the event label to the exact meeting program on the meeting page' do
+        meeting_program = fixture_mir.meeting_program
+        expected_anchor = "mprg-#{meeting_program.id}-#{meeting_program.category_type_id}-#{meeting_program.gender_type_id}"
+        expected_path = meeting_show_path(id: meeting_id, anchor: expected_anchor)
+
+        event_links = response.parsed_body.css('#swimmer-results-header a').filter_map { |link| link['href'] }
+        expect(event_links).to include(expected_path)
       end
     end
   end

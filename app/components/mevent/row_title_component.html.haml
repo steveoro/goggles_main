@@ -1,9 +1,9 @@
 %thead.mevent-separator{ id: dom_id }
   %tr.text-center
     %th{ colspan: 4 }
-      %h4
-        = @event_container.event_type.long_label
+      .mevent-title-content
+        %h4.mb-0
+          = @event_container.event_type.long_label
         - if @can_manage
-          &nbsp;
-          = render(Issues::ReportMissingButtonComponent.new(parent_meeting: parent_meeting,
-                   event_type: @event_container.event_type))
+          .mevent-report-missing
+            = render(report_missing_button)

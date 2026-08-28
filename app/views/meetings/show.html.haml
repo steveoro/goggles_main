@@ -1,31 +1,54 @@
+:ruby
+  nav_locals = {
+    meeting: @meeting,
+    active_tab: 'results',
+    can_tap_to_results: @default_team_or_swimmer_in_meeting
+  }
 .wrapper-body
   .spacer-left
 
   .main-content#top-of-page
     = render(partial: 'meeting_header', locals: { meeting: @meeting })
-    = render(partial: 'meeting_navs', locals: { meeting: @meeting, active_tab: 'results', can_tap_to_results: @default_team_or_swimmer_in_meeting })
+    = render(partial: 'meeting_navs', locals: nav_locals)
 
-    %section#meeting-show-results{ 'data-turbo-permanent' => true }
+    %section#meeting-show-results{ data: { controller: 'meeting-anchor', turbo_permanent: true } }
       - @meeting_events&.each_with_index do |meeting_event, event_index|
         - collapse_target = "meeting-event-section-#{meeting_event.id}"
+        :ruby
+          event_link_options = {
+            id: "btn-load-mev-#{meeting_event.id}",
+            type: 'button', class: 'btn btn-link', role: 'button',
+            title: t('meetings.tooltip.link.click_to_expand'),
+            data: { tooltip: true, toggle: 'collapse', target: "##{collapse_target}" },
+            'aria-expanded' => false, 'aria-controls' => collapse_target
+          }
+          event_section_locals = {
+            meeting_event: meeting_event, meeting_events: @meeting_events, event_index: event_index,
+            prgs_for_event: @programs_by_event[meeting_event.id], render_title: false,
+            mir_rows_by_program: @mir_rows_by_program, mrr_rows_by_program: @mrr_rows_by_program,
+            managed_team_ids: @managed_team_ids, user_teams: @user_teams,
+            current_swimmer_id: @current_swimmer_id, current_user_is_admin: @current_user_is_admin
+          }
         %table.table.table-striped.table-sm
           %thead.mevent-separator{ id: "mevent-#{meeting_event.id}" }
             %tr.text-center
               %th{ colspan: 4 }
-                %h4
-                  = link_to('#', id: "btn-load-mev-#{meeting_event.id}", type: 'button',
-                            class: 'btn btn-link', role: 'button', title: t('meetings.tooltip.link.click_to_expand'),
-                            data: { tooltip: true, toggle: 'collapse', target: "##{collapse_target}" },
-                            'aria-expanded' => false, 'aria-controls' => collapse_target) do
-                    = meeting_event.event_type.long_label
-                - if user_signed_in?
-                  &nbsp;
-                  = render(Issues::ReportMissingButtonComponent.new(parent_meeting: meeting_event.meeting_session.meeting,
-                                                                     event_type: meeting_event.event_type))
+                .mevent-title-content
+                  %h4.mb-0
+                    = link_to('#', event_link_options) do
+                      = meeting_event.event_type.long_label
+                  - if user_signed_in?
+                    .mevent-report-missing
+                      :ruby
+                        report_button = Issues::ReportMissingButtonComponent.new(
+                          parent_meeting: meeting_event.meeting_session.meeting,
+                          event_type: meeting_event.event_type
+                        )
+                      = render(report_button)
 
         .collapse{ id: collapse_target }
           %table.table.table-striped.table-sm
-            = render(partial: 'show_event_section', locals: { meeting_event: meeting_event, meeting_events: @meeting_events, event_index: event_index, prgs_for_event: @programs_by_event[meeting_event.id], render_title: false, mir_rows_by_program: @mir_rows_by_program, mrr_rows_by_program: @mrr_rows_by_program, managed_team_ids: @managed_team_ids, user_teams: @user_teams, current_swimmer_id: @current_swimmer_id, current_user_is_admin: @current_user_is_admin })
+            = render(partial: 'show_event_section', locals: event_section_locals)
 
       .row
         &nbsp;

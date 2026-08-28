@@ -4,14 +4,22 @@ require 'rails_helper'
 
 RSpec.describe Mevent::RowTitleComponent, type: :component do
   shared_examples_for('Mevent::RowTitleComponent properly rendering the title row') do
-    it 'shows the meeting event label' do
-      expect(subject.css('h4')).to be_present
-      expect(subject.css('h4').text).to include(fixture_row.event_type.long_label.to_s)
+    it 'shows the meeting event label centered in its layout container' do
+      title = subject.at_css('th > .mevent-title-content > h4.mb-0')
+      expect(title).to be_present
+      expect(title.text).to include(fixture_row.event_type.long_label.to_s)
     end
 
     it 'renders a linkable table head' do
       expect(subject.at_css('thead')).to be_present
       expect(subject.at_css('thead')[:id]).to eq("mevent-#{fixture_row.id}")
+    end
+  end
+
+  shared_examples_for('Mevent::RowTitleComponent rendering the report button on the right') do
+    it 'renders the report button outside the centered title at the right row end' do
+      expect(subject.at_css('.mevent-title-content > .mevent-report-missing > a.btn.issue-type1b-btn')).to be_present
+      expect(subject.at_css('h4 a.issue-type1b-btn')).not_to be_present
     end
   end
   #-- -------------------------------------------------------------------------
@@ -39,10 +47,7 @@ RSpec.describe Mevent::RowTitleComponent, type: :component do
     before { expect(fixture_row).to be_a(GogglesDb::MeetingEvent).and be_valid }
 
     it_behaves_like('Mevent::RowTitleComponent properly rendering the title row')
-
-    it 'renders the \'report missing\' button (type-1b)' do
-      expect(subject.at_css('a.btn.issue-type1b-btn')).to be_present
-    end
+    it_behaves_like('Mevent::RowTitleComponent rendering the report button on the right')
   end
   #-- -------------------------------------------------------------------------
   #++
@@ -69,10 +74,7 @@ RSpec.describe Mevent::RowTitleComponent, type: :component do
     before { expect(fixture_row).to be_a(GogglesDb::UserResult).and be_valid }
 
     it_behaves_like('Mevent::RowTitleComponent properly rendering the title row')
-
-    it 'renders the \'report missing\' button (type-1b)' do
-      expect(subject.at_css('a.btn.issue-type1b-btn')).to be_present
-    end
+    it_behaves_like('Mevent::RowTitleComponent rendering the report button on the right')
   end
   #-- -------------------------------------------------------------------------
   #++
