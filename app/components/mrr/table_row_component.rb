@@ -34,8 +34,9 @@ module MRR
     # Skips rendering unless the member is properly set
     def render?
       return false unless @mrr.respond_to?(:id) && @mrr.id.to_i.positive?
+      return false unless @mrr.is_a?(GogglesDb::MeetingRelayResult) || @mrr.is_a?(GogglesDb::MeetingRelayResultRow)
 
-      @mrr.is_a?(GogglesDb::MeetingRelayResult) || @mrr.is_a?(GogglesDb::MeetingRelayResultRow)
+      team.present?
     end
 
     protected

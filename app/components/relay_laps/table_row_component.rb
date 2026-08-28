@@ -26,9 +26,10 @@ module RelayLaps
     # Skips rendering unless the member is properly set
     def render?
       return false unless @relay_swimmer.respond_to?(:id) && @relay_swimmer.id.to_i.positive?
+      return false unless @relay_swimmer.is_a?(GogglesDb::MeetingRelaySwimmer) ||
+                          @relay_swimmer.is_a?(GogglesDb::JsonRow)
 
-      @relay_swimmer.is_a?(GogglesDb::MeetingRelaySwimmer) ||
-        @relay_swimmer.is_a?(GogglesDb::JsonRow)
+      swimmer.present?
     end
 
     protected

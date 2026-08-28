@@ -96,6 +96,31 @@ RSpec.describe MeetingsController do
         expect(response).to have_http_status(:success)
         expect(response.body).not_to include("id=\"mir#{source_mir.id}\"")
       end
+
+      it 'excludes relay result rows whose team no longer exists' do
+        source_mrr = GogglesDb::MeetingRelayResult.joins(:meeting, :team).first
+        meeting_id = source_mrr.meeting.id
+        source_mrr.team_id = GogglesDb::Team.maximum(:id) + 1
+        source_mrr.save!(validate: false)
+
+        get(meeting_show_path(meeting_id))
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).not_to include("id=\"mrr#{source_mrr.id}\"")
+      end
+
+      it 'excludes relay legs whose swimmer no longer exists' do
+        source_mrr = GogglesDb::MeetingRelayResult.joins(:meeting, :team, :meeting_relay_swimmers).first
+        source_leg = source_mrr.meeting_relay_swimmers.first
+        meeting_id = source_mrr.meeting.id
+        source_leg.swimmer_id = GogglesDb::Swimmer.maximum(:id) + 1
+        source_leg.save!(validate: false)
+
+        get(meeting_show_path(meeting_id))
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).not_to include("id=\"detail-mrs#{source_leg.id}\"")
+      end
     end
 
     context 'with an invalid row id' do

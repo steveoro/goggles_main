@@ -37,6 +37,18 @@ RSpec.describe RelayLaps::TableRowComponent, type: :component do
     end
   end
 
+  context 'with a relay leg whose swimmer association is missing,' do
+    subject { render_inline(described_class.new(relay_swimmer: orphan_leg)).to_html }
+
+    let(:orphan_leg) do
+      leg = GogglesDb::JsonRow.new('id' => GogglesDb::MeetingRelaySwimmer.maximum(:id) + 1)
+      leg.define_singleton_method(:swimmer) { nil }
+      leg
+    end
+
+    it_behaves_like('any subject that renders nothing')
+  end
+
   context 'with an invalid parameter,' do
     subject { render_inline(described_class.new(relay_swimmer: nil)).to_html }
 

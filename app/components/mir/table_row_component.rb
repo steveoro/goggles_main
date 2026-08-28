@@ -47,8 +47,9 @@ module MIR
     # Skips rendering unless the member is properly set
     def render?
       return false unless @mir.respond_to?(:swimmer_id) && @mir.swimmer_id.to_i.present?
+      return false unless @mir.is_a?(GogglesDb::AbstractResult) || @mir.is_a?(GogglesDb::AbstractResultRow)
 
-      @mir.is_a?(GogglesDb::AbstractResult) || @mir.is_a?(GogglesDb::AbstractResultRow)
+      swimmer.present?
     end
 
     protected

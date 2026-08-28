@@ -112,6 +112,19 @@ RSpec.describe MIR::TableRowComponent, type: :component do
   #-- -------------------------------------------------------------------------
   #++
 
+  context 'with a result view row whose swimmer association is missing,' do
+    subject { render_inline(described_class.new(mir: orphan_result)).to_html }
+
+    let(:orphan_result) do
+      GogglesDb::MeetingIndividualResultRow.new(
+        meeting_individual_result_id: GogglesDb::MeetingIndividualResult.maximum(:id) + 1,
+        swimmer_id: GogglesDb::Swimmer.maximum(:id) + 1
+      )
+    end
+
+    it_behaves_like('any subject that renders nothing')
+  end
+
   context 'with an invalid parameter,' do
     subject do
       render_inline(

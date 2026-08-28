@@ -72,6 +72,19 @@ RSpec.describe MRR::TableRowComponent, type: :component do
     end
   end
 
+  context 'with a result view row whose team association is missing,' do
+    subject { render_inline(described_class.new(mrr: orphan_result)).to_html }
+
+    let(:orphan_result) do
+      GogglesDb::MeetingRelayResultRow.new(
+        meeting_relay_result_id: GogglesDb::MeetingRelayResult.maximum(:id) + 1,
+        team_id: GogglesDb::Team.maximum(:id) + 1
+      )
+    end
+
+    it_behaves_like('any subject that renders nothing')
+  end
+
   context 'with an invalid parameter,' do
     subject { render_inline(described_class.new(mrr: nil)).to_html }
 
