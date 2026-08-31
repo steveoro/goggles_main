@@ -83,7 +83,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_110000) do
     t.index ["user_id"], name: "index_admin_grants_on_user_id"
   end
 
-  create_table "api_daily_use_agents", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "api_daily_use_agents", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.bigint "count", default: 0
     t.datetime "created_at", null: false
     t.date "day", null: false
@@ -1012,21 +1012,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_110000) do
     t.integer "badge_id"
     t.datetime "created_at", precision: nil
     t.integer "hundredths", limit: 2, default: 0
-    t.integer "hundredths_from_start", limit: 2, default: 0
-    t.integer "length_in_meters", default: 0
+    t.integer "hundredths_from_start", limit: 2, default: 0, null: false
+    t.integer "length_in_meters", default: 0, null: false
     t.integer "lock_version", default: 0
     t.integer "meeting_relay_result_id"
     t.integer "minutes", limit: 3, default: 0
-    t.integer "minutes_from_start", limit: 3, default: 0
+    t.integer "minutes_from_start", limit: 3, default: 0, null: false
     t.decimal "reaction_time", precision: 5, scale: 2, default: "0.0"
     t.integer "relay_laps_count", default: 0, null: false
     t.integer "relay_order", limit: 3, default: 0
     t.integer "seconds", limit: 2, default: 0
-    t.integer "seconds_from_start", limit: 2, default: 0
+    t.integer "seconds_from_start", limit: 2, default: 0, null: false
     t.integer "stroke_type_id"
     t.integer "swimmer_id"
     t.datetime "updated_at", precision: nil
     t.index ["badge_id"], name: "fk_meeting_relay_swimmers_badges"
+    t.index ["length_in_meters"], name: "index_meeting_relay_swimmers_on_length_in_meters"
     t.index ["meeting_relay_result_id"], name: "fk_meeting_relay_swimmers_meeting_relay_results"
     t.index ["relay_order"], name: "relay_order"
     t.index ["stroke_type_id"], name: "fk_meeting_relay_swimmers_stroke_types"
@@ -1118,8 +1119,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_110000) do
     t.integer "lock_version", default: 0
     t.boolean "manifest", default: false
     t.text "manifest_body", size: :medium
-    t.integer "max_individual_events", limit: 1, default: 2
-    t.integer "max_individual_events_per_session", limit: 2, default: 2
+    t.integer "max_individual_events", limit: 1, default: 3
+    t.integer "max_individual_events_per_session", limit: 2, default: 3
     t.decimal "meeting_fee", precision: 10, scale: 2
     t.integer "meeting_score_computation_type_id"
     t.text "notes"
@@ -1700,7 +1701,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_110000) do
     t.index ["user_id", "achievement_id"], name: "index_user_achievements_on_user_id_and_achievement_id", unique: true
   end
 
-  create_table "user_laps", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "user_laps", charset: "latin1", collation: "latin1_swedish_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "hundredths", limit: 2
     t.integer "hundredths_from_start", limit: 2
@@ -1819,7 +1820,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_110000) do
     t.index ["user_id", "description"], name: "index_user_trainings_on_user_id_and_description"
   end
 
-  create_table "user_workshops", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "user_workshops", charset: "latin1", collation: "latin1_swedish_ci", force: :cascade do |t|
     t.boolean "autofilled", default: false, null: false
     t.boolean "cancelled", default: false, null: false
     t.string "code", limit: 80

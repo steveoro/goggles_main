@@ -331,7 +331,7 @@ GEM
     guard-shell (0.7.2)
       guard (>= 2.0.0)
       guard-compat (~> 1.0)
-    haml (7.4.1)
+    haml (7.5.0)
       prism (>= 1.1.0)
       temple (>= 0.8.2)
       thor
@@ -680,7 +680,7 @@ GEM
     scenic-mysql_adapter (1.1.0)
       scenic (>= 1.4.0)
     securerandom (0.4.1)
-    selenium-webdriver (4.47.0)
+    selenium-webdriver (4.48.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
