@@ -7,6 +7,7 @@ ruby '>= 3.4.7'
 
 gem 'mysql2'  # main DB
 gem 'rails', '>= 8.1', '< 9'
+gem 'rack-attack', '~> 6.8'
 gem 'rails-i18n', '~> 8'
 gem 'sqlite3' # for SolidQueue, SolidCache and SolidCable
 

@@ -6,6 +6,10 @@ default: &default
     class: IssueCleanerJob
     queue: issues
     schedule: every 5 minutes
+  stats_cleaner:
+    class: StatsCleanerJob
+    queue: issues
+    schedule: every day at 4am
   import_processor:
     class: ImportProcessorJob
     queue: iq

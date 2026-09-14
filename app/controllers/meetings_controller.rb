@@ -3,7 +3,7 @@
 # = MeetingsController
 #
 class MeetingsController < ApplicationController
-  before_action :authenticate_user!, only: [:index]
+  before_action :authenticate_user!, only: %i[index team_results swimmer_results]
   before_action :prepare_user_teams, :prepare_managed_teams, :validate_meeting, :validate_team,
                 only: %i[show team_results swimmer_results]
   before_action :validate_swimmer, except: %i[for_swimmer for_team]

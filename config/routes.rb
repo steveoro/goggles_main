@@ -8,6 +8,7 @@ Rails.application.routes.draw do
                        registrations: 'users/registrations',
                        sessions: 'users/sessions'
                      }
+  get 'up', to: 'rails/health#show', as: :rails_health_check
   root to: 'home#index'
 
   # Mounting and usage of the Core Engine:
