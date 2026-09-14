@@ -10,11 +10,10 @@ Feature: Show specific team results for a specific meeting
     Given I am not signed in
     And I have already selected a random meeting with available results
     When I browse to see the selected meeting team results page
-    Then I get redirected to '/'
-    And a flash 'search_view.errors.invalid_request' message is present
+    Then I get redirected to '/users/sign_in'
 
-  Scenario: w/o login browsing to team results from meeting details
-    Given I am not signed in
+  Scenario: signed-in browsing to team results from meeting details
+    Given I am already signed-in and at the root page
     And I have already selected a random meeting with available results
     When I browse to see the selected meeting details
     And I have chosen a random result among the current meeting details
@@ -27,7 +26,7 @@ Feature: Show specific team results for a specific meeting
     And I see the team results header
     And I see the team swimmers grid
     And I see the team events grid
-    But I can't see any of the 'report missing' ('type1b') buttons on the results of the page
+    And I can see the 'report missing' ('type1b') buttons on the results of the page
     And I can't see any of the 'report mistake' ('type1b1') buttons on the results of the page
     And I can't see any of the lap edit buttons on the whole page
 

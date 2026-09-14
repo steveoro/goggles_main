@@ -27,6 +27,7 @@ module GogglesMain
     #  being used in production environment too)
     config.eager_load_paths << Rails.root.join('app', 'strategies').to_s
     config.eager_load_paths << Rails.root.join('app', 'grids').to_s
+    config.middleware.use Rack::Attack
     # [Steve A.] When in doubt, to check out the actual resulting paths, open the console and type:
     #   $> puts ActiveSupport::Dependencies._eager_load_paths
     # ...Or...

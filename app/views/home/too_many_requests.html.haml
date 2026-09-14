@@ -5,6 +5,7 @@
     .row-fluid#too-many-requests
       %p.mx-2{ role: 'alert', 'aria-label': t('too_many_requests.aria_message') }
         = t('too_many_requests.message')
+      %p.mx-2= link_to(t('devise.sessions.new.sign_in'), new_user_session_path)
 
     .row-fluid
       %p.mx-2= link_to(t('about.go_back'), root_path)

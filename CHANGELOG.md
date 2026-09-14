@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.10.46** [Steve A.] re-sync w/ base engine v0.10.46; added bot mitigation, health check, and stats cleanup
 - **0.10.45** [Steve A.] re-sync w/ base engine v0.10.45; excluded invalid relay rows/legs from meeting/show and added defensive MIR/MRR rendering checks; DB vers. 2.10.08
 - **0.10.44** [Steve A.] meetings/show and related swimmer results layout improvements
 - **0.10.43** [Steve A.] re-sync w/ base engine v0.10.43; fixed meeting/show rendering for legacy MIRs with dangling swimmer references; DB vers. 2.10.07

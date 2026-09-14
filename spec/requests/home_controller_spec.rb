@@ -246,6 +246,11 @@ RSpec.describe HomeController do
         get(home_too_many_requests_path)
         expect(response).to have_http_status(:success)
       end
+
+      it 'includes a link to sign in' do
+        get(home_too_many_requests_path)
+        expect(response.body).to include(new_user_session_path)
+      end
     end
 
     context 'with a logged-in user' do

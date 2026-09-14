@@ -219,19 +219,22 @@ RSpec.describe MeetingsController do
                         .sample
     end
 
-    # Logged or unlogged, the result is the same:
     context 'with an invalid row id' do
-      before { get(meeting_team_results_path(meeting_id)) }
+      before do
+        sign_in(FactoryBot.create(:user))
+        get(meeting_team_results_path(-1))
+      end
 
       it_behaves_like('invalid row id GET request')
     end
 
-    # From all the rest of the describe, 'with a valid row id' is implied for brevity:
     context 'with an un-logged user' do
       context 'when using a valid row id,' do
         before { get(meeting_team_results_path(meeting_id)) }
 
-        it_behaves_like('invalid row id GET request')
+        it 'redirects to the login path' do
+          expect(response).to redirect_to(new_user_session_path)
+        end
       end
     end
 
@@ -308,19 +311,22 @@ RSpec.describe MeetingsController do
                         .sample
     end
 
-    # Logged or unlogged, the result is the same:
     context 'with an invalid row id' do
-      before { get(meeting_swimmer_results_path(meeting_id)) }
+      before do
+        sign_in(FactoryBot.create(:user))
+        get(meeting_swimmer_results_path(-1))
+      end
 
       it_behaves_like('invalid row id GET request')
     end
 
-    # From all the rest of the describe, 'with a valid row id' is implied for brevity:
     context 'with an un-logged user' do
       context 'when using a valid row id,' do
         before { get(meeting_swimmer_results_path(meeting_id)) }
 
-        it_behaves_like('invalid row id GET request')
+        it 'redirects to the login path' do
+          expect(response).to redirect_to(new_user_session_path)
+        end
       end
     end
 

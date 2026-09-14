@@ -11,11 +11,10 @@ Feature: Show specific swimmer results for a specific meeting
     Given I am not signed in
     And I have already selected a random meeting with available results
     When I browse to see the selected meeting swimmer results page
-    Then I get redirected to '/'
-    And a flash 'search_view.errors.invalid_request' message is present
+    Then I get redirected to '/users/sign_in'
 
-  Scenario: w/o login browsing to swimmer results from meeting details
-    Given I am not signed in
+  Scenario: signed-in browsing to swimmer results from meeting details
+    Given I am already signed-in and at the root page
     And I have already selected a random meeting with available results
     When I browse to see the selected meeting details
     And I have chosen a random result among the current meeting details
