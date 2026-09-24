@@ -91,6 +91,7 @@ Rails.application.routes.draw do
 
   get 'teams/show/:id',             to: 'teams#show',             as: 'team_show'
   get 'teams/current_swimmers/:id', to: 'teams#current_swimmers', as: 'team_current_swimmers'
+  get 'teams/records/:id',          to: 'teams#records',          as: 'team_records'
 
   get 'user_workshops',                 to: 'user_workshops#index',       as: 'user_workshops'
   get 'user_workshops/show/:id',        to: 'user_workshops#show',        as: 'user_workshop_show'

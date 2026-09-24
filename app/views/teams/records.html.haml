@@ -1,0 +1,49 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content#top-of-page
+    %section#team-records-title
+      = render(Title::BreadCrumbLinkComponent.new(title: t('teams.records.title'),
+                                                  css_icon: 'certificate', parent_title: @team.editable_name,
+                                                  parent_link: team_show_path(id: @team.id)))
+
+    %section#records-navs
+      .row-fluid.my-2
+        %ul.nav.nav-tabs
+          %li.nav-item
+            = link_to(t('teams.records.all_time'), team_records_path(@team, tab: 'all_time'),
+                      class: "nav-link#{' active' if @active_tab == 'all_time'}", id: 'tab-all-time')
+          %li.nav-item
+            = link_to(t('teams.records.by_season'),
+                      team_records_path(@team, tab: 'by_season', season_year: @season_year),
+                      class: "nav-link#{' active' if @active_tab == 'by_season'}", id: 'tab-by-season')
+
+    - if @active_tab == 'by_season'
+      %section#records-season-selector
+        .row-fluid.my-2
+          = form_tag(team_records_path(@team), method: :get, class: 'form-inline') do
+            = hidden_field_tag(:tab, 'by_season')
+            .form-group
+              %label.mr-2{ for: 'season_year' }= t('teams.records.select_year')
+              = select_tag(:season_year,
+                           options_for_select(@championship_years.map { |year| ["#{year}/#{year + 1}", year] },
+                                              @season_year),
+                           class: 'form-control mr-2')
+            = button_tag(type: 'submit', class: 'btn btn-outline-primary', id: 'btn-filter-season') do
+              %i.fa.fa-search
+              = t('teams.records.search')
+
+    - if @records.any?
+      - pdf_params = { tab: @active_tab, season_year: (@season_year if @active_tab == 'by_season') }
+      = render('records_grid', team: @team, records: @records, pdf_params: pdf_params)
+    - else
+      .row-fluid.my-4.text-center#no-records
+        %p= t('teams.records.no_records')
+
+    .row-fluid
+      %p &nbsp;
+
+    .row-fluid.text-center
+      %p= link_to(t('about.go_back'), team_show_path(@team))
+
+  .spacer-right

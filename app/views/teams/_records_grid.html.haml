@@ -1,0 +1,61 @@
+-# locals: team, records (collection of BestTeamResultsForSeason), pdf_params (extra params for the PDF link)
+:ruby
+  supported_events = GogglesDb::EventType
+                     .where(id: GogglesDb::BestTeamResultsForSeason::SUPPORTED_EVENT_TYPE_IDS)
+                     .order(:style_order)
+  pool_gender_pairs = [
+    [GogglesDb::PoolType::MT_25_ID, GogglesDb::GenderType::FEMALE_ID, 'pool_25', 'female'],
+    [GogglesDb::PoolType::MT_25_ID, GogglesDb::GenderType::MALE_ID,   'pool_25', 'male'],
+    [GogglesDb::PoolType::MT_50_ID, GogglesDb::GenderType::FEMALE_ID, 'pool_50', 'female'],
+    [GogglesDb::PoolType::MT_50_ID, GogglesDb::GenderType::MALE_ID,   'pool_50', 'male']
+  ]
+
+.row-fluid.my-2.text-right
+  = link_to(team_records_path(team, pdf_params.merge(format: :pdf)),
+            class: 'btn btn-outline-primary', id: 'btn-records-pdf') do
+    %i.fa.fa-file-pdf-o
+    = t('teams.records.pdf_button')
+
+#records-accordion
+  - pool_gender_pairs.each_with_index do |(pool_id, gender_id, pool_label, gender_label), index|
+    :ruby
+      grid_rows = records.select { |r| r.pool_type_id == pool_id && r.gender_type_id == gender_id }
+      # One column per category code (same code can repeat across season-type editions);
+      # ordered by the minimum age_begin among matching categories, then code:
+      category_codes = grid_rows.group_by { |r| r.category_type.code }
+                                .sort_by { |code, rows| [rows.map { |r| r.category_type.age_begin || 999 }.min, code] }
+                                .map(&:first)
+      # Best row per (event x category-code) cell:
+      cells = grid_rows.group_by { |r| [r.event_type_id, r.category_type.code] }
+                       .transform_values { |rows| rows.min_by(&:total_hundredths) }
+    .card
+      .card-header{ id: "records-title-#{index}" }
+        %h5.mb-0
+          %button.btn.btn-link.text-left.collapsed{ 'aria-controls' => "records-body-#{index}",
+                                                    'aria-expanded' => 'false', 'data-toggle' => 'collapse',
+                                                    'data-target' => "#records-body-#{index}" }
+            #{t("teams.records.#{pool_label}")}, #{t("teams.records.#{gender_label}")}
+            %span.badge.badge-primary= grid_rows.length
+      .collapse{ id: "records-body-#{index}", 'aria-labelledby' => "records-title-#{index}",
+                 'data-parent' => '#records-accordion' }
+        .card-body
+          .table-responsive
+            %table.table.table-striped.table-sm.text-center
+              %thead
+                %tr
+                  %th.text-left= t('teams.records.event')
+                  - category_codes.each do |code|
+                    %th= code
+              %tbody
+                - supported_events.each do |event_type|
+                  %tr
+                    %td.text-left= event_type.long_label
+                    - category_codes.each do |code|
+                      - record = cells[[event_type.id, code]]
+                      %td
+                        - if record
+                          - mprg = record.meeting_individual_result.meeting_program
+                          - anchor = "mprg-#{mprg.id}-#{mprg.category_type_id}-#{mprg.gender_type_id}"
+                          = link_to(record.to_timing, meeting_show_path(id: record.meeting_id, anchor: anchor))
+                          %br/
+                          %small= link_to(record.swimmer_name, swimmer_show_path(id: record.swimmer_id))

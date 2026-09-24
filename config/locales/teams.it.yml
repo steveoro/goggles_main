@@ -12,6 +12,7 @@ it:
       current_swimmers: Nuotatori correnti
       all_meetings: Tutti i meeting
       all_workshops: Tutti i collegiali
+      team_records: Record di squadra
       season: Stagione
       affiliations_count: Campionati totali
       meetings_count: Meeting registrati
@@ -23,3 +24,19 @@ it:
       latest_memberships: Ultimi tesseramenti
       latest_memberships_note: Gli ultimi tesseramenti sono riferiti esclusivamente alla squadra selezionata (%{team_name}).
       current: attuale
+    records:
+      title: Record di squadra
+      all_time: Di sempre
+      by_season: Per stagione
+      select_year: Anno stagione
+      search: Cerca
+      pdf_button: Esporta in PDF
+      category: Categoria
+      event: Evento
+      swimmer: Nuotatore
+      meeting: Meeting
+      female: femminile
+      male: maschile
+      pool_25: Vasca 25m
+      pool_50: Vasca 50m
+      no_records: Nessun record trovato per questa squadra.

@@ -57,6 +57,9 @@
         %a.my-1.btn.btn-outline-primary#btn-workshops{ href: user_workshops_for_team_path(@team) }
           %i.fa.fa-group
           = t('teams.dashboard.all_workshops')
+        %a.my-1.btn.btn-outline-primary#btn-records{ href: team_records_path(@team) }
+          %i.fa.fa-certificate
+          = t('teams.dashboard.team_records')
 
     - if @stats.results.any?
       %section.container.my-2#team-stats
