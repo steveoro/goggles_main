@@ -31,7 +31,8 @@
     .card
       .card-header{ id: "records-title-#{index}" }
         %h5.mb-0
-          %button.btn.btn-link.text-left.collapsed{ 'aria-controls' => "records-body-#{index}",
+          %button.btn.btn-link.text-left.collapsed{ id: "btn-records-grid-#{index}",
+                                                    'aria-controls' => "records-body-#{index}",
                                                     'aria-expanded' => 'false', 'data-toggle' => 'collapse',
                                                     'data-target' => "#records-body-#{index}" }
             #{t("teams.records.#{pool_label}")}, #{t("teams.records.#{gender_label}")}
