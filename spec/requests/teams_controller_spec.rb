@@ -52,4 +52,48 @@ RSpec.describe TeamsController do
   end
   #-- -------------------------------------------------------------------------
   #++
+
+  describe 'GET /records/:id' do
+    let(:fixture_user) { FactoryBot.create(:user) }
+    let(:team_with_records) do
+      GogglesDb::BestTeamResultsForSeason.order(Arel.sql('RAND()')).first&.team_id
+    end
+
+    context 'with an unlogged user' do
+      it 'is a redirect to the login path' do
+        get(team_records_path(team_with_records))
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'with a logged-in user' do
+      before { sign_in(fixture_user) }
+
+      context 'with a valid row id' do
+        it 'is successful for the "all time" tab' do
+          get(team_records_path(team_with_records))
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'is successful for the "by season" tab' do
+          get(team_records_path(team_with_records, tab: 'by_season'))
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'serves the PDF report' do
+          get(team_records_path(team_with_records, format: :pdf))
+          expect(response).to have_http_status(:success)
+          expect(response.media_type).to eq('application/pdf')
+        end
+      end
+
+      context 'with an invalid row id' do
+        before { get(team_records_path(-1)) }
+
+        it_behaves_like('invalid row id GET request')
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 end

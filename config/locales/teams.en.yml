@@ -12,6 +12,7 @@ en:
       current_swimmers: Current swimmers
       all_meetings: All meetings
       all_workshops: All workshops
+      team_records: Team records
       season: Season
       affiliations_count: Tot. Championships
       meetings_count: Total Meetings
@@ -23,3 +24,20 @@ en:
       latest_memberships: Latest memberships
       latest_memberships_note: The latest memberships are collected only from the currently selected team (%{team_name}).
       current: current
+    records:
+      title: Team records
+      all_time: All time
+      by_season: By season
+      select_year: Season year
+      search: Search
+      pdf_button: PDF export
+      category: Category
+      event: Event
+      swimmer: Swimmer
+      meeting: Meeting
+      female: female
+      male: male
+      pool_25: Pool 25m
+      pool_50: Pool 50m
+      no_records: No records found for this team.
+      generated_on: Generated on

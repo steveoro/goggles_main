@@ -19,6 +19,7 @@ Then('I see the team\'s details toolbar buttons') do
   expect(node.find('a#btn-swimmers').text).to be_present
   expect(node.find('a#btn-meetings').text).to be_present
   expect(node.find('a#btn-workshops').text).to be_present
+  expect(node.find('a#btn-records').text).to be_present
 end
 #-- ---------------------------------------------------------------------------
 #++

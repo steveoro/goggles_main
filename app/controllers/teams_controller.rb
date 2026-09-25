@@ -3,7 +3,7 @@
 # = TeamsController
 #
 class TeamsController < ApplicationController
-  before_action :authenticate_user!, only: [:current_swimmers]
+  before_action :authenticate_user!, only: %i[current_swimmers records]
   before_action :prepare_team
 
   # GET /teams/:id
@@ -43,11 +43,46 @@ class TeamsController < ApplicationController
     prepare_badges
   end
 
+  # GET /teams/records/:id
+  # Shows the individual records for a team ("team records" matrix): the single
+  # best timing per (event x category x gender x pool) tuple, ever or filtered
+  # by championship year.
+  # Requires authentication and an existing team.
+  #
+  # == Params
+  # - :id => *Team* ID, required
+  # - :season_year => optional championship (begin) year for the "by season" tab;
+  #   defaults to the latest available year for the team
+  # - :tab => 'all_time' (default) or 'by_season'
+  # - format => html (default) or pdf
+  def records
+    if @team.nil?
+      flash[:warning] = I18n.t('search_view.errors.invalid_request')
+      redirect_to(root_path) && return
+    end
+
+    prepare_records_data
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = TeamRecordsPdf.new(team: @team, records: @records,
+                                 season_year: (@season_year if @active_tab == 'by_season'))
+        send_data(pdf.render, filename: pdf.filename, type: pdf.mime_type, disposition: 'attachment')
+      end
+    end
+  end
+
   protected
 
   # /show action strong parameters checking
   def team_params
     params.permit(:id, :team_affiliation_id)
+  end
+
+  # /records action strong parameters checking
+  def records_params
+    params.permit(:id, :season_year, :tab)
   end
 
   private
@@ -92,5 +127,52 @@ class TeamsController < ApplicationController
                                              team_affiliation_id: @last_affiliations.pluck(:id)
                                            )
                                            .by_season
+  end
+
+  # Prepares the member variables used by the /records views:
+  # @championship_years, @season_year, @active_tab and @records.
+  def prepare_records_data
+    @championship_years = seasons_by_championship_year.keys.sort.reverse
+    @season_year = valid_year_param? ? records_params[:season_year].to_i : @championship_years.first
+    @active_tab = records_params[:tab].presence_in(%w[by_season]) ||
+                  (records_params[:season_year].present? ? 'by_season' : 'all_time')
+
+    records_scope = GogglesDb::BestTeamResultsForSeason.for_team_id(@team.id)
+    if @active_tab == 'by_season' && @season_year.present?
+      records_scope = records_scope.where(season_id: seasons_by_championship_year.fetch(@season_year, []).map(&:id))
+    end
+    @records = records_scope.all_time_best
+                            .includes(:event_type, :category_type, :gender_type, :pool_type, :meeting,
+                                      meeting_individual_result: :meeting_program)
+  end
+
+  # TRUE if :season_year is a valid 4-digit year.
+  def valid_year_param?
+    records_params[:season_year].to_s =~ /\A\d{4}\z/
+  end
+
+  # Computes the championship year for a season following the
+  # best_swimmer_current_vs_previous_results view convention:
+  # Sep-Dec start => YEAR(begin_date); Jan-May start => YEAR(begin_date) - 1;
+  # Jun-Aug start => YEAR(end_date).
+  def championship_year_for(season)
+    return if season.begin_date.blank? || season.end_date.blank?
+
+    if season.begin_date.month >= 9
+      season.begin_date.year
+    elsif season.begin_date.month <= 5
+      season.begin_date.year - 1
+    else
+      season.end_date.year
+    end
+  end
+
+  # All seasons for the team's affiliations, grouped by championship year.
+  # Used both for the "by season" selector and to filter the records scope.
+  def seasons_by_championship_year
+    @seasons_by_championship_year ||= GogglesDb::Season
+                                      .where(id: @team.team_affiliations.select(:season_id))
+                                      .group_by { |season| championship_year_for(season) }
+                                      .reject { |year, _seasons| year.nil? }
   end
 end
