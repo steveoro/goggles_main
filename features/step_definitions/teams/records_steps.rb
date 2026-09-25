@@ -18,7 +18,7 @@ end
 Then('I see the team records tabs') do
   node = find('section#records-navs ul.nav-tabs', visible: true)
   expect(node.find('a#tab-all-time').text).to be_present
-  expect(node.find('a#tab-by-season').text).to be_present
+  expect(node.all('a[id^="tab-year-"]').count).to be >= 1
 end
 
 # The 4 collapsible grids are: pool 25m/50m x female/male
@@ -49,17 +49,19 @@ Then('I see the PDF export button') do
   expect(find_by_id('btn-records-pdf', visible: true)).to be_present
 end
 
-Then('I see the season year selector') do
-  expect(find('section#records-season-selector select#season_year', visible: true)).to be_present
-  expect(find('section#records-season-selector #btn-filter-season', visible: true)).to be_present
+# The championship-year selection is a preset tab strip (last 5 years),
+# rendered as '#tab-year-<year>' links next to the 'all time' tab:
+Then('I see the championship year tabs') do
+  tabs = find('section#records-navs ul.nav-tabs', visible: true)
+  expect(tabs.all('a[id^="tab-year-"]').count).to be > 1
 end
 
-When('I select a different season year for the selector') do
-  select_node = find('section#records-season-selector select#season_year', visible: true)
-  options = select_node.all('option').map(&:text)
-  expect(options.count).to be > 1
-  # Select the last (oldest) available championship year to actually change the filter:
-  select_node.select(options.last)
+When('I click on a different championship year tab') do
+  tabs = find('section#records-navs ul.nav-tabs', visible: true)
+  year_tabs = tabs.all('a[id^="tab-year-"]', visible: true)
+  expect(year_tabs.count).to be > 1
+  # Click the last (oldest) available championship year tab:
+  year_tabs.last.click
 end
 
 Then('a PDF file for the team records grids is downloaded') do

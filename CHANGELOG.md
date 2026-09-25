@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.10.51** [Devin] Team records page: use the new team-scoped `team_records` scope (~120x faster than view-window ranking), championship-year selection as preset tabs (last 5 years), MIR date label in each record cell (HTML + PDF); re-sync w/ base engine v0.10.51
 - **0.10.50** [Devin] added "Team records" sub-page for Team Radiography (all-time + by-season tabs with event x category grids and PDF export); re-sync w/ base engine v0.10.50 (all_time_best scope)
 - **0.10.49** [Devin] re-sync w/ base engine v0.10.49 (best_team_results_for_season Scenic view + model); DB vers. 2.10.10
 - **0.10.46** [Steve A.] re-sync w/ base engine v0.10.46; added bot mitigation, health check, and stats cleanup

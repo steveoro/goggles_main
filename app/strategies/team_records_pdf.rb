@@ -142,7 +142,7 @@ class TeamRecordsPdf
   end
 
   def cell_text(record)
-    record ? "#{record.to_timing}\n#{record.swimmer_name}" : ''
+    record ? "#{record.to_timing}\n#{record.swimmer_name}\n#{I18n.l(record.meeting_date)}" : ''
   end
 
   def cell_size_for(grid_rows)
