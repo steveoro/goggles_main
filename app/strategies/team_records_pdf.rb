@@ -20,6 +20,14 @@ class TeamRecordsPdf
   # Maximum number of category columns before the grid is rendered transposed.
   MAX_CATEGORY_COLUMNS = 14
 
+  # Repeated page chrome: the app favicon image (PNG equivalent of favicon.ico),
+  # the deployment host for the right-aligned header URL and the label
+  # for the left-aligned footer text.
+  LOGO_PATH = Rails.root.join('app/assets/images/radiography.png')
+  SERVER_URL = "https://#{ApplicationMailer::HOSTNAME}".freeze
+  PAGE_HEADER_HEIGHT = 16
+  PAGE_FOOTER_Y = -22
+
   POOL_GENDER_PAIRS = [
     [GogglesDb::PoolType::MT_25_ID, GogglesDb::GenderType::FEMALE_ID, 'pool_25', 'female'],
     [GogglesDb::PoolType::MT_25_ID, GogglesDb::GenderType::MALE_ID,   'pool_25', 'male'],
@@ -34,13 +42,15 @@ class TeamRecordsPdf
   end
 
   def render
-    Prawn::Document.new(page_layout: :landscape, margin: 25) do |pdf|
+    Prawn::Document.new(page_layout: :landscape, margin: [50, 25, 42, 25]) do |pdf|
       pdf.font_size 9
+      render_page_header(pdf)
       render_header(pdf)
       POOL_GENDER_PAIRS.each_with_index do |(pool_id, gender_id, pool_label, gender_label), index|
         render_chapter(pdf, pool_id, gender_id, "#{I18n.t("teams.records.#{pool_label}")}, " \
                                                 "#{I18n.t("teams.records.#{gender_label}")}", index)
       end
+      render_page_footer(pdf)
     end.render
   end
 
@@ -54,6 +64,32 @@ class TeamRecordsPdf
   end
 
   private
+
+  # Repeated on every page: Goggles logo + label in the top margin (left),
+  # and the grey-ish server URL right-aligned in the same margin.
+  def render_page_header(pdf)
+    pdf.repeat(:all) do
+      pdf.bounding_box([pdf.bounds.left, pdf.bounds.top + PAGE_HEADER_HEIGHT + 8],
+                       width: pdf.bounds.width, height: PAGE_HEADER_HEIGHT) do
+        pdf.image(LOGO_PATH, at: [0, PAGE_HEADER_HEIGHT], height: 14)
+        pdf.draw_text('Goggles', at: [20, 4], size: 9, style: :bold)
+        pdf.text_box(SERVER_URL, at: [pdf.bounds.width - 180, PAGE_HEADER_HEIGHT],
+                                 width: 180, height: PAGE_HEADER_HEIGHT,
+                                 align: :right, size: 7, color: '888888')
+      end
+    end
+  end
+
+  # Footer: 'Generated on <timestamp>' left-aligned and 'page/total' right-aligned,
+  # stamped on every page in the bottom margin.
+  def render_page_footer(pdf)
+    generated_at = Time.current.strftime('%Y-%m-%d %H:%M')
+    pdf.number_pages("#{I18n.t('teams.records.generated_on')} #{generated_at}",
+                     at: [pdf.bounds.left, PAGE_FOOTER_Y],
+                     align: :left, size: 7, color: '888888')
+    pdf.number_pages('<page> / <total>', at: [pdf.bounds.right - 60, PAGE_FOOTER_Y],
+                                         align: :right, size: 7, color: '888888')
+  end
 
   def render_header(pdf)
     pdf.text(I18n.t('teams.records.title'), size: 16, style: :bold, align: :center)
