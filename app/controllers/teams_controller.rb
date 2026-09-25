@@ -51,8 +51,9 @@ class TeamsController < ApplicationController
   #
   # == Params
   # - :id => *Team* ID, required
-  # - :season_year => optional championship (begin) year for the "by season" tab;
-  #   defaults to the latest available year for the team
+  # - :season_year => optional championship (begin) year for the season tabs;
+  #   limited to the latest 5 available championship years for the team,
+  #   defaults to the most recent one
   # - :tab => 'all_time' (default) or 'by_season'
   # - format => html (default) or pdf
   def records
@@ -131,24 +132,21 @@ class TeamsController < ApplicationController
 
   # Prepares the member variables used by the /records views:
   # @championship_years, @season_year, @active_tab and @records.
+  # The selectable championship years are capped to the latest 5 for the team;
+  # any other :season_year value falls back to the most recent one.
   def prepare_records_data
-    @championship_years = seasons_by_championship_year.keys.sort.reverse
-    @season_year = valid_year_param? ? records_params[:season_year].to_i : @championship_years.first
+    @championship_years = seasons_by_championship_year.keys.sort.last(5).reverse
+    @season_year = records_params[:season_year].to_i
+    @season_year = @championship_years.first unless @championship_years.include?(@season_year)
     @active_tab = records_params[:tab].presence_in(%w[by_season]) ||
                   (records_params[:season_year].present? ? 'by_season' : 'all_time')
 
-    records_scope = GogglesDb::BestTeamResultsForSeason.for_team_id(@team.id)
-    if @active_tab == 'by_season' && @season_year.present?
-      records_scope = records_scope.where(season_id: seasons_by_championship_year.fetch(@season_year, []).map(&:id))
-    end
-    @records = records_scope.all_time_best
-                            .includes(:event_type, :category_type, :gender_type, :pool_type, :meeting,
-                                      meeting_individual_result: :meeting_program)
-  end
-
-  # TRUE if :season_year is a valid 4-digit year.
-  def valid_year_param?
-    records_params[:season_year].to_s =~ /\A\d{4}\z/
+    season_ids = nil
+    season_ids = seasons_by_championship_year.fetch(@season_year, []).map(&:id) if @active_tab == 'by_season'
+    @records = GogglesDb::BestTeamResultsForSeason.team_records(@team.id, season_ids)
+                                                  .includes(:event_type, :category_type, :gender_type,
+                                                            :pool_type, :meeting,
+                                                            meeting_individual_result: :meeting_program)
   end
 
   # Computes the championship year for a season following the

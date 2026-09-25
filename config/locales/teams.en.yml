@@ -27,9 +27,7 @@ en:
     records:
       title: Team records
       all_time: All time
-      by_season: By season
       select_year: Season year
-      search: Search
       pdf_button: PDF export
       category: Category
       event: Event

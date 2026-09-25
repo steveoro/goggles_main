@@ -36,11 +36,8 @@ Feature: Team records page
     Given I am already signed-in and at the root page
     When I browse to '/teams/records/1'
     And I wait up to 90 seconds for the '#records-accordion' element to appear
-    And I click on '#tab-by-season'
-    And I wait up to 90 seconds for the '#records-season-selector' element to appear
-    Then I see the season year selector
-    When I select a different season year for the selector
-    And I click on '#btn-filter-season'
+    Then I see the championship year tabs
+    When I click on a different championship year tab
     And I wait up to 90 seconds for the '#records-accordion' element to appear
     Then I see the 4 pool x gender team records grids
 

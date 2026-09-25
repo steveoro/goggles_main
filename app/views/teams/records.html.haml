@@ -13,25 +13,12 @@
           %li.nav-item
             = link_to(t('teams.records.all_time'), team_records_path(@team, tab: 'all_time'),
                       class: "nav-link#{' active' if @active_tab == 'all_time'}", id: 'tab-all-time')
-          %li.nav-item
-            = link_to(t('teams.records.by_season'),
-                      team_records_path(@team, tab: 'by_season', season_year: @season_year),
-                      class: "nav-link#{' active' if @active_tab == 'by_season'}", id: 'tab-by-season')
-
-    - if @active_tab == 'by_season'
-      %section#records-season-selector
-        .row-fluid.my-2
-          = form_tag(team_records_path(@team), method: :get, class: 'form-inline') do
-            = hidden_field_tag(:tab, 'by_season')
-            .form-group
-              %label.mr-2{ for: 'season_year' }= t('teams.records.select_year')
-              = select_tag(:season_year,
-                           options_for_select(@championship_years.map { |year| ["#{year}/#{year + 1}", year] },
-                                              @season_year),
-                           class: 'form-control mr-2')
-            = button_tag(type: 'submit', class: 'btn btn-outline-primary', id: 'btn-filter-season') do
-              %i.fa.fa-search
-              = t('teams.records.search')
+          - @championship_years.each do |year|
+            %li.nav-item
+              = link_to("#{year}/#{year + 1}",
+                        team_records_path(@team, tab: 'by_season', season_year: year),
+                        class: "nav-link#{' active' if @active_tab == 'by_season' && @season_year == year}",
+                        id: "tab-year-#{year}")
 
     - if @records.any?
       - pdf_params = { tab: @active_tab, season_year: (@season_year if @active_tab == 'by_season') }

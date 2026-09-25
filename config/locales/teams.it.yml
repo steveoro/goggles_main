@@ -27,9 +27,7 @@ it:
     records:
       title: Record di squadra
       all_time: Di sempre
-      by_season: Per stagione
       select_year: Anno stagione
-      search: Cerca
       pdf_button: Esporta in PDF
       category: Categoria
       event: Evento

@@ -60,3 +60,5 @@
                           = link_to(record.to_timing, meeting_show_path(id: record.meeting_id, anchor: anchor))
                           %br/
                           %small= link_to(record.swimmer_name, swimmer_show_path(id: record.swimmer_id))
+                          %br/
+                          %small.text-muted= I18n.l(record.meeting_date)
