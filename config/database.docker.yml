@@ -12,6 +12,8 @@ default: &default
   host: <%= ENV.fetch("DATABASE_HOST") { 'localhost' } %>
   port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  structure_dump_flags: ["--skip-ssl"]
+  structure_load_flags: ["--skip-ssl"]
 
 development:
   primary:

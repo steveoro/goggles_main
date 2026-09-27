@@ -18,7 +18,7 @@ module GogglesMain
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
-    config.active_record.schema_format :sql
+    config.active_record.schema_format = :sql
     config.assets.paths << Rails.root.join('app', 'javascript')
     config.mission_control.jobs.base_controller_class = 'JobsDashboardBaseController'
 
