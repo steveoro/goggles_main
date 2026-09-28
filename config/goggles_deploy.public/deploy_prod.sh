@@ -35,6 +35,13 @@ DEPLOY_DOCKER_CONFIG="$(mktemp -d)"
 export DOCKER_CONFIG="$DEPLOY_DOCKER_CONFIG"
 trap 'rm -rf "$DEPLOY_DOCKER_CONFIG"' EXIT
 
+# Docker CLI auto-detects docker-credential-* helpers by NAME in PATH when no
+# credsStore is configured. /usr/local/bin/docker-credential-pass exists on this
+# host and would hijack every registry call into `pass`/gpg decryption, which
+# cannot prompt for a passphrase in this non-interactive session and fails with
+# "gpg: decryption failed: No secret key". Hide it by dropping /usr/local/bin.
+export PATH="/usr/local/sbin:/usr/bin:/usr/sbin:/sbin:/bin"
+
 if docker compose version >/dev/null 2>&1; then
   compose() { docker compose "$@"; }
 elif command -v docker-compose >/dev/null 2>&1; then
