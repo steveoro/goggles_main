@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ActiveRecord::Schema[7.1].define(version: 1) do
+ActiveRecord::Schema[7.1].define(version: 20_250_407_115_446) do
   create_table 'solid_queue_blocked_executions', force: :cascade do |t|
     t.bigint 'job_id', null: false
     t.string 'queue_name', null: false

@@ -38,7 +38,7 @@ from the `goggles-main` image at each deploy) and started by
 | ----------- | ----------------------------- | ----------------------------------- | --------------------- | -------------- |
 | `goggles-db`| `mariadb:11.8.6`               | stock entrypoint, `--max_allowed_packet=64M` | `127.0.0.1:33060` | `always` + healthcheck |
 | `api`       | `steveoro/goggles-api:$TAG`    | `entrypoints/docker.prod.sh`        | `127.0.0.1:8081`      | `always`       |
-| `main`      | `steveoro/goggles-main:$TAG`   | `entrypoints/docker.prod.sh`        | `127.0.0.1:8080`      | `always` + healthcheck (`/up`) + `autoheal` |
+| `main`      | `steveoro/goggles-main:$TAG`   | `entrypoints/docker.prod.sh`        | `127.0.0.1:8080`      | `always` + healthcheck (`/up`¹) + `autoheal` |
 | `jobs`      | `steveoro/goggles-main:$TAG`   | `entrypoints/jobs.prod.sh`          | none                  | `always` + heartbeat healthcheck + `autoheal` |
 | `autoheal`  | `willfarrell/autoheal:latest`  | stock                               | none                  | `always`       |
 
@@ -54,6 +54,10 @@ from the `goggles-main` image at each deploy) and started by
 - `api` — `exec rails s -b 0.0.0.0 -p 8081`. No Solid* components at all.
 - `autoheal` — polls the Docker socket every `AUTOHEAL_INTERVAL` (60 s) and
   restarts containers carrying the `autoheal` label while they report `unhealthy`.
+
+¹ `main`'s probe sends `X-Forwarded-Proto: https` because `config.force_ssl`
+301-redirects plain HTTP to HTTPS — without the header wget dies doing TLS on a
+plain-HTTP port and the container flaps `unhealthy`.
 
 ## Boot order (health gating)
 
@@ -98,7 +102,7 @@ pending migrations from `db/queue_migrate` / `db/cable_migrate`.
 | `backups`                             | `api`, `main`, `jobs`   | `db/dump` — backup & batch SQL files (ImportProcessorJob) |
 | `db.prod`                             | `goggles-db`            | MariaDB datadir               |
 | `log.prod`                            | `api`, `main`           | `production.log` (jobs logs to docker stdout instead) |
-| `master-api.key`, `master-main.key`   | `api`, `main` (ro)      | Rails master keys             |
+| `master-api.key`, `master-main.key`   | `api`, `main`, `jobs` (ro) | Rails master keys          |
 | `/var/run/docker.sock`                | `autoheal`              | container watchdog            |
 
 `.env` (uncommitted, in the deploy dir): `MYSQL_ROOT_PASSWORD`, `TAG`,
