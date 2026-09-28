@@ -133,11 +133,11 @@ class ImportProcessorJob < ApplicationJob
 
     GogglesDb::ImportQueue.without_batch_sql.each do |iq_row|
       if iq_row.sibling_rows.any? # Parent w/ siblings?
-        iq_row.update!(process_runs: iq1.process_runs + 1) # Do nothing and focus always on last remaining sibling as next row
+        iq_row.update!(process_runs: iq_row.process_runs + 1) # Do nothing and focus always on last remaining sibling as next row
         IqSolverService.new.call(iq_row.sibling_rows.last)
 
       elsif iq_row.import_queue.present? # Sibling row found?
-        iq_row.update!(process_runs: iq1.process_runs + 1) # Keep IQ row idle if it has a parent
+        iq_row.update!(process_runs: iq_row.process_runs + 1) # Keep IQ row idle if it has a parent
 
       else
         IqSolverService.new.call(iq_row) # Leaf or ex-parent w/o siblings
