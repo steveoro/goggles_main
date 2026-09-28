@@ -86,6 +86,14 @@ services:
     security_opt:
       - no-new-privileges:true
     mem_limit: 1536m
+    labels:
+      - autoheal
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/up || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
     logging:
       driver: json-file
       options:
@@ -99,6 +107,62 @@ services:
         source: "~/Projects/goggles_deploy/master-main.key"
         target: /app/config/master.key
         read_only: true
+
+  jobs:
+    # Same image as `main`, different entrypoint: Solid Queue supervisor only.
+    # Waits for `main` to be healthy => db:prepare has already created/migrated
+    # the goggles_queue & goggles_cable databases.
+    image: "${DOCKERHUB_USERNAME:-steveoro}/goggles-main:${TAG:-latest}"
+    depends_on:
+      goggles-db:
+        condition: service_healthy
+      main:
+        condition: service_healthy
+    container_name: goggles-jobs
+    env_file:
+      - .env
+    environment:
+      # Log to docker stdout (json-file driver) instead of the shared production.log:
+      RAILS_LOG_TO_STDOUT: "1"
+    entrypoint: ["./entrypoints/jobs.prod.sh"]
+    restart: always
+    cap_drop:
+      - ALL
+    cap_add:
+      - DAC_OVERRIDE
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 768m
+    labels:
+      - autoheal
+    healthcheck:
+      # Liveness = fresh Solid Queue heartbeats (any supervisor/worker row < 3 min old).
+      # Uses mariadb-client already present in the image — no Rails boot needed.
+      test: ["CMD-SHELL", "mariadb -h goggles-db -uroot -p\"$${MYSQL_ROOT_PASSWORD}\" goggles_queue -sN -e 'SELECT 1 FROM solid_queue_processes WHERE last_heartbeat_at > NOW() - INTERVAL 180 SECOND LIMIT 1' | grep -q 1"]
+      interval: 120s
+      timeout: 15s
+      retries: 3
+      start_period: 120s
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+    volumes:
+      - "~/Projects/goggles_deploy/storage.prod:/app/storage"
+      - "~/Projects/goggles_deploy/backups:/app/db/dump"
+
+  # Restarts labeled containers that stay `unhealthy` (e.g. a hung Puma).
+  autoheal:
+    # Upstream only maintains the `latest` tag (versioned tags are stale).
+    image: willfarrell/autoheal:latest
+    container_name: autoheal
+    restart: always
+    environment:
+      AUTOHEAL_CONTAINER_LABEL: autoheal
+      AUTOHEAL_INTERVAL: "60"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   gem_cache:

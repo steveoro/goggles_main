@@ -89,12 +89,13 @@ Rails.application.configure do # rubocop:disable Metrics/BlockLength
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  # Solid Queue, Solid Cache (see config/cache.yml), Mission Control jobs UI
+  # Solid Queue (on MariaDB `goggles_queue`), Mission Control jobs UI.
+  # Cache stays in-process: no request-path DB hits (Rack::Attack counters included).
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :queue } }
   config.mission_control.jobs.adapters = [:solid_queue]
   config.mission_control.jobs.http_basic_auth_enabled = false
-  config.cache_store = :solid_cache_store
+  config.cache_store = :memory_store
 
   # Action Mailer — SMTP secrets live in credentials (bin/rails credentials:edit)
   config.action_mailer.default_url_options = {

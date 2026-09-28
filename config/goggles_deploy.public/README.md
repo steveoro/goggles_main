@@ -42,13 +42,11 @@ Before the first deploy of an image that uses credential-backed SMTP, add an `sm
 
 ## Persistent Solid support databases
 
-The `storage.prod` volume bind-mount (`~/Projects/goggles_deploy/storage.prod` → `/app/storage`) must persist across deploys. It holds the SQLite files used by Solid Queue, Solid Cache, and Solid Cable:
+Solid Queue and Solid Cable run on **MariaDB** databases (`goggles_queue`, `goggles_cable`) inside the shared `goggles-db` container — no SQLite files are used in production. `rails db:prepare` at container startup creates them (if missing) and loads their schemas from `db/*_schema.rb`. The Rails cache is in-process memory (`:memory_store`).
 
-- `production_queue.sqlite3`
-- `production_cache.sqlite3`
-- `production_cable.sqlite3`
+The `storage.prod` volume bind-mount (`~/Projects/goggles_deploy/storage.prod` → `/app/storage`) must still persist across deploys: it holds ActiveStorage uploads and is shared by the `api`, `main`, and `jobs` services.
 
-`deploy_prod.sh` no longer deletes these files. Container startup runs `rails db:prepare`, which loads or migrates each support schema from `db/*_schema.rb`.
+Legacy SQLite files (`production_{queue,cache,cable}.sqlite3*`) left over in `storage.prod` from older releases are dormant and can be deleted.
 
 On first rollout after removing a host-copied `production.rb`, delete the obsolete `goggles_deploy/production.rb` file if it still exists on the server.
 

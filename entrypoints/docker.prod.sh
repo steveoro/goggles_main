@@ -25,11 +25,11 @@ if [ -f tmp/pids/server.pid ]; then
   rm tmp/pids/server.pid
 fi
 
-# Apply pending migrations just for Main UI
+# Apply pending migrations just for Main UI (also creates/migrates the
+# Solid Queue & Solid Cable support DBs, both on MariaDB):
 bundle exec rails db:prepare
 
-# Start Solid Queue worker for ActiveJob (default in Rails 8.1)
-bundle exec bin/jobs &
+# Solid Queue runs in the dedicated `jobs` compose service (entrypoints/jobs.prod.sh).
 
 # Start our server:
 exec bundle exec rails s -b 0.0.0.0 -p 8080

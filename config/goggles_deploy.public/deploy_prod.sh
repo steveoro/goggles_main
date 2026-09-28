@@ -47,7 +47,7 @@ fi
 cd "$DEPLOY_DIR"
 pwd
 echo Using tag "$TAG"
-echo "Deploy preserves Solid Queue/Cache/Cable SQLite files under storage.prod (db:prepare migrates them)."
+echo "Solid Queue/Cable run on MariaDB (goggles_queue, goggles_cable); db:prepare creates/migrates them. storage.prod keeps ActiveStorage + dump files only."
 echo Logging into DockerHub...
 printf '%s\n' "$DOCKERHUB_PASSWORD" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
 # Since vers. 0.9+, we dropped the "prod-" prefix from the tag:
@@ -79,5 +79,5 @@ compose -f "$COMPOSE_FILE" up -d goggles-db
 compose -f "$COMPOSE_FILE" exec -T goggles-db sh -c 'until mariadb-admin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD" --silent; do sleep 2; done'
 echo "Starting services with new Rails 8.1 stack..."
 # Never pass --build on the server: images were pulled above.
-compose -f "$COMPOSE_FILE" up -d --no-build api main
-echo "Finished. Solid support databases under storage.prod were preserved; entrypoint runs db:prepare."
+compose -f "$COMPOSE_FILE" up -d --no-build api main jobs autoheal
+echo "Finished. The jobs service runs the Solid Queue supervisor; entrypoint runs db:prepare."
