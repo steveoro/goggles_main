@@ -38,6 +38,14 @@ export default class extends Controller {
 
     disconnect() {
         document.removeEventListener('keydown', this.boundKeydown)
+        // An open modal must not leak its backdrop/scroll-lock across Turbo
+        // page swaps (the element tree is replaced but <body> classes &
+        // appended siblings would survive):
+        document.body.classList.remove('modal-open')
+        if (this.backdrop) {
+            this.backdrop.remove()
+            this.backdrop = null
+        }
     }
 
     // Opens the modal at the clicked thumbnail index.
@@ -91,6 +99,8 @@ export default class extends Controller {
         const text = this.descriptionTarget.textContent
         this.writeClipboard(text).then(() => {
             this.flashCopied()
+        }).catch(() => {
+            this.flashCopyFailed()
         })
     }
 
@@ -187,8 +197,11 @@ export default class extends Controller {
             document.body.appendChild(helper)
             helper.select()
             try {
-                document.execCommand('copy')
-                resolve()
+                if (document.execCommand('copy')) {
+                    resolve()
+                } else {
+                    reject(new Error('document.execCommand("copy") returned false'))
+                }
             } catch (err) {
                 reject(err)
             } finally {
@@ -216,6 +229,24 @@ export default class extends Controller {
                 icon.classList.replace('fa-check', 'fa-clipboard')
             } else {
                 button.textContent = originalText
+            }
+        }, 1200)
+    }
+
+    flashCopyFailed() {
+        if (!this.hasCopyButtonTarget) {
+            return
+        }
+        const button = this.copyButtonTarget
+        const icon = button.querySelector('i')
+        button.classList.add('text-danger')
+        if (icon) {
+            icon.classList.replace('fa-clipboard', 'fa-times')
+        }
+        window.setTimeout(() => {
+            button.classList.remove('text-danger')
+            if (icon) {
+                icon.classList.replace('fa-times', 'fa-clipboard')
             }
         }, 1200)
     }
