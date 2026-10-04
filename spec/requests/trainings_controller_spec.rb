@@ -32,6 +32,7 @@ RSpec.describe TrainingsController do
                             training_by: 'Coach One', created_by: 'Swimmer Author',
                             swimmer: FactoryBot.create(:swimmer), description: "4x100 FR\n2x200 IM")
         end
+
         before do
           FactoryBot.create(:training_with_picture,
                             training_by: 'Coach Two', created_by: 'Anonymous Author', swimmer: nil, description: nil)
