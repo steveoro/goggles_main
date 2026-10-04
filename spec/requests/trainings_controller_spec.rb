@@ -76,4 +76,13 @@ RSpec.describe TrainingsController do
       end
     end
   end
+
+  describe 'ActiveStorage serving routes' do
+    let(:fixture_row) { FactoryBot.create(:training_with_picture) }
+
+    it 'are not shadowed by the catch-all redirect' do
+      get(rails_blob_path(fixture_row.picture, only_path: true))
+      expect(response.location).to include('/rails/active_storage/')
+    end
+  end
 end

@@ -109,6 +109,8 @@ Rails.application.routes.draw do
   get 'tools/delta_timings'
   get 'tools/compute_deltas'
 
-  # Catch-all redirect in case of 404s
-  get '*path', to: 'application#redirect_missing'
+  # Catch-all redirect in case of 404s (excludes Rails engine routes like
+  # ActiveStorage's /rails/active_storage/*, which are appended below)
+  get '*path', to: 'application#redirect_missing',
+               constraints: ->(req) { !req.path.start_with?('/rails/') }
 end

@@ -202,12 +202,21 @@ export default class extends Controller {
             return
         }
         const button = this.copyButtonTarget
-        const original = button.textContent
+        const icon = button.querySelector('i')
+        const originalText = button.textContent
         button.classList.add('text-success')
-        button.textContent = '✓'
+        if (icon) {
+            icon.classList.replace('fa-clipboard', 'fa-check')
+        } else {
+            button.textContent = '✓'
+        }
         window.setTimeout(() => {
             button.classList.remove('text-success')
-            button.textContent = original
+            if (icon) {
+                icon.classList.replace('fa-check', 'fa-clipboard')
+            } else {
+                button.textContent = originalText
+            }
         }, 1200)
     }
 }
