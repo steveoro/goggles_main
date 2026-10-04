@@ -43,6 +43,14 @@
               %i.fixed-size-48x48.fa.fa-3x.fa-calendar-check-o
               %br/
               = t('home.dashboard.team_reservation_btn')
+        .col.d-flex
+          = link_to(creative_trainings_path,
+                    id: 'btn-creative-trainings',
+                    class: 'btn btn-block btn-info py-2 my-2 align-vertical-center',
+                    role: 'button') do
+            %i.fixed-size-48x48.fa.fa-3x.fa-camera
+            %br/
+            = t('home.dashboard.creative_trainings_btn')
       .row.d-flex.justify-content-around
         .col.d-flex
           = link_to(meetings_path,

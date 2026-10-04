@@ -1,0 +1,35 @@
+// Creative trainings gallery
+
+#creative-trainings-grid {
+  .card-img-top {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .creative-thumb {
+    display: block;
+    cursor: zoom-in;
+  }
+}
+
+#creative-gallery-modal {
+  .modal-dialog {
+    max-width: 90vw;
+  }
+
+  .full-size-image {
+    max-height: 75vh;
+  }
+
+  .collapsed-description {
+    display: none;
+  }
+
+  code.description-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.85rem;
+    text-align: left;
+  }
+}

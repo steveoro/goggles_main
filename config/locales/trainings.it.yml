@@ -1,0 +1,11 @@
+it:
+  trainings:
+    creative:
+      title: Allenamenti Creativi
+      empty: Nessuna immagine di allenamento caricata al momento.
+      training_by: 'Allenamento di:'
+      created_by: 'Creato da:'
+      training_text: Allenamento
+      copy_description: Copia la descrizione negli appunti
+      previous: Immagine precedente
+      next: Immagine successiva

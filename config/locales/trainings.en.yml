@@ -1,0 +1,11 @@
+en:
+  trainings:
+    creative:
+      title: Creative trainings
+      empty: No training pictures uploaded yet.
+      training_by: 'Training by:'
+      created_by: 'Created by:'
+      training_text: Training
+      copy_description: Copy description to clipboard
+      previous: Previous image
+      next: Next image

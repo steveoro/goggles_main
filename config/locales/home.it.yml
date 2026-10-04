@@ -39,6 +39,7 @@ it:
       history_btn: Storia
       plan_meeting_btn: "Calendario: pianifica Meeting"
       team_reservation_btn: prenotazioni Squadra
+      creative_trainings_btn: Allenamenti Creativi
 
   too_many_requests:
     title: "Troppe richieste"

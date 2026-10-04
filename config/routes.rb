@@ -93,6 +93,8 @@ Rails.application.routes.draw do
   get 'teams/current_swimmers/:id', to: 'teams#current_swimmers', as: 'team_current_swimmers'
   get 'teams/records/:id',          to: 'teams#records',          as: 'team_records'
 
+  get 'creative_trainings', to: 'trainings#index', as: 'creative_trainings'
+
   get 'user_workshops',                 to: 'user_workshops#index',       as: 'user_workshops'
   get 'user_workshops/show/:id',        to: 'user_workshops#show',        as: 'user_workshop_show'
   get 'user_workshops/for_swimmer/:id', to: 'user_workshops#for_swimmer', as: 'user_workshops_for_swimmer'
