@@ -72,7 +72,7 @@ CREATE TABLE `active_storage_attachments` (
   UNIQUE KEY `index_active_storage_attachments_uniqueness` (`record_type`,`record_id`,`name`,`blob_id`),
   KEY `index_active_storage_attachments_on_blob_id` (`blob_id`),
   CONSTRAINT `fk_rails_c3b3935057` FOREIGN KEY (`blob_id`) REFERENCES `active_storage_blobs` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5084 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5036 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `active_storage_blobs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -89,7 +89,7 @@ CREATE TABLE `active_storage_blobs` (
   `service_name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_active_storage_blobs_on_key` (`key`)
-) ENGINE=InnoDB AUTO_INCREMENT=5084 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5036 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `active_storage_variant_records`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -132,7 +132,7 @@ CREATE TABLE `api_daily_use_agents` (
   `updated_at` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_api_daily_use_agents_on_day_and_user_agent` (`day`,`user_agent`)
-) ENGINE=InnoDB AUTO_INCREMENT=7135 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7095 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `api_daily_uses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -148,7 +148,7 @@ CREATE TABLE `api_daily_uses` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_api_daily_uses_on_route_and_day` (`route`,`day`),
   KEY `index_api_daily_uses_on_route` (`route`)
-) ENGINE=InnoDB AUTO_INCREMENT=136213 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=136173 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `app_parameters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1705,7 +1705,8 @@ CREATE TABLE `meeting_relay_swimmers` (
   KEY `fk_meeting_relay_swimmers_badges` (`badge_id`),
   KEY `fk_meeting_relay_swimmers_stroke_types` (`stroke_type_id`),
   KEY `relay_order` (`relay_order`),
-  KEY `fk_meeting_relay_swimmers_meeting_relay_results` (`meeting_relay_result_id`)
+  KEY `fk_meeting_relay_swimmers_meeting_relay_results` (`meeting_relay_result_id`),
+  KEY `index_meeting_relay_swimmers_on_length_in_meters` (`length_in_meters`)
 ) ENGINE=InnoDB AUTO_INCREMENT=33465 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `meeting_reservations`;
@@ -1810,7 +1811,7 @@ CREATE TABLE `meetings` (
   `manifest` tinyint(1) DEFAULT 0,
   `startlist` tinyint(1) DEFAULT 0,
   `results_acquired` tinyint(1) DEFAULT 0,
-  `max_individual_events` tinyint(4) DEFAULT 2,
+  `max_individual_events` tinyint(4) DEFAULT 3,
   `configuration_file` varchar(255) DEFAULT NULL,
   `edition` mediumint(9) DEFAULT 0,
   `season_id` int(11) DEFAULT NULL,
@@ -1820,7 +1821,7 @@ CREATE TABLE `meetings` (
   `header_date` date DEFAULT NULL,
   `code` varchar(50) DEFAULT NULL,
   `header_year` varchar(9) DEFAULT NULL,
-  `max_individual_events_per_session` smallint(6) DEFAULT 2,
+  `max_individual_events_per_session` smallint(6) DEFAULT 3,
   `off_season` tinyint(1) DEFAULT 0,
   `edition_type_id` int(11) DEFAULT NULL,
   `timing_type_id` int(11) DEFAULT NULL,
@@ -2311,7 +2312,7 @@ CREATE TABLE `swimmers` (
   FULLTEXT KEY `swimmer_first_name` (`first_name`),
   FULLTEXT KEY `swimmer_last_name` (`last_name`),
   FULLTEXT KEY `swimmer_complete_name` (`complete_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=275806 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=275759 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `swimming_pool_reviews`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -2601,7 +2602,7 @@ CREATE TABLE `trainings` (
   KEY `index_trainings_on_training_date` (`training_date`),
   KEY `index_trainings_on_swimmer_id` (`swimmer_id`),
   CONSTRAINT `fk_rails_4b1eac6ed8` FOREIGN KEY (`swimmer_id`) REFERENCES `swimmers` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=214 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=143 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_achievements`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -2868,7 +2869,7 @@ CREATE TABLE `users` (
   KEY `idx_users_swimmer_level_type` (`swimmer_level_type_id`),
   KEY `idx_users_coach_level_type` (`coach_level_type_id`),
   KEY `index_users_on_active` (`active`)
-) ENGINE=InnoDB AUTO_INCREMENT=487520 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=487484 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `votes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -3076,6 +3077,7 @@ DELIMITER ;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 INSERT INTO `schema_migrations` (version) VALUES
+('20261004130000'),
 ('20261004120100'),
 ('20261004120000'),
 ('20260923170100'),
