@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.10.53** [Devin] Creative trainings gallery: new login-gated '/creative_trainings' page w/ thumbnail grid + full-size modal carousel (prev/next, keyboard nav), 'Training by'/'Created by' captions (created_by links to swimmer page when swimmer_id present), collapsible 'Training' description in monospace + copy-to-clipboard; dashboard button added; migrations copied from goggles_db 0.10.53 (DB vers. 2.10.11); imagemagick in prod image for AS variants
 - **0.10.52** [Steve A.] Move job queues on MariaDb to prevent SQLite file locking during requests peaks; bundle update
 - **0.10.51** [Devin] Team records page: use the new team-scoped `team_records` scope (~120x faster than view-window ranking), championship-year selection as preset tabs (last 5 years), MIR date label in each record cell (HTML + PDF); re-sync w/ base engine v0.10.51
 - **0.10.50** [Devin] added "Team records" sub-page for Team Radiography (all-time + by-season tabs with event x category grids and PDF export); re-sync w/ base engine v0.10.50 (all_time_best scope)

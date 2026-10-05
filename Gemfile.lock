@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db.git
-  revision: da697c75f046d1207c7dac6a26ba2ec3c13ba66e
+  revision: fc1132bab181580b6548c495b643db2aaa8031fe
   specs:
-    goggles_db (0.10.52)
+    goggles_db (0.10.53)
       acts-as-taggable-on
       acts_as_votable
       caxlsx
@@ -357,6 +357,9 @@ GEM
       domain_name (~> 0.5)
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
+    image_processing (1.14.0)
+      mini_magick (>= 4.9.5, < 6)
+      ruby-vips (>= 2.0.17, < 3)
     importmap-rails (2.2.3)
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
@@ -459,7 +462,7 @@ GEM
       net-ssh (>= 2.6.5, < 8.0.0)
     net-sftp (4.0.0)
       net-ssh (>= 5.0.0, < 8.0.0)
-    net-smtp (0.5.1)
+    net-smtp (0.5.2)
       net-protocol
     net-ssh (7.3.3)
     netrc (0.11.0)
@@ -583,7 +586,7 @@ GEM
       logger
       prism (>= 1.6.0)
       tsort
-    rdoc (8.0.0)
+    rdoc (8.1.0)
       erb
       prism (>= 1.6.0)
       rbs (>= 4.0.0)
@@ -674,6 +677,9 @@ GEM
       rubocop (~> 1.72, >= 1.72.1)
       rubocop-rspec (~> 3.5)
     ruby-progressbar (1.13.0)
+    ruby-vips (2.3.0)
+      ffi (~> 1.12)
+      logger
     ruby2_keywords (0.0.5)
     rubyzip (3.7.0)
     sass-embedded (1.105.0-x86_64-linux-gnu)
@@ -819,6 +825,7 @@ DEPENDENCIES
   guard-shell
   haml-rails
   haml_lint
+  image_processing (~> 1.2)
   importmap-rails
   inch
   kaminari

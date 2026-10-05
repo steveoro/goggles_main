@@ -1,0 +1,77 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content
+    %section#creative-trainings{ 'data-controller' => 'gallery' }
+      %h3.text-center.my-3= t('trainings.creative.title')
+
+      %script#gallery-items{ type: 'application/json', 'data-gallery-target' => 'items' }
+        = raw(@gallery_items.to_json)
+
+      - if @trainings.empty?
+        %p.text-center.my-5= t('trainings.creative.empty')
+      - else
+        .container-fluid
+          .row.row-cols-2.row-cols-md-4#creative-trainings-grid
+            - @trainings.each_with_index do |training, index|
+              .col.mb-4
+                .card.h-100.shadow-sm
+                  = link_to('#', class: 'creative-thumb',
+                            'data-action' => 'gallery#open',
+                            'data-gallery-index-param' => index) do
+                    = image_tag(rails_representation_path(training.picture.variant(resize_to_limit: [400, 400])),
+                                class: 'card-img-top', alt: training.title, loading: 'lazy')
+                  .card-body.p-2.text-center.small
+                    .text-truncate
+                      %strong= t('trainings.creative.training_by')
+                      = training.training_by
+                    .text-truncate
+                      %strong= t('trainings.creative.created_by')
+                      - if training.swimmer.present?
+                        = link_to(training.created_by, swimmer_show_path(training.swimmer_id))
+                      - else
+                        = training.created_by
+
+          .container.text-center
+            #pagination-top= paginate(@trainings)
+
+      -# Full-size image gallery modal (driven by the 'gallery' Stimulus controller):
+      .modal.fade#creative-gallery-modal{ tabindex: '-1', role: 'dialog',
+                                          'aria-hidden' => 'true',
+                                          'data-gallery-target' => 'modal' }
+        .modal-dialog.modal-xl.modal-dialog-centered{ role: 'document' }
+          .modal-content
+            .modal-header.py-2
+              %h5.modal-title{ 'data-gallery-target' => 'caption' }
+              %button.close{ type: 'button', 'aria-label' => 'Close',
+                             'data-action' => 'gallery#close' }
+                %span{ 'aria-hidden' => 'true' } &times;
+            .modal-body
+              .d-flex.justify-content-between.align-items-center
+                %button.btn.btn-outline-primary.mr-2.flex-shrink-0{ type: 'button',
+                                                                  'data-action' => 'gallery#previous',
+                                                                  'aria-label' => t('trainings.creative.previous') }
+                  %i.fa.fa-2x.fa-chevron-left
+                .flex-grow-1.text-center{ style: 'min-width: 0' }
+                  %img.img-fluid.full-size-image{ 'data-gallery-target' => 'image', alt: '' }
+                %button.btn.btn-outline-primary.ml-2.flex-shrink-0{ type: 'button',
+                                                                  'data-action' => 'gallery#next',
+                                                                  'aria-label' => t('trainings.creative.next') }
+                  %i.fa.fa-2x.fa-chevron-right
+              .text-center.mt-2
+                %span.mr-4
+                  %strong= t('trainings.creative.training_by')
+                  %span{ 'data-gallery-target' => 'trainingBy' }
+                %span
+                  %strong= t('trainings.creative.created_by')
+                  %span{ 'data-gallery-target' => 'createdBy' }
+              .text-center.mt-2.d-none{ 'data-gallery-target' => 'descriptionSection' }
+                %a{ href: '#', 'data-action' => 'gallery#toggleDescription' }= t('trainings.creative.training_text')
+                %button.btn.btn-sm.btn-outline-secondary.ml-2{ type: 'button',
+                                                             'data-action' => 'gallery#copyDescription',
+                                                             'data-gallery-target' => 'copyButton',
+                                                             title: t('trainings.creative.copy_description') }
+                  %i.fa.fa-clipboard
+                %code.description-text.bg-light.p-2.d-block.collapsed-description{ 'data-gallery-target' => 'description' }
+
+  .spacer-right

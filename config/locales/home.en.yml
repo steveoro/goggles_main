@@ -39,6 +39,7 @@ en:
       history_btn: History
       plan_meeting_btn: "Calendar: plan Meeting"
       team_reservation_btn: Team reservations
+      creative_trainings_btn: Creative trainings
 
   too_many_requests:
     title: "Too many requests"

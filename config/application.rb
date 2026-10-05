@@ -19,6 +19,11 @@ module GogglesMain
     # the framework and any gems in your application.
 
     config.active_record.schema_format = :sql
+
+    # Process ActiveStorage variants (e.g. Creative trainings thumbnails) with ImageMagick,
+    # which is already bundled via goggles_db/mini_magick:
+    config.active_storage.variant_processor = :mini_magick
+
     config.assets.paths << Rails.root.join('app', 'javascript')
     config.mission_control.jobs.base_controller_class = 'JobsDashboardBaseController'
 
