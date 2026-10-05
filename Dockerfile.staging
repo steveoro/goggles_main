@@ -56,6 +56,9 @@ ENV RAILS_ENV=staging \
 
 RUN apk add --update --no-cache \
     build-base \
+    imagemagick \
+    imagemagick-jpeg \
+    imagemagick-webp \
     iproute2 \
     libffi \
     libstdc++ \

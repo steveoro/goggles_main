@@ -12,6 +12,9 @@ RUN apk add --update --no-cache \
     g++ \
     gcc \
     git \
+    imagemagick \
+    imagemagick-jpeg \
+    imagemagick-webp \
     less \
     libstdc++ \
     libffi-dev \

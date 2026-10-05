@@ -66,6 +66,13 @@ RSpec.describe TrainingsController do
           expect(response.body).to include('creative-gallery-modal')
           expect(response.body).to include('data-gallery-target="modal"')
         end
+
+        it 'keeps the description section collapsed by default' do
+          expect(response.body).to include('collapsed-description')
+          # A Bootstrap display-utility class (e.g. d-block = display:block !important)
+          # on the <code> element would override the collapsed state.
+          expect(response.body).not_to match(/description-text[^>]*\bd-block\b/)
+        end
       end
 
       context 'when no rows have pictures,' do

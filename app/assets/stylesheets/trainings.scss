@@ -22,11 +22,14 @@
     max-height: 75vh;
   }
 
+  // !important: must win over the .description-text display rule below
+  // (same-or-higher specificity otherwise) and any utility class.
   .collapsed-description {
-    display: none;
+    display: none !important;
   }
 
   code.description-text {
+    display: block;
     white-space: pre-wrap;
     word-break: break-word;
     font-size: 0.85rem;
