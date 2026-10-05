@@ -47,31 +47,39 @@
                              'data-action' => 'gallery#close' }
                 %span{ 'aria-hidden' => 'true' } &times;
             .modal-body
-              .d-flex.justify-content-between.align-items-center
-                %button.btn.btn-outline-primary.mr-2.flex-shrink-0{ type: 'button',
-                                                                  'data-action' => 'gallery#previous',
-                                                                  'aria-label' => t('trainings.creative.previous') }
-                  %i.fa.fa-2x.fa-chevron-left
-                .flex-grow-1.text-center{ style: 'min-width: 0' }
-                  %img.img-fluid.full-size-image{ 'data-gallery-target' => 'image', alt: '' }
-                %button.btn.btn-outline-primary.ml-2.flex-shrink-0{ type: 'button',
-                                                                  'data-action' => 'gallery#next',
-                                                                  'aria-label' => t('trainings.creative.next') }
-                  %i.fa.fa-2x.fa-chevron-right
-              .text-center.mt-2
-                %span.mr-4
-                  %strong= t('trainings.creative.training_by')
-                  %span{ 'data-gallery-target' => 'trainingBy' }
-                %span
-                  %strong= t('trainings.creative.created_by')
-                  %span{ 'data-gallery-target' => 'createdBy' }
-              .text-center.mt-2.d-none{ 'data-gallery-target' => 'descriptionSection' }
-                %a{ href: '#', 'data-action' => 'gallery#toggleDescription' }= t('trainings.creative.training_text')
-                %button.btn.btn-sm.btn-outline-secondary.ml-2{ type: 'button',
-                                                             'data-action' => 'gallery#copyDescription',
-                                                             'data-gallery-target' => 'copyButton',
-                                                             title: t('trainings.creative.copy_description') }
-                  %i.fa.fa-clipboard
-                %code.description-text.bg-light.p-2.collapsed-description{ 'data-gallery-target' => 'description' }
+              .row
+                -# Image column: full-width on small displays, auto-sized beside
+                -# the description column on md+ screens (fills the whole row when
+                -# the description column is hidden).
+                .col-12.col-md
+                  .d-flex.justify-content-between.align-items-center
+                    %button.btn.btn-outline-primary.mr-2.flex-shrink-0{ type: 'button',
+                                                                      'data-action' => 'gallery#previous',
+                                                                      'aria-label' => t('trainings.creative.previous') }
+                      %i.fa.fa-2x.fa-chevron-left
+                    .flex-grow-1.text-center{ style: 'min-width: 0' }
+                      %img.img-fluid.full-size-image{ 'data-gallery-target' => 'image', alt: '' }
+                    %button.btn.btn-outline-primary.ml-2.flex-shrink-0{ type: 'button',
+                                                                      'data-action' => 'gallery#next',
+                                                                      'aria-label' => t('trainings.creative.next') }
+                      %i.fa.fa-2x.fa-chevron-right
+                  .text-center.mt-2
+                    %span.mr-4
+                      %strong= t('trainings.creative.training_by')
+                      %span{ 'data-gallery-target' => 'trainingBy' }
+                    %span
+                      %strong= t('trainings.creative.created_by')
+                      %span{ 'data-gallery-target' => 'createdBy' }
+                -# Description column: stacks under the image on small displays,
+                -# sits beside it on md+ screens.
+                .col-12.col-md-4.align-self-start.d-none{ 'data-gallery-target' => 'descriptionSection' }
+                  .text-center.mt-2
+                    %a{ href: '#', 'data-action' => 'gallery#toggleDescription' }= t('trainings.creative.training_text')
+                    %button.btn.btn-sm.btn-outline-secondary.ml-2{ type: 'button',
+                                                                 'data-action' => 'gallery#copyDescription',
+                                                                 'data-gallery-target' => 'copyButton',
+                                                                 title: t('trainings.creative.copy_description') }
+                      %i.fa.fa-clipboard
+                  %code.description-text.bg-light.p-2.collapsed-description{ 'data-gallery-target' => 'description' }
 
   .spacer-right

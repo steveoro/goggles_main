@@ -15,6 +15,7 @@ description: End-to-end testing guide for goggles_main, covering dev server setu
   - `RAILS_ENV=development bin/rails db:rebuild from=test to=development`
   - `RAILS_ENV=development bin/rails db:migrate`
 - Note: `db:migrate` may fail at the schema-dump step with `SQLite3::SQLException: near "SHOW"` on the SQLite `cache`/`queue` databases because the `scenic-mysql_adapter` view-dumper is applied to all connections. The primary DB migrations usually complete; if not, set `config.active_record.dump_schema_after_migration = false` in `config/environments/development.rb` for the test run. Ensure the `sqlite3` CLI is installed if you keep `schema_format: :sql` for SQLite.
+- `app/assets/builds/application.css` is pre-built by dartsass-rails: a plain `rails server` does NOT recompile sass. After any `.scss` change either run `bin/rails dartsass:build` + hard-reload, or start the app with `bin/dev` (Procfile.dev runs `dartsass:watch`). Otherwise computed styles silently use the stale CSS.
 
 ## Test user
 
