@@ -65,6 +65,9 @@ RSpec.describe TrainingsController do
         it 'renders the modal gallery markup' do
           expect(response.body).to include('creative-gallery-modal')
           expect(response.body).to include('data-gallery-target="modal"')
+          # Responsive layout: image + description side-by-side on md+,
+          # stacked single-column on smaller displays.
+          expect(response.body).to include('col-md-4')
         end
 
         it 'keeps the description section collapsed by default' do

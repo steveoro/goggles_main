@@ -13,7 +13,14 @@ Then('I click on the first row to see the details of the first meeting') do
   first_row.click
   15.times do
     putc('.')
-    sleep(1) && wait_for_ajax
+    sleep(1)
+    begin
+      wait_for_ajax
+    rescue Timeout::Error
+      # A single slow AJAX burst must not abort the retry loop early:
+      # the step only truly fails if the title is never found below.
+      nil
+    end
     found = begin
       find('.main-content#top-of-page #meeting-show-title', visible: true)
     rescue StandardError
