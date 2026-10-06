@@ -50,4 +50,13 @@ Legacy SQLite files (`production_{queue,cache,cable}.sqlite3*`) left over in `st
 
 On first rollout after removing a host-copied `production.rb`, delete the obsolete `goggles_deploy/production.rb` file if it still exists on the server.
 
+## Docs
+
+`docs/` holds server-side ops notes that don't ship in the image:
+
+- `bot_swarm_mitigation.md` — 2026-10-06 scraping-botnet incident: diagnosis,
+  swap/limits/Apache fixes, and maintenance playbook.
+- `goggles-botblock.conf` — Apache deny rules installed at
+  `/etc/apache2/conf-available/` on the droplet.
+
 Check out the Wiki for more information on how to recreate these files from scratch.

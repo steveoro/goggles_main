@@ -20,6 +20,9 @@ services:
         max-file: "5"
     volumes:
       - "~/Projects/goggles_deploy/db.prod:/var/lib/mysql"
+    # ~1.9GB droplet: keep every container individually bounded so the OOM
+    # killer targets the offender instead of livelocking the host.
+    mem_limit: 448m
     healthcheck:
       test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -uroot -p\"$${MYSQL_ROOT_PASSWORD}\" --silent"]
       interval: 10s
@@ -47,7 +50,7 @@ services:
       - DAC_OVERRIDE
     security_opt:
       - no-new-privileges:true
-    mem_limit: 1g
+    mem_limit: 384m
     logging:
       driver: json-file
       options:
@@ -85,7 +88,7 @@ services:
       - DAC_OVERRIDE
     security_opt:
       - no-new-privileges:true
-    mem_limit: 1536m
+    mem_limit: 1024m
     labels:
       - autoheal
     healthcheck:
@@ -134,7 +137,7 @@ services:
       - DAC_OVERRIDE
     security_opt:
       - no-new-privileges:true
-    mem_limit: 768m
+    mem_limit: 640m
     labels:
       - autoheal
     healthcheck:
