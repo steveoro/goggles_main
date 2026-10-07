@@ -18,6 +18,20 @@ RSpec.describe MIR::TableRowComponent, type: :component do
   context 'with a valid parameter,' do
     subject { render_inline(described_class.new(mir: parent_result)) }
 
+    # Mirrors the component's fallback chain: standard_points when positive, meeting_points as
+    # fallback; when both are zero a CSI score is computed for mas_csi seasons, otherwise
+    # nothing is rendered in the score cell:
+    let(:expected_result_score) do
+      if parent_result.standard_points.positive?
+        parent_result.standard_points
+      elsif parent_result.meeting_points.positive?
+        parent_result.meeting_points
+      elsif parent_result.season_type == GogglesDb::SeasonType.mas_csi
+        csi_score = 100 - ((parent_result.rank.to_i - 1) * 5)
+        csi_score.positive? ? csi_score : 0
+      end
+    end
+
     it 'renders a table row with 4 cells' do
       expect(subject.css('tbody:first-child tr')).to be_present
       expect(subject.css('tbody:first-child tr').css('td').count).to eq(4)
@@ -47,8 +61,12 @@ RSpec.describe MIR::TableRowComponent, type: :component do
     end
 
     it 'includes the result score' do
-      expect(subject.css('tbody:first-child tr td').text).to include(parent_result.standard_points.to_s)
-        .or include(parent_result.meeting_points.to_s)
+      score_cell_text = subject.css('tbody:first-child tr td').last.text
+      if expected_result_score.nil?
+        expect(score_cell_text.strip).to be_empty
+      else
+        expect(score_cell_text).to include(Kernel.format('%2.2f', expected_result_score))
+      end
     end
 
     # Wrapped under the same, more generic domain to shorten test length

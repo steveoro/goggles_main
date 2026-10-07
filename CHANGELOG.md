@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.10.59** [Devin] de-flaked MIR::TableRowComponent 'includes the result score' spec: it now mirrors the component's actual fallback chain (standard_points → meeting_points → CSI-computed score for mas_csi seasons → empty cell) instead of always expecting one of the raw point columns, which flaked whenever the sampled result had zero points
 - **0.10.58** [Devin] fixed autoheal container label (`autoheal: "true"`) so unhealthy main/jobs actually get restarted; autoheal Slack restart alerts via optional `slack.env`; versioned `crontab_check.sh` w/ container/host check-in (restarts, earlyoom & kernel OOM kills, host reboots, mem/swap, API probe)
 - **0.10.57** [Devin] re-sync w/ base engine v0.10.57 (cached AppParameter settings/maintenance flag); `update_stats` moved to `after_action` so halted requests (401s, throttle redirects) skip the DB counters; tightened prod container mem limits (main 1024m, api 384m, jobs 640m, db 448m) for the 1.9GB droplet
 - **0.10.53** [Devin] Creative trainings gallery: new login-gated '/creative_trainings' page w/ thumbnail grid + full-size modal carousel (prev/next, keyboard nav), 'Training by'/'Created by' captions (created_by links to swimmer page when swimmer_id present), collapsible 'Training' description in monospace + copy-to-clipboard; dashboard button added; migrations copied from goggles_db 0.10.53 (DB vers. 2.10.11); imagemagick in prod image for AS variants
