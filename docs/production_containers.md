@@ -38,8 +38,8 @@ from the `goggles-main` image at each deploy) and started by
 | ----------- | ----------------------------- | ----------------------------------- | --------------------- | -------------- |
 | `goggles-db`| `mariadb:11.8.6`               | stock entrypoint, `--max_allowed_packet=64M` | `127.0.0.1:33060` | `always` + healthcheck |
 | `api`       | `steveoro/goggles-api:$TAG`    | `entrypoints/docker.prod.sh`        | `127.0.0.1:8081`      | `always`       |
-| `main`      | `steveoro/goggles-main:$TAG`   | `entrypoints/docker.prod.sh`        | `127.0.0.1:8080`      | `always` + healthcheck (`/up`¹) + `autoheal` |
-| `jobs`      | `steveoro/goggles-main:$TAG`   | `entrypoints/jobs.prod.sh`          | none                  | `always` + heartbeat healthcheck + `autoheal` |
+| `main`      | `steveoro/goggles-main:$TAG`   | `entrypoints/docker.prod.sh`        | `127.0.0.1:8080`      | `always` + healthcheck (`/up`¹) + `autoheal="true"` |
+| `jobs`      | `steveoro/goggles-main:$TAG`   | `entrypoints/jobs.prod.sh`          | none                  | `always` + heartbeat healthcheck + `autoheal="true"` |
 | `autoheal`  | `willfarrell/autoheal:latest`  | stock                               | none                  | `always`       |
 
 ## Process model
@@ -53,7 +53,10 @@ from the `goggles-main` image at each deploy) and started by
   - a **scheduler** (recurring tasks from `config/recurring.yml`).
 - `api` — `exec rails s -b 0.0.0.0 -p 8081`. No Solid* components at all.
 - `autoheal` — polls the Docker socket every `AUTOHEAL_INTERVAL` (60 s) and
-  restarts containers carrying the `autoheal` label while they report `unhealthy`.
+  restarts containers carrying the label `autoheal: "true"` while they report
+  `unhealthy`. The value matters: list syntax `- autoheal` sets `autoheal=""`
+  and is ignored. When `slack.env` (`WEBHOOK_URL=...`) is present in the deploy
+  dir it also posts a Slack alert on each restart.
 
 ¹ `main`'s probe sends `X-Forwarded-Proto: https` because `config.force_ssl`
 301-redirects plain HTTP to HTTPS — without the header wget dies doing TLS on a

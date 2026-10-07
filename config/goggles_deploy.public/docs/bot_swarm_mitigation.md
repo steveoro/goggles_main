@@ -113,6 +113,9 @@ of `ThreadsPerChild` or Apache rounds down with an `AH00513` warning.
   per request on top of the removed writes.
 - `earlyoom` installed on the host as a last-resort safeguard (SIGTERM the
   largest process before livelock; with swap it should rarely fire).
+- `crontab_check.sh` check-ins now report earlyoom/kernel-OOM kills, container
+  restarts and host reboots; autoheal posts instant Slack restart alerts
+  (label fixed to `autoheal: "true"` in 0.10.58).
 - Droplet resize still unnecessary: legit traffic is ~12% of load. If the
   botnet out-adapts CIDR patching, put Cloudflare (free) in front — see
   notes on ASN filtering/edge caching above; remember the API vhost on :447

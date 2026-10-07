@@ -32,8 +32,20 @@ You'll still need to have the following sensitive files in order to have a fully
 - goggles_deploy/.env
 - goggles_deploy/master-api.key
 - goggles_deploy/master-main.key
+- goggles_deploy/slack.env — single `WEBHOOK_URL=...` line (Slack incoming
+  webhook), `chmod 600`. Sourced by `crontab_check.sh` and loaded by the
+  `autoheal` container for restart alerts. Never put it in `.env` (which is
+  loaded into every app container).
 
-- goggles_deploy/crontab_check.sh (=> to be copied under ~)
+- goggles_deploy/crontab_check.sh — versioned in this directory; copy it under
+  `~` and schedule it from root's crontab (`sudo crontab -e`):
+
+  ```text
+  00 6 * * * /bin/bash -l /home/deploy/crontab_check.sh >/dev/null 2>&1
+  00 12 * * * /bin/bash -l /home/deploy/crontab_check.sh >/dev/null 2>&1
+  00 20 * * * /bin/bash -l /home/deploy/crontab_check.sh >/dev/null 2>&1
+  ```
+
 - goggles_deploy/deploy_prod.sh (=> to be copied under ~)
 
 Before the first deploy of an image that uses credential-backed SMTP, add an `smtp` section to the app credentials (`address`, `port`, `user_name`, `password`, and optional `authentication` / `enable_starttls_auto`).

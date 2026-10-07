@@ -89,8 +89,9 @@ services:
     security_opt:
       - no-new-privileges:true
     mem_limit: 1024m
+    # autoheal only matches the label value "true" (list syntax `- autoheal` sets "" and is ignored).
     labels:
-      - autoheal
+      autoheal: "true"
     healthcheck:
       # force_ssl redirects plain HTTP -> HTTPS; the forwarded-proto header makes
       # request.ssl? true so the probe gets a real 200 instead of a 301.
@@ -138,8 +139,9 @@ services:
     security_opt:
       - no-new-privileges:true
     mem_limit: 640m
+    # autoheal only matches the label value "true" (list syntax `- autoheal` sets "" and is ignored).
     labels:
-      - autoheal
+      autoheal: "true"
     healthcheck:
       # Liveness = fresh Solid Queue heartbeats (any supervisor/worker row < 3 min old).
       # Uses mariadb-client already present in the image — no Rails boot needed.
@@ -170,6 +172,10 @@ services:
     environment:
       AUTOHEAL_CONTAINER_LABEL: autoheal
       AUTOHEAL_INTERVAL: "60"
+    # Optional: WEBHOOK_URL=<Slack incoming webhook> for instant restart alerts (never committed).
+    env_file:
+      - path: slack.env
+        required: false
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
