@@ -9,7 +9,10 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   stale_when_importmap_changes
   protect_from_forgery with: :exception
   before_action :app_settings_row, :set_locale, :detect_device_variant, :check_maintenance_mode,
-                :update_stats, :check_anonymous_request_limit, :prepare_last_seasons
+                :check_anonymous_request_limit, :prepare_last_seasons
+  # Runs only for completed actions: requests halted inside a before_action
+  # (Devise 401s, maintenance/throttle redirects) skip the DB counters entirely.
+  after_action :update_stats
   before_action :configure_devise_permitted_parameters, if: :devise_controller?
 
   # Prosopite will work only when enabled in config/environments/<ENV>.rb
@@ -257,6 +260,10 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   #++
 
   # Updates the internal statistical counters for daily request load.
+  # Registered as an +after_action+: it does not run for requests halted inside
+  # a +before_action+ (throttle/maintenance redirects, unauthenticated Devise
+  # 401s), so the counters measure only actually-served content and bot traffic
+  # stopped early never reaches the DB.
   #
   # === NOTE:
   # This 'api_daily_uses' table should be cleaned up from older entries at least once

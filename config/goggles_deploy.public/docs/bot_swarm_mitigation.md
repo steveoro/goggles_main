@@ -100,11 +100,21 @@ of `ThreadsPerChild` or Apache rounds down with an `AH00513` warning.
 - Residential-proxy IPs (e.g. Telecom Italia) can't be CIDR-blocked without
   hurting real users — residual scraping is expected at a lower rate.
 
-## Code-level follow-ups (not yet done)
+## Code-level follow-ups (applied 2026-10-07, engine v0.10.57)
 
-- `update_stats` → move to `after_action` and skip non-200 responses, or stop
-  counting `APIDailyUseAgent` for anonymous requests (shared-UA row lock
-  hotspot).
-- Cache `AppParameter.versioning_row` / `maintenance?` in `Rails.cache`
-  (~1min TTL, same pattern as `Rack::Attack.limits`) to drop ~3-4 SELECTs/req.
-- Droplet resize still unnecessary: legit traffic is ~12% of load.
+- `update_stats` moved to an `after_action` in `ApplicationController` —
+  requests halted in before_actions (Devise 401 throws, throttle/maintenance
+  redirects) never reach `api_daily_uses`/`api_daily_use_agents`, so the
+  401-scrape traffic no longer writes to the DB at all.
+- `GogglesDb::AppParameter.maintenance?` and the `:app` settings group
+  (`max_anonymous_req`, `max_bot_req`, `max_req_per_minute`) are now served
+  from `Rails.cache` with a 1-minute TTL (`AppParameter.cached_app_settings`,
+  `MAINTENANCE_CACHE_KEY`); `maintenance=` busts its key. Cuts ~3-4 SELECTs
+  per request on top of the removed writes.
+- `earlyoom` installed on the host as a last-resort safeguard (SIGTERM the
+  largest process before livelock; with swap it should rarely fire).
+- Droplet resize still unnecessary: legit traffic is ~12% of load. If the
+  botnet out-adapts CIDR patching, put Cloudflare (free) in front — see
+  notes on ASN filtering/edge caching above; remember the API vhost on :447
+  can't be proxied by CF free (non-standard port → would need an `api.`
+  subdomain on :443).

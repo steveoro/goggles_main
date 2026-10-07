@@ -76,6 +76,15 @@ RSpec.describe ApplicationController do
         get(root_path, env: { 'REMOTE_ADDR' => test_ip })
         expect(response).to redirect_to(home_too_many_requests_path)
       end
+
+      it 'does not update the daily counters for halted requests' do
+        expect do
+          get(root_path, env: { 'REMOTE_ADDR' => test_ip, 'HTTP_USER_AGENT' => 'Halted-Bot/1.0' })
+        end.not_to(change do
+          GogglesDb::APIDailyUse.find_by(route: stats_route, day: Time.zone.today)&.count
+        end)
+        expect(GogglesDb::APIDailyUseAgent.where(user_agent: 'Halted-Bot/1.0', day: Time.zone.today)).not_to exist
+      end
     end
 
     context 'when the daily count exceeds the bias but a user is signed in' do
