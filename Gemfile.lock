@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/steveoro/goggles_db.git
-  revision: f016f4425510cdf3869f10794fccec2f3939c54e
+  revision: 8efeb8037d3b040a6ec0676ae32e34ab9ed669c9
   specs:
-    goggles_db (0.10.59)
+    goggles_db (0.10.60)
       acts-as-taggable-on
       acts_as_votable
       caxlsx
@@ -452,7 +452,7 @@ GEM
     net-http (0.10.0)
       net-protocol (>= 0.3.0)
       uri (>= 0.11.1)
-    net-imap (0.6.7)
+    net-imap (0.6.8)
       date
       net-protocol
     net-pop (0.1.2)
