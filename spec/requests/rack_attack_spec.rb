@@ -14,6 +14,10 @@ RSpec.describe 'Rack Attack throttling' do
   end
 
   before do
+    # Rack::Attack.limits is memoized in Rails.cache for 5 minutes; another
+    # request spec running before this one can leave the real (huge) limits
+    # cached and make the mocked values below be ignored.
+    Rails.cache.delete('rack_attack/throttle_limits')
     allow(GogglesDb::AppParameter).to receive_messages(max_bot_req: 3, max_req_per_minute: 5)
   end
 
