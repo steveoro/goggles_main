@@ -31,12 +31,15 @@ When('I select {string} as the championship year and my managed team') do |year|
   # Wait for the auto-submit reload to land: the year select reflects the
   # choice only on the new page (the previous year stays selected meanwhile).
   expect(page).to have_select('season_year', selected: year, wait: 15)
+  # Picking the team triggers another auto-submit; the following step's
+  # with_options assertion is the wait (the cup option only exists on the
+  # new page), so a bare presence check here would match the old page.
   select(@managed_team.name, from: 'team_id') if page.has_select?('team_id', wait: 5)
-  expect(page).to have_css('#goggle_cup_select', wait: 15)
 end
 
 Then('I should see the cup in the selector') do
-  expect(page).to have_select('goggle_cup_select', with_options: [goggle_cup_label_text(@goggle_cup)])
+  expect(page).to have_select('goggle_cup_select', wait: 15,
+                                                   with_options: [goggle_cup_label_text(@goggle_cup)])
 end
 
 When('I select the cup from the cup selector') do
