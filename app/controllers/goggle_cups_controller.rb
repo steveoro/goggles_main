@@ -311,14 +311,7 @@ class GoggleCupsController < ApplicationController
   end
 
   def no_duplicated_events_from(cup)
-    data = cup&.ranking_data
-    return false if data.blank?
-
-    parsed = data.is_a?(String) ? JSON.parse(data) : data
-    value = parsed['no_duplicated_events']
-    value.nil? ? false : ActiveModel::Type::Boolean.new.cast(value)
-  rescue StandardError
-    false
+    goggle_cup_no_duplicated_events(cup)
   end
 
   def save_payload

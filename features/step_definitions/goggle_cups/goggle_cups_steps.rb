@@ -2,7 +2,11 @@
 
 Given('I have a pre-computed Goggle Cup for my managed team in {string} for an enrolled swimmer') do |year|
   team = FactoryBot.create(:team)
-  team_affiliation = FactoryBot.create(:team_affiliation, team: team)
+  shown_season = GogglesDb::Season.for_championship_year(year.to_i).first ||
+                 FactoryBot.create(:season, season_type_id: GogglesDb::SeasonType::MAS_FIN_ID,
+                                            begin_date: Date.new(year.to_i, 9, 1),
+                                            end_date: Date.new(year.to_i + 1, 6, 30))
+  team_affiliation = FactoryBot.create(:team_affiliation, team: team, season: shown_season)
   FactoryBot.create(:managed_affiliation, manager: @current_user, team_affiliation: team_affiliation)
   @managed_team = team
 
@@ -20,22 +24,26 @@ Given('I have a pre-computed Goggle Cup for my managed team in {string} for an e
 end
 
 When('I select {string} as the championship year and my managed team') do |year|
-  page.execute_script(
-    <<~JS
-      document.getElementById('season_year').value = '#{year}';
-      document.getElementById('season_year').dispatchEvent(new Event('change'));
-      document.getElementById('team_id').value = '#{@managed_team.id}';
-      document.getElementById('team_id').dispatchEvent(new Event('change'));
-    JS
-  )
+  # A single managed team is pre-selected and rendered read-only; when the
+  # user manages several teams the team_id select is shown instead and the
+  # team must be picked explicitly. Both selects auto-submit on change.
+  select(year, from: 'season_year')
+  page.has_css?('#goggle_cup_select, select[name="team_id"]', wait: 15) # wait for the reload
+  select(@managed_team.name, from: 'team_id') if page.has_select?('team_id', wait: 0)
+  expect(page).to have_css('#goggle_cup_select')
 end
 
-Then('I should see the cup title button') do
-  expect(page).to have_link(@goggle_cup.description)
+Then('I should see the cup in the selector') do
+  expect(page).to have_select('goggle_cup_select', with_options: [goggle_cup_label_text(@goggle_cup)])
 end
 
-When('I click on the cup title') do
-  click_link(@goggle_cup.description)
+When('I select the cup from the cup selector') do
+  select(goggle_cup_label_text(@goggle_cup), from: 'goggle_cup_select')
+  expect(page).to have_css('#btn-show-precomputed')
+end
+
+When('I click on the show stored ranking button') do
+  click_button(I18n.t('goggle_cups.load_existing'))
 end
 
 Then('I should see the swimmer name in the computed ranking') do
@@ -49,9 +57,9 @@ end
 Given('I am viewing the Goggle Cup ranking for my managed team') do
   visit(goggle_cups_path)
   step("I select \"#{@goggle_cup.season_year}\" as the championship year and my managed team")
-  step('I click on the "Cerca" button')
-  step('I should see the cup title button')
-  step('I click on the cup title')
+  step('I should see the cup in the selector')
+  step('I select the cup from the cup selector')
+  step('I click on the show stored ranking button')
   step('I should see the swimmer name in the computed ranking')
 end
 
@@ -95,6 +103,10 @@ Then('I should receive a downloaded {string} file containing {string}') do |form
   else
     expect(File.size(downloaded_filename)).to be > 0 # rubocop:disable Style/NumericPredicate
   end
+end
+
+def goggle_cup_label_text(cup)
+  "#{cup.name.presence || cup.description} #{cup.season_year}-#{cup.season_year + 1}"
 end
 
 def goggle_cup_ranking_json(swimmer, team)

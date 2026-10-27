@@ -39,6 +39,30 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   def app_settings_row
     @app_settings_row ||= GogglesDb::AppParameter.versioning_row
   end
+
+  # Returns the latest published GoggleCup enlisting the given swimmer for the
+  # current championship year, or nil when there isn't any.
+  def enlisted_goggle_cup_for(swimmer)
+    return if swimmer.blank?
+
+    GogglesDb::GoggleCup.latest_published_involving(
+      swimmer.id,
+      season_year: GogglesDb::Season.current_championship_year(GogglesDb::SeasonType.mas_fin)
+    )
+  end
+
+  # Extracts the `no_duplicated_events` flag stored inside a cup's ranking_data
+  # JSON payload. Returns false when the cup has no stored ranking.
+  def goggle_cup_no_duplicated_events(cup)
+    data = cup&.ranking_data
+    return false if data.blank?
+
+    parsed = data.is_a?(String) ? JSON.parse(data) : data
+    value = parsed['no_duplicated_events']
+    value.nil? ? false : ActiveModel::Type::Boolean.new.cast(value)
+  rescue StandardError
+    false
+  end
   #-- -------------------------------------------------------------------------
   #++
 
