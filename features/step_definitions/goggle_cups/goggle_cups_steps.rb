@@ -28,9 +28,11 @@ When('I select {string} as the championship year and my managed team') do |year|
   # user manages several teams the team_id select is shown instead and the
   # team must be picked explicitly. Both selects auto-submit on change.
   select(year, from: 'season_year')
-  page.has_css?('#goggle_cup_select, select[name="team_id"]', wait: 15) # wait for the reload
-  select(@managed_team.name, from: 'team_id') if page.has_select?('team_id', wait: 0)
-  expect(page).to have_css('#goggle_cup_select')
+  # Wait for the auto-submit reload to land: the year select reflects the
+  # choice only on the new page (the previous year stays selected meanwhile).
+  expect(page).to have_select('season_year', selected: year, wait: 15)
+  select(@managed_team.name, from: 'team_id') if page.has_select?('team_id', wait: 5)
+  expect(page).to have_css('#goggle_cup_select', wait: 15)
 end
 
 Then('I should see the cup in the selector') do
