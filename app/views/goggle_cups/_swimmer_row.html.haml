@@ -1,0 +1,12 @@
+%tr
+  %td.text-center
+    %label.switch.round
+      = check_box_tag('swimmer_ids[]', swimmer[:swimmer_id],
+                      selected_swimmer_ids.map(&:to_s).include?(swimmer[:swimmer_id].to_s),
+                      id: "#{dom_prefix}_#{swimmer[:swimmer_id]}", disabled: !editable,
+                      data: { 'goggle-cups-target': 'swimmerCheckbox',
+                              swimmer_id: swimmer[:swimmer_id],
+                              action: 'change->goggle-cups#updateSelectionCounter' })
+      %span.slider.round
+  %td= swimmer[:swimmer_name]
+  %td= swimmer[:swimmer_year_of_birth]

@@ -25,4 +25,10 @@ module GoggleCupsHelper
 
     meeting_swimmer_results_path(id: meeting_id, swimmer_id: swimmer_id)
   end
+
+  # Display label for a cup in selectors/buttons: "<name> <year>-<year+1>",
+  # e.g. "GoggleCup 2026-2027". Falls back to the description when +name+ is blank.
+  def goggle_cup_label(cup)
+    "#{cup.name.presence || cup.description} #{cup.season_year}-#{cup.season_year + 1}"
+  end
 end

@@ -1,7 +1,15 @@
 .wrapper-body
   .spacer-left
 
-  .main-content
+  .main-content{ data: { controller: 'goggle-cups',
+                         'goggle-cups-smart-selection-url-value': smart_selection_goggle_cups_path,
+                         'goggle-cups-index-url-value': goggle_cups_path,
+                         'goggle-cups-has-ranking-data-value': @readonly || false,
+                         'goggle-cups-confirm-overwrite-message': t('goggle_cups.confirm_overwrite') } }
+    -# Loading overlay shown during ranking computation
+    .goggles-cup-overlay.d-none#goggle-cups-overlay{ data: { 'goggle-cups-target': 'overlay' } }
+      .spinner-border.text-light.goggle-cup-spinner{ role: 'status' }
+        %span.visually-hidden.sr-only= t('goggle_cups.computing')
     - provide(:title, t('goggle_cups.title'))
     .row-fluid.text-center
       %h4
@@ -9,54 +17,71 @@
         = t('goggle_cups.title')
       %p
         %i= t('goggle_cups.description')
+        %br
+        %code
+          = t('goggle_cups.formula')
 
-    %section.my-2#goggle-cup-selection
+    -# Phase 1: season / team / cup selection
+    %section.my-2#select-cup
       .card
         .card-header.bg-light-blue
           %strong= t('goggle_cups.selection_header')
         .card-body
           = form_with(url: goggle_cups_path, method: :get, local: true,
-                      data: { turbo: false }) do |f|
+                      html: { id: 'goggle-cups-selection-form' },
+                      data: { 'goggle-cups-target': 'selectionForm', turbo: false }) do |_f|
             .container-fluid
               .row.mb-3
-                .col-md-4.my-2
+                .col-md-3.my-2
                   = label_tag :season_year, t('goggle_cups.season_year'), class: 'form-label'
                   = select_tag(:season_year,
-                               options_for_select(@available_years.presence || [[@season_year, @season_year]], @season_year),
-                               { prompt: t('goggle_cups.select_year'), class: 'form-control', required: true })
+                               options_for_select(@season_years.map { |year| [year, year] }, @season_year),
+                               id: 'season_year_select', class: 'form-control',
+                               data: { action: 'change->goggle-cups#submitSelectionForm' })
                 .col-md-6.my-2
-                  - if user_is_admin?
-                    = render(ComboBox::AutocompleteComponent.new(api_url: 'teams', label: t('goggle_cups.team'),
-                                                                 base_name: 'team', required: true, free_text: true,
-                                                                 selected_id: @selected_team_id, selected_label: @selected_team&.name))
-                  - else
-                    = render(ComboBox::AutocompleteComponent.new(label: t('goggle_cups.team'), base_name: 'team',
-                                                                 required: true,
-                                                                 values: options_from_collection_for_select(@managed_teams, 'id', 'name', @selected_team_id)))
-                .col-md-2.my-2.d-flex.pt-3.align-items-center
-                  = button_tag(type: 'submit', class: 'btn btn-primary w-100') do
-                    %i.fa.fa-search.me-2
-                    = t('goggle_cups.search')
+                  = render partial: 'team_selector',
+                           locals: { team: @team, managed_teams: @managed_teams }
+                .col-md-3.my-2.d-flex.align-items-end
+                  = button_tag(type: 'submit', class: 'btn btn-primary w-100',
+                               data: { toggle: 'tooltip', placement: 'top',
+                                       title: t('goggle_cups.load_team_tooltip') }) do
+                    %i.fa.fa-download.me-2
+                    = t('goggle_cups.load_team')
+          - if @team
+            .container-fluid
+              .row.mb-2
+                .col-md-6.my-2
+                  - new_cup_option = ["--- #{t('goggle_cups.new_cup_option')} ---", '']
+                  - cup_options = [new_cup_option] + @goggle_cups.map { |c| [goggle_cup_label(c), c.id] }
+                  %label.form-label{ for: 'goggle_cup_select' }= t('goggle_cups.select_cup')
+                  = select_tag(:goggle_cup_select,
+                               options_for_select(cup_options, @goggle_cup&.id),
+                               id: 'goggle_cup_select', class: 'form-control',
+                               data: { action: 'change->goggle-cups#selectCup' })
+                .col-md-3.my-2.d-flex.align-items-end
+                  = link_to(goggle_cups_path(season_year: @season_year, team_id: @team_id),
+                            class: 'btn btn-outline-primary w-100', id: 'btn-new-cup',
+                            data: { toggle: 'tooltip', placement: 'top',
+                                    title: t('goggle_cups.new_cup_tooltip'), turbo: false }) do
+                    %i.fa.fa-plus.me-2
+                    = t('goggle_cups.new_cup')
+                .col-md-3.my-2.d-flex.align-items-end
+                  = label_tag :id, 'ID', class: 'form-label mx-2'
+                  = text_field_tag :id, @goggle_cup&.id, id: 'id', class: 'form-control', disabled: true
+              - if @goggle_cups.blank? && @goggle_cup.nil?
+                .row
+                  .col-12
+                    .alert.alert-info.my-2= t('goggle_cups.info.no_cups')
 
-    - if @selected_team && @season_year
-      - if @goggle_cups.present?
-        %section.my-2#goggle-cup-titles
-          .card
-            .card-header.bg-light-blue
-              %strong= t('goggle_cups.available_cups')
-            .card-body
-              .d-flex.flex-wrap
-                - @goggle_cups.each do |cup|
-                  = link_to(cup.description, goggle_cup_ranking_path(cup),
-                            class: 'btn btn-outline-primary m-1',
-                            data: { turbo_stream: true, controller: 'loading', action: 'click->loading#show' })
-      - else
-        .alert.alert-info.text-center= t('goggle_cups.info.no_cups')
-
-    %section.my-2#goggle-cup-ranking
-      - if @ranking_data.present?
-        = render partial: 'goggle_cups/ranking',
-                 locals: { team: @selected_team, goggle_cup: @goggle_cup, ranking_data: @ranking_data,
-                           no_duplicated_events: @no_duplicated_events }
+    - if @team
+      = render(partial: 'cup_form',
+               locals: { team: @team, goggle_cup: @goggle_cup, editable: @editable,
+                         readonly: @readonly, ranking_data: @ranking_data,
+                         ranking_visible: @ranking_visible, season_year: @season_year,
+                         no_duplicated_events: @no_duplicated_events,
+                         swimmers: @swimmers_for_team || [],
+                         selected_swimmer_ids: @selected_swimmer_ids || [],
+                         external_swimmers: @external_swimmers || [],
+                         secondary_team: @secondary_team })
 
   .spacer-left

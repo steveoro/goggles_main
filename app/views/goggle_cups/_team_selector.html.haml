@@ -1,0 +1,15 @@
+-# Primary team selector: API lookup for admins, managed-teams select or read-only label for managers.
+- if user_is_admin?
+  = render(ComboBox::AutocompleteComponent.new(api_url: 'teams', label: t('goggle_cups.team'),
+                                               base_name: 'team', required: true,
+                                               selected_id: team&.id, selected_label: team&.name))
+- elsif managed_teams.to_a.size == 1
+  = hidden_field_tag :team_id, team&.id
+  %label.form-label= t('goggle_cups.team')
+  .form-control-plaintext.fw-bold= team&.name
+- else
+  = label_tag :team_id, t('goggle_cups.team'), class: 'form-label'
+  = select_tag(:team_id,
+               options_from_collection_for_select(managed_teams || [], 'id', 'name', team&.id),
+               { prompt: t('goggle_cups.select_team'), class: 'form-control', required: true,
+                 data: { action: 'change->goggle-cups#submitSelectionForm' } })

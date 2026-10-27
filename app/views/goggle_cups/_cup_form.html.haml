@@ -1,0 +1,86 @@
+-# Cup params, publish toggle, swimmer selection, ranking panel (compute submits via Stimulus).
+= form_with(url: compute_goggle_cups_path, method: :post, local: true,
+            html: { id: 'goggle-cups-form' },
+            data: { action: 'submit->goggle-cups#compute', 'goggle-cups-target': 'form' }) do |_f|
+  = hidden_field_tag :team_id, team.id
+  = hidden_field_tag :goggle_cup_id, goggle_cup&.id,
+                     data: { 'goggle-cups-target': 'goggleCupIdField' }
+  .container-fluid
+    %section.my-2#cup-configuration
+      .card
+        .card-header.d-flex.justify-content-between.align-items-center
+          %strong= t('goggle_cups.cup_configuration', team: team.name)
+          .d-flex.align-items-center
+            - if goggle_cup&.published?
+              %span.badge.bg-success.me-2#badge-published
+                %i.fa.fa-check-circle.me-1
+                = t('goggle_cups.published_badge')
+            - if readonly
+              %span.badge.bg-secondary.me-2#badge-readonly
+                %i.fa.fa-lock.me-1
+                = t('goggle_cups.readonly_badge')
+            - unless editable
+              %span.badge.bg-warning.text-dark#badge-past-year
+                %i.fa.fa-history.me-1
+                = t('goggle_cups.past_year_badge')
+        .card-body
+          .row
+            .col-md-3
+              .mb-2
+                = label_tag :name, t('goggle_cups.name_label'), class: 'form-label'
+                = text_field_tag :name, goggle_cup&.name, id: 'name',
+                                                          class: 'form-control', maxlength: 60,
+                                                          disabled: !editable,
+                                                          placeholder: t('goggle_cups.name_placeholder'),
+                                                          data: { 'goggle-cups-target': 'nameField' }
+            .col-md-5
+              .mb-2
+                = label_tag :description, t('goggle_cups.description_label'),
+                            class: 'form-label'
+                - desc_opts = { id: 'description', class: 'form-control', required: true,
+                                disabled: !editable, data: { 'goggle-cups-target': 'descriptionField' } }
+                = text_field_tag :description, goggle_cup&.description, desc_opts
+            .col-md-2
+              .mb-2
+                = label_tag :season_year, t('goggle_cups.season_year_label'),
+                            class: 'form-label'
+                = number_field_tag :season_year, goggle_cup&.season_year || season_year,
+                                   id: 'season_year', class: 'form-control', readonly: true,
+                                   data: { 'goggle-cups-target': 'seasonYearField' }
+            .col-md-2
+              .mb-2
+                = label_tag :end_date, t('goggle_cups.end_date_label'), class: 'form-label'
+                - date_opts = { id: 'end_date', class: 'form-control', required: true,
+                                disabled: !editable, data: { 'goggle-cups-target': 'endDateField' } }
+                = date_field_tag :end_date, goggle_cup&.end_date&.iso8601, date_opts
+
+          .row-fluid.mb-3
+            %label.switch.round
+              = check_box_tag(:no_duplicated_events, '1', no_duplicated_events,
+                              id: 'no_duplicated_events', disabled: readonly,
+                              data: { 'goggle-cups-target': 'noDuplicatedEventsField' })
+              %span.slider.round
+            = label_tag(:no_duplicated_events, t('goggle_cups.no_duplicated_events'),
+                        class: 'form-check-label mb-0')
+
+          = render partial: 'cup_buttons',
+                   locals: { goggle_cup: goggle_cup, editable: editable,
+                             readonly: readonly, ranking_data: ranking_data }
+
+    -# Phase 3: swimmer selection (read-only while a stored ranking exists)
+    = render partial: 'swimmer_list',
+             locals: { team: team, swimmers: swimmers,
+                       selected_swimmer_ids: selected_swimmer_ids,
+                       external_swimmers: external_swimmers,
+                       secondary_team: secondary_team, readonly: readonly,
+                       editable: editable, goggle_cup: goggle_cup }
+
+    -# Phase 4: ranking display (stored or just computed; collapsible)
+    %section.my-2#goggle-cup-ranking
+      .collapse#ranking-panel{ class: (ranking_visible ? 'show' : nil) }
+        #goggle-cups-ranking-container{ data: { 'goggle-cups-target': 'rankingContainer' } }
+          - if ranking_data.present?
+            = render partial: 'goggle_cups/ranking',
+                     locals: { team: team, ranking_data: ranking_data,
+                               no_duplicated_events: no_duplicated_events,
+                               goggle_cup: goggle_cup }

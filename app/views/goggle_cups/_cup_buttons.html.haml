@@ -1,0 +1,50 @@
+-# Action buttons: save/publish/unpublish post via formaction; compute is the default submit (Stimulus AJAX).
+.row.mb-1
+  .col-md-3.my-1.d-flex.flex-fill
+    = button_tag(type: 'submit', formaction: save_goggle_cups_path, formmethod: :post,
+                 class: 'btn btn-outline-primary btn-lg w-100', disabled: !editable,
+                 data: { 'goggle-cups-target': 'saveButton', toggle: 'tooltip',
+                         placement: 'top', title: t('goggle_cups.save_config_tooltip') }) do
+      %i.fa.fa-floppy-o.me-2
+      = t('goggle_cups.save_config')
+  .col-md-3.my-1.d-flex.flex-fill
+    = button_tag(type: 'button', id: 'btn-show-precomputed',
+                 class: 'btn btn-outline-secondary btn-lg w-100',
+                 disabled: ranking_data.blank?,
+                 data: { 'goggle-cups-target': 'precomputedButton', toggle: 'collapse',
+                         target: '#ranking-panel', 'aria-expanded' => 'false',
+                         'aria-controls' => 'ranking-panel' }) do
+      %i.fa.fa-download.me-2
+      = t('goggle_cups.load_existing')
+  .col-md-3.my-1.d-flex.flex-fill
+    = button_tag(type: 'submit', class: 'btn btn-outline-success btn-lg w-100',
+                 disabled: !editable || readonly || goggle_cup.blank?,
+                 data: { 'goggle-cups-target': 'computeButton', toggle: 'tooltip',
+                         placement: 'top', title: t('goggle_cups.compute_tooltip') }) do
+      %i.fa.fa-calculator.me-2
+      = t('goggle_cups.compute')
+  .col-md-3.my-1.d-flex.flex-fill
+    - if goggle_cup&.persisted? && editable
+      - if goggle_cup.published?
+        = button_tag(type: 'submit', formaction: unpublish_goggle_cup_path(goggle_cup),
+                     formmethod: :post, class: 'btn btn-outline-warning btn-lg w-100',
+                     data: { turbo_confirm: t('goggle_cups.confirm_unpublish'),
+                             toggle: 'tooltip', placement: 'top',
+                             title: t('goggle_cups.unpublish_tooltip') }) do
+          %i.fa.fa-eye-slash.me-2
+          = t('goggle_cups.unpublish')
+      - else
+        = button_tag(type: 'submit', formaction: publish_goggle_cup_path(goggle_cup),
+                     formmethod: :post, class: 'btn btn-outline-info btn-lg w-100',
+                     data: { turbo_confirm: t('goggle_cups.confirm_publish'),
+                             toggle: 'tooltip', placement: 'top',
+                             title: t('goggle_cups.publish_tooltip') }) do
+          %i.fa.fa-bullhorn.me-2
+          = t('goggle_cups.publish')
+    - else
+      = button_tag(type: 'button', class: 'btn btn-outline-info btn-lg w-100',
+                   disabled: true,
+                   data: { toggle: 'tooltip', placement: 'top',
+                           title: t('goggle_cups.publish_tooltip') }) do
+        %i.fa.fa-bullhorn.me-2
+        = t('goggle_cups.publish')

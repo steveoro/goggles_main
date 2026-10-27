@@ -100,7 +100,13 @@ Rails.application.routes.draw do
   get 'user_workshops/for_swimmer/:id', to: 'user_workshops#for_swimmer', as: 'user_workshops_for_swimmer'
   get 'user_workshops/for_team/:id',    to: 'user_workshops#for_team',    as: 'user_workshops_for_team'
 
-  get 'goggle_cups',                  to: 'goggle_cups#index',       as: 'goggle_cups'
+  get 'goggle_cups',                  to: 'goggle_cups#index', as: 'goggle_cups'
+  get 'goggle_cups/smart_selection',  to: 'goggle_cups#smart_selection', as: 'smart_selection_goggle_cups'
+  match 'goggle_cups/compute',        to: 'goggle_cups#compute',     as: 'compute_goggle_cups', via: %i[get post]
+  post 'goggle_cups/save',            to: 'goggle_cups#save',        as: 'save_goggle_cups'
+  post 'goggle_cups/clear_ranking',   to: 'goggle_cups#clear_ranking', as: 'clear_ranking_goggle_cups'
+  post 'goggle_cups/:id/publish',     to: 'goggle_cups#publish',     as: 'publish_goggle_cup'
+  post 'goggle_cups/:id/unpublish',   to: 'goggle_cups#unpublish',   as: 'unpublish_goggle_cup'
   get 'goggle_cups/:id/ranking',      to: 'goggle_cups#ranking',     as: 'goggle_cup_ranking'
   get 'goggle_cups/:id/base_timings', to: 'goggle_cups#base_timings', as: 'goggle_cup_base_timings'
 
