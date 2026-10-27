@@ -1,0 +1,83 @@
+-# Dashboard action buttons grid.
+%section.container#dashboard-btns
+  .row.d-flex.justify-content-center
+    .col.d-flex
+      = link_to(calendars_current_path,
+                id: 'btn-plan-meeting',
+                class: 'btn btn-block btn-info py-2 my-2 align-vertical-center',
+                role: 'button') do
+        %i.fixed-size-48x48.fa.fa-3x.fa-calendar
+        %br/
+        = t('home.dashboard.plan_meeting_btn')
+    - if current_user_is_manager || current_user_is_admin
+      .col.d-flex
+        = link_to('#',
+                  id: 'btn-team-reservations',
+                  class: 'btn btn-block btn-info py-2 my-2 align-vertical-center disabled',
+                  role: 'button') do
+          %i.fixed-size-48x48.fa.fa-3x.fa-calendar-check-o
+          %br/
+          = t('home.dashboard.team_reservation_btn')
+    .col.d-flex
+      = link_to(creative_trainings_path,
+                id: 'btn-creative-trainings',
+                class: 'btn btn-block btn-info py-2 my-2 align-vertical-center',
+                role: 'button') do
+        %i.fixed-size-48x48.fa.fa-3x.fa-camera
+        %br/
+        = t('home.dashboard.creative_trainings_btn')
+  .row.d-flex.justify-content-around
+    .col.d-flex
+      = link_to(meetings_path,
+                id: 'btn-my-past-meetings',
+                class: 'btn btn-block btn-warning py-2 my-2 align-vertical-center',
+                role: 'button') do
+        %i.fixed-size-48x48.fa.fa-3x.fa-trophy
+        %br/
+        = t('home.dashboard.past_btn')
+    .col.d-flex
+      = link_to(calendars_starred_path,
+                id: 'btn-my-future-meetings',
+                class: 'btn btn-block btn-primary py-2 my-2 align-self-vertical',
+                role: 'button') do
+        %i.fixed-size-48x48.fa.fa-3x.fa-calendar
+        %br/
+        = t('home.dashboard.future_btn')
+    .col.d-flex
+      = link_to(user_workshops_path,
+                id: 'btn-my-workshops',
+                class: 'btn btn-block btn-info py-2 my-2 align-vertical-center',
+                role: 'button') do
+        %i.fixed-size-48x48.fa.fa-3x.fa-group
+        %br/
+        %span.align-baseline
+          = t('home.dashboard.workshops_btn')
+    .col.d-flex
+      - if swimmer
+        = link_to(swimmer_show_path(swimmer.id),
+                  id: 'btn-my-radiography',
+                  class: 'btn btn-block btn-primary py-2 my-2 align-vertical-center',
+                  role: 'button') do
+          = image_tag('radiography_40x40.png', class: 'fixed-size-48x48')
+          %br/
+          = t('home.dashboard.radiography_btn')
+      - else
+        .btn.btn-block.btn-primary.py-2.my-2.align-vertical-center.disabled#btn-my-radiography
+          = image_tag('radiography_40x40.png', class: 'fixed-size-48x48')
+          %br/
+          = t('home.dashboard.radiography_btn')
+    .col.d-flex
+      - if swimmer
+        = link_to(swimmer_history_recap_path(swimmer.id),
+                  id: 'btn-my-stats',
+                  class: 'btn btn-block btn-primary py-2 my-2 align-vertical-center', role: 'button') do
+          %i.fixed-size-48x48.fa.fa-3x.fa-line-chart
+          %br/
+          = t('home.dashboard.history_btn')
+      - else
+        .btn.btn-block.btn-primary.py-2.my-2.align-vertical-center.disabled#btn-my-stats
+          %i.fixed-size-48x48.fa.fa-3x.fa-line-chart
+          %br/
+          = t('home.dashboard.history_btn')
+    .col.d-flex
+      = render partial: 'goggle_cup_button', locals: { goggle_cup: goggle_cup, swimmer: swimmer }

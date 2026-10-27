@@ -235,6 +235,45 @@ RSpec.describe HomeController do
         get(home_dashboard_path)
         expect(response).to have_http_status(:success)
       end
+
+      it 'renders the Goggle Cup button disabled' do
+        get(home_dashboard_path)
+        expect(response.body).not_to include('swimmers/goggles_cup_ranking')
+      end
+    end
+
+    context 'with a logged-in user with a swimmer enlisted in a published cup,' do
+      let(:swimmer) { FactoryBot.create(:swimmer) }
+      let(:current_year) { GogglesDb::Season.current_championship_year(GogglesDb::SeasonType.mas_fin) }
+
+      before do
+        FactoryBot.create(:goggle_cup, team: FactoryBot.create(:team),
+                                       season_year: current_year,
+                                       swimmers_ids: swimmer.id.to_s, published: true)
+        sign_in(FactoryBot.create(:user, swimmer_id: swimmer.id))
+      end
+
+      it 'renders the Goggle Cup button linking to the ranking page' do
+        get(home_dashboard_path)
+        expect(response.body).to include(swimmer_goggles_cup_ranking_path(swimmer.id))
+      end
+    end
+
+    context 'with a logged-in user with a swimmer enlisted only in an unpublished cup,' do
+      let(:swimmer) { FactoryBot.create(:swimmer) }
+      let(:current_year) { GogglesDb::Season.current_championship_year(GogglesDb::SeasonType.mas_fin) }
+
+      before do
+        FactoryBot.create(:goggle_cup, team: FactoryBot.create(:team),
+                                       season_year: current_year,
+                                       swimmers_ids: swimmer.id.to_s, published: false)
+        sign_in(FactoryBot.create(:user, swimmer_id: swimmer.id))
+      end
+
+      it 'renders the Goggle Cup button disabled' do
+        get(home_dashboard_path)
+        expect(response.body).not_to include('swimmers/goggles_cup_ranking')
+      end
     end
   end
   #-- -------------------------------------------------------------------------

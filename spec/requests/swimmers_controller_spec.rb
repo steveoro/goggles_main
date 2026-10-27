@@ -196,4 +196,78 @@ RSpec.describe SwimmersController do
   end
   #-- -------------------------------------------------------------------------
   #++
+
+  describe 'GET /swimmers/goggles_cup_ranking/:id' do
+    let(:swimmer) { FactoryBot.create(:swimmer, complete_name: 'CUP TEST SWIMMER') }
+    let(:current_year) { GogglesDb::Season.current_championship_year(GogglesDb::SeasonType.mas_fin) }
+    let(:user) { FactoryBot.create(:user, swimmer_id: swimmer.id) }
+
+    context 'with an unlogged user' do
+      it 'is a redirect to the login path' do
+        get(swimmer_goggles_cup_ranking_path(swimmer.id))
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'with a logged-in user without an associated swimmer,' do
+      before { sign_in(FactoryBot.create(:user)) }
+
+      it 'redirects back with a "not enrolled" alert' do
+        get(swimmer_goggles_cup_ranking_path(swimmer.id))
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to eq(I18n.t('goggle_cups.errors.not_enrolled'))
+      end
+    end
+
+    context 'with a logged-in user whose swimmer has no published cup,' do
+      before do
+        FactoryBot.create(:goggle_cup, season_year: current_year,
+                                       swimmers_ids: swimmer.id.to_s, published: false)
+        sign_in(user)
+      end
+
+      it 'redirects back with a "not enrolled" alert' do
+        get(swimmer_goggles_cup_ranking_path(swimmer.id))
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to eq(I18n.t('goggle_cups.errors.not_enrolled'))
+      end
+    end
+
+    context 'with a logged-in user whose swimmer is enlisted in a published cup,' do
+      before do
+        FactoryBot.create(:goggle_cup, season_year: current_year,
+                                       swimmers_ids: swimmer.id.to_s, published: true)
+        sign_in(user)
+      end
+
+      it 'renders the precomputed ranking page' do
+        get(swimmer_goggles_cup_ranking_path(swimmer.id))
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include('CUP TEST SWIMMER')
+      end
+
+      it 'renders no export controls' do
+        get(swimmer_goggles_cup_ranking_path(swimmer.id))
+        expect(response.body).not_to include('export_type')
+      end
+    end
+
+    context 'when the requested swimmer id is not the current user\'s swimmer,' do
+      let(:other_swimmer) { FactoryBot.create(:swimmer) }
+
+      before do
+        FactoryBot.create(:goggle_cup, season_year: current_year,
+                                       swimmers_ids: swimmer.id.to_s, published: true)
+        sign_in(user)
+      end
+
+      it 'redirects back with a "not enrolled" alert' do
+        get(swimmer_goggles_cup_ranking_path(other_swimmer.id))
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to eq(I18n.t('goggle_cups.errors.not_enrolled'))
+      end
+    end
+  end
+  #-- -------------------------------------------------------------------------
+  #++
 end

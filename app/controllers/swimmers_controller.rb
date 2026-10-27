@@ -3,7 +3,7 @@
 # = SwimmersController
 #
 class SwimmersController < ApplicationController
-  before_action :authenticate_user!, only: %i[history_recap history goggles_cup_base_timings]
+  before_action :authenticate_user!, only: %i[history_recap history goggles_cup_base_timings goggles_cup_ranking]
   before_action :prepare_swimmer
 
   # GET /swimmers/:id
@@ -72,6 +72,26 @@ class SwimmersController < ApplicationController
                                                       .includes(:event_type, :pool_type, :season, :meeting,
                                                                 season: [:federation_type, { season_type: :federation_type }])
                                                       .where(swimmer_id: @swimmer.id)
+  end
+
+  # GET /swimmers/goggles_cup_ranking/:id
+  # Renders the precomputed ranking of the latest published Goggle Cup that the
+  # current user's associated swimmer is enlisted in (current championship year).
+  # The page is available only to swimmers actually enlisted in the cup: any
+  # other request is redirected back with a "not enrolled" alert, to prevent
+  # abuse of compute/rendering time through direct URL access.
+  #
+  # == Params
+  # - :id => the current user's associated Swimmer ID, required
+  def goggles_cup_ranking
+    @goggle_cup = enlisted_goggle_cup_for(@swimmer)
+    unless @swimmer && current_user.swimmer&.id == @swimmer.id && @goggle_cup
+      redirect_back_or_to(root_path, alert: I18n.t('goggle_cups.errors.not_enrolled'))
+      return
+    end
+
+    @ranking_data = GogglesDb::GoggleCupRanking::DataDeserializer.new(@goggle_cup, roster_fallback: true).call
+    @no_duplicated_events = goggle_cup_no_duplicated_events(@goggle_cup)
   end
   #-- -------------------------------------------------------------------------
   #++
