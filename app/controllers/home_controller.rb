@@ -52,6 +52,7 @@ class HomeController < ApplicationController
   # Requires authentication.
   def dashboard
     @swimmer = current_user.swimmer # (can be nil)
+    @goggle_cup = enlisted_goggle_cup_for(@swimmer)
   end
 
   def too_many_requests

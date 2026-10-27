@@ -1,0 +1,14 @@
+-# Goggle Cup dashboard button: enabled only for swimmers enlisted in a published cup for the current championship year.
+- if goggle_cup
+  = link_to(swimmer_goggles_cup_ranking_path(swimmer.id),
+            id: 'btn-my-goggle-cup',
+            class: 'btn btn-block btn-success py-2 my-2 align-vertical-center',
+            role: 'button') do
+    %i.fixed-size-48x48.fa.fa-3x.fa-trophy
+    %br/
+    = goggle_cup_label(goggle_cup)
+- else
+  .btn.btn-block.btn-success.py-2.my-2.align-vertical-center.disabled#btn-my-goggle-cup
+    %i.fixed-size-48x48.fa.fa-3x.fa-trophy
+    %br/
+    = t('home.dashboard.goggle_cup_btn')

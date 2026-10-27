@@ -1,0 +1,32 @@
+.wrapper-body
+  .spacer-left
+
+  .main-content#top-of-page
+    %section#swimmer-goggles-cup-ranking-title
+      = render(Title::BreadCrumbLinkComponent.new(title: goggle_cup_label(@goggle_cup),
+                                                  css_icon: 'trophy', parent_title: t('swimmers.radiography.subtitle'),
+                                                  parent_link: swimmer_show_path(@swimmer)))
+
+    %section.container#swimmer-goggles-cup-ranking
+      .row-fluid.py-1.bg-primary.text-center.text-light
+        %b#cup-name= goggle_cup_label(@goggle_cup)
+        %small#cup-team (#{@goggle_cup.team.editable_name})
+
+      .row-fluid.my-2#ranking-container
+        -#
+          Swimmer-facing view: no export controls (export_path local omitted on purpose);
+          the engine partial shows its base-timings link only among the export controls,
+          so the link is rendered here, bound to the cup's own championship year.
+        = render partial: 'goggles_db/goggle_cups/ranking',
+                 locals: { team: @goggle_cup.team, goggle_cup: @goggle_cup,
+                           ranking_data: @ranking_data,
+                           no_duplicated_events: @no_duplicated_events,
+                           swimmer_path: method(:swimmer_show_path_for_id),
+                           meeting_path: method(:meeting_show_path_for_id) }
+
+      .row-fluid.my-2.text-center#cup-base-timings-link
+        = link_to(t('goggles_cup.base_timings.link'),
+                  swimmer_goggles_cup_base_timings_path(@swimmer, base_year: @goggle_cup.season_year),
+                  'data-turbo': false)
+
+  .spacer-right
