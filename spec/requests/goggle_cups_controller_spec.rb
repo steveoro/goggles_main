@@ -274,6 +274,29 @@ RSpec.describe GoggleCupsController do
       expect(response.body).to include('TEST SWIMMER')
     end
 
+    it 'sets the views base year to the cup season year while rendering the HTML page' do
+      admin_user = FactoryBot.create(:user)
+      FactoryBot.create(:admin_grant, user: admin_user)
+      sign_in(admin_user)
+      allow(GogglesDb::AbstractBestResult).to receive(:with_base_year).and_call_original
+
+      get(goggle_cup_ranking_path(cup))
+      expect(response).to have_http_status(:success)
+      expect(GogglesDb::AbstractBestResult).to have_received(:with_base_year).with(cup.season_year).ordered
+      expect(GogglesDb::AbstractBestResult).to have_received(:with_base_year).with(nil).ordered
+    end
+
+    it 'does not export the zero-point roster when the cup has no ranking data yet' do
+      cup.update!(ranking_data: nil)
+      admin_user = FactoryBot.create(:user)
+      FactoryBot.create(:admin_grant, user: admin_user)
+      sign_in(admin_user)
+
+      get(goggle_cup_ranking_path(cup, format: :csv))
+      expect(response).to redirect_to(goggle_cups_path(goggle_cup_id: cup.id, season_year: cup.season_year, team_id: team.id))
+      expect(flash[:alert]).to eq(I18n.t('goggle_cups.info.no_ranking_data'))
+    end
+
     it 'redirects with an alert when the cup has no ranking data nor enlisted swimmers' do
       cup.update!(ranking_data: nil, swimmers_ids: nil)
       admin_user = FactoryBot.create(:user)
@@ -637,6 +660,19 @@ RSpec.describe GoggleCupsController do
       expect(flash[:notice]).to eq(I18n.t('goggle_cups.cup_saved'))
     end
 
+    it 'sends the cup own season_year to the API, ignoring the submitted one' do
+      cup = FactoryBot.create(:goggle_cup, team: team, season_year: current_year)
+      payloads = []
+      allow(RestClient::Request).to receive(:execute) do |args|
+        payloads << JSON.parse(args[:payload])
+        instance_double(RestClient::Response, body: JSON.generate(cup: { id: cup.id }))
+      end
+
+      post(save_goggle_cups_path, params: { goggle_cup_id: cup.id, team_id: team.id, season_year: current_year - 5,
+                                            description: 'Edited cup' })
+      expect(payloads.pluck('season_year')).to eq([current_year])
+    end
+
     it 'redirects with an alert when the API call fails' do
       allow(RestClient::Request).to receive(:execute).and_raise(StandardError, 'remote error')
 
@@ -673,6 +709,11 @@ RSpec.describe GoggleCupsController do
       FactoryBot.create(:managed_affiliation, manager: manager,
                                               team_affiliation: FactoryBot.create(:team_affiliation, team: team, season: shown_season))
       sign_in(manager)
+    end
+
+    it 'is not routed to compute via GET (falls through to the catch-all)' do
+      expect(Rails.application.routes.recognize_path('/goggle_cups/compute', method: :get))
+        .to include(controller: 'application', action: 'redirect_missing')
     end
 
     it 'renders an alert when no cup is selected' do
@@ -743,7 +784,30 @@ RSpec.describe GoggleCupsController do
 
       post(publish_goggle_cup_path(cup))
       expect(response).to redirect_to(goggle_cups_path(goggle_cup_id: cup.id, season_year: current_year, team_id: team.id))
-      expect(flash[:notice]).to include('duplicate published')
+      expect(flash[:alert]).to include('duplicate published')
+      expect(flash[:notice]).to be_nil
+    end
+
+    context 'with a team managed only in a past championship year' do
+      let(:past_team) { FactoryBot.create(:team) }
+      let(:past_season) do
+        FactoryBot.create(:season, season_type_id: GogglesDb::SeasonType::MAS_FIN_ID,
+                                   begin_date: Date.new(current_year - 4, 10, 1),
+                                   end_date: Date.new(current_year - 3, 6, 30))
+      end
+
+      before do
+        FactoryBot.create(:managed_affiliation, manager: manager,
+                                                team_affiliation: FactoryBot.create(:team_affiliation, team: past_team, season: past_season))
+        allow(RestClient::Request).to receive(:execute)
+      end
+
+      it 'rejects publish for that team current-year cups' do
+        post(publish_goggle_cup_path(FactoryBot.create(:goggle_cup, team: past_team, season_year: current_year)))
+        expect(response).to redirect_to(goggle_cups_path)
+        expect(flash[:alert]).to eq(I18n.t('goggle_cups.unauthorized_team'))
+        expect(RestClient::Request).not_to have_received(:execute)
+      end
     end
 
     it 'rejects publish for a cup of an unmanaged team' do

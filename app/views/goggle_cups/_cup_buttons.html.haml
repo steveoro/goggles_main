@@ -27,7 +27,7 @@
     - if goggle_cup&.persisted? && editable
       - if goggle_cup.published?
         = button_tag(type: 'submit', formaction: unpublish_goggle_cup_path(goggle_cup),
-                     formmethod: :post, class: 'btn btn-outline-warning btn-lg w-100',
+                     formmethod: :post, formnovalidate: true, class: 'btn btn-outline-warning btn-lg w-100',
                      data: { turbo_confirm: t('goggle_cups.confirm_unpublish'),
                              toggle: 'tooltip', placement: 'top',
                              title: t('goggle_cups.unpublish_tooltip') }) do
@@ -35,7 +35,7 @@
           = t('goggle_cups.unpublish')
       - else
         = button_tag(type: 'submit', formaction: publish_goggle_cup_path(goggle_cup),
-                     formmethod: :post, class: 'btn btn-outline-info btn-lg w-100',
+                     formmethod: :post, formnovalidate: true, class: 'btn btn-outline-info btn-lg w-100',
                      data: { turbo_confirm: t('goggle_cups.confirm_publish'),
                              toggle: 'tooltip', placement: 'top',
                              title: t('goggle_cups.publish_tooltip') }) do

@@ -59,6 +59,7 @@ it:
     confirm_clear_ranking: "La classifica salvata per questa coppa verrà eliminata. Continuare?"
     ranking_cleared: "Classifica salvata cancellata."
     confirm_overwrite: "Esiste già una classifica precalcolata per questa coppa. Il calcolo la sovrascriverà. Continuare?"
+    compute_error: "Impossibile calcolare la classifica. Riprova più tardi."
     go_to_top: "Torna su"
     unauthorized: "Non sei autorizzato a visualizzare le Goggle Cup."
     unauthorized_team: "Non sei autorizzato a gestire la squadra selezionata."
