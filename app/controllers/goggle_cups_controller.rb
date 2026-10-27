@@ -173,8 +173,7 @@ class GoggleCupsController < ApplicationController
   # the default team resolved for the current user. For the cup-scoped mutation
   # actions (publish/unpublish/clear_ranking) the cup's team is authoritative.
   def set_team
-    @team = @goggle_cup&.team || requested_team
-    @team ||= team_resolver.default_team if action_name == 'index'
+    @team = @goggle_cup&.team || selected_or_default_team
 
     if unmanaged_team_requested?
       @team = nil
@@ -184,8 +183,27 @@ class GoggleCupsController < ApplicationController
     @team_id = @team&.id || params[:team_id]
   end
 
+  # On index, a manager's :team_id param is honored only for teams managed on
+  # the shown championship year (the year select auto-submits the whole form,
+  # so a stale param must not shadow the resolver's default); otherwise the
+  # default resolved for the year wins. Other actions and admins keep the
+  # param as-is.
+  def selected_or_default_team
+    requested = requested_team
+    return requested if action_name != 'index' || user_is_admin?
+    return requested if requested.present? && !stale_team_selection?(requested)
+
+    team_resolver.default_team
+  end
+
   def requested_team
     GogglesDb::Team.find_by(id: params[:team_id]) if params[:team_id].present?
+  end
+
+  # True when the requested team is managed by the user but not on the shown
+  # championship year (stale param carried over by the year auto-submit).
+  def stale_team_selection?(team)
+    managed_team_ids_for_user.include?(team.id) && team_resolver.managed_team_ids.exclude?(team.id)
   end
 
   # Non-admin managers can only pick teams they manage (in any season).

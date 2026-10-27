@@ -48,7 +48,12 @@ RSpec.describe GoggleCupsController do
     context 'with a signed-in team manager' do
       let(:manager) { FactoryBot.create(:user) }
       let(:team) { FactoryBot.create(:team) }
-      let(:team_affiliation) { FactoryBot.create(:team_affiliation, team: team) }
+      let(:season2025) do
+        GogglesDb::Season.for_championship_year(2025).first ||
+          FactoryBot.create(:season, season_type_id: GogglesDb::SeasonType::MAS_FIN_ID,
+                                     begin_date: Date.new(2025, 9, 1), end_date: Date.new(2026, 6, 30))
+      end
+      let(:team_affiliation) { FactoryBot.create(:team_affiliation, team: team, season: season2025) }
       let(:managed_affiliation) { FactoryBot.create(:managed_affiliation, manager: manager, team_affiliation: team_affiliation) }
 
       before do
