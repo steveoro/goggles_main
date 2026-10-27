@@ -3,11 +3,18 @@
 require 'rails_helper'
 
 RSpec.describe 'Rack Attack throttling' do
+  include ActiveSupport::Testing::TimeHelpers
+
+  # Throttle counters live in fixed time windows (per minute / per day): freeze
+  # the clock a few seconds into a minute so a burst of requests can't straddle
+  # a window boundary and reset the count halfway.
   around do |example|
-    Rack::Attack.enabled = true
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
-    Rack::Attack.reset!
-    example.run
+    travel_to(Time.zone.now.beginning_of_minute + 5.seconds) do
+      Rack::Attack.enabled = true
+      Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+      Rack::Attack.reset!
+      example.run
+    end
   ensure
     Rack::Attack.enabled = false
     Rack::Attack.cache.store = Rails.cache
