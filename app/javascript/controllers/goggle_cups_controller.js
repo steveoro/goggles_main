@@ -184,18 +184,23 @@ export default class extends Controller {
 
     this.setLoading(true)
 
-    const formData = new FormData(this.formTarget)
-    const response = await fetch(this.formTarget.action, {
-      method: this.formTarget.method.toUpperCase(),
-      headers: {
-        Accept: 'application/json',
-        'X-CSRF-Token': this.csrfToken
-      },
-      body: formData
-    })
+    try {
+      const formData = new FormData(this.formTarget)
+      const response = await fetch(this.formTarget.action, {
+        method: this.formTarget.method.toUpperCase(),
+        headers: {
+          Accept: 'application/json',
+          'X-CSRF-Token': this.csrfToken
+        },
+        body: formData
+      })
+      const data = await response.json().catch(() => ({}))
 
-    if (response.ok) {
-      const data = await response.json()
+      if (!response.ok) {
+        this.showComputeError(data.error)
+        return
+      }
+
       if (this.hasRankingContainerTarget) {
         this.rankingContainerTarget.innerHTML = data.html || ''
       }
@@ -205,9 +210,29 @@ export default class extends Controller {
         this.hasRankingDataValue = true
       }
       this.showRankingPanel()
+    } catch (_error) {
+      this.showComputeError()
+    } finally {
+      this.setLoading(false)
+    }
+  }
+
+  // Shows a compute failure (API error detail or generic message) inside the
+  // ranking panel, as plain text.
+  showComputeError(message) {
+    const text = message || this.element.dataset.goggleCupsComputeErrorMessage ||
+      'Unable to compute the ranking. Please try again later.'
+    if (!this.hasRankingContainerTarget) {
+      window.alert(text)
+      return
     }
 
-    this.setLoading(false)
+    const alertBox = document.createElement('div')
+    alertBox.className = 'alert alert-danger my-2'
+    alertBox.setAttribute('role', 'alert')
+    alertBox.textContent = text
+    this.rankingContainerTarget.replaceChildren(alertBox)
+    this.showRankingPanel()
   }
 
   // Expands the ranking panel and scrolls it into view.

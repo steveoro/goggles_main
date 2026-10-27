@@ -59,6 +59,7 @@ en:
     confirm_clear_ranking: "This will delete the stored ranking for this cup. Continue?"
     ranking_cleared: "Stored ranking cleared."
     confirm_overwrite: "A precomputed ranking exists for this cup. Computing will overwrite it. Continue?"
+    compute_error: "Unable to compute the ranking. Please try again later."
     go_to_top: "Back to top"
     unauthorized: "You are not authorized to view Goggle Cups."
     unauthorized_team: "You are not authorized to manage the selected team."

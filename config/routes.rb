@@ -104,7 +104,7 @@ Rails.application.routes.draw do
 
   get 'goggle_cups',                  to: 'goggle_cups#index', as: 'goggle_cups'
   get 'goggle_cups/smart_selection',  to: 'goggle_cups#smart_selection', as: 'smart_selection_goggle_cups'
-  match 'goggle_cups/compute',        to: 'goggle_cups#compute',     as: 'compute_goggle_cups', via: %i[get post]
+  post 'goggle_cups/compute',         to: 'goggle_cups#compute',     as: 'compute_goggle_cups'
   post 'goggle_cups/save',            to: 'goggle_cups#save',        as: 'save_goggle_cups'
   post 'goggle_cups/clear_ranking',   to: 'goggle_cups#clear_ranking', as: 'clear_ranking_goggle_cups'
   post 'goggle_cups/:id/publish',     to: 'goggle_cups#publish',     as: 'publish_goggle_cup'

@@ -31,7 +31,12 @@ class GoggleCupsController < ApplicationController
   before_action :set_secondary_team, only: %i[index]
   before_action :set_no_duplicated_events, only: %i[compute]
   before_action :check_editable_year!, only: %i[save compute clear_ranking publish unpublish]
-  around_action :with_base_year, only: %i[index smart_selection]
+  around_action :with_base_year, only: %i[index ranking smart_selection]
+
+  # Actions writing data remotely: allowed only for teams managed in the
+  # current championship year (browsing accepts any managed season).
+  MUTATION_ACTIONS = %w[save compute clear_ranking publish unpublish].freeze
+  RANKING_EXPORT_FORMATS = %i[csv xlsx pdf].freeze
 
   # [GET] Renders the GoggleCup selection/configuration page.
   def index
@@ -60,7 +65,7 @@ class GoggleCupsController < ApplicationController
                 notice: t('goggle_cups.cup_saved'))
   end
 
-  # [POST/GET] Computes the ranking on the remote API (persisted to
+  # [POST] Computes the ranking on the remote API (persisted to
   # ranking_data) and renders the ranking panel via AJAX/redirect.
   def compute
     return respond_with_alert(t('goggle_cups.errors.save_first')) if @goggle_cup.blank?
@@ -89,8 +94,7 @@ class GoggleCupsController < ApplicationController
     return respond_with_alert(t('goggle_cups.cup_not_found')) if @goggle_cup.blank?
 
     result = goggle_cup_api_request(:post, "/#{@goggle_cup.id}/clear_ranking")
-    notice = result[:error] ? t('goggle_cups.cup_save_error', errors: result[:error]) : t('goggle_cups.ranking_cleared')
-    redirect_to(goggle_cups_path(back_params), notice: notice)
+    redirect_after_mutation(result, t('goggle_cups.ranking_cleared'))
   end
 
   # [POST] Marks the cup as the single published cup for its affiliation.
@@ -98,8 +102,7 @@ class GoggleCupsController < ApplicationController
     return respond_with_alert(t('goggle_cups.cup_not_found')) if @goggle_cup.blank?
 
     result = goggle_cup_api_request(:post, "/#{@goggle_cup.id}/publish")
-    notice = result[:error] ? t('goggle_cups.cup_save_error', errors: result[:error]) : t('goggle_cups.published_ok')
-    redirect_to(goggle_cups_path(back_params), notice: notice)
+    redirect_after_mutation(result, t('goggle_cups.published_ok'))
   end
 
   # [POST] Clears the published flag.
@@ -107,13 +110,15 @@ class GoggleCupsController < ApplicationController
     return respond_with_alert(t('goggle_cups.cup_not_found')) if @goggle_cup.blank?
 
     result = goggle_cup_api_request(:post, "/#{@goggle_cup.id}/unpublish")
-    notice = result[:error] ? t('goggle_cups.cup_save_error', errors: result[:error]) : t('goggle_cups.unpublished_ok')
-    redirect_to(goggle_cups_path(back_params), notice: notice)
+    redirect_after_mutation(result, t('goggle_cups.unpublished_ok'))
   end
 
   # [GET] Streams the stored ranking for the selected cup.
+  # Exports (CSV/XLSX/PDF) skip the page context and use only the stored
+  # ranking (no zero-points roster fallback).
   def ranking
     return respond_with_alert(t('goggle_cups.cup_not_found')) if @goggle_cup.blank?
+    return send_ranking_export(format: request.format.symbol) if RANKING_EXPORT_FORMATS.include?(request.format.symbol)
 
     @ranking_visible = true
     prepare_page_context
@@ -122,9 +127,6 @@ class GoggleCupsController < ApplicationController
     respond_to do |format|
       format.turbo_stream
       format.html { render(:index) }
-      format.csv  { send_ranking_export(format: :csv) }
-      format.xlsx { send_ranking_export(format: :xlsx) }
-      format.pdf  { send_ranking_export(format: :pdf) }
     end
   end
 
@@ -206,9 +208,19 @@ class GoggleCupsController < ApplicationController
     managed_team_ids_for_user.include?(team.id) && team_resolver.managed_team_ids.exclude?(team.id)
   end
 
-  # Non-admin managers can only pick teams they manage (in any season).
+  # Non-admin managers can only pick teams they manage: in any season for
+  # browsing, in the current championship year for mutations.
   def unmanaged_team_requested?
-    @team.present? && !user_is_admin? && managed_team_ids_for_user.exclude?(@team.id)
+    return false if @team.blank? || user_is_admin?
+
+    allowed_ids = MUTATION_ACTIONS.include?(action_name) ? current_year_managed_team_ids : managed_team_ids_for_user
+    allowed_ids.exclude?(@team.id)
+  end
+
+  def current_year_managed_team_ids
+    @current_year_managed_team_ids ||= GogglesDb::GogglesCup::ManagedTeamResolver.new(
+      user: current_user, season_year: current_championship_year, restrict_to_shown_season: true
+    ).managed_team_ids
   end
 
   # Sets @team for actions not covered by set_team, from the loaded cup.
@@ -335,7 +347,7 @@ class GoggleCupsController < ApplicationController
   def save_payload
     {
       team_id: @team&.id,
-      season_year: params[:season_year],
+      season_year: @season_year, # cup's own year, or the checked editable year for new cups
       name: params[:name].presence || params[:description],
       description: params[:description],
       end_date: params[:end_date],
@@ -381,10 +393,28 @@ class GoggleCupsController < ApplicationController
     { 'Authorization' => "Bearer #{jwt}", accept: :json, content_type: :json }
   end
 
+  # Error detail for the flash: the API's X-Error-Detail header or JSON
+  # +error+ field; never the raw (possibly HTML) response body.
   def api_error_detail(exception)
     exception.response&.headers&.dig(:x_error_detail).presence ||
-      exception.response&.body.to_s.truncate(300).presence ||
+      api_error_from_json(exception.response&.body).presence ||
       exception.message
+  end
+
+  def api_error_from_json(body)
+    parsed = JSON.parse(body.to_s)
+    parsed['error'].to_s.truncate(200) if parsed.is_a?(Hash)
+  rescue JSON::ParserError
+    nil
+  end
+
+  # Redirects back to index with a notice on success, an alert on API failure.
+  def redirect_after_mutation(result, success_message)
+    if result[:error]
+      redirect_to(goggle_cups_path(back_params), alert: t('goggle_cups.cup_save_error', errors: result[:error]))
+    else
+      redirect_to(goggle_cups_path(back_params), notice: success_message)
+    end
   end
 
   # Renders the shared ranking partial for the AJAX compute response.
@@ -406,7 +436,9 @@ class GoggleCupsController < ApplicationController
   #++
 
   def send_ranking_export(format:)
-    return redirect_to(goggle_cups_path, alert: t('goggle_cups.errors.invalid_selection_or_data')) if @ranking_data.blank?
+    @ranking_data = GogglesDb::GoggleCupRanking::DataDeserializer.new(@goggle_cup).call
+    @no_duplicated_events = no_duplicated_events_from(@goggle_cup)
+    return redirect_to(goggle_cups_path(back_params), alert: t('goggle_cups.info.no_ranking_data')) if @ranking_data.blank?
 
     result = GogglesDb::GoggleCupRanking::Exporter.new(
       cup: @goggle_cup, ranking_data: @ranking_data,
