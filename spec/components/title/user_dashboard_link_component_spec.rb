@@ -30,7 +30,7 @@ RSpec.describe Title::UserDashboardLinkComponent, type: :component do
   context 'with a valid user BUT without an associated swimmer,' do
     subject { render_inline(described_class.new(user: fixture_row)) }
 
-    let(:fixture_row) { FactoryBot.create(:user) }
+    let(:fixture_row) { FactoryBot.create(:user, :without_swimmer_match) }
 
     before do
       expect(fixture_row).to be_a(GogglesDb::User).and be_valid

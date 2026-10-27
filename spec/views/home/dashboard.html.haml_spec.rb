@@ -7,7 +7,7 @@ RSpec.describe 'home/dashboard.html.haml' do
     context 'with a logged-in user without an associated swimmer,' do
       subject(:parsed_node) { Nokogiri::HTML.fragment(rendered) }
 
-      let(:current_user) { FactoryBot.create(:user) }
+      let(:current_user) { FactoryBot.create(:user, :without_swimmer_match) }
 
       before do
         expect(current_user.swimmer).to be_nil

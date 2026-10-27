@@ -1,0 +1,94 @@
+%section.my-2#select-swimmers
+  .card
+    .card-header.d-flex.justify-content-between.align-items-center{ id: 'swimmer-list-header' }
+      %h5.mb-0= t('goggle_cups.swimmers_for_team', team: team.name)
+      .d-flex.align-items-center
+        - if readonly && goggle_cup && editable
+          = link_to(clear_ranking_goggle_cups_path(goggle_cup_id: goggle_cup.id),
+                    class: 'btn btn-sm btn-outline-warning mx-2', id: 'btn-edit-swimmers',
+                    data: { turbo_method: :post,
+                            turbo_confirm: t('goggle_cups.confirm_clear_ranking'),
+                            toggle: 'tooltip', placement: 'left',
+                            title: t('goggle_cups.edit_selection_tooltip') }) do
+            %i.fa.fa-pencil
+            = t('goggle_cups.edit_selection')
+        = button_tag(type: 'button', class: 'btn btn-sm btn-outline-primary',
+                     data: { toggle: 'collapse', target: '#swimmer-list-body' },
+                     'aria-expanded' => 'true', 'aria-controls' => 'swimmer-list-body') do
+          %i.fa.fa-list
+          = t('goggle_cups.select_swimmers')
+    .collapse.show#swimmer-list-body{
+      'aria-labelledby' => 'swimmer-list-header',
+      data: { 'goggle-cups-target': 'swimmerPanel' }
+    }
+      .card-body
+        - if readonly
+          .alert.alert-info.small.py-2.mb-3#swimmer-list-readonly-hint
+            %i.fa.fa-info-circle.me-1
+            = t('goggle_cups.readonly_hint')
+        - else
+          .row.mb-3
+            .col-md-6
+              = render(ComboBox::AutocompleteComponent.new(api_url: 'teams',
+                                                           label: t('goggle_cups.secondary_team'),
+                                                           required: false, base_name: 'secondary_team',
+                                                           selected_id: secondary_team&.id,
+                                                           selected_label: secondary_team&.name))
+            .col-md-6.d-flex.align-items-end
+              %small.text-muted= t('goggle_cups.secondary_team_explanation')
+          .row.mb-3
+            .col-12
+              = button_tag(type: 'button', class: 'btn btn-sm btn-outline-secondary',
+                           data: { action: 'goggle-cups#selectAll' }) do
+                = t('goggle_cups.select_all')
+              = button_tag(type: 'button', class: 'btn btn-sm btn-outline-secondary',
+                           data: { action: 'goggle-cups#deselectAll' }) do
+                = t('goggle_cups.deselect_all')
+
+        .row.mb-2
+          .col-12.text-end
+            %span.text-muted.font-weight-bold{ data: { 'goggle-cups-target': 'selectionCounter' } }
+              (0 / 0)
+
+        .row
+          .col-12
+            .table-responsive
+              %table.table.table-striped.table-hover.table-sm
+                %thead
+                  %tr
+                    %th{ width: '50' }= t('goggle_cups.select')
+                    %th= t('goggle_cups.swimmer_name')
+                    %th= t('goggle_cups.year_of_birth')
+                %tbody
+                  - swimmers.each do |swimmer|
+                    = render partial: 'swimmer_row',
+                             locals: { swimmer: swimmer, dom_prefix: 'swimmer',
+                                       selected_swimmer_ids: selected_swimmer_ids,
+                                       editable: editable }
+
+        -# External swimmers (not belonging to the primary team but included in the cup config)
+        - if external_swimmers.present?
+          .row.mt-4
+            .col-12
+              %h6.text-muted= t('goggle_cups.external_swimmers')
+              .table-responsive{ data: { 'goggle-cups-target': 'externalSwimmersContainer' } }
+                %table.table.table-sm.table-bordered
+                  %thead
+                    %tr
+                      %th{ width: '50' }= t('goggle_cups.select')
+                      %th= t('goggle_cups.swimmer_name')
+                      %th= t('goggle_cups.year_of_birth')
+                  %tbody
+                    - external_swimmers.each do |swimmer|
+                      = render partial: 'swimmer_row',
+                               locals: { swimmer: swimmer, dom_prefix: 'external_swimmer',
+                                         selected_swimmer_ids: selected_swimmer_ids,
+                                         editable: editable }
+
+        .row.mt-3
+          .col-12.text-end
+            = button_tag(type: 'button', id: 'btn-go-to-top',
+                         class: 'btn btn-sm btn-outline-secondary',
+                         data: { action: 'click->goggle-cups#goToTop' }) do
+              %i.fa.fa-arrow-up.me-1
+              = t('goggle_cups.go_to_top')

@@ -16,9 +16,9 @@ Feature: Browse Goggle Cups
     When I click on "#link-goggle-cups"
     Then I am still at the "/goggle_cups" path
     When I select "2025" as the championship year and my managed team
-    And I click on the "Cerca" button
-    Then I should see the cup title button
-    When I click on the cup title
+    Then I should see the cup in the selector
+    When I select the cup from the cup selector
+    And I click on the show stored ranking button
     Then I should see the swimmer name in the computed ranking
     And I should see the base timings toggle for the swimmer
 

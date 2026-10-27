@@ -1,6 +1,10 @@
 <%= turbo_stream.update('goggle-cup-ranking') do %>
-  <%= render(partial: 'goggle_cups/ranking',
-             formats: [:html],
-             locals: { team: @selected_team, goggle_cup: @goggle_cup, ranking_data: @ranking_data,
-                       no_duplicated_events: @no_duplicated_events }) %>
+  <div id="ranking-panel" class="collapse show">
+    <div id="goggle-cups-ranking-container">
+      <%= render(partial: 'goggle_cups/ranking',
+                 formats: [:html],
+                 locals: { team: @team, goggle_cup: @goggle_cup, ranking_data: @ranking_data,
+                           no_duplicated_events: @no_duplicated_events }) %>
+    </div>
+  </div>
 <% end %>
