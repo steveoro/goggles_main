@@ -250,6 +250,11 @@ RSpec.describe SwimmersController do
         get(swimmer_goggles_cup_ranking_path(swimmer.id))
         expect(response.body).not_to include('export_type')
       end
+
+      it 'links the base timings for the cup season year' do
+        get(swimmer_goggles_cup_ranking_path(swimmer.id))
+        expect(response.body).to include("base_year=#{current_year}")
+      end
     end
 
     context 'when the requested swimmer id is not the current user\'s swimmer,' do
@@ -265,6 +270,14 @@ RSpec.describe SwimmersController do
         get(swimmer_goggles_cup_ranking_path(other_swimmer.id))
         expect(response).to redirect_to(root_path)
         expect(flash[:alert]).to eq(I18n.t('goggle_cups.errors.not_enrolled'))
+      end
+
+      it 'skips the enlisted-cup lookup and keeps the remembered swimmer cookie' do
+        allow(GogglesDb::GoggleCup).to receive(:latest_published_involving).and_call_original
+        cookies[:swimmer_id] = swimmer.id
+        get(swimmer_goggles_cup_ranking_path(other_swimmer.id))
+        expect(GogglesDb::GoggleCup).not_to have_received(:latest_published_involving)
+        expect(cookies[:swimmer_id]).to eq(swimmer.id.to_s)
       end
     end
   end

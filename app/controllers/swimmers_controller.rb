@@ -84,8 +84,9 @@ class SwimmersController < ApplicationController
   # == Params
   # - :id => the current user's associated Swimmer ID, required
   def goggles_cup_ranking
-    @goggle_cup = enlisted_goggle_cup_for(@swimmer)
-    unless @swimmer && current_user.swimmer&.id == @swimmer.id && @goggle_cup
+    # Check ownership before the (FIND_IN_SET) cup lookup, so rejected requests stay cheap:
+    @goggle_cup = enlisted_goggle_cup_for(@swimmer) if @swimmer && current_user.swimmer&.id == @swimmer.id
+    unless @goggle_cup
       redirect_back_or_to(root_path, alert: I18n.t('goggle_cups.errors.not_enrolled'))
       return
     end
@@ -189,7 +190,9 @@ class SwimmersController < ApplicationController
   def prepare_swimmer
     @swimmer = GogglesDb::Swimmer.find_by(id: swimmer_params[:id])
     @swimmer ||= GogglesDb::Swimmer.find_by(id: cookies[:swimmer_id]) if cookies[:swimmer_id].present?
-    cookies[:swimmer_id] = @swimmer.id if @swimmer.present?
+    # The ranking page is gated to the user's own swimmer: a rejected direct-URL
+    # probe must not overwrite the remembered swimmer.
+    cookies[:swimmer_id] = @swimmer.id if @swimmer.present? && action_name != 'goggles_cup_ranking'
   end
 
   # Returns the base_year parameter as an integer when valid, otherwise the
