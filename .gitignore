@@ -18,6 +18,10 @@ capybara-*.html
 *.orig
 rerun.txt
 pickle-email-*.html
+.playwright-mcp/*
+
+# Ignore screenshots by Playwright:
+*.png
 
 # Ignore pidfiles, but keep the directory.
 /tmp/pids/*
