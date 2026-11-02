@@ -3,7 +3,6 @@ en:
     nav_item: "Goggle Cup"
     title: "Goggle Cup"
     description: "Configure, compute and publish Goggle Cup rankings for managed teams."
-    formula: "score = best season result - worst previous-year result"
     selection_header: "Select championship year and team"
     season_year: "Championship"
     team: "Team"

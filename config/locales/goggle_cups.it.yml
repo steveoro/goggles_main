@@ -3,7 +3,6 @@ it:
     nav_item: "Goggle Cup"
     title: "Goggle Cup"
     description: "Configura, calcola e pubblica le classifiche Goggle Cup per le squadre gestite."
-    formula: "punteggio = miglior risultato stagionale - peggior risultato dell'anno precedente"
     selection_header: "Seleziona anno di campionato e squadra"
     season_year: "Campionato"
     team: "Squadra"
