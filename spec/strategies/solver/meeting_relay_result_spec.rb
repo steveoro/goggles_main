@@ -154,9 +154,15 @@ RSpec.describe Solver::MeetingRelayResult, type: :strategy do
       end
 
       let(:fixture_row) do
-        # Choose valid domain data only:
-        GogglesDb::MeetingRelayResult.where("(relay_code != '') AND (relay_code IS NOT NULL)")
-                                     .first(200).sample
+        # Choose valid domain data only (TODO: data fix is required).
+        # Sample just the first row (by ID) of each unique bindings tuple, since
+        # this is what the solver finder strategy will return in case of duplicates:
+        mrr = GogglesDb::MeetingRelayResult.where("(relay_code != '') AND (relay_code IS NOT NULL)")
+                                         .where.not(team_affiliation_id: nil)
+        mrr.where(
+          id: mrr.group(:meeting_program_id, :team_affiliation_id, :team_id, :relay_code)
+                 .select('MIN(id)')
+        ).first(200).sample
       end
       let(:fixture_req) { req.call(fixture_row) }
       let(:expected_id) { fixture_row.id }
