@@ -7,17 +7,17 @@ Then('I can see the issues FAQ breadcrumb title') do
 end
 
 Then('I see the nav tab with the link to my issues grid') do
-  nav_link = find('section#faq-index-navs ul.nav.nav-tabs li.nav-item a.nav-link', visible: true)
+  nav_link = find('section#faq-index-navs ul.nav.nav-tabs li.nav-item a.nav-link', visible: :visible)
   expect(nav_link[:href]).to include(issues_my_reports_path)
 end
 
 Then('I see the expandable section for issues {string}') do |issue_type|
-  find("#accordion .card .card-header#title-#{issue_type} h5", visible: true) # section header
+  find("#accordion .card .card-header#title-#{issue_type} h5", visible: :visible) # section header
   find("#accordion .card .collapse#body-#{issue_type}") # section_body
 end
 
 Then('I click to expand the issues section {string}') do |issue_type|
-  find("#accordion .card .card-header#title-#{issue_type} h5", visible: true).click
+  find("#accordion .card .card-header#title-#{issue_type} h5", visible: :visible).click
   wait_for_ajax && sleep(0.5)
 end
 # -----------------------------------------------------------------------------
@@ -29,12 +29,12 @@ Then('I can see the My issues breadcrumb title') do
 end
 
 Then('I see the nav tab with the link to the issues FAQ') do
-  nav_link = find('section#tab-my-reports ul.nav.nav-tabs li.nav-item a.nav-link', visible: true)
+  nav_link = find('section#tab-my-reports ul.nav.nav-tabs li.nav-item a.nav-link', visible: :visible)
   expect(nav_link[:href]).to include(issues_faq_index_path)
 end
 
 Then('I can see the empty grid of my issues') do
-  grid_node = find('section#issues-grid .container', visible: true)
+  grid_node = find('section#issues-grid .container', visible: :visible)
   expect(grid_node.text).to include(I18n.t('datagrid.no_results'))
 end
 # -----------------------------------------------------------------------------
@@ -53,7 +53,7 @@ Then('I can see the {string} \({string}) buttons on the results of the page') do
 
   10.times do
     wait_for_ajax
-    if page.has_css?("a.btn.issue-#{issue_type}-btn", visible: true)
+    if page.has_css?("a.btn.issue-#{issue_type}-btn", visible: :visible)
       sleep(0.5)
       putc '.'
       break
@@ -66,11 +66,11 @@ end
 
 Then('I click a random {string} button on the page') do |issue_type|
   step("I wait until the slow-rendered page portion 'a.btn.issue-#{issue_type}-btn' is visible")
-  chosen_btn = find_all("a.btn.issue-#{issue_type}-btn", visible: true).sample
+  chosen_btn = find_all("a.btn.issue-#{issue_type}-btn", visible: :visible).sample
   expect(chosen_btn).to be_visible
   step("I trigger the click event on the '##{chosen_btn[:id]}' DOM ID")
   # Make sure the form is there:
-  find("form#frm-#{issue_type}", visible: true)
+  find("form#frm-#{issue_type}", visible: :visible)
 end
 # -----------------------------------------------------------------------------
 
@@ -114,11 +114,11 @@ end
 # -----------------------------------------------------------------------------
 
 Then('the active nav tab is {string}') do |issue_type|
-  find("ul li.nav-item##{issue_type}-nav-item .nav-link.active", visible: true)
+  find("ul li.nav-item##{issue_type}-nav-item .nav-link.active", visible: :visible)
 end
 
 Then('I select {string} as the active nav tab') do |issue_type|
-  nav_link = find("li.nav-item##{issue_type}-nav-item a.nav-link", visible: true)
+  nav_link = find("li.nav-item##{issue_type}-nav-item a.nav-link", visible: :visible)
   target_url = nav_link[:href].to_s
   target_path = target_url.split('?').first
   nav_link.click
@@ -147,8 +147,8 @@ When('I see my newly created issue') do
     wait_for_ajax
   end
 
-  issue_grid = find('section#issues-grid table tbody', visible: true)
-  last_row = issue_grid.find_all('tr', visible: true).last
+  issue_grid = find('section#issues-grid table tbody', visible: :visible)
+  last_row = issue_grid.find_all('tr', visible: :visible).last
   issue_grid_text = issue_grid.text
   last_row_text = last_row.text
   @latest_issue.req.to_s.split(',').each do |req_token|
@@ -163,8 +163,8 @@ When('I see the grid with the issues created by me') do
   first_page_issues = GogglesDb::Issue.for_user(@current_user).first(8)
   expect(first_page_issues.count).to be_positive
 
-  issue_grid = find('section#issues-grid table tbody', visible: true)
-  expect(issue_grid.find_all('tr', visible: true).count).to eq(first_page_issues.count)
+  issue_grid = find('section#issues-grid table tbody', visible: :visible)
+  expect(issue_grid.find_all('tr', visible: :visible).count).to eq(first_page_issues.count)
 end
 
 # USES:
@@ -181,6 +181,6 @@ end
 # USES:
 # - @chosen_issue_row_id
 When('I can see that the chosen issue row has been deleted') do
-  expect(find('section#issues-grid table tbody', visible: true))
+  expect(find('section#issues-grid table tbody', visible: :visible))
     .to have_no_css("#frm-delete-row-#{@chosen_issue_row_id}")
 end

@@ -21,14 +21,14 @@ Then('no search results are visible') do
 end
 
 Then('the pagination controls are present') do
-  content_node = find('.swipe-wrapper', visible: true)
+  content_node = find('.swipe-wrapper', visible: :visible)
   expect(content_node).to have_css('#paginator-controls')
   paginator_node = find_by_id('paginator-controls')
   expect(paginator_node).to be_present
 end
 
 Then('the pagination controls are not present') do
-  content_node = find('.swipe-wrapper', visible: true)
+  content_node = find('.swipe-wrapper', visible: :visible)
   expect(content_node).to have_no_css('#paginator-controls')
 end
 
@@ -41,7 +41,7 @@ Then('I click on the first {string} result to browse to its detail page') do |mo
   results_node = find("##{model_downcase_name.tr('_', '-')}-results")
   expect(results_node.text).not_to be_empty
   within(results_node) do
-    find('table tbody tr td a', visible: true).click
+    find('table tbody tr td a', visible: :visible).click
   end
   wait_for_ajax(5)
   sleep(1)

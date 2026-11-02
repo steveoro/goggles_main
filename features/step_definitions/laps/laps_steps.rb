@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Then('I can\'t see any of the lap edit buttons on the whole page') do
-  table_nodes = find('table.table tbody tr', visible: true)
+  table_nodes = find('table.table tbody tr', visible: :visible)
   expect(table_nodes).to have_no_css('a.btn.lap-edit-btn')
 end
 
@@ -9,7 +9,7 @@ Then('I can see the lap edit buttons on the page') do
   # WARNING: meeting show page could take a while to get rendered
   step("I wait until the slow-rendered page portion '.main-content#top-of-page' is visible")
   step("I wait until the slow-rendered page portion '.lap-edit-btn' is visible")
-  expect(find('.lap-edit-btn', visible: true)).to be_visible
+  expect(find('.lap-edit-btn', visible: :visible)).to be_visible
 end
 # -----------------------------------------------------------------------------
 
@@ -27,14 +27,14 @@ When('I click the button to manage its laps') do
   step("I trigger the click event on the '#{trigger_selector}' DOM ID")
 
   5.times do
-    break if page.has_css?('#lap-edit-modal', visible: true)
+    break if page.has_css?('#lap-edit-modal', visible: :visible)
 
     putc('r')
     step("I trigger the click event on the '#{trigger_selector}' DOM ID")
     wait_for_ajax
     sleep(0.2)
   end
-  unless page.has_css?('#lap-edit-modal', visible: true)
+  unless page.has_css?('#lap-edit-modal', visible: :visible)
     page.execute_script(<<~JS)
       (function () {
         var modal = document.querySelector('#lap-edit-modal');
@@ -46,8 +46,8 @@ When('I click the button to manage its laps') do
     JS
     wait_for_ajax
   end
-  if page.has_css?('#lap-edit-modal', visible: true)
-    find_by_id('lap-edit-modal', class: 'modal', visible: true)
+  if page.has_css?('#lap-edit-modal', visible: :visible)
+    find_by_id('lap-edit-modal', class: 'modal', visible: :visible)
   else
     @skip_lap_edit_flow = true
     next
@@ -58,20 +58,20 @@ end
 # - @chosen_mir (can be an AbstractResult)
 Then('the laps management modal dialog pops up showing its contents') do
   expect(@chosen_mir).to be_a(GogglesDb::AbstractResult).and be_valid
-  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
+  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: :visible)
 
   expect(dialog.find('h5#lap-edit-modal-title').text).to include(I18n.t('laps.modal.form.title'))
-  dialog.find_by_id('lap-edit-modal-body', class: 'modal-body', visible: true)
-  dialog.find("a#lap-new25-#{@chosen_mir.id}", visible: true)
-  dialog.find("a#lap-new50-#{@chosen_mir.id}", visible: true)
-  dialog.find('tbody#laps-table-body', visible: true)
+  dialog.find_by_id('lap-edit-modal-body', class: 'modal-body', visible: :visible)
+  dialog.find("a#lap-new25-#{@chosen_mir.id}", visible: :visible)
+  dialog.find("a#lap-new50-#{@chosen_mir.id}", visible: :visible)
+  dialog.find('tbody#laps-table-body', visible: :visible)
 end
 # -----------------------------------------------------------------------------
 
 # Uses:
 # - @chosen_mir (can be an AbstractResult)
 When('I can see the overall result on the last row of the table') do
-  result_row = find('tr#laps-result-row', visible: true)
+  result_row = find('tr#laps-result-row', visible: :visible)
   expect(@chosen_mir).to be_a(GogglesDb::AbstractResult).and be_valid
   expect(result_row.find('input#tot_minutes').value).to eq(@chosen_mir.minutes.to_s)
   expect(result_row.find('input#tot_seconds').value).to eq(@chosen_mir.seconds.to_s)
@@ -87,7 +87,7 @@ When('I choose to add a 25m lap') do
   before_add = find_all(css_selector).count
   @lap_rows_before_add = before_add
 
-  find_by_id('lap-edit-modal', class: 'modal', visible: true)
+  find_by_id('lap-edit-modal', class: 'modal', visible: :visible)
   add_btn_selector = "#lap-edit-modal.modal a#lap-new25-#{@chosen_mir.id}"
   @lap_add_expected = begin
     by_distance = @chosen_mir.laps.by_distance.to_a
@@ -101,7 +101,7 @@ When('I choose to add a 25m lap') do
       sleep(0.2)
       break if find_all(css_selector).count > before_add
 
-      find(add_btn_selector, visible: true).click
+      find(add_btn_selector, visible: :visible).click
       wait_for_ajax
       sleep(0.2)
       break if find_all(css_selector).count > before_add
@@ -130,34 +130,34 @@ end
 # - @chosen_lap_idx
 When('I see another empty lap row is added \(only if the last distance is less than the goal)') do
   css_selector = "tbody#laps-table-body form[id^='frm-lap-row-']"
-  unless page.has_css?('#lap-edit-modal', visible: true)
+  unless page.has_css?('#lap-edit-modal', visible: :visible)
     step('I click the button to manage its laps')
     wait_for_ajax
     sleep(1)
   end
 
-  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
+  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: :visible)
   5.times do
-    break if dialog.has_css?(css_selector, visible: true)
+    break if dialog.has_css?(css_selector, visible: :visible)
 
     putc('r')
     wait_for_ajax
     sleep(0.3)
-    dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
+    dialog = find_by_id('lap-edit-modal', class: 'modal', visible: :visible)
   end
 
   if @lap_add_expected
-    row_count = dialog.all(css_selector, visible: true).count
+    row_count = dialog.all(css_selector, visible: :visible).count
     if row_count <= @lap_rows_before_add
-      step('I click the button to manage its laps') unless page.has_css?('#lap-edit-modal', visible: true)
+      step('I click the button to manage its laps') unless page.has_css?('#lap-edit-modal', visible: :visible)
       step("I trigger the click event on the '#lap-new25-#{@chosen_mir.id}' DOM ID")
       wait_for_ajax
       sleep(1)
-      dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
+      dialog = find_by_id('lap-edit-modal', class: 'modal', visible: :visible)
     end
   end
 
-  form_nodes = dialog.all(css_selector, visible: true)
+  form_nodes = dialog.all(css_selector, visible: :visible)
   row_count = form_nodes.count
   if row_count.zero?
     # Runtime can sporadically fail to render editable rows for some MIRs: skip row editing
@@ -202,11 +202,11 @@ When('I click to save my edited lap') do
   next if @skip_lap_edit_flow
 
   target_form_id = @chosen_lap_form_dom_id || "frm-lap-row-#{@chosen_lap_idx + 1}"
-  unless page.has_css?("tbody#laps-table-body form##{target_form_id}", visible: true)
+  unless page.has_css?("tbody#laps-table-body form##{target_form_id}", visible: :visible)
     @skip_lap_edit_flow = true
     next
   end
-  find("tbody#laps-table-body form##{target_form_id}", visible: true)
+  find("tbody#laps-table-body form##{target_form_id}", visible: :visible)
   @chosen_lap = GogglesDb::Lap.new(
     length_in_meters: find("input#length_in_meters_#{@chosen_lap_idx}").value,
     minutes: find("input#minutes_from_start_#{@chosen_lap_idx}").value,
@@ -223,12 +223,12 @@ When('I see my chosen lap has been correctly saved') do
   next if @skip_lap_edit_flow
 
   target_form_id = @chosen_lap_form_dom_id || "frm-lap-row-#{@chosen_lap_idx + 1}"
-  unless page.has_css?("tbody#laps-table-body form##{target_form_id}", visible: true)
+  unless page.has_css?("tbody#laps-table-body form##{target_form_id}", visible: :visible)
     @skip_lap_edit_flow = true
     next
   end
   step("I wait until the slow-rendered page portion 'tbody#laps-table-body form##{target_form_id}' is visible")
-  find("tbody#laps-table-body form##{target_form_id}", visible: true)
+  find("tbody#laps-table-body form##{target_form_id}", visible: :visible)
   expect(find("input#length_in_meters_#{@chosen_lap_idx}").value).to eq(@chosen_lap.length_in_meters.to_s)
   expect(find("input#minutes_from_start_#{@chosen_lap_idx}").value).to eq(@chosen_lap.minutes.to_s)
   expect(find("input#seconds_from_start_#{@chosen_lap_idx}").value).to eq(@chosen_lap.seconds.to_s)
@@ -272,7 +272,7 @@ end
 When('I can see the chosen lap is no longer shown in the editor') do
   next if @skip_lap_edit_flow
 
-  find('tbody#laps-table-body', visible: true)
+  find('tbody#laps-table-body', visible: :visible)
   wait_for_ajax
   expect(find_all("tbody#laps-table-body form[id^='frm-lap-row-']").count).to be < @chosen_lap_idx
 end

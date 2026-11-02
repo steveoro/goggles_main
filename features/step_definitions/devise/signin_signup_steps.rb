@@ -49,10 +49,10 @@ end
 When('I fill the log-in form as the confirmed user') do
   expect(@current_user).to be_a(GogglesDb::User).and be_valid
   wait_for_ajax && sleep(2)
-  find_by_id('login-box', visible: true) # wait for rendering ("visit" doesn't)
+  find_by_id('login-box', visible: :visible) # wait for rendering ("visit" doesn't)
   fill_in('user_email', with: @current_user.email)
   fill_in('user_password', with: @current_user.password)
-  btn = find_by_id('login-btn', visible: true)
+  btn = find_by_id('login-btn', visible: :visible)
   page.scroll_to(btn) # force the button into the center of the viewport
   wait_for_ajax && sleep(0.5)
   btn.click
@@ -63,10 +63,10 @@ end
 When('I fill the log-in form with the available credentials') do
   expect(@user_credentials).to be_present
   wait_for_ajax && sleep(2)
-  find_by_id('login-box', visible: true) # wait for rendering ("visit" doesn't)
+  find_by_id('login-box', visible: :visible) # wait for rendering ("visit" doesn't)
   fill_in('user_email', with: @user_credentials[:email])
   fill_in('user_password', with: @user_credentials[:password])
-  btn = find_by_id('login-btn', visible: true)
+  btn = find_by_id('login-btn', visible: :visible)
   page.scroll_to(btn) # force the button into the center of the viewport
   wait_for_ajax && sleep(0.5)
   btn.click
@@ -105,10 +105,10 @@ end
 When(/I fill the log-in form as (the current|the new|my) user/) do |_user_type|
   expect(@current_user).to be_a(GogglesDb::User).and be_valid
   wait_for_ajax && sleep(2)
-  find_by_id('login-box', visible: true) # wait for rendering ("visit" doesn't)
+  find_by_id('login-box', visible: :visible) # wait for rendering ("visit" doesn't)
   fill_in('user_email', with: @current_user.email)
   fill_in('user_password', with: 'Password123!')
-  btn = find_by_id('login-btn', visible: true)
+  btn = find_by_id('login-btn', visible: :visible)
   page.scroll_to(btn) # force the button into the center of the viewport
   wait_for_ajax && sleep(0.5)
   btn.click
@@ -134,7 +134,7 @@ end
 When('I fill the registration form as a new user') do
   @current_user = FactoryBot.build(:user)
   wait_for_ajax && sleep(2)
-  find_by_id('signup-box', visible: true) # wait for rendering ("visit" doesn't)
+  find_by_id('signup-box', visible: :visible) # wait for rendering ("visit" doesn't)
   fill_in('user_email', with: @current_user.email)
   fill_in('user_name', with: @current_user.name)
   fill_in('user_password', with: 'Password123!')
@@ -142,7 +142,7 @@ When('I fill the registration form as a new user') do
   fill_in('user_first_name', with: @current_user.first_name)
   fill_in('user_last_name', with: @current_user.last_name)
   fill_in('user_year_of_birth', with: @current_user.year_of_birth)
-  btn = find_by_id('signup-btn', visible: true)
+  btn = find_by_id('signup-btn', visible: :visible)
   page.scroll_to(btn) # force the button into the center of the viewport
   wait_for_ajax && sleep(0.5)
   btn.click
@@ -186,7 +186,7 @@ end
 When('I fill the registration form as an existing user') do
   @current_user = GogglesDb::User.first(50).sample
   wait_for_ajax && sleep(2)
-  find_by_id('signup-box', visible: true) # wait for rendering ("visit" doesn't)
+  find_by_id('signup-box', visible: :visible) # wait for rendering ("visit" doesn't)
   fill_in('user_email', with: @current_user.email)
   fill_in('user_name', with: @current_user.name)
   fill_in('user_password', with: 'Password123!')
@@ -194,7 +194,7 @@ When('I fill the registration form as an existing user') do
   fill_in('user_first_name', with: @current_user.first_name)
   fill_in('user_last_name', with: @current_user.last_name)
   fill_in('user_year_of_birth', with: @current_user.year_of_birth)
-  btn = find_by_id('signup-btn', visible: true)
+  btn = find_by_id('signup-btn', visible: :visible)
   page.scroll_to(btn) # force the button into the center of the viewport
   wait_for_ajax && sleep(0.5)
   btn.click

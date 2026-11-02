@@ -5,11 +5,11 @@ Then('I am at my past meetings page') do
 end
 
 Then('I see my past meetings title') do
-  find('section#my-past-meetings-title h4', text: I18n.t('home.my.past_title'), visible: true)
+  find('section#my-past-meetings-title h4', text: I18n.t('home.my.past_title'), visible: :visible)
 end
 
 Then('I click on the first row to see the details of the first meeting') do
-  first_row = find('section#data-grid table tr td.meeting_name a', visible: true)
+  first_row = find('section#data-grid table tr td.meeting_name a', visible: :visible)
   first_row.click
   15.times do
     putc('.')
@@ -22,14 +22,14 @@ Then('I click on the first row to see the details of the first meeting') do
       nil
     end
     found = begin
-      find('.main-content#top-of-page #meeting-show-title', visible: true)
+      find('.main-content#top-of-page #meeting-show-title', visible: :visible)
     rescue StandardError
       false
     end
     break if found
   end
   find('.main-content#top-of-page #meeting-show-title')
-  find('#meeting-show-results table.table thead.mevent-separator', visible: true)
+  find('#meeting-show-results table.table thead.mevent-separator', visible: :visible)
 end
 
 # Uses @chosen_meeting
@@ -68,7 +68,7 @@ end
 Then('I click on the chosen meeting event section, waiting for it to load') do
   step('I scroll toward the end of the page to see the bottom of the page')
   trigger_selector = "thead th a#btn-load-mev-#{@chosen_mevent.id}"
-  find(trigger_selector, visible: true).click
+  find(trigger_selector, visible: :visible).click
   step("I wait until the slow-rendered page portion 'thead#mevent-#{@chosen_mevent.id} h4' is visible")
   step("I wait until the slow-rendered page portion 'tbody.result-table-row#mir#{@chosen_mir.id}' is visible") if @chosen_mir
 end
@@ -95,21 +95,21 @@ end
 # Sets @search_filter & @filter_name
 Then('I filter the meetings list by an earlier date than the first row present on the grid') do
   step('I make sure the filtering form for the datagrid is visible')
-  meeting_date = find('section#data-grid table tbody tr td.meeting_date', visible: true).text
+  meeting_date = find('section#data-grid table tbody tr td.meeting_date', visible: :visible).text
   expect(meeting_date).to be_present
   # Filter by an earlier date (makes the first row always visible, assuming the order isn't changed):
   @search_filter = (Date.parse(meeting_date) - 6.months).to_s
   @filter_name = 'meeting_date'
   # Datagrid date inputs expect ISO format under modern browser drivers.
   formatted_filter = Date.parse(@search_filter).strftime('%Y-%m-%d')
-  find("input[name='meetings_grid[meeting_date]']", visible: true).set(formatted_filter)
+  find_field(name: 'meetings_grid[meeting_date]', visible: :visible).set(formatted_filter)
   step('I submit the filters for the datagrid \'#new_meetings_grid\' waiting 10 secs tops for it to disappear')
 end
 
 # Sets @search_filter & @filter_name
 Then('I filter the meetings list by a portion of the first name found on the grid') do
   step('I make sure the filtering form for the datagrid is visible')
-  node = find('section#data-grid table tbody tr td.meeting_name a', visible: true)
+  node = find('section#data-grid table tbody tr td.meeting_name a', visible: :visible)
   # Filter by the last portion of the first name found:
   @search_filter = node.text.split(': ').last
   expect(@search_filter).to be_present
@@ -122,16 +122,16 @@ end
 Then('I see the applied filter in the top row label and at least the first meeting in the list') do
   sleep(1)
   # Wait for both the data grid table the first column to be rendered:
-  find('section#data-grid table tbody', visible: true)
-  find('section#data-grid table tbody tr', visible: true)
-  label = page.first('#datagrid-top-row #filter-labels', visible: true) || page.first('#filter-labels', visible: true)
+  find('section#data-grid table tbody', visible: :visible)
+  find('section#data-grid table tbody tr', visible: :visible)
+  label = page.first('#datagrid-top-row #filter-labels', visible: :visible) || page.first('#filter-labels', visible: :visible)
 
   case @filter_name
   when 'meeting_date'
     # The browser may normalize localized date inputs; just ensure a filter label is shown.
     expect(label.text.strip).to be_present if label
     # Check actual filter value reflected on to the grid:
-    meeting_date = find('section#data-grid table tbody tr td.meeting_date', visible: true).text
+    meeting_date = find('section#data-grid table tbody tr td.meeting_date', visible: :visible).text
     expect(Date.parse(meeting_date)).to be >= Date.parse(@search_filter)
   when 'meeting_name'
     # Check filter value presence in label:
@@ -140,7 +140,7 @@ Then('I see the applied filter in the top row label and at least the first meeti
       expect(label.text.strip).to include(token) if label && token.present?
     end
     # Check actual filter value reflected on to the grid:
-    meeting_name = find('section#data-grid table tbody tr td.meeting_name', visible: true).text
+    meeting_name = find('section#data-grid table tbody tr td.meeting_name', visible: :visible).text
     expect(meeting_name).to include(@search_filter)
   end
 end
@@ -189,7 +189,7 @@ end
 When('I click on the team name on the chosen result row, selecting it') do
   css_selector = "tbody.result-table-row#mir#{@chosen_mir.id} .team-result-link a"
   step("I wait until the slow-rendered page portion '#{css_selector}' is visible")
-  find(css_selector, visible: true).click
+  find(css_selector, visible: :visible).click
   step("I wait until the slow-rendered page portion 'section#meeting-team-results' is visible")
 end
 
@@ -197,7 +197,7 @@ end
 When('I click on the swimmer name on the chosen result row, selecting it') do
   css_selector = "tbody.result-table-row#mir#{@chosen_mir.id} span.swimmer-results-link a"
   step("I wait until the slow-rendered page portion '#{css_selector}' is visible")
-  find(css_selector, visible: true).click
+  find(css_selector, visible: :visible).click
   step("I wait until the slow-rendered page portion 'section#meeting-swimmer-results' is visible")
 end
 
@@ -216,25 +216,25 @@ end
 #++
 
 Then('I see the title with the link to go to the team radiography') do
-  find('#team-header-title span#back-to-dashboard a', visible: true)
+  find('#team-header-title span#back-to-dashboard a', visible: :visible)
 end
 
 Then('I see the team results header') do
-  find_by_id('team-results-header', visible: true)
+  find_by_id('team-results-header', visible: :visible)
 end
 
 Then('I see the team swimmers grid') do
-  find_by_id('team-results-swimmers-grid', visible: true)
+  find_by_id('team-results-swimmers-grid', visible: :visible)
 end
 
 Then('I see the team events grid') do
-  find_by_id('team-results-events-grid', visible: true)
+  find_by_id('team-results-events-grid', visible: :visible)
 end
 
 Then('I see the title with the link to go to the swimmer radiography') do
-  find('#swimmer-header-title span#back-to-dashboard a', visible: true)
+  find('#swimmer-header-title span#back-to-dashboard a', visible: :visible)
 end
 
 Then('I see the swimmer results header table') do
-  find('#swimmer-results-header table', visible: true)
+  find('#swimmer-results-header table', visible: :visible)
 end

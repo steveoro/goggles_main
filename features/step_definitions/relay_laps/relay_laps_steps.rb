@@ -10,14 +10,14 @@ When('I click the button to manage its relay laps') do
   step("I trigger the click event on the '#{btn_selector}' DOM ID")
 
   15.times do
-    break if page.has_css?('#lap-edit-modal', visible: true)
+    break if page.has_css?('#lap-edit-modal', visible: :visible)
 
     page.execute_script("document.querySelector('#{btn_selector}')?.click()")
     wait_for_ajax
     sleep(0.5)
   end
 
-  unless page.has_css?('#lap-edit-modal', visible: true)
+  unless page.has_css?('#lap-edit-modal', visible: :visible)
     page.execute_script(<<~JS)
       (function () {
         var modal = document.querySelector('#lap-edit-modal');
@@ -38,7 +38,7 @@ When('I click the button to manage its relay laps') do
     wait_for_ajax
   end
 rescue Capybara::ElementNotFound
-  find(btn_selector, visible: true).click
+  find(btn_selector, visible: :visible).click
   wait_for_ajax
 end
 
@@ -49,12 +49,12 @@ Then('the relay laps management modal dialog pops up showing its contents') do
   # Avoid Bullet complaining about missing eager loading:
   @chosen_mrr = GogglesDb::MeetingRelayResult.includes(meeting_relay_swimmers: :relay_laps).find(@chosen_mrr.id)
   expect(@chosen_mrr).to be_valid
-  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
+  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: :visible)
 
   expect(dialog.find('h5#lap-edit-modal-title').text).to include(I18n.t('laps.modal.form.title'))
-  dialog.find_by_id('lap-edit-modal-body', class: 'modal-body', visible: true)
-  dialog.find('tbody#laps-table-body', visible: true)
-  dialog.find('form#frm-add-mrs-row', visible: true)
+  dialog.find_by_id('lap-edit-modal-body', class: 'modal-body', visible: :visible)
+  dialog.find('tbody#laps-table-body', visible: :visible)
+  dialog.find('form#frm-add-mrs-row', visible: :visible)
 end
 # -----------------------------------------------------------------------------
 
@@ -65,9 +65,9 @@ When('there is a MRS edit form row with support for RelayLaps for each row belon
   # Avoid Bullet complaining about missing eager loading:
   @chosen_mrr = GogglesDb::MeetingRelayResult.includes(meeting_relay_swimmers: :relay_laps).find(@chosen_mrr.id)
   expect(@chosen_mrr).to be_valid
-  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
+  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: :visible)
 
-  laps_table = dialog.find('tbody#laps-table-body', visible: true)
+  laps_table = dialog.find('tbody#laps-table-body', visible: :visible)
   event_type = @chosen_mrr.event_type
   max_relay_laps = (event_type.phase_length_in_meters / 50) - 1
 
@@ -114,8 +114,8 @@ end
 # rubocop:disable Rails/DynamicFindBy
 When('I add a new relay swimmer if allowed or select the last MRS section') do
   expect(@chosen_mrr).to be_a(GogglesDb::MeetingRelayResult).and be_valid
-  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
-  mrs_form = dialog.find('form#frm-add-mrs-row', visible: true)
+  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: :visible)
+  mrs_form = dialog.find('form#frm-add-mrs-row', visible: :visible)
   event_type = @chosen_mrr.event_type
   @chosen_sublap = nil
   @chosen_sublap_overall_index = nil
@@ -137,7 +137,7 @@ When('I add a new relay swimmer if allowed or select the last MRS section') do
     # Select first available length from list:
     mrs_form.find_by_id('length_in_meters').find(:xpath, 'option[1]').select_option
 
-    laps_table = dialog.find('tbody#laps-table-body', visible: true)
+    laps_table = dialog.find('tbody#laps-table-body', visible: :visible)
     wait_for_ajax && sleep(1)
     before_add = laps_table.find_all('tr td .lap-row').count
     # Click on add MRS row:
@@ -170,7 +170,7 @@ When('I add a new relay sub-lap if allowed or possibly select the last sub-lap a
   step('I click the button to manage its relay laps')
 
   10.times do
-    break if page.has_css?('#lap-edit-modal', visible: true)
+    break if page.has_css?('#lap-edit-modal', visible: :visible)
 
     step('I scroll toward the end of the page to see the bottom of the page')
     step("I trigger the click event on the '#{btn_selector}' DOM ID")
@@ -182,9 +182,9 @@ When('I add a new relay sub-lap if allowed or possibly select the last sub-lap a
     sleep(0.5)
   end
 
-  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
+  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: :visible)
 
-  dialog.find('tbody#laps-table-body tr td .form-row.lap-row', visible: true)
+  dialog.find('tbody#laps-table-body tr td .form-row.lap-row', visible: :visible)
 
   @chosen_mrs = @chosen_mrr.meeting_relay_swimmers.includes(:relay_laps).last # last created
   expect(@chosen_mrs).to be_a(GogglesDb::MeetingRelaySwimmer).and be_valid
@@ -247,12 +247,12 @@ When('I fill the last relay swimmer row with some random timing values') do
   @chosen_mrs = GogglesDb::MeetingRelaySwimmer.includes(:relay_laps).find(@chosen_mrs.id)
   expect(@chosen_mrs).to be_valid
 
-  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
+  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: :visible)
   event_type = @chosen_mrr.event_type
   overall_index = (@chosen_lap_idx + 1) * (event_type.phase_length_in_meters / 50)
 
   # Make sure the form is visible, compute the fake timing and fill it in:
-  dialog.find("form#frm-lap-row-#{overall_index}", visible: true)
+  dialog.find("form#frm-lap-row-#{overall_index}", visible: :visible)
   @edited_timing = Timing.new.from_hundredths((@chosen_mrr.to_timing.to_hundredths / event_type.phases) * (@chosen_lap_idx + 1))
 
   fill_in("minutes_from_start_#{overall_index}", with: @edited_timing.minutes)
@@ -272,19 +272,19 @@ When('I fill the last sub-lap row with some random timing values') do # rubocop:
   expect(@chosen_mrs).to be_a(GogglesDb::MeetingRelaySwimmer).and be_valid
   expect(@chosen_sublap).to be_a(GogglesDb::RelayLap).and be_valid
 
-  unless page.has_css?('#lap-edit-modal', visible: true)
+  unless page.has_css?('#lap-edit-modal', visible: :visible)
     step('I click the button to manage its relay laps')
     wait_for_ajax
     sleep(0.5)
   end
-  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
+  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: :visible)
   event_type = @chosen_mrr.event_type
   chosen_sublap_idx = @chosen_mrs.relay_laps.order(:length_in_meters).index(@chosen_sublap)
   overall_index = (@chosen_lap_idx * event_type.phase_length_in_meters / 50) + chosen_sublap_idx + 1 # Index relative to all sub-laps (RelayLaps)
   form_selector = "form#frm-sublap-row-#{overall_index}"
 
-  unless dialog.has_css?(form_selector, visible: true)
-    fallback_form = dialog.all("form[id^='frm-sublap-row-']", visible: true).last
+  unless dialog.has_css?(form_selector, visible: :visible)
+    fallback_form = dialog.all("form[id^='frm-sublap-row-']", visible: :visible).last
     if fallback_form.blank?
       # Last-resort fallback for environments where dynamic add fails to render:
       FactoryBot.create(
@@ -296,12 +296,12 @@ When('I fill the last sub-lap row with some random timing values') do # rubocop:
         length_in_meters: 50
       )
       @chosen_mrs.reload
-      step('I dismiss the lap modal editor by clicking on the close button') if page.has_css?('#lap-edit-modal', visible: true)
+      step('I dismiss the lap modal editor by clicking on the close button') if page.has_css?('#lap-edit-modal', visible: :visible)
       wait_for_ajax
       sleep(0.5)
       step('I click the button to manage its relay laps')
-      dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
-      fallback_form = dialog.all("form[id^='frm-sublap-row-']", visible: true).last
+      dialog = find_by_id('lap-edit-modal', class: 'modal', visible: :visible)
+      fallback_form = dialog.all("form[id^='frm-sublap-row-']", visible: :visible).last
     end
     if fallback_form.blank?
       @skip_relay_sublap_flow = true
@@ -313,7 +313,7 @@ When('I fill the last sub-lap row with some random timing values') do # rubocop:
   end
 
   # Make sure the form is visible, compute the fake timing and fill it in:
-  dialog.find(form_selector, visible: true)
+  dialog.find(form_selector, visible: :visible)
   @chosen_sublap_overall_index = overall_index
 
   @edited_timing = Timing.new.from_hundredths(
@@ -350,13 +350,13 @@ When('I click to save my edited relay {string} row') do |lap_type|
                     (@chosen_lap_idx + 1) * (event_type.phase_length_in_meters / 50)
                   end
   # Make sure the form is rendered, then save the row:
-  find("tbody tr td form#frm-#{lap_type}-row-#{overall_index}", visible: true)
+  find("tbody tr td form#frm-#{lap_type}-row-#{overall_index}", visible: :visible)
   step("I trigger the click event on the '##{lap_type}-save-row-#{overall_index}' DOM ID")
 end
 # -----------------------------------------------------------------------------
 
 Then('I see a successful flash notice on the lap-editor dialog header') do
-  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: true)
+  dialog = find_by_id('lap-edit-modal', class: 'modal', visible: :visible)
   expect(dialog.find('.modal-header .alert-success#lap-modal-alert #lap-modal-alert-text')).to be_present
 end
 
@@ -381,7 +381,7 @@ Then('I see my edited timing are present in the chosen row') do
                   else
                     (@chosen_lap_idx + 1) * (event_type.phase_length_in_meters / 50)
                   end
-  find_by_id('lap-edit-modal', class: 'modal', visible: true) # Make sure the dialog is visible first
+  find_by_id('lap-edit-modal', class: 'modal', visible: :visible) # Make sure the dialog is visible first
   expect(find("input#minutes_from_start_#{overall_index}").value).to eq(@edited_timing.minutes.to_s)
   expect(find("input#seconds_from_start_#{overall_index}").value).to eq(@edited_timing.seconds.to_s)
   expect(find("input#hundredths_from_start_#{overall_index}").value).to eq(@edited_timing.hundredths.to_s)
@@ -393,14 +393,14 @@ end
 When('I expand the chosen MRR details') do
   expect(@chosen_mrr).to be_a(GogglesDb::MeetingRelayResult).and be_valid
   # Make sure the result row is there:
-  mrr_row = find("tbody.result-table-row#mrr#{@chosen_mrr.id}", visible: true)
+  mrr_row = find("tbody.result-table-row#mrr#{@chosen_mrr.id}", visible: :visible)
 
   # No details to expand? Skip the test:
   if mrr_row.has_css?('span.switch-sm span')
     3.times do
       break if find("small#detail-mrs#{@chosen_mrs.id}").visible?
 
-      toggle_id = mrr_row.find('span.switch-sm span', visible: true)[:id] unless find("small#detail-mrs#{@chosen_mrs.id}").visible?
+      toggle_id = mrr_row.find('span.switch-sm span', visible: :visible)[:id] unless find("small#detail-mrs#{@chosen_mrs.id}").visible?
       step("I trigger the click event on the '##{toggle_id}' DOM ID")
       # Wait for the expand animation to finish
       10.times do

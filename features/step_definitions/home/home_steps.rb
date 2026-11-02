@@ -33,12 +33,12 @@ Then('I see the {string} section') do |section_id|
 end
 
 Then('I see the link to go back to the root page') do
-  find_link(text: I18n.t('about.go_back'), visible: true)
+  find_link(text: I18n.t('about.go_back'), visible: :visible)
 end
 # -----------------------------------------------------------------------------
 
 When('I see the contact form') do
-  find('#contact-us-box form#frm-contact-us', visible: true)
+  find('#contact-us-box form#frm-contact-us', visible: :visible)
 end
 
 When('I fill in the contact form with a test message') do
@@ -53,7 +53,7 @@ Then('I am at my dashboard page') do
 end
 
 Then('I see the TEAM MANAGER label below my name in the #my-dashboard-title section') do
-  expect(find_by_id('my-dashboard-title', visible: true)).to have_text('TEAM MANAGER')
+  expect(find_by_id('my-dashboard-title', visible: :visible)).to have_text('TEAM MANAGER')
 end
 
 # Checks if a button/link node id is either 'missing' or 'disabled' or not
@@ -67,7 +67,7 @@ Then('I see the button {string} {string}') do |button_id, status|
     expect(btn).to be_visible
 
   else
-    btn = find("##{button_id}", visible: true)
+    btn = find("##{button_id}", visible: :visible)
     expect(btn).to have_no_css('.disabled')
   end
 end

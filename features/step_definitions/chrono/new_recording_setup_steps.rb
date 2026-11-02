@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 When('I am at the Chrono index page') do
-  expect(page).to have_current_path(chrono_path, ignore_query: true)
+  expect(page).to have_current_path(chrono_index_path, ignore_query: true)
 end
 
 When('I am redirected to the Chrono setup page') do
@@ -27,15 +27,15 @@ end
 # -----------------------------------------------------------------------------
 
 When('I type {string} as selection for the {string} pre-filled select field') do |manual_input_label, field_camelcase_name|
-  find("##{field_camelcase_name}_select", visible: true).select(manual_input_label)
+  find("##{field_camelcase_name}_select", visible: :visible).select(manual_input_label)
 end
 
 When('I see that the {string} autocomplete field is disabled') do |field_camelcase_name|
-  expect(find("select##{field_camelcase_name}_select", visible: true)).to be_disabled
+  expect(find("select##{field_camelcase_name}_select", visible: :visible)).to be_disabled
 end
 
 When('I see that the {string} autocomplete field is enabled') do |field_camelcase_name|
-  expect(find("select##{field_camelcase_name}_select", visible: true)).not_to be_disabled
+  expect(find("select##{field_camelcase_name}_select", visible: :visible)).not_to be_disabled
 end
 
 # [Steve A.] This goes beyond simply reproducing user actions because most Autocomplete components are based
@@ -98,7 +98,7 @@ When('I click on the go to chrono button') do
   # Fake button enabled state, normally validated by Stimulus JS controller (doesn't work here):
   execute_script("document.querySelector('#btn-rec-chrono').disabled = false")
   wait_for_ajax
-  find_by_id('btn-rec-chrono', visible: true).click
+  find_by_id('btn-rec-chrono', visible: :visible).click
   wait_for_ajax
   next if current_path.include?('/chrono/rec')
 
@@ -143,5 +143,5 @@ end
 Then('I see that form step {string} is displayed') do |step_name|
   step_node = find(".step-forms#step-#{step_name}") # auto-wait for the node to be rendered
   expect(step_node).to be_present
-  find(".step-forms#step-#{step_name}", visible: true)
+  find(".step-forms#step-#{step_name}", visible: :visible)
 end

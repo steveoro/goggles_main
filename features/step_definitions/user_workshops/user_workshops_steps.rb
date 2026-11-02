@@ -5,17 +5,17 @@ Then('I am at my workshops page') do
 end
 
 Then('I see my workshops title') do
-  find('section#my-workshops-title h4', text: I18n.t('home.my.workshops_title'), visible: true)
+  find('section#my-workshops-title h4', text: I18n.t('home.my.workshops_title'), visible: :visible)
 end
 
 Then('I click on the first row to see the details of the first workshop') do
-  first_row = find('section#data-grid table tr td.workshop_name a', visible: true)
+  first_row = find('section#data-grid table tr td.workshop_name a', visible: :visible)
   first_row.click
   10.times do
     putc('.')
     sleep(1) && wait_for_ajax
     found = begin
-      find('.main-content#top-of-page #meeting-show-title', visible: true)
+      find('.main-content#top-of-page #meeting-show-title', visible: :visible)
     rescue StandardError
       false
     end
@@ -61,7 +61,7 @@ Then('I filter the workshops list by an earlier date than the first row present 
   @search_filter = (workshop_date - 3.months).to_s
   @filter_name = 'workshop_date'
   formatted_filter = Date.parse(@search_filter).strftime('%Y-%m-%d')
-  find("input[name='user_workshops_grid[workshop_date]']", visible: true).set(formatted_filter)
+  find_field(name: 'user_workshops_grid[workshop_date]', visible: :visible).set(formatted_filter)
   step('I submit the filters for the datagrid \'#new_user_workshops_grid\' waiting 10 secs tops for it to disappear')
 end
 
@@ -84,9 +84,9 @@ end
 Then('I see the applied filter in the top row label and at least the first workshop in the list') do
   sleep(1)
   # Wait for both the data grid table the first row to be rendered:
-  find('section#data-grid table tbody', visible: true)
-  find('section#data-grid table tbody tr', visible: true)
-  label = find('#datagrid-top-row #filter-labels', visible: true)
+  find('section#data-grid table tbody', visible: :visible)
+  find('section#data-grid table tbody tr', visible: :visible)
+  label = find('#datagrid-top-row #filter-labels', visible: :visible)
 
   case @filter_name
   when 'workshop_date'

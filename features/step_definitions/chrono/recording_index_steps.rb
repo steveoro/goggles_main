@@ -24,7 +24,7 @@ Then('I can see the chrono index page including the latest request row with deta
 end
 
 Then('I see the chrono index container with any remaining row for my user') do
-  container_node = find('.main-content .container#chrono-rows', visible: true)
+  container_node = find('.main-content .container#chrono-rows', visible: :visible)
   expect(container_node).to be_present
   # Empty domain => no data rows notice
   domain_size = GogglesDb::ImportQueue.for_user(@current_user).for_uid('chrono').count
@@ -48,7 +48,7 @@ end
 
 # Uses: @deleted_row_id
 Then('I see that the deleted request is missing from the index') do
-  container_node = find('.main-content .container#chrono-rows', visible: true)
+  container_node = find('.main-content .container#chrono-rows', visible: :visible)
   expect(container_node).to be_present
   expect(container_node).to have_no_css(".col#main-req#{@deleted_row_id}")
 end

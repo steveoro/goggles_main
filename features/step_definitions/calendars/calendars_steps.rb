@@ -25,7 +25,7 @@ end
 # Relies on @unexpired_calendars & @expired_calendars instead of checking the star button status
 # (NOTE: for an alternative take on this, see the same step implementation for the team star context)
 Then('I can see the calendar row star button enabled or disabled depending on the row status') do
-  find('#data-grid table.table tbody tr', visible: true)
+  find('#data-grid table.table tbody tr', visible: :visible)
   find_all('#data-grid table.table tbody tr td.text-center span.user-star').each do |star_node|
     row_id = star_node['data-row-id'].to_i
 
@@ -42,7 +42,7 @@ Then('I can see the calendar row star button enabled or disabled depending on th
 end
 
 Then('I cannot see the team row tag button available in any row') do
-  find('#data-grid table.table tbody tr', visible: true)
+  find('#data-grid table.table tbody tr', visible: :visible)
   find_all('#data-grid table.table tbody tr td.text-center span.team-star').each do |star_node|
     row_id = star_node['data-row-id'].to_i
     expect(find("i#btn-team-star-#{row_id}.disabled")).to be_present
@@ -50,7 +50,7 @@ Then('I cannot see the team row tag button available in any row') do
 end
 
 Then('I can see the calendar team star button enabled or disabled depending on the row status') do
-  find('#data-grid table.table tbody tr', visible: true)
+  find('#data-grid table.table tbody tr', visible: :visible)
   find_all('#data-grid table.table tbody tr td.text-center span.team-star').each do |star_node|
     row_id = star_node['data-row-id'].to_i
     meeting = GogglesDb::Meeting.find(row_id)
@@ -69,7 +69,7 @@ end
 
 # Scans current calendar page & sets @chosen_calendar_row_id from enabled & untagged rows
 When('I choose a row from the displayed calendar page to be starred for myself') do
-  find('#data-grid table.table tbody tr', visible: true)
+  find('#data-grid table.table tbody tr', visible: :visible)
   enabled_row_stars = find_all('#data-grid table.table tbody tr td.text-center span.user-star').select do |star_node|
     row_id = star_node['data-row-id'].to_i
     meeting = GogglesDb::Meeting.find(row_id)
@@ -84,7 +84,7 @@ end
 
 # Scans current calendar page & sets @chosen_calendar_row_id from *already tagged* rows
 When('I choose a row from the displayed calendar page to be unstarred') do
-  find('#data-grid table.table tbody tr', visible: true)
+  find('#data-grid table.table tbody tr', visible: :visible)
   tagged_row_stars = find_all('#data-grid table.table tbody tr td.text-center span.user-star').select do |star_node|
     row_id = star_node['data-row-id'].to_i
     star_node.find("#btn-row-star-#{row_id} i")['class'].include?('fa fa-star')
@@ -96,7 +96,7 @@ end
 
 # Scans current calendar page & sets @chosen_calendar_row_id from enabled & untagged rows
 When('I choose a row from the displayed calendar page for team tagging') do
-  find('#data-grid table.table tbody tr', visible: true)
+  find('#data-grid table.table tbody tr', visible: :visible)
   enabled_row_stars = find_all('#data-grid table.table tbody tr td.text-center span.team-star').select do |star_node|
     row_id = star_node['data-row-id'].to_i
     meeting = GogglesDb::Meeting.find(row_id)
@@ -114,7 +114,7 @@ end
 Then('I click to tag for myself the chosen calendar row') do
   find("a#btn-row-star-#{@chosen_calendar_row_id} i").click
   wait_for_ajax && sleep(1) && wait_for_ajax
-  find("a#btn-row-star-#{@chosen_calendar_row_id} i", visible: true)
+  find("a#btn-row-star-#{@chosen_calendar_row_id} i", visible: :visible)
   sleep(1) && wait_for_ajax
 end
 # -----------------------------------------------------------------------------
@@ -146,7 +146,7 @@ When('I click to tag the chosen calendar row for one of my teams') do
 end
 
 Then('the team star modal appears') do
-  find_by_id('team-star-modal', class: 'modal', visible: true)
+  find_by_id('team-star-modal', class: 'modal', visible: :visible)
 end
 
 When('I select the first team on the list to be tagged for the calendar') do
@@ -167,7 +167,7 @@ Then('I can see the pagination controls on the calendar starred page when there 
 end
 
 Then('I can only see starred or expired calendar rows') do
-  find('#data-grid table.table tbody tr', visible: true)
+  find('#data-grid table.table tbody tr', visible: :visible)
   find_all('#data-grid table.table tbody tr td.text-center span.user-star').each do |star_node|
     row_id = star_node['data-row-id'].to_i
     btn = find("#btn-row-star-#{row_id}")
@@ -184,10 +184,10 @@ end
 # -----------------------------------------------------------------------------
 
 Then('I see the calendars map container') do
-  find_by_id('calendars-map', class: 'container', visible: true)
+  find_by_id('calendars-map', class: 'container', visible: :visible)
 end
 
 Then('I see the calendars nav link to go back to the starred list') do
-  nav_link = find('section#calendars-map-navs ul.nav.nav-tabs li.nav-item a.nav-link', visible: true)
+  nav_link = find('section#calendars-map-navs ul.nav.nav-tabs li.nav-item a.nav-link', visible: :visible)
   expect(nav_link[:href]).to include(calendars_starred_path)
 end

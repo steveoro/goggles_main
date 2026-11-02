@@ -42,7 +42,7 @@
                 .col-md-6.my-2
                   = render partial: 'team_selector',
                            locals: { team: @team, managed_teams: @managed_teams }
-                .col-md-3.my-2.d-flex.align-items-end
+                .col-md-3.my-4.py-3.d-flex.align-items-middle
                   = button_tag(type: 'submit', class: 'btn btn-primary w-100',
                                data: { toggle: 'tooltip', placement: 'top',
                                        title: t('goggle_cups.load_team_tooltip') }) do

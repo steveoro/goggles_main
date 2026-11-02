@@ -24,7 +24,7 @@ end
 # Thus in these cases we just check the page contents since we cannot rely on the current_path.
 Then('I get redirected to the sign-in page') do
   sleep(1) && wait_for_ajax
-  find('#content .main-content #login-box', visible: true)
+  find('#content .main-content #login-box', visible: :visible)
 end
 
 # Checks current_path vs. the specified string.
@@ -32,7 +32,7 @@ end
 Then('I am still at the {string} path') do |string_path|
   sleep(1) && wait_for_ajax
   # Wait for content to be rendered and then verify path:
-  find_by_id('content', visible: true)
+  find_by_id('content', visible: :visible)
   expect(page).to have_current_path(string_path)
 end
 
@@ -61,11 +61,11 @@ end
 # -----------------------------------------------------------------------------
 
 When('I click on {string}') do |string_css|
-  find(string_css, visible: true).click
+  find(string_css, visible: :visible).click
 end
 
 When('I click on {string} waiting {int} seconds') do |string_css, sleep_time_in_secs|
-  link_node = find(string_css, visible: true)
+  link_node = find(string_css, visible: :visible)
   link_node.click
   sleep_time_in_secs.times do
     sleep(1) && wait_for_ajax
@@ -76,7 +76,7 @@ end
 When('I click on {string} waiting for the {string} to be ready') do |string_css, section_css|
   step("I click on '#{string_css}'")
   step("I wait until the slow-rendered page portion '#{section_css}' is visible")
-  find(section_css, visible: true)
+  find(section_css, visible: :visible)
 end
 
 # Similar to the above, but uses the label instead of the CSS selector:
@@ -91,7 +91,7 @@ end
 # -----------------------------------------------------------------------------
 
 Then('I see the {string} section of the page') do |section_css|
-  find("##{section_css}", visible: true)
+  find("##{section_css}", visible: :visible)
 end
 
 Then('I scroll toward the end of the page to see the bottom of the page') do
@@ -124,7 +124,7 @@ end
 
 # Click on OK/Yes
 When('I click on {string} accepting the confirmation request') do |string_css|
-  find(string_css, visible: true) # make sure the node is visible
+  find(string_css, visible: :visible) # make sure the node is visible
   within(string_css) do |_node|
     accept_confirm do
       # It turns out Selenium sometimes doesn't fire the click event as expected,
@@ -137,7 +137,7 @@ end
 
 # Click on Cancel/No
 When('I click on {string} rejecting the confirmation request') do |string_css|
-  find(string_css, visible: true) # make sure the node is visible
+  find(string_css, visible: :visible) # make sure the node is visible
   within(string_css) do |_node|
     dismiss_confirm do
       # (See note in previous step)
@@ -148,28 +148,28 @@ end
 # -----------------------------------------------------------------------------
 
 Then('I see the link to go back to the dashboard') do
-  find("a#back-to-parent[href='#{home_dashboard_path}']", visible: true)
+  find("a#back-to-parent[href='#{home_dashboard_path}']", visible: :visible)
 end
 
 # Generic step for data grids with pagination and filtering
 Then('I see the index grid list with filtering and pagination controls') do
   find('section#data-grid form')
-  find('section#data-grid #datagrid-top-row', visible: true)
-  find('section#data-grid #filter-show-btn', visible: true)
+  find('section#data-grid #datagrid-top-row', visible: :visible)
+  find('section#data-grid #filter-show-btn', visible: :visible)
   find('section#data-grid #pagination-top')
-  find('section#data-grid table', visible: true)
+  find('section#data-grid table', visible: :visible)
   find('section#data-grid #pagination-bottom')
 end
 
 When('I make sure the filtering form for the datagrid is visible') do
-  toggle_btn = find('#filter-show-btn button', visible: true)
+  toggle_btn = find('#filter-show-btn button', visible: :visible)
   # Show the filtering form if collapsed:
   toggle_btn.click unless find('section#data-grid form').visible?
 end
 
 When('I submit the filters for the datagrid {string} waiting {int} secs tops for it to disappear') do |datagrid_dom_id, sleep_time_in_secs|
   visible = false
-  find("section#data-grid form#{datagrid_dom_id} .datagrid-actions .datagrid-submit", visible: true).click
+  find("section#data-grid form#{datagrid_dom_id} .datagrid-actions .datagrid-submit", visible: :visible).click
   sleep(0.5)
   wait_for_ajax
 
@@ -182,7 +182,7 @@ When('I submit the filters for the datagrid {string} waiting {int} secs tops for
   end
 
   # Try to click it again if still visible (it should hide on post)
-  find("section#data-grid form#{datagrid_dom_id} .datagrid-actions .datagrid-submit", visible: true).click if visible
+  find("section#data-grid form#{datagrid_dom_id} .datagrid-actions .datagrid-submit", visible: :visible).click if visible
   sleep(1) && wait_for_ajax
 end
 # -----------------------------------------------------------------------------
@@ -214,7 +214,7 @@ Then('I wait until the slow-rendered page portion {string} is visible') do |css_
     raise "Timed out waiting for '#{css_selector}' to be visible: #{last_error&.message}" if remaining <= 0
 
     target_node = begin
-      find(css_selector, visible: true, wait: remaining)
+      find(css_selector, visible: :visible, wait: remaining)
     rescue StandardError => e
       last_error = e
       putc('r')

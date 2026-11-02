@@ -6,7 +6,7 @@ Then('I am at the show page for the details of the swimmer') do
 end
 
 Then('I see the swimmer\'s details table') do
-  node = find('section#swimmer-show-details table', visible: true)
+  node = find('section#swimmer-show-details table', visible: :visible)
   expect(node).to be_present
   expect(node.find('td#full-name').text).to be_present
   expect(node.find('td#year-of-birth').text).to be_present
@@ -19,7 +19,7 @@ Then('I see the swimmer\'s details table') do
 end
 
 Then('I see the swimmer\'s details toolbar buttons') do
-  node = find('section#swimmer-buttons', visible: true)
+  node = find('section#swimmer-buttons', visible: :visible)
   expect(node).to be_present
   expect(node.find('a#btn-stats').text).to be_present # (history)
   expect(node.find('a#btn-meetings').text).to be_present
@@ -31,7 +31,7 @@ end
 # Uses @chosen_swimmer
 Then('I see the swimmer\'s name in the meeting or workshop list title') do
   expect(@chosen_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
-  node = find('section#all-meetings-title h4', visible: true)
+  node = find('section#all-meetings-title h4', visible: :visible)
   expect(node).to be_present
   expect(node.text).to include(@chosen_swimmer.complete_name)
 end
@@ -53,26 +53,26 @@ end
 # Uses @chosen_swimmer
 And('I can see the chosen swimmer\'s name as subtitle of the history recap page') do
   expect(@chosen_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
-  node = find('section#swimmer-history-recap #swimmer-name', visible: true)
+  node = find('section#swimmer-history-recap #swimmer-name', visible: :visible)
   expect(node.text).to eq(@chosen_swimmer.complete_name)
 end
 
 And('I see the overall pie graph for the event types') do
-  find('canvas#recap-chart', visible: true)
-  node = find_by_id('swimmer-recap-chart', visible: true)
+  find('canvas#recap-chart', visible: :visible)
+  node = find_by_id('swimmer-recap-chart', visible: :visible)
   expect(node['data-chart-ready']).to eq('true'),
                                       "expected chart ready=true, got status=#{node['data-chart-status'].inspect} error=#{node['data-chart-error'].inspect}"
 end
 
 And('I see the list of attended event types') do
-  find('section#swimmer-history-recap table tbody tr.event-types', visible: true)
+  find('section#swimmer-history-recap table tbody tr.event-types', visible: :visible)
 end
 
 # Sets @expanded_stat_dom_id (see step below)
 When('I expand the details of a random event type and wait the stats to be displayed') do
-  tbody = find('section#swimmer-history-recap table tbody', visible: true)
+  tbody = find('section#swimmer-history-recap table tbody', visible: :visible)
   expect(tbody).to be_present
-  event_rows = find_all('tr.event-types', visible: true)
+  event_rows = find_all('tr.event-types', visible: :visible)
   expect(event_rows.count).to be_positive
 
   rnd_node = event_rows.sample
@@ -103,16 +103,16 @@ end
 #       are zero, and this may be true for some edge-cases. (E.g.: score 0 for under 20 + DSQ with no-time.)
 When('I see that at least one the details score section is always present') do
   expect(find("tr##{@expanded_stat_dom_id}")).to be_visible
-  find("tr##{@expanded_stat_dom_id} td .best-timings", visible: true) if page.has_css?("tr##{@expanded_stat_dom_id} td .best-timings")
-  find("tr##{@expanded_stat_dom_id} td .top-score", visible: true) if page.has_css?("tr##{@expanded_stat_dom_id} td .top-score")
-  find("tr##{@expanded_stat_dom_id} td .min-score", visible: true) if page.has_css?("tr##{@expanded_stat_dom_id} td .min-score")
-  find("tr##{@expanded_stat_dom_id} td .avg-score", visible: true) if page.has_css?("tr##{@expanded_stat_dom_id} td .avg-score")
+  find("tr##{@expanded_stat_dom_id} td .best-timings", visible: :visible) if page.has_css?("tr##{@expanded_stat_dom_id} td .best-timings")
+  find("tr##{@expanded_stat_dom_id} td .top-score", visible: :visible) if page.has_css?("tr##{@expanded_stat_dom_id} td .top-score")
+  find("tr##{@expanded_stat_dom_id} td .min-score", visible: :visible) if page.has_css?("tr##{@expanded_stat_dom_id} td .min-score")
+  find("tr##{@expanded_stat_dom_id} td .avg-score", visible: :visible) if page.has_css?("tr##{@expanded_stat_dom_id} td .avg-score")
 end
 
 When('I click on random event type link on the history recap') do
-  tbody = find('section#swimmer-history-recap table tbody', visible: true)
+  tbody = find('section#swimmer-history-recap table tbody', visible: :visible)
   expect(tbody).to be_present
-  event_details_links = find_all('tr.event-types td.history-link a', visible: true)
+  event_details_links = find_all('tr.event-types td.history-link a', visible: :visible)
                         .select { |node| node[:href].to_s.include?('/history/') }
   expect(event_details_links.count).to be_positive
   rnd_link = event_details_links.sample
@@ -141,28 +141,28 @@ end
 
 And('I can see the chosen swimmer\'s name as subtitle of the history detail page') do
   expect(@chosen_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
-  node = find('section#swimmer-history-detail #swimmer-name', visible: true)
+  node = find('section#swimmer-history-detail #swimmer-name', visible: :visible)
   expect(node.text).to eq(@chosen_swimmer.complete_name)
 end
 
 And('I see the history event line graph for the event types') do
-  find('section#swimmer-history-detail canvas#detail-chart', visible: true)
-  node = find_by_id('swimmer-detail-chart', visible: true)
+  find('section#swimmer-history-detail canvas#detail-chart', visible: :visible)
+  node = find_by_id('swimmer-detail-chart', visible: :visible)
   expect(node['data-chart-ready']).to eq('true'),
                                       "expected chart ready=true, got status=#{node['data-chart-status'].inspect} error=#{node['data-chart-error'].inspect}"
 end
 
 And('I see the history datagrid for the event results') do
-  find('section#swimmer-history-detail #data-grid', visible: true)
+  find('section#swimmer-history-detail #data-grid', visible: :visible)
 end
 
 And('I see the history datagrid filtering controls') do
   find('section#swimmer-history-detail #data-grid #filter-panel') # (usually collapsed)
-  find('section#swimmer-history-detail #data-grid #datagrid-ctrls', visible: true)
+  find('section#swimmer-history-detail #data-grid #datagrid-ctrls', visible: :visible)
 end
 
 When('I click on random result link on the history detail grid') do
-  node = find('section#swimmer-history-detail #data-grid table tbody', visible: true)
+  node = find('section#swimmer-history-detail #data-grid table tbody', visible: :visible)
   rnd_node = node.find_all('tr td.meeting_name a').sample
   expect(rnd_node).to be_visible
   rnd_node.click
@@ -179,20 +179,20 @@ end
 # Uses @chosen_swimmer
 And('I can see the chosen swimmer\'s name as subtitle of the Goggles Cup base timings page') do
   expect(@chosen_swimmer).to be_a(GogglesDb::Swimmer).and be_valid
-  node = find('section#swimmer-goggles-cup-base-timings #swimmer-name', visible: true)
+  node = find('section#swimmer-goggles-cup-base-timings #swimmer-name', visible: :visible)
   expect(node.text).to eq(@chosen_swimmer.complete_name)
 end
 
 And('I see the Goggles Cup base timings info note') do
-  find_by_id('best-results-info-note', visible: true)
+  find_by_id('best-results-info-note', visible: :visible)
 end
 
 And('I see the Goggles Cup base timings results table') do
-  find('section#swimmer-goggles-cup-base-timings table', visible: true)
+  find('section#swimmer-goggles-cup-base-timings table', visible: :visible)
 end
 
 And('I see at least one Goggles Cup base timing row') do
-  rows = find_all('section#swimmer-goggles-cup-base-timings table tbody tr', visible: true)
+  rows = find_all('section#swimmer-goggles-cup-base-timings table tbody tr', visible: :visible)
   expect(rows.count).to be_positive
 end
 

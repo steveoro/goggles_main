@@ -71,6 +71,6 @@ end
 When('I am redirected to the Chrono index page') do
   sleep(1) && wait_for_ajax
   # Wait for content to be rendered and then verify path:
-  find_by_id('content', visible: true)
-  expect(current_url).to include('/chrono/index')
+  find_by_id('content', visible: :visible)
+  step('I am at the Chrono index page')
 end

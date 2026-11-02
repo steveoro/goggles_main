@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 When('I open the drop-down top menu to see the available commands') do
-  find('section#content', visible: true)
+  find('section#content', visible: :visible)
   # Handle both large and small screens:
   menu_btn = find('#navbar-content ul li a#navbar-dropdown')
   unless menu_btn.visible?
