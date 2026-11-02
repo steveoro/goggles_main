@@ -82,7 +82,8 @@ RSpec.describe ToolsController do
             season_id: last_fin_season.id,
             event_type_id: fixture_event_type.id, pool_type_id: fixture_pool_type.id,
             minutes: fixture_mir.minutes, seconds: fixture_mir.seconds, hundredths: fixture_mir.hundredths,
-            gender_type_id: fixture_gender_type.id, category_type_id: fixture_category_type.id
+            gender_type_id: fixture_gender_type.id, category_type_id: fixture_category_type.id,
+            commit: I18n.t('tools.fin_score.compute_score.button_label')
           }
         end
         let(:api_timing_request_params) do
@@ -90,7 +91,8 @@ RSpec.describe ToolsController do
             season_id: last_fin_season.id,
             event_type_id: fixture_event_type.id, pool_type_id: fixture_pool_type.id,
             score: fixture_mir.standard_points.to_i,
-            gender_type_id: fixture_gender_type.id, category_type_id: fixture_category_type.id
+            gender_type_id: fixture_gender_type.id, category_type_id: fixture_category_type.id,
+            commit: I18n.t('tools.fin_score.target_timing.button_label')
           }
         end
 
