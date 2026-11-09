@@ -50,6 +50,7 @@ Metrics/AbcSize:
   Exclude:
   - 'bin/bundle'
   - 'db/migrate/*'
+  - 'db/*_migrate/*'
   - 'app/controllers/users/omniauth_callbacks_controller.rb'
   - 'app/decorators/swimming_pool_decorator.rb'
 
@@ -80,6 +81,7 @@ Metrics/MethodLength:
   Max: 35
   Exclude:
   - 'db/migrate/*'
+  - 'db/*_migrate/*'
 
 Metrics/PerceivedComplexity:
   Exclude:
@@ -93,6 +95,7 @@ Performance/CollectionLiteralInLoop:
 Rails/BulkChangeTable:
   Exclude:
   - 'db/migrate/*'
+  - 'db/*_migrate/*'
 
 # Excluded files here were already corrected in later migrations:
 Rails/ThreeStateBooleanColumn:
@@ -155,6 +158,7 @@ Style/ClassAndModuleChildren:
 Style/Documentation:
   Exclude:
   - 'db/migrate/**/*'
+  - 'db/*_migrate/**/*'
   - 'spec/**/*'
   - 'test/**/*'
   - 'config/application.rb'

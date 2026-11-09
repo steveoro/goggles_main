@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class CreateSolidQueueTables < ActiveRecord::Migration[8.1] # rubocop:disable Style/Documentation
-  def change # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+class CreateSolidQueueTables < ActiveRecord::Migration[8.1]
+  def change
     create_table 'solid_queue_blocked_executions', force: :cascade do |t|
       t.bigint 'job_id', null: false
       t.string 'queue_name', null: false
