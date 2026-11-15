@@ -20,10 +20,6 @@ development:
   primary:
     <<: *default
     database: goggles_development
-  cache:
-    <<: *default_sqlt3
-    database: storage/development_cache.sqlite3
-    migrations_paths: db/cache_migrate
   queue:
     <<: *default_sqlt3
     database: storage/development_queue.sqlite3
@@ -33,10 +29,6 @@ test:
   primary:
     <<: *default
     database: goggles_test
-  cache:
-    <<: *default_sqlt3
-    database: storage/test_cache.sqlite3
-    migrations_paths: db/cache_migrate
   queue:
     <<: *default_sqlt3
     database: storage/test_queue.sqlite3
@@ -46,10 +38,6 @@ production:
   primary:
     <<: *default
     database: <%= ENV.fetch("DATABASE_NAME") { 'goggles' } %>
-  cache:
-    <<: *default_sqlt3
-    database: storage/production_cache.sqlite3
-    migrations_paths: db/cache_migrate
   queue:
     <<: *default_sqlt3
     database: storage/production_queue.sqlite3

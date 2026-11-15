@@ -15,10 +15,18 @@ RSpec.describe SolidStack do
   describe 'database.docker.yml' do
     let(:config) { load_yaml('config/database.docker.yml') }
 
-    %w[production staging].each do |env|
-      it "defines cache, queue, and cable roles for #{env}" do
-        roles = config.fetch(env).keys
-        expect(roles).to include('primary', 'cache', 'queue', 'cable')
+    it 'defines queue and cable roles for production' do
+      expect(config.fetch('production').keys).to include('primary', 'queue', 'cable')
+      expect(config.fetch('production').keys).not_to include('cache')
+    end
+
+    it 'defines cache, queue, and cable roles for staging' do
+      expect(config.fetch('staging').keys).to include('primary', 'cache', 'queue', 'cable')
+    end
+
+    %w[development test].each do |env|
+      it "defines only the primary and queue roles for #{env}" do
+        expect(config.fetch(env).keys).to contain_exactly('primary', 'queue')
       end
     end
 
@@ -43,8 +51,16 @@ RSpec.describe SolidStack do
     describe path do
       let(:config) { load_yaml(path) }
 
+      %w[development test].each do |env|
+        it "defines only the primary and queue roles for #{env}" do
+          expect(config.fetch(env).keys).to contain_exactly('primary', 'queue')
+        end
+      end
+
       it 'defines production cable role with ruby schema format' do
-        cable = config.fetch('production').fetch('cable')
+        production = config.fetch('production')
+        cable = production.fetch('cable')
+        expect(production).not_to have_key('cache')
         expect(cable['adapter']).to eq('sqlite3')
         expect(cable['schema_format']).to eq(:ruby)
         expect(cable['database']).to include('production_cable.sqlite3')
@@ -55,8 +71,7 @@ RSpec.describe SolidStack do
   describe 'config/cache.yml' do
     let(:cache_config) { load_yaml('config/cache.yml') }
 
-    it 'points production and staging at the cache database role' do
-      expect(cache_config.fetch('production')['database']).to eq('cache')
+    it 'points staging at the cache database role' do
       expect(cache_config.fetch('staging')['database']).to eq('cache')
     end
   end
@@ -75,9 +90,9 @@ RSpec.describe SolidStack do
   describe 'config/environments/production.rb' do
     let(:production_rb) { repo_root.join('config/environments/production.rb').read }
 
-    it 'configures Solid Queue and Solid Cache once' do
+    it 'configures Solid Queue and in-process cache once' do
       expect(production_rb.scan('config.active_job.queue_adapter = :solid_queue').length).to eq(1)
-      expect(production_rb.scan('config.cache_store = :solid_cache_store').length).to eq(1)
+      expect(production_rb.scan('config.cache_store = :memory_store').length).to eq(1)
       expect(production_rb).to include('Rails.application.credentials.smtp')
       expect(production_rb).to include("host: 'master-goggles.org'")
     end

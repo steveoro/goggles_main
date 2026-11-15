@@ -20,10 +20,6 @@ development:
   primary:
     <<: *default
     database: goggles_development
-  cache:
-    <<: *default_sqlt3
-    database: storage/development_cache.sqlite3
-    migrations_paths: db/cache_migrate
   queue:
     <<: *default_sqlt3
     database: storage/development_queue.sqlite3
@@ -33,10 +29,6 @@ test:
   primary:
     <<: *default
     database: goggles_test
-  cache:
-    <<: *default_sqlt3
-    database: storage/test_cache.sqlite3
-    migrations_paths: db/cache_migrate
   queue:
     <<: *default_sqlt3
     database: storage/test_queue.sqlite3
@@ -46,10 +38,6 @@ production:
   primary:
     <<: *default
     database: goggles
-  cache:
-    <<: *default_sqlt3
-    database: storage/production_cache.sqlite3
-    migrations_paths: db/cache_migrate
   queue:
     <<: *default_sqlt3
     database: storage/production_queue.sqlite3
@@ -57,37 +45,4 @@ production:
   cable:
     <<: *default_sqlt3
     database: storage/production_cable.sqlite3
-    migrations_paths: db/cable_migrate
-
-# [Steve A.]
-# Staging will use the production environment together with the database
-# running on the production Docker image of the composed service.
-#
-# To recreate or restore a usable database with testing seeds, assuming:
-#
-# 1. you have a valid 'test.sql.bz2' dump file stored under 'db/dumps';
-# 2. the DB container 'goggles-db' is already running;
-#
-# Execute the dedicated task:
-#
-#   $> RAILS_ENV=staging rails db:rebuild from=test to=staging
-#
-
-staging:
-  primary:
-    <<: *default
-    database: goggles
-    host: <%= ENV.fetch("DATABASE_HOST") { 'localhost' } %>
-    port: <%= ENV.fetch("DATABASE_PORT") { 33060 } %>
-  cache:
-    <<: *default_sqlt3
-    database: storage/staging_cache.sqlite3
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *default_sqlt3
-    database: storage/staging_queue.sqlite3
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *default_sqlt3
-    database: storage/staging_cable.sqlite3
-    migrations_paths: db/cable_migrate
+ 
