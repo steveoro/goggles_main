@@ -1,5 +1,5 @@
 # --- Common stuff:
-FROM ruby:3.4.7-alpine3.22 AS common_builder
+FROM ruby:3.4.13-alpine3.23 AS common_builder
 ENV BUNDLER_VERSION=2.4.15 \
     INSTALL_PATH=/app
 

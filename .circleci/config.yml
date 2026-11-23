@@ -12,7 +12,7 @@ common-config: &common-config
   # [20251012] NOTE: not using CodeClimate anymore because now it's not open/free anymore
   #            (CodeClimate has changed into an Enterprise solution only)
   docker:
-  - image: cimg/ruby:3.4.7-browsers
+  - image: cimg/ruby:3.4.13-browsers
     environment:
       RAILS_ENV: test
       NODE_ENV: test
@@ -34,7 +34,7 @@ deploy-config: &deploy-config
   working_directory: ~/goggles_main
   shell: /bin/bash --login
   docker:
-  - image: cimg/ruby:3.4.7-browsers
+  - image: cimg/ruby:3.4.13-browsers
     environment:
       BUNDLE_JOBS: 2
       BUNDLE_RETRY: 2

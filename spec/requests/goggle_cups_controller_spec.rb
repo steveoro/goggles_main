@@ -43,6 +43,12 @@ RSpec.describe GoggleCupsController do
       it 'returns http success' do
         expect(response).to have_http_status(:success)
       end
+
+      it 'shows the score formula label from the goggles_db engine locales' do
+        expect(I18n.t('goggles_cup.formula')).to include('1000')
+        expect(response.body).to include(CGI.escapeHTML(I18n.t('goggles_cup.formula')))
+        expect(response.body).not_to include('translation missing')
+      end
     end
 
     context 'with a signed-in team manager' do

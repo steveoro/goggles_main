@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '>= 3.4.7'
+ruby '>= 3.4.13'
 
 gem 'mysql2'  # main DB
 gem 'rack-attack', '~> 6.8'

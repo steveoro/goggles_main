@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 
-ARG RUBY_IMAGE=ruby:3.4.7-alpine3.22
+ARG RUBY_IMAGE=ruby:3.4.13-alpine3.23
 ARG BUNDLER_VERSION=2.4.15
 ARG INSTALL_PATH=/app
 

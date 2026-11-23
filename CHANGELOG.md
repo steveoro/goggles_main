@@ -2,6 +2,7 @@
 
 _Please, add the latest build info on top of the list; use Version::MAJOR only after gold release; keep semantic versioning in line with framework's_
 
+- **0.10.74** [Claude] security hotfix: Ruby 3.4.13 (CVE-2026-132825; base image `ruby:3.4.13-alpine3.23`, CircleCI image, Gemfile/.ruby-version); GoggleCup page formula label now shows the goggles_db engine text (`goggles_cup.formula`) instead of a missing local key
 - **0.10.59** [Devin] de-flaked MIR::TableRowComponent 'includes the result score' spec: it now mirrors the component's actual fallback chain (standard_points → meeting_points → CSI-computed score for mas_csi seasons → empty cell) instead of always expecting one of the raw point columns, which flaked whenever the sampled result had zero points
 - **0.10.58** [Devin] fixed autoheal container label (`autoheal: "true"`) so unhealthy main/jobs actually get restarted; autoheal Slack restart alerts via optional `slack.env`; versioned `crontab_check.sh` w/ container/host check-in (restarts, earlyoom & kernel OOM kills, host reboots, mem/swap, API probe)
 - **0.10.57** [Devin] re-sync w/ base engine v0.10.57 (cached AppParameter settings/maintenance flag); `update_stats` moved to `after_action` so halted requests (401s, throttle redirects) skip the DB counters; tightened prod container mem limits (main 1024m, api 384m, jobs 640m, db 448m) for the 1.9GB droplet
