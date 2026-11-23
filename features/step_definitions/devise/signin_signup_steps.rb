@@ -20,7 +20,13 @@ Given('I am not signed in') do
 
   # CRITICAL: Reset Capybara session to clear browser cookies (Selenium drivers)
   # This must come AFTER the explicit sign-out to ensure cookies are cleared
-  Capybara.reset_session!
+  begin
+    Capybara.reset_session!
+  rescue StandardError => e
+    # Ignore reset errors (newer chromedriver rejects cookie cleanup on a fresh
+    # browser with no real page URL yet); the DELETE above already signed out
+    Rails.logger.debug { "Session reset skipped: #{e.message}" }
+  end
 
   # For Selenium drivers: explicitly delete all cookies as an extra safeguard
   begin
