@@ -137,11 +137,13 @@ end
   [:headless_chrome_galaxys5, 'Galaxy S5'],
   [:headless_chrome_pixel5, 'Pixel 5'],
   [:headless_chrome_ipadmini, 'iPad Mini'],
-  [:headless_chrome_ipadair, 'iPad Air']
-].each do |drv_sym, device_name|
+  # [20261123] 'iPad Air' was dropped from Chrome's predefined device list
+  # (~M139+); keep the driver name but emulate it with explicit metrics.
+  [:headless_chrome_ipadair, { device_metrics: { width: 820, height: 1180, pixel_ratio: 2.0, mobile: true } }]
+].each do |drv_sym, emulation|
   Capybara.register_driver(drv_sym) do |app|
     chrome_options = Selenium::WebDriver::Chrome::Options.new
-    chrome_options.add_emulation(device_name:)
+    emulation.is_a?(String) ? chrome_options.add_emulation(device_name: emulation) : chrome_options.add_emulation(**emulation)
     chrome_args.each { |arg| chrome_options.add_argument(arg) }
     chrome_options.add_preference(:download,
                                   directory_upgrade: true,
