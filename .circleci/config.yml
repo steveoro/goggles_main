@@ -665,6 +665,11 @@ workflows:
     - docker-latest:
         requires:
         - rspec-requests
+        # Never publish the app image from the executor-maintenance branch:
+        filters:
+          branches:
+            ignore:
+            - ci-image
         # [Steve, 20241025] Ease requirements for 'latest' build as cucumber features are currently very flaky
         # - cucumber-desktop
         # - cucumber-narrow
