@@ -102,7 +102,7 @@ pending migrations from `db/queue_migrate` / `db/cable_migrate`.
 | Host path (deploy dir)                | Mounted into            | Purpose                       |
 | ------------------------------------- | ----------------------- | ----------------------------- |
 | `storage.prod`                        | `api`, `main`, `jobs`   | ActiveStorage files           |
-| `backups`                             | `api`, `main`, `jobs`   | `db/dump` — backup & batch SQL files (ImportProcessorJob) |
+| `backups`                             | `api`, `main`, `jobs`   | `db/dump` — DB backups (ImportProcessorJob no longer writes its temp SQL files here: it uses `Dir.tmpdir`) |
 | `db.prod`                             | `goggles-db`            | MariaDB datadir               |
 | `log.prod`                            | `api`, `main`           | `production.log` (jobs logs to docker stdout instead) |
 | `master-api.key`, `master-main.key`   | `api`, `main`, `jobs` (ro) | Rails master keys          |
@@ -127,6 +127,40 @@ CircleCI/manual:  deploy_prod.sh (TAG from .env)
 
 `main` runs `db:prepare` at boot, so new migrations and the support DBs are
 applied automatically during rollout. `jobs` waits for `main` to report healthy.
+
+## Batch SQL import queue (ImportProcessorJob)
+
+`ImportProcessorJob` (recurring `import_processor`, every 3 minutes, queue `iq`) runs
+two independent passes: the **batch SQL** rows pushed by goggles_admin2, then the
+**micro-transaction** rows (chrono recordings). A batch failure never stops the
+micro-transaction pass. Only one instance runs at a time (`limits_concurrency`,
+key `import_processor`, overlapping runs discarded).
+
+Batch rows run one at a time in id order through the `mariadb` client (password
+in `MYSQL_PWD`, never on the command line; temp file under `Dir.tmpdir`), inside a
+single maintenance window that is always closed at the end (and left alone if the
+maintenance mode was already on). Their outcome is encoded on the row itself:
+
+| Outcome  | `done`  | `process_runs` | `error_messages`               |
+| -------- | ------- | -------------- | ------------------------------ |
+| queued   | `false` | `0`            | blank                          |
+| running  | `false` | `> 0`          | blank                          |
+| applied  | `true`  | `> 0`          | `nil` (row + file kept 14 days) |
+| failed   | `false` | `> 0`          | the DB client error output     |
+
+A row found still *running* by a later run was interrupted (container restart):
+it becomes failed with `interrupted: outcome unknown`.
+
+**A failed row blocks every later batch row** until it is either:
+
+- retried in place: `PUT /api/v3/import_queue/:id` with `error_messages: ""` and
+  `process_runs: 0` (goggles_admin2 "Retry"), or
+- deleted (goggles_admin2 import-queue grid, or `DELETE /api/v3/import_queue/:id`).
+
+Check what actually happened before retrying: a script run without a single
+wrapping transaction may be partially applied. Before downgrading goggles_main to a
+release older than 0.10.81, delete or resolve the failed rows (the old job would run
+them again on its next cycle).
 
 ## Notes
 
