@@ -12,7 +12,7 @@ common-config: &common-config
   # [20251012] NOTE: not using CodeClimate anymore because now it's not open/free anymore
   #            (CodeClimate has changed into an Enterprise solution only)
   docker:
-  - image: cimg/ruby:3.4.13-browsers
+  - image: steveoro/goggles-ci:ruby-3.4.13-browsers
     environment:
       RAILS_ENV: test
       NODE_ENV: test
@@ -34,7 +34,7 @@ deploy-config: &deploy-config
   working_directory: ~/goggles_main
   shell: /bin/bash --login
   docker:
-  - image: cimg/ruby:3.4.13-browsers
+  - image: steveoro/goggles-ci:ruby-3.4.13-browsers
     environment:
       BUNDLE_JOBS: 2
       BUNDLE_RETRY: 2
@@ -487,7 +487,30 @@ jobs:
           echo "Git Tag << pipeline.git.tag >>"
           ssh -o StrictHostKeyChecking=no deploy@$SSH_SERVER "TAG=<< pipeline.git.tag >> MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_PASSWORD=$DOCKERHUB_PASSWORD bash -c ./deploy_prod.sh"
 
+  # Publishes the custom test executor (Dockerfile.ci) to Docker Hub.
+  # Runs only on a branch named `ci-image`: push one to (re)build the image
+  #   git push origin HEAD:ci-image
+  ci-image:
+    machine:
+      image: ubuntu-2404:current
+    steps:
+    - checkout
+    - run:
+        name: Publish CI executor image
+        command: |
+          echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+          docker build -t $DOCKERHUB_USERNAME/goggles-ci:ruby-3.4.13-browsers -f Dockerfile.ci .
+          docker push $DOCKERHUB_USERNAME/goggles-ci:ruby-3.4.13-browsers
+
 workflows:
+  ci-image:
+    jobs:
+    - ci-image:
+        filters:
+          branches:
+            only:
+            - ci-image
+
   build-and-deploy-versioned:
     jobs:
     - persisted-data:
@@ -642,6 +665,11 @@ workflows:
     - docker-latest:
         requires:
         - rspec-requests
+        # Never publish the app image from the executor-maintenance branch:
+        filters:
+          branches:
+            ignore:
+            - ci-image
         # [Steve, 20241025] Ease requirements for 'latest' build as cucumber features are currently very flaky
         # - cucumber-desktop
         # - cucumber-narrow

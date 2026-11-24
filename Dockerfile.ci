@@ -1,0 +1,18 @@
+# Custom CI executor for goggles_main.
+#
+# cimg/ruby:* images (Ubuntu 22.04) ship libvips 8.12, which breaks Rails 8.1.4+
+# boot when ruby-vips is bundled (pulled in by image_processing): ActiveStorage
+# raises at engine load ("libvips's unfuzzed operations are not safe… requires
+# libvips 8.13+ and ruby-vips 2.2.1+"). Production images carry no libvips at
+# all — the resulting LoadError is swallowed and the app boots with the
+# mini_magick processor — so removing the stale package here mirrors prod.
+#
+# Publish via the `ci-image` job (.circleci/config.yml): push any commit to a
+# branch named `ci-image` and it builds & pushes this image to Docker Hub as
+#   $DOCKERHUB_USERNAME/goggles-ci:ruby-3.4.13-browsers
+# (or manually: docker build -f Dockerfile.ci -t steveoro/goggles-ci:ruby-3.4.13-browsers .)
+FROM cimg/ruby:3.4.13-browsers
+
+USER root
+RUN apt-get remove -y libvips42
+USER circleci
