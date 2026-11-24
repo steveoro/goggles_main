@@ -159,7 +159,7 @@ it becomes failed with `interrupted: outcome unknown`.
 
 Check what actually happened before retrying: a script run without a single
 wrapping transaction may be partially applied. Before downgrading goggles_main to a
-release older than 0.10.81, delete or resolve the failed rows (the old job would run
+release older than 0.10.82, delete or resolve the failed rows (the old job would run
 them again on its next cycle).
 
 ## Notes
