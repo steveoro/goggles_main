@@ -7,10 +7,10 @@ description: End-to-end testing guide for goggles_main, covering dev server setu
 
 ## Dev environment basics
 
-- Ruby is installed under `/home/ubuntu/.ruby-3.4.7/bin`; add it to `PATH` before running any Rails commands.
+- Ruby is pinned by `.versions.conf` (currently `ruby-3.4.13`, gemset `goggles7-rails8.1`). In non-interactive shells select it explicitly: `source "$HOME/.rvm/scripts/rvm" && rvm use ruby-3.4.13@goggles7-rails8.1`. Do not rely on machine-specific `/home/ubuntu` paths.
 - The app uses MariaDB on the local socket (`/var/run/mysqld/mysqld.sock`) and `root` with no password by default.
 - `config/master.key` must contain the `GOGGLES_MAIN_MASTER_KEY` secret.
-- `storage/` must be a real directory (the SQLite SolidQueue/SolidCache databases live there).
+- `storage/` must be a real directory in local development/test because SQLite Solid databases can live there. Production Docker is different: queue/cable are MariaDB-backed (`goggles_queue`, `goggles_cable`) and a dedicated `jobs` container runs the Solid Queue supervisor.
 - DB is seeded/restored from `db/dump/test.sql.bz2` using the custom `db:rebuild` task:
   - `RAILS_ENV=development bin/rails db:rebuild from=test to=development`
   - `RAILS_ENV=development bin/rails db:migrate`
@@ -55,11 +55,13 @@ description: End-to-end testing guide for goggles_main, covering dev server setu
 
 ## Known gotcha: SQL `@base_year` session variable
 
-- `GogglesDb::GogglesCup3yBaseTimings.with_base_year(year)` executes `SET @base_year = <year>` and does **not** reset the variable.
-- The helper function `goggles_db_base_year()` is defined as:
-  - `RETURN IFNULL(CAST(@base_year AS SIGNED), <compute current championship year>)`
-- As a result, after any request sets `@base_year`, a subsequent fallback to the default year will reuse the stale `@base_year` if it runs on the same MariaDB connection, unless the variable is reset.
-- The `devin/fix-base-year-fallback` branch fixes `SwimmersController#default_base_year` by executing `SET @base_year = NULL` before `SELECT goggles_db_base_year()`, so missing/invalid `base_year` params now correctly return the current championship year.
+- `GogglesDb::GogglesCup3yBaseTimings.with_base_year(year)` executes `SET @base_year = <year>`; the variable is connection-local.
+- The helper function `goggles_db_base_year()` falls back to the computed championship year only when `@base_year` is NULL.
+- Current `SwimmersController#default_base_year` explicitly executes `SET @base_year = NULL` before calling the function, and `GoggleCupsController#with_base_year` resets the variable in an ensure block. If fallback behavior looks stale, verify those resets rather than assuming an old unmerged branch is required.
+
+## Production/local queue distinction
+
+Local development/test examples in this file refer to SQLite files under `storage/`. Do not use them to reason about production queue locking: current production compose uses MariaDB queue/cable DBs plus the `goggles-jobs` service.
 
 ## Devin Secrets Needed
 
